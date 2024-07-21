@@ -1,11 +1,15 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable ,Button} from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
+  
+
+
 
   return (
     <View style={styles.profilePage}>
@@ -33,40 +37,62 @@ const ProfilePage = () => {
       >
         <Text style={styles.signOut1}>Sign Out?</Text>
       </Pressable>
-      <View style={[styles.rectangleParent, styles.groupLayout]}>
-        <View style={[styles.groupChild, styles.groupLayout]} />
-        <Text style={[styles.challengePoints1000, styles.textClr]}>
-          GCPs Balance: +1530 
-        </Text>
-      </View>
-      <View style={[styles.rectangleGroup, styles.groupLayout]}>
-        <View style={[styles.groupChild, styles.groupLayout]} />
-        <Text
-          style={[styles.helpSupport, styles.helpSupportTypo]}
-        >{`GCPs LeaderBoard`}</Text>
-        <Image
-          style={[styles.vectorIcon3, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector3.png")}
-        />
-      </View>
-      <View style={[styles.rectangleContainer, styles.groupLayout]}>
-        <View style={[styles.groupChild, styles.groupLayout]} />
-        <Text
-          style={[styles.securityPrivacy, styles.helpSupportTypo]}
-        >{`Security & Privacy`}</Text>
-        <Image
-          style={[styles.vectorIcon4, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector4.png")}
-        />
-      </View>
-      <View style={[styles.groupView, styles.groupLayout]}>
-        <View style={[styles.groupChild, styles.groupLayout]} />
-        <Text style={[styles.securityPrivacy, styles.helpSupportTypo]}>
-          Find Green Connects
-        </Text>
-      </View>
+
+      <Pressable>
+        <View style={[styles.rectangleParent, styles.groupLayout1]}>
+          <View style={[styles.groupChild, styles.groupLayout]} />
+          <View>
+            <View>    
+              <Text style={[styles.challengePoints1000, styles.textClr]}>
+                Green Points Balance:   +1530 
+              </Text>
+            </View>
+            <View>
+              
+              <Text style={[styles.challengePoints100,styles.groupLayout]}>Buy Bundles</Text>
+              <Text style={[styles.challengePoints10,styles.groupLayout]} >Buy Airtime</Text>
+            </View>
+
+          </View>
+        
+        </View>
+      </Pressable>
+      <Pressable>
+        <View style={[styles.rectangleGroup, styles.groupLayout]}>
+          <View style={[styles.groupChild, styles.groupLayout]} />
+          <Text
+            style={[styles.helpSupport, styles.helpSupportTypo]}
+          >{`GCPs LeaderBoard`}</Text>
+          <Image
+            style={[styles.vectorIcon3, styles.vectorIconLayout]}
+            contentFit="cover"
+            source={require("../assets/vector3.png")}
+          />
+        </View>
+      </Pressable>
+      <Pressable>
+        <View style={[styles.rectangleContainer, styles.groupLayout]}>
+          <View style={[styles.groupChild, styles.groupLayout]} />
+          <Text
+            style={[styles.securityPrivacy, styles.helpSupportTypo]}
+          >{`Security & Privacy`}</Text>
+          <Image
+            style={[styles.vectorIcon4, styles.vectorIconLayout]}
+            contentFit="cover"
+            source={require("../assets/vector4.png")}
+          />
+        </View>
+      </Pressable>
+      <Pressable>
+        <TouchableOpacity activeOpacity={0.6}>
+          <View style={[styles.groupView, styles.groupLayout]}>
+            <View style={[styles.groupChild, styles.groupLayout]} />
+            <Text style={[styles.securityPrivacy, styles.helpSupportTypo]}>
+              Find Green Connects
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </Pressable>
       <Text style={styles.yourProfile}>Your Profile</Text>
       <Image
         style={styles.userLightIcon}
@@ -114,8 +140,15 @@ const styles = StyleSheet.create({
     width: 354,
     position: "absolute",
   },
+ 
+ 
+  groupLayout1: {
+    height: 100,
+    width: 354,
+    position: "absolute",
+  },
   helpSupportTypo: {
-    fontFamily: FontFamily.manropeSemiBold,
+    fontFamily: FontFamily.poppinsRegular,
     top: 17,
     fontWeight: "600",
     textAlign: "left",
@@ -217,15 +250,32 @@ const styles = StyleSheet.create({
     top: 0,
   },
   challengePoints1000: {
-    top: 18,
+    top: 5,
     fontFamily: FontFamily.manropeBold,
-    textAlign: "left",
+    textAlign: "center",
     left: 18,
     fontSize: FontSize.size_xl,
     color: Color.colorBlack,
   },
+  challengePoints100: {
+    top: 35,
+    fontFamily: FontFamily.manropeBold,
+    textAlign: "left",
+    left: 18,
+    fontSize: FontSize.size_sm,
+    color: Color.colorLimegreen_100,
+  },
+  challengePoints10: {
+    top: 35,
+    fontFamily: FontFamily.manropeBold,
+    textAlign: "center",
+    left: 45,
+    fontSize: FontSize.size_sm,
+    color: Color.colorCrimson,
+  },
   rectangleParent: {
     top: 320,
+    height: 400,
     left: 19,
     width: 354,
   },
