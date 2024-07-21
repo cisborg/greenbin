@@ -2,9 +2,12 @@ import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import { FontFamily, Border, Color, FontSize } from "../GlobalStyles";
+import { useNavigation } from "@react-navigation/core";
 
 const ChallengePage = () => {
+  const navigation = useNavigation()
   return (
+
     <View style={styles.challengePage}>
       <Image
         style={styles.shapesIcon}
@@ -16,24 +19,7 @@ const ChallengePage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text, styles.textTypo]}>{`9:40 `}</Text>
-      </View>
+      
       <Image
         style={[styles.menuBarIcon, styles.iconLayout]}
         contentFit="cover"
@@ -103,27 +89,7 @@ a Mile`}</Text>
           />
           <Text style={[styles.completed2, styles.startTypo]}>Completed</Text>
         </View>
-        <View style={[styles.challengeBox4, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox4Child, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.makeDrywetDustbins, styles.walkAMileTypo]}>
-            Make Dry/Wet Dustbins
-          </Text>
-          <Image
-            style={[styles.challengeBox4Item, styles.challengeItemPosition]}
-            contentFit="cover"
-            source={require("../assets/line-61.png")}
-          />
-          <Text style={[styles.completed3, styles.completedTypo]}>
-            Completed
-          </Text>
-          <Image
-            style={[styles.delAltFillIcon, styles.iconLayout]}
-            contentFit="cover"
-            source={require("../assets/del-alt-fill.png")}
-          />
-        </View>
+        
       </View>
       <Text style={[styles.completedChallenges, styles.challengesTypo]}>
         Completed challenges:
@@ -203,8 +169,12 @@ trees or plants`}</Text>
           <Text style={styles.completedTypo1}>: Reduce. Reuse. Recycle.</Text>
         </Text>
       </View>
-      <Text style={styles.challenges}>Challenges</Text>
-      <View style={[styles.challengePageChild, styles.groupItemLayout]} />
+      
+        <Text style={styles.challenges} onPress={() => navigation.navigate('ProfilePage')}
+       > Challenges!</Text> 
+     
+        <View style={[styles.challengePageChild, styles.groupItemLayout]} />
+     
     </View>
   );
 };
@@ -396,14 +366,14 @@ const styles = StyleSheet.create({
     left: 6,
   },
   challengeBox1: {
-    width: 119,
+    width: 110,
     top: 1,
     height: 203,
     left: 0,
   },
   challengeBox3: {
     left: 285,
-    width: 119,
+    width: 100,
     top: 1,
     height: 203,
   },
@@ -411,7 +381,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorDarkolivegreen,
   },
   water5Random: {
-    width: 119,
+    width: 110,
     left: 0,
   },
   image1Icon: {
@@ -432,7 +402,7 @@ const styles = StyleSheet.create({
   },
   challengeBox2: {
     left: 141,
-    width: 119,
+    width: 110,
     top: 0,
   },
   challengeBox4Child: {
@@ -456,11 +426,8 @@ const styles = StyleSheet.create({
     width: 74,
     left: 23,
   },
-  challengeBox4: {
-    left: 431,
-    width: 119,
-    top: 0,
-  },
+  
+  
   completedChallengeFrame: {
     top: 460,
     height: 204,
@@ -590,12 +557,12 @@ const styles = StyleSheet.create({
     left: 17,
   },
   challenges: {
-    top: 51,
-    left: 187,
-    fontSize: FontSize.size_13xl,
-    width: 186,
-    height: 39,
-    color: Color.colorGray_800,
+    top: 30,
+    left: 160,
+    fontSize: FontSize.size_9xl,
+    width: 300,
+    height: 30,
+    color: Color.colorLimegreen_100,
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
     textAlign: "center",

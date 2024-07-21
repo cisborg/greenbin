@@ -10,7 +10,7 @@ const ProfilePage = () => {
   return (
     <View style={styles.profilePage}>
       <View style={[styles.profilePageChild, styles.childPosition]} />
-      <Text style={[styles.hiDhananjay, styles.textTypo]}>Hi, Dhananjay!</Text>
+      <Text style={[styles.hiDhananjay, styles.textTypo]}>Hi,Josh Doe</Text>
       <Image
         style={styles.profileImgIcon}
         contentFit="cover"
@@ -26,24 +26,7 @@ const ProfilePage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text, styles.textClr]}>{`9:40 `}</Text>
-      </View>
+      
       <Pressable
         style={styles.signOut}
         onPress={() => navigation.navigate("StartPage")}
@@ -53,14 +36,14 @@ const ProfilePage = () => {
       <View style={[styles.rectangleParent, styles.groupLayout]}>
         <View style={[styles.groupChild, styles.groupLayout]} />
         <Text style={[styles.challengePoints1000, styles.textClr]}>
-          Challenge Points: +1000
+          GCPs Balance: +1530 
         </Text>
       </View>
       <View style={[styles.rectangleGroup, styles.groupLayout]}>
         <View style={[styles.groupChild, styles.groupLayout]} />
         <Text
           style={[styles.helpSupport, styles.helpSupportTypo]}
-        >{`Help & Support`}</Text>
+        >{`GCPs LeaderBoard`}</Text>
         <Image
           style={[styles.vectorIcon3, styles.vectorIconLayout]}
           contentFit="cover"
@@ -81,7 +64,7 @@ const ProfilePage = () => {
       <View style={[styles.groupView, styles.groupLayout]}>
         <View style={[styles.groupChild, styles.groupLayout]} />
         <Text style={[styles.securityPrivacy, styles.helpSupportTypo]}>
-          Vendor History
+          Find Green Connects
         </Text>
       </View>
       <Text style={styles.yourProfile}>Your Profile</Text>
@@ -223,7 +206,8 @@ const styles = StyleSheet.create({
   },
   signOut: {
     left: 17,
-    top: 805,
+    top: 925,
+    alignItems: "center",
     position: "absolute",
   },
   groupChild: {
@@ -285,7 +269,7 @@ const styles = StyleSheet.create({
   yourProfile: {
     top: 47,
     left: 187,
-    fontSize: FontSize.size_13xl,
+    fontSize: FontSize.size_5xl,
     fontFamily: FontFamily.poppinsSemiBold,
     color: "rgba(255, 255, 255, 0.86)",
     width: 186,
@@ -293,6 +277,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     position: "absolute",
+    paddingBottom: "10px",
   },
   userLightIcon: {
     top: 577,
@@ -304,10 +289,12 @@ const styles = StyleSheet.create({
   },
   profilePeopleImg: {
     top: 647,
-    left: 65,
+    left: 25,
+    
     width: 350,
     height: 261,
-    position: "absolute",
+    
+    position: "relative",
   },
   icon: {
     height: "100%",

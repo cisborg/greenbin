@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, Border, FontSize } from "../GlobalStyles";
 
 const HomePageExistingUser = () => {
+  
   const navigation = useNavigation();
 
   return (
@@ -19,24 +20,7 @@ const HomePageExistingUser = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text, styles.textFlexBox]}>{`9:40 `}</Text>
-      </View>
+      
       <Image
         style={styles.menuBarIcon}
         contentFit="cover"
@@ -46,14 +30,14 @@ const HomePageExistingUser = () => {
         <View style={[styles.challengeBox1, styles.challengeLayout]}>
           <View style={styles.challengeBox1Child} />
           <Text
-            style={[styles.harvestRainWater, styles.about201BillionTypo]}
-          >{`Harvest
-Rain Water
-5L/10L`}</Text>
+            style={[styles.buySmartGadget, styles.about201BillionTypo]}
+          >{`Plant
+Two Trees
+Daily`}</Text>
           <Image
             style={styles.rainIcon}
             contentFit="cover"
-            source={require("../assets/rain.png")}
+            source={require("../assets/del-alt-fill.png")}
           />
           <View style={styles.rectangleParent}>
             <View style={styles.groupChild} />
@@ -63,10 +47,10 @@ Rain Water
         <View style={[styles.challengeBox2, styles.challengeLayout]}>
           <View style={styles.challengeBox1Child} />
           <Text
-            style={[styles.harvestRainWater, styles.about201BillionTypo]}
-          >{`Walk
- a 
-mile`}</Text>
+            style={[styles.buySmartGadget, styles.about201BillionTypo]}
+          >{`Buy a Smart
+ gadget
+`}</Text>
           <Image
             style={styles.rainIcon}
             contentFit="cover"
@@ -79,7 +63,7 @@ mile`}</Text>
         <View style={[styles.challengeBox3, styles.challengeLayout]}>
           <View style={styles.challengeBox1Child} />
           <Text
-            style={[styles.harvestRainWater, styles.about201BillionTypo]}
+            style={[styles.buySmartGadget, styles.about201BillionTypo]}
           >{`Recycle
 10 Plastic
 Bottles`}</Text>
@@ -107,15 +91,19 @@ Bottles`}</Text>
           </Text>
         </Text>
       </View>
-      <Text style={[styles.hello, styles.helloTypo]}>Hello!🍀</Text>
+      <Pressable>
+      <Text style={[styles.hello, styles.helloTypo]}
+      onPress={() => navigation.navigate("EventsInformationPage")}
+      >Hello!🍀</Text>
+      </Pressable>
       <View style={styles.vendorFrame}>
         <Pressable
           style={[styles.vendordetails, styles.vendordetailsLayout]}
           onPress={() => navigation.navigate("VendorsProfilePage")}
         >
           <View style={[styles.vendorname, styles.vendornameLayout]}>
-            <Text style={[styles.shailesh, styles.shaileshTypo]}>Shailesh</Text>
-            <Text style={[styles.mumbai, styles.thaneTypo]}>(Mumbai)</Text>
+            <Text style={[styles.shailesh, styles.shaileshTypo]}>John Doe</Text>
+            <Text style={[styles.mumbai, styles.thaneTypo]}>(Nairobi)</Text>
           </View>
           <Image
             style={[styles.vendorimgIcon, styles.vendordetailsLayout]}
@@ -123,19 +111,22 @@ Bottles`}</Text>
             source={require("../assets/vendorimg.png")}
           />
         </Pressable>
-        <View style={[styles.vendordetails1, styles.vendordetailsLayout]}>
+        <Pressable 
+          style={[styles.vendordetails1, styles.vendordetailsLayout]}
+          onPress={() => navigation.navigate("VendorsProfilePage")}
+          >
           <View style={[styles.vendorname1, styles.vendorname1Layout]}>
             <Text style={[styles.hansenReddy, styles.vendorname1Layout]}>
-              Hansen Reddy
+              Hassan 
             </Text>
-            <Text style={[styles.thane, styles.thaneTypo]}>(Thane)</Text>
+            <Text style={[styles.thane, styles.thaneTypo]}>(Nakuru)</Text>
           </View>
           <Image
             style={[styles.vendorimgIcon, styles.vendordetailsLayout]}
             contentFit="cover"
             source={require("../assets/vendorimg1.png")}
           />
-        </View>
+        </Pressable>
         <View style={[styles.addVendorBtn, styles.text1Layout]}>
           <Image
             style={[styles.addVendorBtnChild, styles.vendornameLayout]}
@@ -296,7 +287,7 @@ const styles = StyleSheet.create({
   },
   menuBarIcon: {
     top: 770,
-    width: 390,
+    width: 397,
     height: 74,
     left: 0,
     position: "absolute",
@@ -310,7 +301,7 @@ const styles = StyleSheet.create({
     top: 0,
     position: "absolute",
   },
-  harvestRainWater: {
+  buySmartGadget: {
     top: 73,
     left: 9,
     fontSize: FontSize.size_base,
@@ -367,7 +358,7 @@ const styles = StyleSheet.create({
   challengeFrame: {
     top: 534,
     left: 23,
-    width: 357,
+    width: 353,
     height: 177,
     position: "absolute",
   },
@@ -408,7 +399,7 @@ const styles = StyleSheet.create({
   hello: {
     top: 51,
     left: 248,
-    width: 125,
+    width: 145,
     height: 39,
     color: Color.colorGray_800,
     fontSize: FontSize.size_13xl,
@@ -416,7 +407,7 @@ const styles = StyleSheet.create({
   },
   shailesh: {
     fontSize: FontSize.size_xl,
-    width: 93,
+    width: 100,
     position: "absolute",
   },
   mumbai: {
@@ -440,7 +431,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   hansenReddy: {
-    fontSize: FontSize.size_mini,
+    fontSize: FontSize.size_xl,
     color: Color.colorDarkslategray,
     height: 35,
     fontFamily: FontFamily.poppinsSemiBold,
@@ -448,6 +439,8 @@ const styles = StyleSheet.create({
     left: 0,
     textAlign: "center",
     top: 0,
+    position: "absolute",
+    width: 100
   },
   thane: {
     top: 22,
@@ -489,7 +482,7 @@ const styles = StyleSheet.create({
   },
   vendorFrame: {
     top: 182,
-    width: 353,
+    width: 350,
     height: 212,
     left: 17,
     position: "absolute",

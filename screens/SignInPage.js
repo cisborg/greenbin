@@ -20,7 +20,7 @@ const SignInPage = () => {
         source={require("../assets/shapes.png")}
       />
       <View style={styles.welcomeMessage}>
-        <Text style={[styles.greenbin, styles.greenbinFlexBox]}>GreenBin</Text>
+        <Text style={[styles.greenbin, styles.greenbinFlexBox]}>GreenBin!</Text>
         <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
       </View>
       <Pressable
@@ -32,55 +32,33 @@ const SignInPage = () => {
       </Pressable>
       <Text
         style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}
-      >{`Welcome again!
-Please log in.`}</Text>
-      <View style={[styles.emailInp, styles.inpLayout]}>
-        <View style={styles.emailInpChild} />
-        <View style={styles.emailInpItem} />
-        <Text style={[styles.dhnaanjayPanasare, styles.dhnaanjayTypo]}>
-          dhnaanjay panasare
-        </Text>
-      </View>
+      >{`We Value You!
+Proceed to log in...`}</Text>
+      
       <View style={[styles.passwordInp, styles.inpLayout]}>
         <View style={styles.emailInpChild} />
         <View style={styles.emailInpItem} />
         <Text style={styles.dhnaanjayTypo} />
       </View>
-      <Pressable
+     
+      <View
         style={styles.dontHaveAnContainer}
-        onPress={() => navigation.navigate("RegisterPage")}
+        
       >
         <Text style={[styles.text, styles.textTypo]}>
           <Text style={styles.dontHaveAn}>Don’t have an account ?</Text>
           <Text style={styles.text1}>{` `}</Text>
-          <Text style={styles.register}>Register</Text>
+          <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>Register</Text>
         </Text>
-      </Pressable>
+      </View>
+      
       <Image
         style={styles.loginimgIcon}
         contentFit="cover"
         source={require("../assets/loginimg.png")}
       />
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text2, styles.textTypo]}>{`9:40 `}</Text>
-      </View>
-      <Text style={[styles.dhnaanjay, styles.text3Typo]}>dhnaanjay</Text>
-      <Text style={[styles.text3, styles.text3Typo]}>************</Text>
+      
+      <Text style={[styles.text3, styles.text3Typo]} >************</Text>
     </View>
   );
 };
@@ -154,11 +132,11 @@ const styles = StyleSheet.create({
     top: 7,
     left: 0,
     fontSize: FontSize.size_29xl,
-    color: Color.colorGray_500,
+    color: "green",
     height: 56,
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "700",
-    width: 229,
+    width: 275,
   },
   welcomeTo: {
     left: 127,
@@ -263,7 +241,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   loginimgIcon: {
-    top: 224,
+    top: 280,
     left: 28,
     width: 334,
     height: 265,
@@ -313,7 +291,7 @@ const styles = StyleSheet.create({
     color: "#242020",
   },
   text3: {
-    top: 580,
+    top: 587,
     color: Color.colorBlack,
   },
   signInPage: {

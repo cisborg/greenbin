@@ -19,14 +19,14 @@ const StartPage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <Text style={[styles.greenbin, styles.textTypo]}>GreenBin</Text>
+      <Text style={[styles.greenbin, styles.textTypo]}>Nature Diversity</Text>
       <Image
         style={styles.startimgIcon}
         contentFit="cover"
         source={require("../assets/startimg.png")}
       />
       <Text style={[styles.manageYourWaste, styles.getStartedTypo]}>
-        Manage your waste effectively!
+       Connect & Manage your waste effectively!
       </Text>
       <Pressable
         style={[styles.getStartedBtn, styles.getLayout]}
@@ -37,33 +37,8 @@ const StartPage = () => {
           Get Started
         </Text>
       </Pressable>
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text, styles.textPosition]}>{`9:40 `}</Text>
-      </View>
-      <Pressable
-        style={[styles.getStartedBtn1, styles.getLayout]}
-        onPress={() => navigation.navigate("RegisterPage")}
-      >
-        <View style={[styles.getStartedBtnChild, styles.textPosition]} />
-        <Text style={[styles.getStarted, styles.getStartedTypo]}>
-          Get Started
-        </Text>
-      </Pressable>
+      
+     
     </View>
   );
 };
@@ -114,10 +89,10 @@ const styles = StyleSheet.create({
   },
   greenbin: {
     top: 147,
-    left: 94,
-    fontSize: FontSize.size_29xl,
+    left: 5,
+    fontSize: FontSize.size_13xl,
     color: Color.colorGray_500,
-    width: 229,
+    width: 400,
     height: 56,
     position: "absolute",
   },
@@ -130,7 +105,7 @@ const styles = StyleSheet.create({
   },
   manageYourWaste: {
     top: 577,
-    left: 67,
+    left: 20,
     fontSize: FontSize.size_base,
     color: Color.colorGray_800,
   },
@@ -153,14 +128,14 @@ const styles = StyleSheet.create({
     color: Color.colorWhite,
   },
   getStartedBtn: {
-    top: 627,
+    top: 640,
   },
   vectorIcon: {
     height: "42.86%",
     width: "6.2%",
     top: "46.43%",
     bottom: "10.71%",
-    left: "93.8%",
+    left: "97.8%",
     right: "0%",
   },
   vectorIcon1: {
@@ -194,9 +169,7 @@ const styles = StyleSheet.create({
     height: 28,
     position: "absolute",
   },
-  getStartedBtn1: {
-    top: 395,
-  },
+ 
   startPage: {
     backgroundColor: Color.colorWhite,
     flex: 1,

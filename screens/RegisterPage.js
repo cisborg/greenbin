@@ -3,9 +3,11 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const RegisterPage = () => {
   const navigation = useNavigation();
+  
 
   return (
     <View style={styles.registerPage}>
@@ -20,53 +22,42 @@ const RegisterPage = () => {
         source={require("../assets/shapes.png")}
       />
       <View style={styles.welcomeMessage}>
-        <Text style={styles.greenbin}>GreenBin</Text>
+      
+        <Text style={styles.greenText}>GreenBin</Text>
+                
         <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
       </View>
+      <Image
+        style={styles.bayerIcon}
+        contentFit="cover"
+        source={require("../assets/monoline.png")}
+      />
       <Pressable
         style={styles.registerBtn}
-        onPress={() => navigation.navigate("HomePageExistingUser")}
+        onPress={() => navigation.navigate("SignInPage")}
       >
         <View style={[styles.registerBtnChild, styles.childPosition]} />
         <Text style={[styles.getStarted, styles.welcomeToTypo]}>Register</Text>
       </Pressable>
       <Text
         style={[styles.howYouManage, styles.iAcceptTheTypo]}
-      >{`How you manage your waste?
-If not, then start from now.`}</Text>
-      <View style={styles.fullNameInp}>
-        <View style={[styles.fullNameInpChild, styles.childPosition]} />
-        <View style={styles.fullNameInpItem} />
-        <Text style={[styles.dhnaanjayPanasare, styles.textTypo1]}>
-          dhnaanjay panasare
-        </Text>
-      </View>
-      <View style={[styles.emailIdInp, styles.inpLayout]}>
-        <View style={[styles.fullNameInpChild, styles.childPosition]} />
-        <View style={styles.fullNameInpItem} />
-        <Text style={[styles.dhnaanjayPanasare1, styles.dhnaanjayTypo]}>
-          dhnaanjay panasare
-        </Text>
-      </View>
+      >{`Turn Your Wastes to Wonders?`}</Text>
+      
       <View style={[styles.passwordInp, styles.inpLayout]}>
         <View style={[styles.fullNameInpChild, styles.childPosition]} />
         <View style={styles.fullNameInpItem} />
         <Text style={[styles.dhnaanjayPanasare1, styles.dhnaanjayTypo]}>
-          dhnaanjay panasare
+          Your Password
         </Text>
       </View>
       <View style={[styles.contactNoInp, styles.inpLayout]}>
         <View style={[styles.fullNameInpChild, styles.childPosition]} />
         <View style={styles.fullNameInpItem} />
         <Text style={[styles.dhnaanjayPanasare1, styles.dhnaanjayTypo]}>
-          dhnaanjay panasare
+          Your ID
         </Text>
       </View>
-      <View style={[styles.locationInp, styles.inpLayout]}>
-        <View style={[styles.fullNameInpChild, styles.childPosition]} />
-        <View style={styles.fullNameInpItem} />
-        <Text style={styles.dhnaanjayTypo} />
-      </View>
+      
       <View
         style={[styles.iAcceptTheTermsConditionParent, styles.groupChildLayout]}
       >
@@ -76,41 +67,24 @@ If not, then start from now.`}</Text>
         <View style={[styles.groupChild, styles.groupChildLayout]} />
       </View>
       <Pressable
-        style={styles.alreadyHaveAnContainer}
-        onPress={() => navigation.navigate("SignInPage")}
-      >
+        style={styles.alreadyHaveAnContainer}>
+       
         <Text style={[styles.text, styles.textTypo]}>
-          <Text style={styles.alreadyHaveAn}>Already have an account ?</Text>
-          <Text style={styles.text1}>{` `}</Text>
-          <Text style={styles.signIn}>Sign In</Text>
+        <Text style={styles.alreadyHaveAn}>Already have an account ?</Text>
+        <Text style={styles.text1}>{` `}</Text>
+        <TouchableOpacity activeOpacity={0.8}>
+          <Pressable>
+            <Text  onPress={() => navigation.navigate("SignInPage")} 
+          style={styles.signIn}>Sign In</Text>
+          </Pressable>
+        </TouchableOpacity> 
         </Text>
       </Pressable>
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text2, styles.textTypo]}>{`9:40 `}</Text>
-      </View>
-      <Text style={[styles.dhanajnjay33gmalcom, styles.textTypo1]}>
-        dhanajnjay33@gmal’com
-      </Text>
-      <Text style={[styles.text3, styles.textTypo1]}>***********9</Text>
+     
+      
+      <Text style={[styles.text3, styles.textTypo1]}>+254 7 Phone Number</Text>
       <Text style={[styles.text4, styles.textTypo1]}>**********</Text>
-      <Text style={[styles.kurlaKamgarNagar, styles.textTypo1]}>
-        kurla kamgar nagar
-      </Text>
+      
     </View>
   );
 };
@@ -187,6 +161,14 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
+  bayerIcon: {
+    top: 229,
+    left: 90,
+    width: 220,
+    height: 220,
+    borderRadius: 5,
+    position: "absolute",
+  },
   greenbin: {
     top: 7,
     fontSize: FontSize.size_29xl,
@@ -196,15 +178,15 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "700",
     left: 0,
-    width: 229,
+    width: 245,
     position: "absolute",
   },
   welcomeTo: {
-    left: 127,
+    left: 110,
     color: Color.colorGray_800,
     fontSize: FontSize.size_base,
     fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
+    fontWeight: "700",
     top: 0,
   },
   welcomeMessage: {
@@ -214,6 +196,7 @@ const styles = StyleSheet.create({
     width: 229,
     position: "absolute",
   },
+  
   registerBtnChild: {
     backgroundColor: Color.colorLimegreen_100,
     bottom: "0%",
@@ -241,9 +224,14 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   howYouManage: {
-    top: 190,
-    left: 77,
-    height: 51,
+    top: 180,
+    left: 60,
+    height: 40,
+    fontFamily: FontFamily.manropeBold,
+    fontWeight: "800",
+    fontSize: FontSize.size_base,
+    position: "relative",
+    width: 300,
   },
   fullNameInpChild: {
     borderRadius: Border.br_81xl,
@@ -289,10 +277,10 @@ const styles = StyleSheet.create({
     top: 337,
   },
   passwordInp: {
-    top: 402,
+    top: 470,
   },
   contactNoInp: {
-    top: 467,
+    top: 530,
   },
   locationInp: {
     top: 532,
@@ -320,6 +308,31 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: Color.colorDarkcyan,
+  },
+  greenText: {
+    color: "green",
+    top: 12,
+    fontSize: FontSize.size_29xl,
+    height: 56,
+    textAlign: "left",
+    fontFamily: FontFamily.poppinsBold,
+    fontWeight: "700",
+    left: 0,
+    width: 245,
+    position: "absolute",
+  },
+  blueText : {
+    
+    textAlign:"center",
+    top: 7,
+    fontSize: FontSize.size_29xl,
+    height: 56,
+    color: "deepskyblue",
+    fontFamily: FontFamily.manropeBold,
+    fontWeight: "700",
+    left: 104,
+    width: 245,
+    position: "absolute",
   },
   signIn: {
     color: Color.colorDarkturquoise,
@@ -382,16 +395,18 @@ const styles = StyleSheet.create({
     left: 34,
   },
   text3: {
-    top: 420,
+    top: 480,
     color: "#211e1e",
     left: 57,
+    
   },
   text4: {
-    top: 480,
-    left: 44,
+    top: 545,
+    left: 60,
     color: "#272222",
-    width: 86,
+    width: 130,
     height: 24,
+    alignContent: "center",
   },
   kurlaKamgarNagar: {
     top: 543,

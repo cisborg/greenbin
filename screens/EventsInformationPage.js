@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
+import { useNavigation } from "@react-navigation/core";
 
 const EventsInformationPage = () => {
+  const navigation = useNavigation()
   return (
     <View style={styles.eventsInformationPage}>
       <Image
@@ -19,9 +21,9 @@ const EventsInformationPage = () => {
       <View style={[styles.event3Parent, styles.menuBarIconPosition]}>
         <View style={[styles.event3, styles.event3Layout]}>
           <Text
-            style={[styles.wasteTechnologyIndia, styles.textTypo]}
-          >{`Waste Technology India Expo 2023
-13th-15th September 2023`}</Text>
+            style={[styles.wasteTechnologyKenya, styles.textTypo]}
+          >{`Waste Technology Kenya Expo 2024
+13th-15th September 2024`}</Text>
           <Image
             style={[styles.event3Child, styles.event3Layout]}
             contentFit="cover"
@@ -30,9 +32,9 @@ const EventsInformationPage = () => {
         </View>
         <View style={[styles.event2, styles.eventLayout]}>
           <Text
-            style={[styles.cleanIndiaShow, styles.cleanIndiaShowTypo]}
-          >{`Clean India Show (CIS)
-13th-15th September 2023`}</Text>
+            style={[styles.cleanKenyaShow, styles.cleanKenyaShowTypo]}
+          >{`Clean Kenya Show (CKS)
+13th-15th September 2024`}</Text>
           <Image
             style={[styles.event3Child, styles.event3Layout]}
             contentFit="cover"
@@ -41,55 +43,45 @@ const EventsInformationPage = () => {
         </View>
         <View style={[styles.event1, styles.eventLayout]}>
           <Text
-            style={[styles.skrapEventJuhu, styles.cleanIndiaShowTypo]}
-          >{`Skrap Event @Juhu, Mumbai
-1st September 2023`}</Text>
+            style={[styles.skrapEventNjoro, styles.cleanKenyaShowTypo]}
+          >{`Skrap Event Njoro, Nakuru
+1st September 2024`}</Text>
           <Image
             style={[styles.event3Child, styles.event3Layout]}
             contentFit="cover"
             source={require("../assets/rectangle-571.png")}
           />
         </View>
-        <Text style={[styles.locationMumbaiIndia, styles.newsInfoTypo]}>
-          Location: Mumbai, India
+        <Text style={[styles.locationNairobiKenya, styles.newsInfoTypo]}>
+          Location: Nairobi,Kenya
         </Text>
-        <View style={styles.tabs}>
-          <View style={[styles.rectangleParent, styles.rectangleLayout]}>
+        <View style={styles.tabs} 
+        >
+        
+          <View style={[styles.rectangleParent, styles.rectangleLayout]} >
             <View style={[styles.groupChild, styles.groupLayout]} />
             <Text style={[styles.events, styles.newsTypo]}>Events</Text>
           </View>
+        
           <View style={[styles.rectangleGroup, styles.rectangleLayout]}>
             <View style={[styles.groupItem, styles.groupLayout]} />
             <Text style={[styles.news, styles.newsTypo]}>News</Text>
           </View>
         </View>
-        <Text
-          style={[styles.newsInfo, styles.newsInfoTypo]}
+        <Pressable >
+
+          <Text style={[styles.newsInfo, styles.newsInfoTypo]} 
+          onPress={() => navigation.navigate("ChallengePage")}
         >{`News & Info`}</Text>
+
+        </Pressable>
       </View>
       <Image
         style={[styles.menuBarIcon, styles.menuBarIconPosition]}
         contentFit="cover"
         source={require("../assets/menu-bar.png")}
       />
-      <View style={styles.notification}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={[styles.text, styles.textTypo]}>{`9:40 `}</Text>
-      </View>
+      
     </View>
   );
 };
@@ -104,7 +96,9 @@ const styles = StyleSheet.create({
   menuBarIconPosition: {
     width: 390,
     left: 0,
-    position: "absolute",
+    bottom: 0,
+    
+    position: "relative",
   },
   event3Layout: {
     width: 354,
@@ -121,7 +115,7 @@ const styles = StyleSheet.create({
     width: 354,
     position: "absolute",
   },
-  cleanIndiaShowTypo: {
+  cleanKenyaShowTypo: {
     top: 162,
     textAlign: "center",
     color: Color.colorBlack,
@@ -173,7 +167,7 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
-  wasteTechnologyIndia: {
+  wasteTechnologyKenya: {
     top: 166,
     left: 43,
     fontFamily: FontFamily.manropeBold,
@@ -191,21 +185,21 @@ const styles = StyleSheet.create({
     height: 210,
     left: 18,
   },
-  cleanIndiaShow: {
+  cleanKenyaShow: {
     left: 77,
   },
   event2: {
     top: 407,
     left: 18,
   },
-  skrapEventJuhu: {
+  skrapEventNjoro: {
     left: 70,
   },
   event1: {
     top: 181,
     left: 19,
   },
-  locationMumbaiIndia: {
+  locationNairobiKenya: {
     top: 144,
     left: 54,
     fontSize: FontSize.size_mini,

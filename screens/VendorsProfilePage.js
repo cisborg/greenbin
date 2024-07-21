@@ -19,24 +19,7 @@ const VendorsProfilePage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={[styles.notification, styles.notificationPosition]}>
-        <Image
-          style={[styles.vectorIcon, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.vectorIcon1, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector1.png")}
-        />
-        <Image
-          style={[styles.vectorIcon2, styles.vectorIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector2.png")}
-        />
-        <Text style={styles.text}>{`9:40 `}</Text>
-      </View>
+      
       <Pressable
         style={[styles.rectangleParent, styles.groupParentLayout]}
         onPress={() => navigation.navigate("ChatPage")}
@@ -48,7 +31,7 @@ const VendorsProfilePage = () => {
           source={require("../assets/chat-alt-2-fill.png")}
         />
         <Text style={[styles.communicate, styles.communicateTypo]}>
-          Communicate
+          Chat
         </Text>
       </Pressable>
       <View style={[styles.rectangleGroup, styles.groupParentLayout]}>
@@ -92,7 +75,7 @@ const VendorsProfilePage = () => {
         <Image
           style={[styles.flagFinishFillIcon, styles.fillIconLayout]}
           contentFit="cover"
-          source={require("../assets/flag-finish-fill.png")}
+          source={require("../assets/Untitled.png")}
         />
       </View>
       <Text style={styles.vendorsProfile}>Vendor’s Profile</Text>
@@ -106,10 +89,10 @@ const VendorsProfilePage = () => {
       <View style={[styles.rectangleParent2, styles.groupChild2Layout]}>
         <View style={[styles.groupChild2, styles.groupChild2Layout]} />
         <Text style={[styles.shaileshShete, styles.shaileshSheteTypo]}>
-          Shailesh Shete
+          John Doe
         </Text>
         <Text style={[styles.verifiedVendorAt, styles.shaileshSheteTypo]}>
-          (Verified Vendor at Mumbai)
+          (Vendor at Nature Diversity)
         </Text>
         <Image
           style={styles.ellipseIcon}
@@ -117,10 +100,9 @@ const VendorsProfilePage = () => {
           source={require("../assets/ellipse-93.png")}
         />
         <Pressable
-          style={styles.removeFromVendorContainer}
-          onPress={() => navigation.navigate("SignInPage")}
-        >
-          <Text style={styles.removeFromVendorList}>
+          style={styles.removeFromVendorContainer}>
+               
+          <Text style={styles.removeFromVendorList}  onPress={() => navigation.navigate("HomePageExistingUser")}>
             Remove from Vendor List?
           </Text>
         </Pressable>
@@ -279,10 +261,11 @@ const styles = StyleSheet.create({
     top: 418,
   },
   flagFinishFillIcon: {
-    left: 165,
+    left: 28,
     top: 20,
     height: 24,
     width: 24,
+    
   },
   rectangleParent1: {
     top: 497,

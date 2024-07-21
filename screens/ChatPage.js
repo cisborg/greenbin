@@ -33,7 +33,7 @@ const ChatPage = () => {
               contentFit="cover"
               source={require("../assets/rectangle-11311.png")}
             />
-            <Text style={styles.helloShailesh}>Hello, Shailesh!</Text>
+            <Text style={styles.helloShailesh}>Hello, Doe!</Text>
           </View>
           <Text style={[styles.am, styles.amLayout]}>09:25 AM</Text>
         </View>
@@ -44,7 +44,7 @@ const ChatPage = () => {
             source={require("../assets/ellipse-931.png")}
           />
           <View style={[styles.shaileshSheteParent, styles.shaileshPosition]}>
-            <Text style={styles.shaileshShete}>Shailesh Shete</Text>
+            <Text style={styles.shaileshShete}>John Doe</Text>
             <Text style={[styles.am1, styles.amTypo]}>10:55 AM</Text>
             <View style={[styles.vectorContainer, styles.rectangleIconLayout]}>
               <Image
@@ -87,11 +87,11 @@ const ChatPage = () => {
               source={require("../assets/rectangle-11313.png")}
             />
             <Text style={styles.droppingTheLocation}>
-              Dropping the location, Shailesh. Tom, 9:30AM.
+              Dropped the location, Doe. Tom, 9:30AM.
             </Text>
           </View>
           <View style={[styles.pmWrapper, styles.pmWrapperPosition]}>
-            <Text style={[styles.pm, styles.amLayout]}>07:25 PM</Text>
+            <Text style={[styles.pm, styles.amLayout]}>07:25 AM</Text>
           </View>
         </View>
         <View style={[styles.ellipseGroup, styles.ellipsePosition]}>
@@ -101,15 +101,15 @@ const ChatPage = () => {
             source={require("../assets/ellipse-931.png")}
           />
           <View style={[styles.shaileshSheteGroup, styles.shaileshPosition]}>
-            <Text style={styles.shaileshShete}>Shailesh Shete</Text>
-            <Text style={[styles.am1, styles.amTypo]}>10:09 PM</Text>
+            <Text style={styles.shaileshShete}>John Doe</Text>
+            <Text style={[styles.am1, styles.amTypo]}>10:09 AM</Text>
             <View style={[styles.vectorContainer, styles.rectangleIconLayout]}>
               <Image
                 style={[styles.rectangleIcon, styles.rectangleIconLayout]}
                 contentFit="cover"
                 source={require("../assets/rectangle-11312.png")}
               />
-              <Text style={[styles.text, styles.textTypo]}>👍👍</Text>
+              <Text style={[styles.text, styles.textTypo]}> Nice👍👍</Text>
             </View>
           </View>
         </View>
@@ -122,7 +122,7 @@ const ChatPage = () => {
           <View
             style={[styles.shaileshSheteContainer, styles.shaileshPosition]}
           >
-            <Text style={styles.shaileshShete}>Shailesh Shete</Text>
+            <Text style={styles.shaileshShete}>John Doe</Text>
             <Text style={[styles.am1, styles.amTypo]}>05:59 PM</Text>
             <View style={[styles.vectorContainer, styles.rectangleIconLayout]}>
               <Image
@@ -131,7 +131,7 @@ const ChatPage = () => {
                 source={require("../assets/rectangle-11312.png")}
               />
               <Text style={[styles.myPleasureYes, styles.textPosition]}>
-                My pleasure! Yes, I did.
+                My pleasure! 
               </Text>
             </View>
           </View>
@@ -144,7 +144,7 @@ const ChatPage = () => {
               contentFit="cover"
               source={require("../assets/rectangle-11314.png")}
             />
-            <Text style={[styles.gr8, styles.gr8Typo]}>Gr8!👍</Text>
+            <Text style={[styles.gr8, styles.gr8Typo]}>In need of another!</Text>
           </View>
           <Text style={[styles.pm3, styles.pm3Typo]}>06:15 PM</Text>
         </View>
@@ -156,7 +156,7 @@ const ChatPage = () => {
               source={require("../assets/rectangle-11315.png")}
             />
             <Text style={[styles.dhanyawadShaileshHope, styles.gr8Typo]}>
-              Dhanyawad, Shailesh! Hope you got the fees
+              Hey Doe, got the gadget thanks!
             </Text>
           </View>
           <Text style={[styles.pm4, styles.pm3Typo]}>05:05 PM</Text>
@@ -207,7 +207,7 @@ const ChatPage = () => {
           source={require("../assets/img-load-box-fill.png")}
         />
       </View>
-      <Text style={[styles.shailesh, styles.shaileshTypo]}>Shailesh</Text>
+      <Text style={[styles.shailesh, styles.shaileshTypo]}> John </Text>
       <Pressable style={styles.image2} onPress={() => navigation.goBack()}>
         <Image
           style={styles.icon}
