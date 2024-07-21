@@ -127,14 +127,16 @@ Bottles`}</Text>
             source={require("../assets/vendorimg1.png")}
           />
         </Pressable>
-        <View style={[styles.addVendorBtn, styles.text1Layout]}>
-          <Image
-            style={[styles.addVendorBtnChild, styles.vendornameLayout]}
-            contentFit="cover"
-            source={require("../assets/ellipse-47.png")}
-          />
-          <Text style={[styles.text1, styles.text1Layout]}>+</Text>
-        </View>
+        <Pressable>
+          <View style={[styles.addVendorBtn, styles.text1Layout]}>
+            <Image
+              style={[styles.addVendorBtnChild, styles.vendornameLayout]}
+              contentFit="cover"
+              source={require("../assets/ellipse-47.png")}
+            />
+            <Text style={[styles.text1, styles.text1Layout]}>+</Text>
+          </View>
+        </Pressable>
         <Text style={[styles.vendorsYouFollow, styles.vendorsYouFollowTypo]}>
           Vendors you follow:
         </Text>

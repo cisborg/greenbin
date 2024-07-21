@@ -30,8 +30,7 @@ const ChallengePage = () => {
           <View
             style={[styles.challengeBox1Child, styles.challengeChildLayout]}
           />
-          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Walk 
-a Mile`}</Text>
+          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Purchased Green Bags`}</Text>
           <Image
             style={styles.favoriteIcon}
             contentFit="cover"
@@ -52,7 +51,7 @@ a Mile`}</Text>
           <View
             style={[styles.challengeBox1Child, styles.challengeChildLayout]}
           />
-          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Walk 
+          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Walked
 2 Miles`}</Text>
           <Image
             style={styles.favoriteIcon}
@@ -75,7 +74,7 @@ a Mile`}</Text>
             style={[styles.challengeBox2Child, styles.challengeChildLayout]}
           />
           <Text style={[styles.water5Random, styles.plant5TreesTypo]}>
-            Water 5 Random Plants/Trees
+            Planted 5 Random Plants/Trees
           </Text>
           <Image
             style={styles.image1Icon}
@@ -99,7 +98,7 @@ a Mile`}</Text>
           <View
             style={[styles.challengeBox2Child, styles.challengeChildLayout]}
           />
-          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Plant 5 
+          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Purchase 5 
 trees or plants`}</Text>
           <Image
             style={styles.image1Icon}
@@ -126,8 +125,8 @@ trees or plants`}</Text>
           />
           <Text
             style={[styles.plant5Trees, styles.plant5TreesTypo]}
-          >{`Harvest Rain Water
-(10L)`}</Text>
+          >{`Order Bike for Green
+Health`}</Text>
           <Image
             style={styles.rainIcon}
             contentFit="cover"
@@ -136,7 +135,7 @@ trees or plants`}</Text>
           <View style={[styles.lineParent, styles.parentPosition]}>
             <View style={[styles.groupItem, styles.groupItemLayout]} />
             <Text style={[styles.started, styles.startedPosition]}>
-              STARTED
+              PENDING
             </Text>
           </View>
         </View>
@@ -144,8 +143,8 @@ trees or plants`}</Text>
           <View
             style={[styles.challengeBox3Inner, styles.challengeChildLayout]}
           />
-          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Recycle 
-10 Plastic Bottles`}</Text>
+          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Purchase 
+Renewable Bags`}</Text>
           <Image
             style={styles.circleLeftIcon}
             contentFit="cover"
@@ -154,13 +153,13 @@ trees or plants`}</Text>
           <View style={[styles.lineParent, styles.parentPosition]}>
             <View style={[styles.groupItem, styles.groupItemLayout]} />
             <Text style={[styles.started, styles.startedPosition]}>
-              STARTED
+              PENDING
             </Text>
           </View>
         </View>
       </View>
       <Text style={[styles.thisWeeksChallenges, styles.parentPosition]}>
-        This week’s challenges:
+        Challenges Category:
       </Text>
       <View style={[styles.noteMessage, styles.noteLayout]}>
         <View style={[styles.noteMessageChild, styles.noteLayout]} />
