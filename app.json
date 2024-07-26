@@ -2,6 +2,7 @@
   "expo": {
     "name": "oneDrop",
     "slug": "oneDrop",
+    "scheme": "your-app-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +22,20 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "<your-firebase-api-key>",
+          "authDomain": "<your-firebase-auth-domain>",
+          "projectId": "<your-firebase-project-id>",
+          "storageBucket": "<your-firebase-storage-bucket>",
+          "messagingSenderId": "<your-firebase-messaging-sender-id>",
+          "appId": "<your-firebase-app-id>"
+        }
+      }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
