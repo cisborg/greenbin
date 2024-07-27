@@ -9,14 +9,14 @@ const BackgroundLayout = ({ children }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/background.png')} // Path to your top image
+        source={require('../../app/assets/images/background.png')} // Path to your top image
         style={styles.topImage}
       />
       <View style={styles.contentContainer}>
         {children}
       </View>
       <Image
-        source={require('../assets/images/background.png')} // Path to your bottom image
+        source={require('../../app/assets/images/background.png')} // Path to your bottom image
         style={styles.bottomImage}
       />
     </View>

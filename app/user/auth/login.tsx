@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
-import Input from '../../app/components/Input';
+import Input from '../../components/Input';
 
 function LogIn({ navigation }) {
     const [logInValues, setLoginValues] = useState({

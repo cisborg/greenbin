@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Input from '../../app/components/Input';
-import Select from '../../app/components/Select'; // Assuming Picker is correctly implemented
+import Input from '../../components/Input';
+import Select from '../../components/Select'; // Assuming Picker is correctly implemented
 
 function SignUp({ navigation }) {
     const [formValues, setFormValues] = useState({
@@ -32,7 +32,7 @@ function SignUp({ navigation }) {
     }
 
     function handleSignup() {
-        const errors = validateSignUpForm(formValues);
+        //const errors = validateSignUpForm(formValues);
         setFormSubmitted(true);
 
         // Proceed if no errors
