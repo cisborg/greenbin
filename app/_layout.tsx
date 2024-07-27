@@ -3,14 +3,17 @@ import { Stack } from 'expo-router';
 const AppLayout = () => {
   return (
     <Stack>
+
       <Stack.Screen
-        name="user/auth/login"
-        options={{ headerShown: false, title: 'Main Tabs' }}
+        name="index"
+        options={{ headerShown: false }} 
       />
+
       <Stack.Screen
         name="(tabs)"
-        options={{ headerShown: false, title: 'Main Tabs' }}
+        options={{ headerShown: false }}
       />
+
     </Stack>
   );
 };

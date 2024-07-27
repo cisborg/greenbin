@@ -3,7 +3,7 @@ import {Link} from 'expo-router';
 
 
 
-const App =()=> {
+const Challenges =()=> {
     return (
         <View>
             <Text>Home Page</Text>
@@ -13,4 +13,4 @@ const App =()=> {
 }
 
 
-export default App
+export default Challenges;

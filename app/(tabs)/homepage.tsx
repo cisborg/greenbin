@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+import Icon from '../assets/icons/icons_management'
  
 const Homepage = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Home Page</Text>
-            <Link href="/user/1" style={styles.link}>Go to user</Link>
+            <Icon name="FileMusic" width={30} height={30} color="#ff0000" ></Icon>
+            <Link href="./user/1" style={styles.link}>Go to user</Link>
         </View>
     );
 }
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5', // Background color for the container
+        backgroundColor: '#f5f5f5',
     },
     title: {
         fontSize: 24,

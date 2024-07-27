@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Input from '../../components/Input';
-import Select from '../../components/Select'; // Assuming Picker is correctly implemented
+import Select from '../../components/Select';
 
 function SignUp({ navigation }) {
     const [formValues, setFormValues] = useState({
