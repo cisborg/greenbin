@@ -12,7 +12,11 @@ import EventsInformationPage from "./screens/EventsInformationPage";
 import SignInPage from "./screens/SignInPage";
 import RegisterPage from "./screens/RegisterPage";
 import StartPage from "./screens/StartPage";
-
+import ManageAccountScreen from "./screens/manageAccount";
+import ProfileGCPs from "./screens/ProfileGCPs";
+import Cover from "./screens/ProfilePageCopy";
+import BestPlansScreen from "./screens/BuyBundles";
+import LeaderBoard from "./screens/LeaderBoard";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 
@@ -81,11 +85,40 @@ const App = () => {
               component={RegisterPage}
               options={{ headerShown: false }}
             />
+            
             <Stack.Screen
               name="StartPage"
               component={StartPage}
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="ProfileGCPs" 
+            component={ProfileGCPs} 
+            options={{ headerShown: false }} />
+
+
+            <Stack.Screen
+             name="manageAccount"
+             component={ManageAccountScreen} 
+             options={{ headerShown: false }} />
+
+            <Stack.Screen
+             name="ProfilePageCopy"
+             component={Cover} 
+             options={{ headerShown: false }} />  
+
+            <Stack.Screen
+            name="BuyBundles" 
+            component={BestPlansScreen} 
+            options={{ headerShown: false }} />
+
+            <Stack.Screen 
+            name="LeaderBoard" 
+            component={LeaderBoard}
+            options={{ headerShown: false }} />
+
+            
+            
+
           </Stack.Navigator>
         ) : null}
       </NavigationContainer>

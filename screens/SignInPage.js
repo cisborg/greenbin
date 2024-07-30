@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
 
 const SignInPage = () => {
   const navigation = useNavigation();
+  const [password, setPassword] = React.useState("");
 
   return (
     <View style={styles.signInPage}>
@@ -23,6 +24,7 @@ const SignInPage = () => {
         <Text style={[styles.greenbin, styles.greenbinFlexBox]}>GreenBin!</Text>
         <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
       </View>
+
       <Pressable
         style={styles.loginBtn}
         onPress={() => navigation.navigate("HomePageExistingUser")}
@@ -30,35 +32,37 @@ const SignInPage = () => {
         <View style={[styles.loginBtnChild, styles.text2Position]} />
         <Text style={[styles.getStarted, styles.welcomeToTypo]}>Login</Text>
       </Pressable>
-      <Text
-        style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}
-      >{`We Value You!
-Proceed to log in...`}</Text>
-      
-      <View style={[styles.passwordInp, styles.inpLayout]}>
-        <View style={styles.emailInpChild} />
-        <View style={styles.emailInpItem} />
-        <Text style={styles.dhnaanjayTypo} />
+
+      <Text style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}>
+        We Value You! Proceed to log in...
+      </Text>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.inputField}
+          value={password}
+          onChangeText={setPassword}
+          placeholder="**********"
+          secureTextEntry
+        />
       </View>
-     
-      <View
-        style={styles.dontHaveAnContainer}
-        
-      >
+
+      <View style={styles.dontHaveAnContainer}>
         <Text style={[styles.text, styles.textTypo]}>
-          <Text style={styles.dontHaveAn}>Don’t have an account ?</Text>
+          <Text style={styles.dontHaveAn}>Don’t have an account?</Text>
           <Text style={styles.text1}>{` `}</Text>
-          <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>Register</Text>
+          <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>
+            Register
+          </Text>
         </Text>
       </View>
-      
+
       <Image
         style={styles.loginimgIcon}
         contentFit="cover"
         source={require("../assets/loginimg.png")}
       />
-      
-      <Text style={[styles.text3, styles.text3Typo]} >************</Text>
     </View>
   );
 };
@@ -84,34 +88,40 @@ const styles = StyleSheet.create({
     left: "0%",
     position: "absolute",
   },
-  inpLayout: {
-    height: 49,
-    width: 364,
-    left: 13,
-    backgroundColor: Color.colorWhite,
-    position: "absolute",
-  },
-  dhnaanjayTypo: {
-    textAlign: "left",
-    color: Color.colorGray_200,
-    left: "6.04%",
-    top: "37.96%",
+  label: {
     fontSize: FontSize.size_base,
+    color: Color.colorGray_800,
     fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-    position: "absolute",
+    marginBottom: 5,
+  },
+  inputField: {
+    height: 50,
+    backgroundColor: Color.colorWhite,
+    borderRadius: Border.br_base,
+    borderWidth: 1,
+    borderColor: Color.colorGray_300,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    fontSize: FontSize.size_base,
+    width: 330,
+    
+  },
+ 
+  input: {
+    height: "100%",
+    paddingHorizontal: 10,
+    fontSize: FontSize.size_base,
+    color: Color.colorGray_200,
+  },
+  inputContainer: {
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    top: 520,
   },
   textTypo: {
     fontSize: FontSize.size_sm,
     textAlign: "center",
-  },
-  text3Typo: {
-    left: 40,
-    textAlign: "left",
-    fontSize: FontSize.size_base,
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-    position: "absolute",
   },
   shapesIcon: {
     top: -52,
@@ -173,8 +183,8 @@ const styles = StyleSheet.create({
   },
   loginBtn: {
     top: 637,
-    left: 34,
-    width: 322,
+    left: 98,
+    width: 200,
     height: 53,
     borderRadius: Border.br_base,
     position: "absolute",
@@ -188,41 +198,18 @@ const styles = StyleSheet.create({
     color: Color.colorGray_600,
     fontFamily: FontFamily.poppinsRegular,
   },
-  emailInpChild: {
-    borderRadius: Border.br_81xl,
-    borderStyle: "solid",
-    borderColor: Color.colorBlack,
-    borderWidth: 1,
-    backgroundColor: Color.colorWhite,
-    left: "0%",
-    bottom: "0%",
-    right: "0%",
-    top: "0%",
-    height: "100%",
+  dontHaveAnContainer: {
+    left: 31,
+    top: 693,
     position: "absolute",
-    width: "100%",
   },
-  emailInpItem: {
-    height: "200%",
-    width: "27.47%",
-    top: "-60%",
-    right: "25.55%",
-    bottom: "-40%",
-    left: "46.98%",
+  loginimgIcon: {
+    top: 250,
+    left: 28,
+    width: 334,
+    height: 265,
     position: "absolute",
-    overflow: "hidden",
-  },
-  dhnaanjayPanasare: {
-    display: "none",
-  },
-  emailInp: {
-    top: 508,
-  },
-  passwordInp: {
-    top: 573,
-  },
-  dontHaveAn: {
-    color: Color.colorGray_600,
+    borderRadius: 30,
   },
   text1: {
     color: Color.colorDarkcyan,
@@ -235,71 +222,12 @@ const styles = StyleSheet.create({
     height: 28,
     fontFamily: FontFamily.poppinsRegular,
   },
-  dontHaveAnContainer: {
-    left: 31,
-    top: 693,
-    position: "absolute",
-  },
-  loginimgIcon: {
-    top: 280,
-    left: 28,
-    width: 334,
-    height: 265,
-    position: "absolute",
-  },
-  vectorIcon: {
-    height: "42.86%",
-    width: "6.2%",
-    top: "46.43%",
-    bottom: "10.71%",
-    left: "93.8%",
-    right: "0%",
-  },
-  vectorIcon1: {
-    height: "60.71%",
-    width: "6.48%",
-    top: "35.71%",
-    right: "7.61%",
-    bottom: "3.57%",
-    left: "85.92%",
-  },
-  vectorIcon2: {
-    height: "67.86%",
-    width: "5.63%",
-    top: "32.14%",
-    right: "16.06%",
-    left: "78.31%",
-    bottom: "0%",
-  },
-  text2: {
-    top: "42.86%",
-    color: Color.colorBlack,
-    left: "0%",
-    position: "absolute",
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-  },
-  notification: {
-    left: 18,
-    width: 355,
-    height: 28,
-    top: 0,
-    position: "absolute",
-  },
-  dhnaanjay: {
-    top: 521,
-    color: "#242020",
-  },
-  text3: {
-    top: 587,
-    color: Color.colorBlack,
-  },
   signInPage: {
     backgroundColor: Color.colorWhitesmoke,
     flex: 1,
     height: 844,
     overflow: "hidden",
-    width: "100%",
+    width: 400,
   },
 });
 
