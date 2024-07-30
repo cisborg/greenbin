@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, TextInput, ScrollView } from "react-native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 const EventsInformationPage = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
     <View style={styles.eventsInformationPage}>
       <Image
@@ -18,69 +19,101 @@ const EventsInformationPage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={[styles.event3Parent, styles.menuBarIconPosition]}>
-        <View style={[styles.event3, styles.event3Layout]}>
-          <Text
-            style={[styles.wasteTechnologyKenya, styles.textTypo]}
-          >{`Waste Technology Kenya Expo 2024
-13th-15th September 2024`}</Text>
-          <Image
-            style={[styles.event3Child, styles.event3Layout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-57.png")}
-          />
-        </View>
-        <View style={[styles.event2, styles.eventLayout]}>
-          <Text
-            style={[styles.cleanKenyaShow, styles.cleanKenyaShowTypo]}
-          >{`Clean Kenya Show (CKS)
-13th-15th September 2024`}</Text>
-          <Image
-            style={[styles.event3Child, styles.event3Layout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-57.png")}
-          />
-        </View>
-        <View style={[styles.event1, styles.eventLayout]}>
-          <Text
-            style={[styles.skrapEventNjoro, styles.cleanKenyaShowTypo]}
-          >{`Skrap Event Njoro, Nakuru
-1st September 2024`}</Text>
-          <Image
-            style={[styles.event3Child, styles.event3Layout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-571.png")}
-          />
-        </View>
-        <Text style={[styles.locationNairobiKenya, styles.newsInfoTypo]}>
-          Location: Nairobi,Kenya
-        </Text>
-        <View style={styles.tabs} 
-        >
-        
-          <View style={[styles.rectangleParent, styles.rectangleLayout]} >
-            <View style={[styles.groupChild, styles.groupLayout]} />
-            <Text style={[styles.events, styles.newsTypo]}>Events</Text>
-          </View>
-        
-          <View style={[styles.rectangleGroup, styles.rectangleLayout]}>
-            <View style={[styles.groupItem, styles.groupLayout]} />
-            <Text style={[styles.news, styles.newsTypo]}>News</Text>
-          </View>
-        </View>
-        <Pressable >
-
-          <Text style={[styles.newsInfo, styles.newsInfoTypo]} 
+      <Pressable style={styles.newsInfoContainer}>
+        <Text
+          style={[styles.newsInfo, styles.newsInfoTypo]}
           onPress={() => navigation.navigate("ChallengePage")}
-        >{`News & Info`}</Text>
+        >
+          {`News & Info`}
+        </Text>
+      </Pressable>
 
-        </Pressable>
+      {/* Search Bar */}
+      <View style={styles.Barr}>
+        <TextInput
+          style={styles.searchBarr}
+          placeholder="Search For Top Events Expos & News"
+          placeholderTextColor={Color.colorGray_100}
+        />
       </View>
-      <Image
-        style={[styles.menuBarIcon, styles.menuBarIconPosition]}
-        contentFit="cover"
-        source={require("../assets/menu-bar.png")}
-      />
+
+      {/* Scrollable Events Section */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Pressable>
+        <View style={styles.event3Parent}>
+          
+            <View style={styles.eventContainer}>
+            
+              <Image
+                style={styles.eventImage}
+                contentFit="cover"
+                source={require("../assets/rectangle-57.png")}
+              />
+              <Text style={styles.wasteTechnologyKenya}>
+                {`Waste Technology Kenya Expo 2024\n13th-15th Sept 2024\n Nakuru`}
+              </Text>
+            </View>
+         
+          <View style={styles.eventContainer}>
+            
+            <Image
+              style={styles.eventImage}
+              contentFit="cover"
+              source={require("../assets/rectangle-57.png")}
+            />
+            <Text style={styles.cleanKenyaShow}>
+              {`Clean Kenya Show (CKS)\n13th-15th September 2024`}
+            </Text>
+          </View>
+          <View style={styles.eventContainer}>
+            
+            <Image
+              style={styles.eventImage}
+              contentFit="cover"
+              source={require("../assets/rectangle-571.png")}
+            />
+            <Text style={styles.cleanKenyaShow}>
+              {`Clean Kenya Show (CKS)\n13th-15th September 2024`}
+            </Text>
+          </View>
+          <View style={styles.eventContainer}>
+            
+            <Image
+              style={styles.eventImage}
+              contentFit="cover"
+              source={require("../assets/rectangle-57.png")}
+            />
+            <Text style={styles.cleanKenyaShow}>
+              {`Clean Kenya Show (CKS)\n13th-15th September 2024`}
+            </Text>
+          </View>
+          <View style={styles.eventContainer}>
+            
+            <Image
+              style={styles.eventImage}
+              contentFit="cover"
+              source={require("../assets/rectangle-571.png")}
+            />
+            <Text style={styles.skrapEventNjoro}>
+              {`Skrap Event Njoro, Nakuru\n1st September 2024`}
+            </Text>
+          </View>
+          <View style={styles.eventContainer}>
+            
+            <Image
+              style={styles.eventImage}
+              contentFit="cover"
+              source={require("../assets/rectangle-57.png")}
+            />
+            <Text style={styles.skrapEventNjoro}>
+              {`Exhibition Event Mombasa, Kenya\n1st September 2024`}
+            </Text>
+          </View>
+        </View>
+        </Pressable>
+      </ScrollView>
+
+      {/* News & Info Button */}
       
     </View>
   );
@@ -93,64 +126,69 @@ const styles = StyleSheet.create({
     position: "absolute",
     overflow: "hidden",
   },
-  menuBarIconPosition: {
-    width: 390,
-    left: 0,
-    bottom: 0,
-    
-    position: "relative",
+  scrollContent: {
+    paddingBottom: 20,
   },
-  event3Layout: {
-    width: 354,
-    position: "absolute",
+  event3Parent: {
+    padding: 10,
   },
-  textTypo: {
+  eventContainer: {
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    height: 190,
+  },
+  wasteTechnologyKenya: {
+    padding: 10,
+    fontFamily: FontFamily.poppinsRegular,
+    fontSize: FontSize.size_mini,
     textAlign: "center",
     fontWeight: "700",
-    color: Color.colorBlack,
-    position: "absolute",
   },
-  eventLayout: {
-    height: 206,
-    width: 354,
-    position: "absolute",
-  },
-  cleanKenyaShowTypo: {
-    top: 162,
+  cleanKenyaShow: {
+    padding: 10,
+    fontFamily: FontFamily.poppinsRegular,
+    fontSize: FontSize.size_mini,
     textAlign: "center",
-    color: Color.colorBlack,
-    fontFamily: FontFamily.manropeBold,
     fontWeight: "700",
-    fontSize: FontSize.size_base,
-    position: "absolute",
   },
-  newsInfoTypo: {
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
+  skrapEventNjoro: {
+    padding: 20,
+    fontFamily: FontFamily.poppinsRegular,
+    fontSize: FontSize.size_mini,
     textAlign: "center",
-    position: "absolute",
-  },
-  rectangleLayout: {
-    width: 87,
-    height: 42,
-    top: 0,
-    position: "absolute",
-  },
-  groupLayout: {
-    borderRadius: Border.br_3xs,
-    width: 87,
-    height: 42,
-    top: 0,
-    left: 0,
-    position: "absolute",
-  },
-  newsTypo: {
-    textAlign: "left",
-    top: 10,
-    fontFamily: FontFamily.manropeBold,
     fontWeight: "700",
-    fontSize: FontSize.size_base,
-    position: "absolute",
+  },
+  eventImage: {
+    height: 120,
+    width: 404,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  Barr: {
+    width: 390, // Adjusted width for phone screen
+    marginBottom: 130,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    margin: 10,
+    top: 100,
+  },
+  searchBarr: {
+    height: 35,
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: '#333',
   },
   shapesIcon: {
     top: -52,
@@ -167,138 +205,25 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
-  wasteTechnologyKenya: {
-    top: 166,
-    left: 43,
-    fontFamily: FontFamily.manropeBold,
-    fontSize: FontSize.size_base,
-    textAlign: "center",
-    fontWeight: "700",
-  },
-  event3Child: {
-    height: 155,
-    top: 0,
-    left: 0,
-  },
-  event3: {
-    top: 627,
-    height: 210,
-    left: 18,
-  },
-  cleanKenyaShow: {
-    left: 77,
-  },
-  event2: {
-    top: 407,
-    left: 18,
-  },
-  skrapEventNjoro: {
-    left: 70,
-  },
-  event1: {
-    top: 181,
-    left: 19,
-  },
-  locationNairobiKenya: {
-    top: 144,
-    left: 54,
-    fontSize: FontSize.size_mini,
-    color: Color.colorDarkslategray,
-    width: 282,
-    height: 35,
-  },
-  groupChild: {
-    backgroundColor: "#528265",
-  },
-  events: {
-    left: 16,
-    color: Color.colorWhite,
-  },
-  rectangleParent: {
-    left: 0,
-  },
-  groupItem: {
-    backgroundColor: Color.colorWhite,
-    borderStyle: "solid",
-    borderColor: Color.colorBlack,
-    borderWidth: 1,
-  },
-  news: {
-    left: 23,
-    color: Color.colorBlack,
-    top: 10,
-  },
-  rectangleGroup: {
-    left: 105,
-  },
-  tabs: {
-    top: 89,
-    left: 100,
-    width: 192,
-    height: 42,
-    position: "absolute",
-  },
-  newsInfo: {
-    left: 181,
-    fontSize: FontSize.size_13xl,
-    color: Color.colorGray_800,
-    width: 198,
-    height: 39,
-    top: 0,
-  },
-  event3Parent: {
-    top: 51,
-    height: 719,
-  },
-  menuBarIcon: {
-    top: 770,
-    height: 74,
-  },
-  vectorIcon: {
-    height: "42.86%",
-    width: "6.2%",
-    top: "46.43%",
-    right: "0%",
-    bottom: "10.71%",
-    left: "93.8%",
-  },
-  vectorIcon1: {
-    height: "60.71%",
-    width: "6.48%",
-    top: "35.71%",
-    right: "7.61%",
-    bottom: "3.57%",
-    left: "85.92%",
-  },
-  vectorIcon2: {
-    height: "67.86%",
-    width: "5.63%",
-    top: "32.14%",
-    right: "16.06%",
-    bottom: "0%",
-    left: "78.31%",
-  },
-  text: {
-    top: "42.86%",
-    left: "0%",
-    fontSize: FontSize.size_sm,
-    fontFamily: FontFamily.poppinsBold,
-    textAlign: "center",
-    fontWeight: "700",
-  },
-  notification: {
-    width: 355,
-    height: 28,
-    top: 0,
-    left: 18,
-    position: "absolute",
-  },
   eventsInformationPage: {
     backgroundColor: Color.colorWhitesmoke,
     flex: 1,
-    width: "100%",
-    height: 844,
-    overflow: "hidden",
+    width: 404,
+  },
+  newsInfoContainer: {
+    alignItems: 'center', // Center the News & Info text
+    marginVertical: 10,
+    marginHorizontal: 20,
+  },
+  newsInfoTypo: {
+    fontFamily: FontFamily.poppinsSemiBold,
+    fontWeight: "600",
+    textAlign: "center",
+    fontSize: FontSize.size_5xl,
+    color: Color.colorLimegreen_100,
+    letterSpacing: 0.5,
+    top: 50,
+    left: 100,
   },
 });
 

@@ -1,13 +1,135 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 import { FontFamily, Border, Color, FontSize } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ChallengePage = () => {
-  const navigation = useNavigation()
-  return (
+  const navigation = useNavigation();
 
+  const challenges = [
+    {
+      id: '1',
+      title: 'Purchase Smart Device',
+      status: 'Start',
+      image: require("../assets/image-1.png"),
+      color: Color.colorDarkolivegreen,
+    },
+    {
+      id: '2',
+      title: 'Order Bike for Green Health',
+      status: 'Pending',
+      image: require("../assets/rain1.png"),
+      color: "#1b32ab",
+    },
+    {
+      id: '3',
+      title: 'Purchase Bags',
+      status: 'Pending',
+      image: require("../assets/circle-left1.png"),
+      color: "#70841f",
+    },
+    {
+      id: '4',
+      title: 'Purchase Green Bags',
+      status: 'Pending',
+      image: require("../assets/circle-left1.png"),
+      color: "purple",
+    },
+  ];
+  const otherChallenges = [
+    {
+      id: '1',
+      title: 'Purchase Smart Device',
+      status: 'Start',
+      image: require("../assets/image-1.png"),
+      color: Color.colorDarkolivegreen,
+    },
+    {
+      id: '2',
+      title: 'Order Bike for Green Health',
+      status: 'Pending',
+      image: require("../assets/rain1.png"),
+      color: "#1b32ab",
+    },
+    {
+      id: '3',
+      title: 'Purchase Bags',
+      status: 'Pending',
+      image: require("../assets/circle-left1.png"),
+      color: "#70841f",
+    },
+    {
+      id: '4',
+      title: 'Purchase Green Bags',
+      status: 'Pending',
+      image: require("../assets/circle-left1.png"),
+      color: "purple",
+    },
+  ];
+
+  const completedChallenges = [
+    {
+      id: '1',
+      title: 'Purchased Green Bags',
+      date: 'Yesterday',
+      image: require("../assets/favorite.png"),
+      color: Color.colorCrimson,
+    },
+    {
+      id: '2',
+      title: 'Purchased 5 Trees',
+      date: 'Now',
+      image: require("../assets/favorite.png"),
+      color: Color.colorBlack,
+    },
+    {
+      id: '3',
+      title: 'Walked 2 Miles',
+      date: 'Today',
+      image: require("../assets/favorite.png"),
+      color: Color.colorDarkcyan,
+    },
+    {
+      id: '4',
+      title: 'Hired Bike',
+      date: 'Today',
+      image: require("../assets/favorite.png"),
+      color: Color.colorDarkcyan,
+    }
+  ];
+
+  const renderChallenges = ({ item }) => (
+    <View style={[styles.challengeBox1, { backgroundColor: item.color }]}>
+      <Pressable>
+        <Text style={styles.walkAMileTypo}>{item.title}</Text>
+        <Image style={styles.FavIcon1} contentFit="cover" source={item.image} />
+        <Text style={styles.started}>{item.status}</Text>
+      </Pressable>
+    </View>
+  );
+
+  const renderCompleted = ({ item }) => (
+    <Pressable>
+      <View style={[styles.challengeBox, { backgroundColor: item.color }]}>
+        <Text style={styles.walkAMileTypo}>{item.title}</Text>
+        <Image style={styles.FavIcon} contentFit="cover" source={item.image} />
+        <Text style={styles.started}>{item.date}</Text>
+      </View>
+    </Pressable>
+  );
+  const renderCompletes = ({ item }) => (
+    <Pressable>
+      <View style={[styles.challengeBox2, { backgroundColor: item.color }]}>
+        <Text style={styles.walkAMileTypo}>{item.title}</Text>
+        <Image style={styles.FavIcon} contentFit="cover" source={item.image} />
+        <Text style={styles.started}>{item.date}</Text>
+      </View>
+    </Pressable>
+  );
+
+  return (
     <View style={styles.challengePage}>
       <Image
         style={styles.shapesIcon}
@@ -19,541 +141,205 @@ const ChallengePage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      
-      <Image
-        style={[styles.menuBarIcon, styles.iconLayout]}
-        contentFit="cover"
-        source={require("../assets/menu-bar.png")}
+
+      <Text style={styles.thisWeeksChallenges}>Explore New Challenges: </Text>
+      <ScrollView style={styles.challengePage1}>
+      <FlatList
+        data={challenges}
+        renderItem={renderChallenges}
+        keyExtractor={item => item.id}
+        horizontal
+        contentContainerStyle={styles.challengeFrame}
+        showsVerticalScrollIndicator={true}
+        scrollEnabled={true}
+
       />
-      <View style={styles.completedChallengeFrame}>
-        <View style={[styles.challengeBox1, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox1Child, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Purchased Green Bags`}</Text>
-          <Image
-            style={styles.favoriteIcon}
-            contentFit="cover"
-            source={require("../assets/favorite.png")}
-          />
-          <Image
-            style={[styles.challengeBox1Item, styles.challengeItemPosition]}
-            contentFit="cover"
-            source={require("../assets/line-6.png")}
-          />
-          <Text style={[styles.completedYesterday, styles.completedTypo]}>
-            <Text style={styles.completedTypo1}>{`Completed: 
-`}</Text>
-            <Text style={styles.yesterday}>Yesterday</Text>
-          </Text>
-        </View>
-        <View style={[styles.challengeBox3, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox1Child, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.walkAMile, styles.walkAMileTypo]}>{`Walked
-2 Miles`}</Text>
-          <Image
-            style={styles.favoriteIcon}
-            contentFit="cover"
-            source={require("../assets/favorite.png")}
-          />
-          <Image
-            style={[styles.challengeBox1Item, styles.challengeItemPosition]}
-            contentFit="cover"
-            source={require("../assets/line-6.png")}
-          />
-          <Text style={[styles.completedYesterday, styles.completedTypo]}>
-            <Text style={styles.completedTypo1}>{`Completed: 
-`}</Text>
-            <Text style={styles.yesterday}>14th August</Text>
-          </Text>
-        </View>
-        <View style={[styles.challengeBox2, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox2Child, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.water5Random, styles.plant5TreesTypo]}>
-            Planted 5 Random Plants/Trees
-          </Text>
-          <Image
-            style={styles.image1Icon}
-            contentFit="cover"
-            source={require("../assets/image-1.png")}
-          />
-          <Image
-            style={[styles.challengeBox2Item, styles.challengeItemPosition]}
-            contentFit="cover"
-            source={require("../assets/line-6.png")}
-          />
-          <Text style={[styles.completed2, styles.startTypo]}>Completed</Text>
-        </View>
-        
+
+      
+      <FlatList
+        data={otherChallenges}
+        renderItem={renderCompletes}
+        keyExtractor={item => item.id}
+        horizontal
+        contentContainerStyle={styles.completedChallengeFrame}
+        showsVerticalScrollIndicator={true}
+        scrollEnabled={true}
+      />
+      </ScrollView>
+      
+      <Text style={styles.completedChallenges}>Completed challenges:</Text>
+
+      <View style={styles.challengePage2}>
+        <FlatList
+          data={completedChallenges}
+          renderItem={renderCompleted}
+          keyExtractor={item => item.id}
+          horizontal
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={styles.completedChallengeFrame}
+          scrollEnabled={true}
+          
+        />
       </View>
-      <Text style={[styles.completedChallenges, styles.challengesTypo]}>
-        Completed challenges:
-      </Text>
-      <View style={[styles.weeklyChallengeFrame, styles.challengeLayout]}>
-        <View style={[styles.challengeBox11, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox2Child, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Purchase 5 
-trees or plants`}</Text>
-          <Image
-            style={styles.image1Icon}
-            contentFit="cover"
-            source={require("../assets/image-1.png")}
-          />
-          <View style={[styles.videoFillParent, styles.parentPosition]}>
-            <Image
-              style={[styles.videoFillIcon, styles.startedPosition]}
-              contentFit="cover"
-              source={require("../assets/video-fill.png")}
-            />
-            <Text style={[styles.start, styles.startTypo]}>START</Text>
-            <Image
-              style={[styles.groupChild, styles.challengeItemPosition]}
-              contentFit="cover"
-              source={require("../assets/line-6.png")}
-            />
-          </View>
-        </View>
-        <View style={[styles.challengeBox2, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox2Inner, styles.challengeChildLayout]}
-          />
-          <Text
-            style={[styles.plant5Trees, styles.plant5TreesTypo]}
-          >{`Order Bike for Green
-Health`}</Text>
-          <Image
-            style={styles.rainIcon}
-            contentFit="cover"
-            source={require("../assets/rain1.png")}
-          />
-          <View style={[styles.lineParent, styles.parentPosition]}>
-            <View style={[styles.groupItem, styles.groupItemLayout]} />
-            <Text style={[styles.started, styles.startedPosition]}>
-              PENDING
-            </Text>
-          </View>
-        </View>
-        <View style={[styles.challengeBox31, styles.challengeLayout]}>
-          <View
-            style={[styles.challengeBox3Inner, styles.challengeChildLayout]}
-          />
-          <Text style={[styles.plant5Trees, styles.plant5TreesTypo]}>{`Purchase 
-Renewable Bags`}</Text>
-          <Image
-            style={styles.circleLeftIcon}
-            contentFit="cover"
-            source={require("../assets/circle-left1.png")}
-          />
-          <View style={[styles.lineParent, styles.parentPosition]}>
-            <View style={[styles.groupItem, styles.groupItemLayout]} />
-            <Text style={[styles.started, styles.startedPosition]}>
-              PENDING
-            </Text>
-          </View>
-        </View>
-      </View>
-      <Text style={[styles.thisWeeksChallenges, styles.parentPosition]}>
-        Challenges Category:
-      </Text>
-      <View style={[styles.noteMessage, styles.noteLayout]}>
-        <View style={[styles.noteMessageChild, styles.noteLayout]} />
-        <Text style={[styles.tipOfTheContainer, styles.parentPosition]}>
-          <Text style={styles.textTypo}>Tip Of The Day</Text>
-          <Text style={styles.completedTypo1}>: Reduce. Reuse. Recycle.</Text>
-        </Text>
-      </View>
+    
+
+
       
         <Text style={styles.challenges} onPress={() => navigation.navigate('ProfilePage')}
        > Challenges!</Text> 
-     
-        <View style={[styles.challengePageChild, styles.groupItemLayout]} />
-     
+
+
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  vectorIconLayout: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-    position: "absolute",
-    overflow: "hidden",
+  challengePage: {
+    backgroundColor: Color.colorWhitesmoke,
+    flex: 1,
+    
+    padding: 16,
+    width: 450,
   },
-  textTypo: {
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
+  challengePage1: {
+    backgroundColor: Color.colorWhitesmoke,
+    flex: 1,
+    paddingHorizontal: 10,
+    marginTop: 40,
+    paddingBottom: 50,
+    
+    
   },
-  iconLayout: {
-    height: 74,
-    position: "absolute",
+  challengePage2: {
+    backgroundColor: Color.colorWhitesmoke,
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingBottom: 200,
+    marginBottom: 40,
+    
+    
+    
   },
-  challengeLayout: {
-    height: 203,
-    position: "absolute",
+  challengeFrame: {
+    marginVertical: 10,
+    paddingHorizontal: 10,
   },
-  challengeChildLayout: {
+ 
+  
+  completedChallengeFrame: {
+    marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  challengeBox: {
     borderRadius: Border.br_base,
-    height: 203,
-    width: 119,
-    left: 0,
-    top: 0,
-    position: "absolute",
+    width: 116,
+    height: 133,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    overflow: 'hidden',
+    
+    
+  },
+  challengeBox1: {
+    borderRadius: Border.br_base,
+    width: 116,
+    height: 133,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    BorderWidth: 1,
+    
+    
+  },
+  challengeBox2: {
+    borderRadius: Border.br_base,
+    width: 116,
+    height: 133,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    BorderWidth: 1,
+    
+    
   },
   walkAMileTypo: {
-    height: 55,
     color: Color.colorWhite,
-    fontSize: FontSize.size_lg,
-    left: 11,
-    width: 101,
+    fontSize: FontSize.size_sm,
     fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    position: "absolute",
+    textAlign: 'center',
+    top: 45,
   },
-  challengeItemPosition: {
-    width: 118,
-    left: 0,
-    position: "absolute",
+  FavIcon: {
+    width: 40,
+    height: 40,
+    marginTop: 15,
+    alignItems: 'center',
+    bottom: 48,
+    textAlign:"center",
   },
-  completedTypo: {
-    width: 108,
-    fontSize: FontSize.size_base,
-    color: Color.colorWhite,
-    textAlign: "center",
-    position: "absolute",
+  FavIcon1: {
+    width: 40,
+    height: 40,
+    marginTop: 15,
+    alignItems: 'center',
+    bottom: 55,
+    textAlign:"center",
+    left: 31,
   },
-  plant5TreesTypo: {
-    height: 83,
-    top: 95,
-    fontSize: FontSize.size_base,
-    color: Color.colorWhite,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    position: "absolute",
-  },
-  startTypo: {
-    fontSize: FontSize.size_base,
-    color: Color.colorWhite,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  challengesTypo: {
-    height: 35,
-    width: 325,
-    fontSize: FontSize.size_5xl,
+ 
+ 
+  thisWeeksChallenges: {
+    fontSize: FontSize.size_xl,
     color: Color.colorGray_800,
     fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  parentPosition: {
-    left: 1,
-    position: "absolute",
-  },
-  startedPosition: {
-    top: 3,
-    position: "absolute",
-  },
-  groupItemLayout: {
-    height: 1,
-    borderTopWidth: 1,
-    borderStyle: "solid",
-    position: "absolute",
-  },
-  noteLayout: {
-    height: 57,
-    width: 359,
-    position: "absolute",
-  },
-  shapesIcon: {
-    top: -52,
-    left: -54,
-    width: 235,
-    height: 173,
-    position: "absolute",
-  },
-  shapesIcon1: {
-    height: "20.5%",
-    width: "60.26%",
-    top: "84.24%",
-    right: "-18.97%",
-    bottom: "-4.74%",
-    left: "58.72%",
-    maxHeight: "100%",
-  },
-  vectorIcon: {
-    height: "42.86%",
-    width: "6.2%",
-    top: "46.43%",
-    right: "0%",
-    bottom: "10.71%",
-    left: "93.8%",
-    maxHeight: "100%",
-  },
-  vectorIcon1: {
-    height: "60.71%",
-    width: "6.48%",
-    top: "35.71%",
-    right: "7.61%",
-    bottom: "3.57%",
-    left: "85.92%",
-    maxHeight: "100%",
-  },
-  vectorIcon2: {
-    height: "67.86%",
-    width: "5.63%",
-    top: "32.14%",
-    right: "16.06%",
-    bottom: "0%",
-    left: "78.31%",
-    maxHeight: "100%",
-  },
-  text: {
-    top: "42.86%",
-    left: "0%",
-    fontSize: FontSize.size_sm,
-    color: Color.colorBlack,
-    textAlign: "center",
-    position: "absolute",
-  },
-  notification: {
-    left: 18,
-    width: 355,
-    height: 28,
-    top: 0,
-    position: "absolute",
-  },
-  menuBarIcon: {
-    top: 770,
-    width: 390,
+    
+    marginVertical: 20,
+    marginHorizontal: 20,
     left: 0,
+    top: 50,
   },
-  challengeBox1Child: {
-    backgroundColor: Color.colorCrimson,
+ 
+  started: {
+    
+    fontSize: FontSize.size_lg,
+    color: Color.colorWhite,
+    fontFamily: FontFamily.poppinsSemiBold,
+    fontWeight: "300",
+    textAlign: "center",
+   
   },
-  walkAMile: {
-    top: 78,
-  },
-  favoriteIcon: {
-    top: 19,
-    left: 33,
-    width: 53,
-    height: 53,
-    position: "absolute",
-  },
-  challengeBox1Item: {
-    top: 145,
-    maxHeight: "100%",
-  },
+  
+ 
+ 
   completedTypo1: {
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
   },
-  yesterday: {
-    fontFamily: FontFamily.poppinsRegular,
-  },
-  completedYesterday: {
-    top: 151,
-    left: 6,
-  },
-  challengeBox1: {
-    width: 110,
-    top: 1,
-    height: 203,
-    left: 0,
-  },
-  challengeBox3: {
-    left: 285,
-    width: 100,
-    top: 1,
-    height: 203,
-  },
-  challengeBox2Child: {
-    backgroundColor: Color.colorDarkolivegreen,
-  },
-  water5Random: {
-    width: 110,
-    left: 0,
-  },
-  image1Icon: {
-    top: 10,
-    left: 24,
-    width: 71,
-    height: 81,
-    position: "absolute",
-  },
-  challengeBox2Item: {
-    top: 169,
-    maxHeight: "100%",
-  },
-  completed2: {
-    top: 172,
-    left: 14,
-    position: "absolute",
-  },
-  challengeBox2: {
-    left: 141,
-    width: 110,
-    top: 0,
-  },
-  challengeBox4Child: {
-    backgroundColor: "#b913d4",
-  },
-  makeDrywetDustbins: {
-    top: 80,
-  },
-  challengeBox4Item: {
-    top: 165,
-    height: 0,
-  },
-  completed3: {
-    top: 170,
-    left: 5,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-  },
-  delAltFillIcon: {
-    top: 9,
-    width: 74,
-    left: 23,
-  },
   
   
-  completedChallengeFrame: {
-    top: 460,
-    height: 204,
-    width: 357,
-    left: 17,
-    position: "absolute",
-  },
   completedChallenges: {
-    left: 26,
-    top: 403,
-    position: "absolute",
-  },
-  plant5Trees: {
-    left: 9,
-    width: 101,
-    top: 95,
-  },
-  videoFillIcon: {
-    width: 26,
-    height: 26,
-    left: 17,
-  },
-  start: {
-    top: 4,
-    left: 46,
-    position: "absolute",
-  },
-  groupChild: {
-    top: 0,
-    maxHeight: "100%",
-  },
-  videoFillParent: {
-    height: 29,
-    top: 171,
-    left: 1,
-    width: 118,
-  },
-  challengeBox11: {
-    width: 119,
-    left: 0,
-    top: 0,
-  },
-  challengeBox2Inner: {
-    backgroundColor: "#1b32ab",
-  },
-  rainIcon: {
-    top: 16,
-    left: 20,
-    width: 75,
-    height: 75,
-    position: "absolute",
-  },
-  groupItem: {
-    borderColor: Color.colorWhite,
-    width: 119,
-    left: 0,
-    top: 0,
-  },
-  started: {
-    left: 23,
-    fontSize: FontSize.size_base,
-    color: Color.colorWhite,
+    fontSize: FontSize.size_xl,
     fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  lineParent: {
-    height: 27,
-    top: 171,
-    left: 1,
-    width: 118,
-  },
-  challengeBox3Inner: {
-    backgroundColor: "#70841f",
-  },
-  circleLeftIcon: {
-    top: 20,
-    left: 27,
-    width: 67,
-    height: 67,
-    position: "absolute",
-  },
-  challengeBox31: {
-    left: 284,
-    width: 119,
-    top: 0,
-  },
-  weeklyChallengeFrame: {
-    top: 177,
-    left: 16,
-    width: 357,
-  },
-  thisWeeksChallenges: {
-    top: 129,
-    height: 35,
-    width: 325,
-    fontSize: FontSize.size_5xl,
-    color: Color.colorGray_800,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  noteMessageChild: {
-    shadowColor: "rgba(0, 0, 0, 0.25)",
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowRadius: 8,
-    elevation: 8,
-    shadowOpacity: 1,
-    borderRadius: Border.br_xl,
-    backgroundColor: Color.colorWhite,
     left: 0,
-    top: 0,
-  },
-  tipOfTheContainer: {
-    top: 15,
-    fontSize: 17,
-    color: Color.colorGray_700,
-    width: 354,
-    height: 25,
-    textAlign: "center",
-  },
-  noteMessage: {
-    top: 699,
-    left: 17,
+    bottom: 0,
   },
   challenges: {
     top: 30,
@@ -567,19 +353,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
   },
-  challengePageChild: {
-    left: 35,
-    borderColor: "#afa5a5",
-    width: 328,
-    top: 403,
-  },
-  challengePage: {
-    backgroundColor: Color.colorWhitesmoke,
-    flex: 1,
-    width: "100%",
-    height: 844,
-    overflow: "hidden",
-  },
+  
 });
 
 export default ChallengePage;

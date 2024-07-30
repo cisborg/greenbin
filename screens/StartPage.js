@@ -1,44 +1,57 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { Image, Animated, StyleSheet, Text, View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Border, FontSize, Color } from "../GlobalStyles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const StartPage = () => {
   const navigation = useNavigation();
+  const zoomAnim = React.useRef(new Animated.Value(1)).current; // Initial scale value
+
+  // Function to start the zoom animation
+  const startZoomAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(zoomAnim, {
+          toValue: 1.1, // Scale up
+          duration: 800, // Duration for zoom in
+          useNativeDriver: true,
+        }),
+        Animated.timing(zoomAnim, {
+          toValue: 1, // Scale back to normal
+          duration: 800, // Duration for zoom out
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
+
+  React.useEffect(() => {
+    startZoomAnimation(); // Start the zoom animation when component mounts
+  }, []);
 
   return (
     <View style={styles.startPage}>
-      <Image
-        style={styles.shapesIcon}
-        contentFit="cover"
-        source={require("../assets/shapes.png")}
-      />
-      <Image
-        style={[styles.shapesIcon1, styles.vectorIconLayout]}
-        contentFit="cover"
-        source={require("../assets/shapes.png")}
-      />
-      <Text style={[styles.greenbin, styles.textTypo]}>Nature Diversity</Text>
-      <Image
-        style={styles.startimgIcon}
+      <Animated.Image
+        style={[styles.startimgIcon, { transform: [{ scale: zoomAnim }] }]} // Apply zoom animation
         contentFit="cover"
         source={require("../assets/startimg.png")}
       />
+      <Text style={[styles.greenbin, styles.textTypo]}>Nature Diversity</Text>
       <Text style={[styles.manageYourWaste, styles.getStartedTypo]}>
-       Connect & Manage your waste effectively!
+        Connect & Manage your waste effectively!
       </Text>
+      
       <Pressable
-        style={[styles.getStartedBtn, styles.getLayout]}
-        onPress={() => navigation.navigate("RegisterPage")}
+        style={[styles.getStartedBtn, styles.getLayout]} // Set button opacity
+        onPress={() => navigation.navigate("EventsInformationPage")}
       >
         <View style={[styles.getStartedBtnChild, styles.textPosition]} />
         <Text style={[styles.getStarted, styles.getStartedTypo]}>
           Get Started
         </Text>
       </Pressable>
-      
-     
+    
     </View>
   );
 };
@@ -169,7 +182,6 @@ const styles = StyleSheet.create({
     height: 28,
     position: "absolute",
   },
- 
   startPage: {
     backgroundColor: Color.colorWhite,
     flex: 1,

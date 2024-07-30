@@ -1,14 +1,61 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable,FlatList ,TextInput} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, Border, FontSize } from "../GlobalStyles";
 
+const challenges = [
+  {
+    id: '1',
+    title: 'Plant Two Trees Daily',
+    icon: require("../assets/del-alt-fill.png"),
+    name: 'John Doe'
+  },
+  {
+    id: '2',
+    title: 'Buy a Smart Gadget',
+    icon: require("../assets/favorite.png"),
+    name: 'Joe Smith'
+  },
+  {
+    id: '3',
+    title: 'Buy a Green Home',
+    icon: require("../assets/favorite.png"),
+    name: 'Joe Smith'
+  },
+  {
+    id: '4',
+    title: 'Recycle Plastics',
+    icon: require("../assets/circle-left.png"),
+    name: 'Hassan'
+  },
+  {
+    id: '5',
+    title: 'Recycle Bins',
+    icon: require("../assets/circle-left.png"),
+    name: 'Joyce'
+  }
+];
+
 const HomePageExistingUser = () => {
+
   
   const navigation = useNavigation();
+  const renderItem = ({ item }) => (
+    <View style={[styles.challengeBox,styles.challengeLayout]}>
+      <Pressable>
+        
+          <View style={styles.challengeBoxChild} />
+          <Text style={styles.challengeText}>{item.title}</Text>
+          <Image style={styles.rainIcon} contentFit="cover" source={item.icon} />
+          <Text style={styles.shaileshText}>{item.name}</Text>
+       
+      </Pressable>
+    </View>
+  );
 
   return (
+    
     <View style={styles.homePageExistingUser}>
       <Image
         style={styles.shapesIcon}
@@ -21,66 +68,19 @@ const HomePageExistingUser = () => {
         source={require("../assets/shapes.png")}
       />
       
-      <Image
-        style={styles.menuBarIcon}
-        contentFit="cover"
-        source={require("../assets/menu-bar.png")}
-      />
+      
+      
       <View style={styles.challengeFrame}>
-        <View style={[styles.challengeBox1, styles.challengeLayout]}>
-          <View style={styles.challengeBox1Child} />
-          <Text
-            style={[styles.buySmartGadget, styles.about201BillionTypo]}
-          >{`Plant
-Two Trees
-Daily`}</Text>
-          <Image
-            style={styles.rainIcon}
-            contentFit="cover"
-            source={require("../assets/del-alt-fill.png")}
+        <FlatList data={challenges} renderItem={renderItem}
+         keyExtractor={item => item.id} 
+         horizontal       
           />
-          <View style={styles.rectangleParent}>
-            <View style={styles.groupChild} />
-            <View style={[styles.groupItem, styles.groupBorder]} />
-          </View>
-        </View>
-        <View style={[styles.challengeBox2, styles.challengeLayout]}>
-          <View style={styles.challengeBox1Child} />
-          <Text
-            style={[styles.buySmartGadget, styles.about201BillionTypo]}
-          >{`Buy a Smart
- gadget
-`}</Text>
-          <Image
-            style={styles.rainIcon}
-            contentFit="cover"
-            source={require("../assets/favorite.png")}
-          />
-          <View style={styles.rectangleParent}>
-            <View style={[styles.groupInner, styles.groupBorder]} />
-          </View>
-        </View>
-        <View style={[styles.challengeBox3, styles.challengeLayout]}>
-          <View style={styles.challengeBox1Child} />
-          <Text
-            style={[styles.buySmartGadget, styles.about201BillionTypo]}
-          >{`Recycle
-10 Plastic
-Bottles`}</Text>
-          <Image
-            style={styles.rainIcon}
-            contentFit="cover"
-            source={require("../assets/circle-left.png")}
-          />
-          <View style={styles.rectangleParent}>
-            <View style={styles.groupChild} />
-            <View style={[styles.groupChild1, styles.groupBorder]} />
-          </View>
-        </View>
+          
       </View>
-      <Text style={[styles.challengeProgress, styles.vendorsYouFollowTypo]}>
-        Challenge Progress:
-      </Text>
+    
+
+      
+     
       <View style={[styles.noteMessage, styles.noteLayout]}>
         <View style={[styles.noteMessageChild, styles.noteLayout]} />
         <Text style={[styles.factAbout201Container, styles.textFlexBox]}>
@@ -90,6 +90,15 @@ Bottles`}</Text>
             globally each year
           </Text>
         </Text>
+      </View>
+
+      <View style={styles.Bar}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search Your Top Favorite Challenges"
+          placeholderTextColor={Color.colorGray_100}
+          // Add any other props like onChangeText for handling input
+        />
       </View>
       <Pressable>
       <Text style={[styles.hello, styles.helloTypo]}
@@ -127,14 +136,14 @@ Bottles`}</Text>
             source={require("../assets/vendorimg1.png")}
           />
         </Pressable>
-        <Pressable>
-          <View style={[styles.addVendorBtn, styles.text1Layout]}>
+        <Pressable  >
+          <View  style={[styles.addVendorBtn, styles.text1Layout]}>
             <Image
               style={[styles.addVendorBtnChild, styles.vendornameLayout]}
               contentFit="cover"
               source={require("../assets/ellipse-47.png")}
             />
-            <Text style={[styles.text1, styles.text1Layout]}>+</Text>
+            <Text onPress={()=> navigation.navigate('VendorList')} style={[styles.text1, styles.text1Layout]}>+</Text>
           </View>
         </Pressable>
         <Text style={[styles.vendorsYouFollow, styles.vendorsYouFollowTypo]}>
@@ -158,13 +167,48 @@ const styles = StyleSheet.create({
   },
   challengeLayout: {
     width: 119,
-    height: 177,
+    height: 185,
     top: 0,
-    position: "absolute",
+    marginHorizontal: 10,
+    
+    
   },
   about201BillionTypo: {
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
+  },
+  challengeBoxChild: {
+    backgroundColor: Color.colorLimegreen_200,
+    borderRadius: Border.br_base,
+    width: 119,
+    borderRadius: 19, // Rounded corners
+    elevation: 3, // Shadow effect for Android
+    shadowColor: '#000', // Shadow color for iOS
+    shadowOffset: { width: 1, height: 4 }, // Shadow offset
+    shadowOpacity: 0.4, // Shadow opacity
+    shadowRadius: 4,
+    height: 135,
+    overflow: 'hidden',
+  },
+  shaileshText: {
+    fontSize: FontSize.size_xl,
+    fontFamily: FontFamily.manropeSemiBold,
+    width: 100,
+    position: "absolute",
+    left: 5,
+    top: 110,
+    textAlign: "center",
+    contentFit: "center",
+  },
+  challengeText: {
+    top: 73,
+    left: 9,
+    fontSize: FontSize.size_base,
+    color: Color.colorWhite,
+    width: 101,
+    height: 78,
+    textAlign: "center",
+    position: "absolute",
   },
   groupBorder: {
     backgroundColor: Color.colorGainsboro,
@@ -179,7 +223,7 @@ const styles = StyleSheet.create({
   },
   vendorsYouFollowTypo: {
     height: 35,
-    width: 278,
+    width: 300,
     fontSize: FontSize.size_5xl,
     color: Color.colorGray_800,
     fontFamily: FontFamily.poppinsSemiBold,
@@ -206,19 +250,54 @@ const styles = StyleSheet.create({
     height: 41,
     position: "absolute",
   },
-  shaileshTypo: {
-    color: Color.colorDarkslategray,
-    height: 35,
+  shaileshTypo1: {
+    color: Color.colorLimegreen_100,
+    height: 150,
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
-    left: 0,
+    left: 5,
     textAlign: "center",
-    top: 0,
+    top: 144,
   },
+  Bar: {
+    width: 365,
+    
+    padding: 10,
+    backgroundColor: '#f0f0f0', // Background color of the search bar
+    borderRadius: 8, // Rounded corners
+    elevation: 3, // Shadow effect for Android
+    shadowColor: '#000', // Shadow color for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset
+    shadowOpacity: 0.2, // Shadow opacity
+    shadowRadius: 4, 
+    top: 480,// 
+    left: 10,
+    
+},
+searchBar: {
+  flex: 1, // Takes the remaining space
+  height: 40, // Height of the search bar
+  fontSize: 16, // Font size
+  color: '#333', // Text color
+  textDecorationStyle: 'solid'
+ 
+},
+
+  
   thaneTypo: {
-    height: 17,
+    height: 18,
     width: 60,
     fontSize: FontSize.size_3xs,
+    color: Color.colorDarkslategray,
+    fontFamily: FontFamily.poppinsSemiBold,
+    fontWeight: "600",
+    textAlign: "center",
+    position: "absolute",
+  },
+  shaileshTypo: {
+    height: 30,
+    width: 89,
+    fontSize: FontSize.size_lg,
     color: Color.colorDarkslategray,
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
@@ -301,6 +380,7 @@ const styles = StyleSheet.create({
     height: 177,
     left: 0,
     top: 0,
+     
     position: "absolute",
   },
   buySmartGadget: {
@@ -341,22 +421,16 @@ const styles = StyleSheet.create({
     width: 90,
     position: "absolute",
   },
-  challengeBox1: {
-    left: 0,
-  },
+  
   groupInner: {
     width: 90,
     backgroundColor: Color.colorGainsboro,
   },
-  challengeBox2: {
-    left: 139,
-  },
+ 
   groupChild1: {
     width: 19,
   },
-  challengeBox3: {
-    left: 278,
-  },
+  
   challengeFrame: {
     top: 534,
     left: 23,
@@ -409,6 +483,11 @@ const styles = StyleSheet.create({
   },
   shailesh: {
     fontSize: FontSize.size_xl,
+    width: 100,
+    position: "absolute",
+  },
+  shailesh1: {
+    fontSize: FontSize.size_lg,
     width: 100,
     position: "absolute",
   },
