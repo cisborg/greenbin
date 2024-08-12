@@ -13,7 +13,7 @@ const LeaderBoard = () => {
       <Pressable onPress={()=> navigation.goBack()}>
       <Image 
         style={styles.evaarrowIosBackFillIcon} 
-        contentFit="cover"
+        contentFit="cover" 
         source={require("../assets/arrow_8642990.png")}
       />
       </Pressable>
@@ -27,7 +27,7 @@ const LeaderBoard = () => {
       <View style={styles.iphone1313Pro1Child} />
       <View style={styles.iphone1313Pro1Item} />
       <View style={styles.iphone1313Pro1Inner} />
-      <Text style={[styles.region, styles.eidenTypo]}>Region</Text>
+      <Text style={[styles.region, styles.eidenTypo]}>GCPs</Text>
       <Text style={[styles.emmaAria, styles.textTypo2]}>Emma Aria</Text>
       <Text style={[styles.eiden, styles.textTypo2]}>Eiden</Text>
       <Text style={[styles.jackson, styles.textTypo2]}>Jackson</Text>
@@ -37,8 +37,8 @@ const LeaderBoard = () => {
       <Text style={[styles.text, styles.textTypo]}>1674</Text>
       <Text style={[styles.text1, styles.textTypo]}>1847</Text>
       <Text style={[styles.text2, styles.textTypo]}>2430</Text>
-      <Text style={[styles.national, styles.eidenTypo]}>National</Text>
-      <Text style={[styles.global, styles.eidenTypo]}>Global</Text>
+      <Text style={[styles.national, styles.eidenTypo]}>Squads</Text>
+      <Text style={[styles.global, styles.eidenTypo]}>Awards</Text>
       <View style={styles.rectangleView} />
       <View style={styles.iphone1313Pro1Child1} />
       <Image
@@ -108,11 +108,11 @@ const LeaderBoard = () => {
       <Text style={[styles.text8, styles.textTypo]}>774</Text>
       <Text style={[styles.text9, styles.textTypo]}>723</Text>
       <Text style={[styles.text10, styles.textTypo]}>559</Text>
-      <Text style={[styles.username3, styles.usernameTypo]}>@username</Text>
-      <Text style={[styles.username4, styles.usernameTypo]}>@username</Text>
-      <Text style={[styles.username5, styles.usernameTypo]}>@username</Text>
-      <Text style={[styles.username6, styles.usernameTypo]}>@username</Text>
-      <Text style={[styles.username7, styles.usernameTypo1]}>@username</Text>
+      <Text style={[styles.username3, styles.usernameTypo]}>@sebastian</Text>
+      <Text style={[styles.username4, styles.usernameTypo]}>@jason</Text>
+      <Text style={[styles.username5, styles.usernameTypo]}>@natalie</Text>
+      <Text style={[styles.username6, styles.usernameTypo]}>@seren123</Text>
+      <Text style={[styles.username7, styles.usernameTypo]}>@_hannah254</Text>
       <Image
         style={[styles.polygonIcon, styles.iphone1313ChildLayout2]}
         contentFit="cover"
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   textTypo2: {
     fontSize: FontSize.size_xs,
-    color: Color.colorWhite,
+    color: Color.colorLimegreen_200,
   },
   usernameTypo1: {
     color: Color.colorDarkgray,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.interMedium,
     fontWeight: "500",
     textAlign: "left",
-    color: Color.colorWhite,
+    color: Color.colorLimegreen_200,
     position: "absolute",
   },
   usernameTypo: {
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   text: {
     top: 356,
     left: 296,
-    color: Color.colorLimegreen_100,
+    color: 'blue',
     fontSize: FontSize.size_mini,
   },
   text1: {
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "500",
     textAlign: "left",
-    color: 'black',
+    color: Color.colorLimegreen_200,
   },
   hannah: {
     top: 797,
@@ -586,14 +586,14 @@ const styles = StyleSheet.create({
     top: 472,
     left: 334,
     fontSize: FontSize.size_xs,
-    color: Color.colorLimegreen_200,
+    color: 'orange',
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "500",
   },
   text7: {
     top: 554,
     fontSize: FontSize.size_xs,
-    color: Color.colorLimegreen_200,
+    color: 'blue',
     left: 341,
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "500",

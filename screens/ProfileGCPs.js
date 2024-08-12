@@ -1,30 +1,68 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icons } from '@expo/vector-icons';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Animated } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color, FontFamily } from "../GlobalStyles";
-
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const CardScroll = () => {
   const cards = [
     { id: 1, image: require('../assets/smartdev.avif') },
     { id: 2, image: require('../assets/samrt.jpg') },
-    { id: 3,  image: require('../assets/again.jpg') },
+    { id: 3, image: require('../assets/again.jpg') },
     // Add more cards as needed
   ];
 
+  const [randomCards, setRandomCards] = useState([]);
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  // Function to start the animation
+  const startAnimation = () => {
+    animatedValue.setValue(0);
+    Animated.loop(
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 3000, // Duration of the animation
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  const randomizeCards = () => {
+    const shuffledCards = [...cards].sort(() => 0.5 - Math.random());
+    setRandomCards(shuffledCards.slice(0, 3)); // Display 3 random cards
+  };
+
+  const animatedStyle = {
+    opacity: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.5, 1],
+    }),
+    transform: [
+      {
+        translateY: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [10, 0], // Move up slightly
+        }),
+      },
+    ],
+  };
+
+  useEffect(() => {
+    randomizeCards();
+    startAnimation();
+    const interval = setInterval(randomizeCards, 3000); // Change cards every 5 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={true} style={styles.cardScrollContainer}>
-      {cards.map(card => (
-        <View key={card.id} style={styles.card}>
-          <Image source={ card.image } style={styles.cardImage} />
-          <Text style={styles.cardTitle}>{card.title}</Text>
-          <Text style={styles.cardDescription}>{card.description}</Text>
-        </View>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardScrollContainer}>
+      {randomCards.map(card => (
+        <TouchableOpacity key={card.id} onPress={() => onCardPress(card.id)}>
+        <Animated.View style={[styles.cardContainer, animatedStyle]}>
+          <Image source={card.image} style={styles.cardImage} />
+        </Animated.View>
+      </TouchableOpacity>
       ))}
     </ScrollView>
   );
@@ -34,11 +72,10 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.flestart}>
-          <Text style={styles.headerText}>Hey,Geff</Text>
-          <Text style={styles.prepaidText}>0765538193</Text>
-        </View>
-
+        <TouchableOpacity>
+          <AntDesign name="leftcircle" size={24} color="black" onPress={() => navigation.goBack()} />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Hey, Geff</Text>
         <TouchableOpacity style={styles.manageAcc}>
           <Text style={styles.manageAccText} onPress={() => navigation.navigate("manageAccount")}>Manage Account</Text>
         </TouchableOpacity>
@@ -56,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.balanceType}>Voice Balance</Text>
         </View>
         <View style={styles.balanceBox}>
-          <Text style={styles.balanceAmount}>506.20</Text>
+          <Text style={styles.balanceAmount}>520.20</Text>
           <Text style={styles.balanceLabel}>MB</Text>
           <Text style={styles.balanceType}>Data Balance</Text>
         </View>
@@ -66,41 +103,63 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuyBundles')}>
           <Text style={styles.buttonText}>Buy Bundles</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SelfRecharge')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DialPad')}>
           <Text style={styles.buttonText}>Self Recharge</Text>
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.balanceBox1}>
-        <Text style={styles.greenMoney}>Green Money</Text>
-        <Text style={styles.moneyBalance}>KES XXXXXX</Text>
+        <View style={styles.Container}>
+          <FontAwesome6 name="mobile-retro" size={24} color="green" />
+          <Text style={styles.greenMoney}>Green Carbon Points!</Text>
+        </View>
+        <Text style={styles.moneyBalance}>GCPS: 14,000!</Text>
+        <Text style={styles.moneyBalance1}>Your Equivalent KES is GCPs BALANCE/10.25</Text>
       </View>
 
       {/* Horizontal Scrollable Cards Section */}
       <CardScroll />
 
-      
-        <View style={styles.quickActionsTitle}>
-          <Text style={styles.ActionText}>Quick Actions</Text>
-          <Text style={styles.ActionText1}>View All</Text>
+      <View style={styles.quickActionsTitle}>
+        <Text style={styles.ActionText}>Quick Actions</Text>
+        <Text style={styles.ActionText1}>All Offers</Text>
+      </View>
+
+      <View style={styles.navigationContainer}>
+        <View style={styles.navigationRow}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Wifi')}>
+            <FontAwesome name="wifi" size={24} color="green" />
+            <Text style={styles.navButtonText}>Green WiFi</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('')}>
+            <AntDesign name="creditcard" size={24} color="green" />
+            <Text style={styles.navButtonText}>Buy Airtime</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Binance')}>
+            <FontAwesome name="bitcoin" size={24} color="green" />
+            <Text style={styles.navButtonText}>Binance</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Buy Goods')}>
+            <FontAwesome name="shopping-cart" size={24} color="green" />
+            <Text style={styles.navButtonText}>Buy Goods</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.navigationContainer}>
-          <View style={styles.navigationRow}>
-            {['4G/5G WiFi', 'Buy Credit', 'Crypto', 'Buy Goods'].map((action, index) => (
-              <TouchableOpacity key={index} style={styles.navButton} onPress={() => navigation.navigate(action)}>
-                <Text style={styles.navButtonText}>{action}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.navigationRow}>
-            {['Withdraw Cash', 'Send Money', 'G0 GAMES'].map((action, index) => (
-              <TouchableOpacity key={index} style={styles.navButton} onPress={() => navigation.navigate(action)}>
-                <Text style={styles.navButtonText}>{action}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+
+        <View style={styles.navigationRow}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Withdrawal')}>
+            <FontAwesome name="money" size={24} color="green" />
+            <Text style={styles.navButtonText}>Withdraw Points</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('sendMoney')}>
+            <FontAwesome name="send" size={24} color="green" />
+            <Text style={styles.navButtonText}>Send Points</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('GoGames')}>
+            <FontAwesome name="gamepad" size={24} color="green" />
+            <Text style={styles.navButtonText}>Go GAMES</Text>
+          </TouchableOpacity>
         </View>
-      
+      </View>
     </View>
   );
 };
@@ -123,21 +182,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: "green",
   },
-  prepaidText: {
-    fontSize: 16,
-    color: 'grey',
-  },
   manageAcc: {
     marginTop: 5,
-  },
-  flestart: {
-    flexWrap: true,
   },
   manageAccText: {
     fontSize: 15,
     color: 'blue',
     textDecorationLine: 'underline',
-    left: 0,
   },
   balanceContainer: {
     flexDirection: 'row',
@@ -148,7 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 10,
     backgroundColor: '#e0e0e0',
     shadowColor: '#000',
@@ -156,9 +207,10 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 5,
+    margin: 5,
   },
   balanceBox1: {
     alignItems: 'flex-start',
@@ -166,7 +218,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 10,
     padding: 10,
-    
     backgroundColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOffset: {
@@ -177,6 +228,13 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
+  Container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 5,
+  },
   balanceAmount: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -184,7 +242,7 @@ const styles = StyleSheet.create({
   },
   balanceLabel: {
     fontSize: 16,
-    color: 'red',
+    color: 'green',
   },
   balanceType: {
     fontSize: 14,
@@ -237,14 +295,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: FontFamily.manropeSemiBold,
     color: 'black',
+    marginLeft: 10,
+    marginTop: 5,
   },
   moneyBalance: {
-    fontSize: 16,
-    color: 'black',
-    marginBottom: 20,
+    fontSize: 18,
+    color: Color.colorLimegreen_200,
+    marginBottom: 10,
+    fontFamily: FontFamily.manropeBold,
   },
-  quickActions: {
-    marginTop: 20,
+  moneyBalance1: {
+    fontSize: 12,
+    color: Color.colorGray_100,
+    marginBottom: 10,
+    fontFamily: FontFamily.manropeBold,
   },
   quickActionsTitle: {
     marginBottom: 5,
@@ -255,13 +319,13 @@ const styles = StyleSheet.create({
   ActionText: {
     fontSize: 18,
     color: 'black',
-    FontFamily: FontFamily.manropeSemiBold,
+    fontFamily: FontFamily.manropeSemiBold,
     fontWeight: 'bold',
   },
   ActionText1: {
     fontSize: 18,
-    color: 'blue',
-    FontFamily: FontFamily.poppinsSemiBold,
+    color: Color.colorLimegreen_100,
+    fontFamily: FontFamily.poppinsSemiBold,
   },
   navigationContainer: {
     marginTop: 20,
@@ -270,14 +334,14 @@ const styles = StyleSheet.create({
   navigationRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   navButton: {
     flex: 1,
     marginHorizontal: 5,
     paddingVertical: 15,
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 17,
     backgroundColor: 'lightgray',
     shadowColor: '#000',
     shadowOffset: {
@@ -296,66 +360,35 @@ const styles = StyleSheet.create({
   cardScrollContainer: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    paddingTop: 20,
+    paddingTop: 80,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', // Light background with opacity
     borderRadius: 18,
-    marginBottom: 25,
+    marginBottom: 20,
     marginTop: 30,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 0,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
-    width: "100%",
-    height: 200,
+    shadowOpacity: 0.6,
+    shadowRadius: 0,
+    elevation: 0,
+    width: 365,
+    height: 250,
     alignSelf: 'center',
-    resizeMode: "stretch",
-  },
-  card: {
-    width: 180, // Adjust width as needed
-    marginRight: 15,
-    height: 90,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Card background with opacity
-    padding: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    alignContent: 'center',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
-    transform: [
-      {perspective: 800},
-      {rotateY: '7deg'},
-      {rotateX: '7deg'},
-      
-      
-    ]
   },
   cardImage: {
-    width: '100%',
-    height: '100%',
+    width: 150,
+    height: 85,
     borderRadius: 10,
-    paddingBottom: 0,
-    marginBottom: 5,
-    overflow: 'hidden',
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    marginBottom: 0,
+    marginTop: -73,
+    marginLeft: 10,
+    transform: [
+      { perspective: 800 },
+      { rotateY: '7deg' },
+      { rotateX: '7deg' },
+    ],
   },
 });
 

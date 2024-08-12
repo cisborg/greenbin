@@ -3,9 +3,14 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const VendorsProfilePage = () => {
   const navigation = useNavigation();
+
+  const handleNavigation = (screen) => {
+    navigation.navigate(screen);
+  };
 
   return (
     <View style={styles.vendorsProfilePage}>
@@ -19,140 +24,107 @@ const VendorsProfilePage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      
-      <Pressable
-        style={[styles.rectangleParent, styles.groupParentLayout]}
-        onPress={() => navigation.navigate("ChatPage")}
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={[styles.buttonContainer]}
+        onPress={() => handleNavigation("callPage")}
       >
-        <View style={styles.groupChild} />
         <Image
-          style={styles.chatAlt2FillIcon}
-          contentFit="cover"
-          source={require("../assets/chat-alt-2-fill.png")}
-        />
-        <Text style={[styles.communicate, styles.communicateTypo]}>
-          Chat
-        </Text>
-      </Pressable>
-      <View style={[styles.rectangleGroup, styles.groupParentLayout]}>
-        <View style={styles.groupChild} />
-        <Text style={[styles.communicate, styles.communicateTypo]}>
-          Share Vendor
-        </Text>
-        <Image
-          style={[styles.groupShareIcon, styles.notificationPosition]}
-          contentFit="cover"
-          source={require("../assets/group-share.png")}
-        />
-      </View>
-      <View style={[styles.rectangleContainer, styles.groupParentLayout]}>
-        <View style={styles.groupChild} />
-        <Text style={[styles.communicate, styles.communicateTypo]}>
-          Call Vendor
-        </Text>
-        <Image
-          style={[styles.phoneFillIcon, styles.fillIconLayout]}
+          style={styles.iconStyle}
           contentFit="cover"
           source={require("../assets/phone-fill.png")}
         />
-      </View>
-      <View style={[styles.groupView, styles.groupParentLayout]}>
-        <View style={styles.groupChild} />
-        <Text style={[styles.vendorsHistory, styles.communicateTypo]}>
-          Vendor’s History
-        </Text>
+        <Text style={styles.buttonText}>Call Vendor</Text>
+        
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.buttonContainer]}
+        onPress={() => handleNavigation("ShareVendorPage")}
+      >
         <Image
-          style={[styles.userLightIcon, styles.fillIconLayout]}
+          style={styles.iconStyle}
+          contentFit="cover"
+          source={require("../assets/group-share.png")}
+        />
+        <Text style={styles.buttonText}>Share Vendor</Text>
+        
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.buttonContainer]}
+        onPress={() => handleNavigation("ChatPage")}
+      >
+         <Image
+          style={styles.iconStyle}
+          contentFit="cover"
+          source={require("../assets/chat-alt-2-fill.png")}
+        />
+        <Text style={styles.buttonText}>Chat</Text>
+       
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.buttonContainer]}
+        onPress={() => handleNavigation("VendorHistoryPage")}
+      >
+        <Image
+          style={styles.iconStyle}
           contentFit="cover"
           source={require("../assets/user-light.png")}
         />
-      </View>
-      <View style={[styles.rectangleParent1, styles.groupParentLayout]}>
-        <View style={styles.groupChild} />
-        <Text style={[styles.vendorsHistory, styles.communicateTypo]}>
-          Report Vendor as scam
-        </Text>
-        <Image
-          style={[styles.flagFinishFillIcon, styles.fillIconLayout]}
+        <Text style={styles.buttonText}>Vendor’s History</Text>
+        
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.buttonContainer]}
+        onPress={() => handleNavigation("ReportVendorPage")}
+      >
+         <Image
+          style={styles.iconStyle}
           contentFit="cover"
           source={require("../assets/Untitled.png")}
         />
+        <Text style={styles.buttonText}>Report Vendor as scam</Text>
+       
+      </TouchableOpacity>
       </View>
+
       <Text style={styles.vendorsProfile}>Vendor’s Profile</Text>
-      <Pressable style={styles.image2} onPress={() => navigation.goBack()}>
-        <Image
-          style={styles.icon}
-          contentFit="cover"
-          source={require("../assets/image-2.png")}
-        />
-      </Pressable>
-      <View style={[styles.rectangleParent2, styles.groupChild2Layout]}>
-        <View style={[styles.groupChild2, styles.groupChild2Layout]} />
-        <Text style={[styles.shaileshShete, styles.shaileshSheteTypo]}>
-          John Doe
-        </Text>
-        <Text style={[styles.verifiedVendorAt, styles.shaileshSheteTypo]}>
-          (Vendor at Nature Diversity)
-        </Text>
+     
+
+      <View style={styles.vendorInfoContainer}>
+       
         <Image
           style={styles.ellipseIcon}
           contentFit="cover"
           source={require("../assets/ellipse-93.png")}
         />
-        <Pressable
-          style={styles.removeFromVendorContainer}>
-               
-          <Text style={styles.removeFromVendorList}  onPress={() => navigation.navigate("HomePageExistingUser")}>
+         <Text style={styles.vendorName}>Johanna</Text>
+        <Text style={styles.vendorDescription}>
+          (Tree Vendor)
+        </Text>
+        <TouchableOpacity style={styles.removeFromVendorContainer}>
+          <Text
+            style={styles.removeFromVendorList}
+            onPress={() => navigation.navigate("HomePageExistingUser")}
+          >
             Remove from Vendor List?
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  vectorIconLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    position: "absolute",
+  vendorsProfilePage: {
+    backgroundColor: Color.colorWhitesmoke,
+    flex: 1,
+    height: 844,
     overflow: "hidden",
-  },
-  notificationPosition: {
-    left: 18,
-    position: "absolute",
-  },
-  groupParentLayout: {
-    height: 63,
-    width: 354,
-    left: 19,
-    position: "absolute",
-  },
-  communicateTypo: {
-    fontFamily: FontFamily.manropeSemiBold,
-    fontSize: FontSize.size_xl,
-    textAlign: "left",
-    fontWeight: "600",
-    top: 17,
-    color: Color.colorBlack,
-    position: "absolute",
-  },
-  fillIconLayout: {
-    height: 24,
-    width: 24,
-    position: "absolute",
-  },
-  groupChild2Layout: {
-    height: 263,
-    width: 390,
-    left: 0,
-    position: "absolute",
-  },
-  shaileshSheteTypo: {
-    color: Color.colorWhite,
-    fontSize: FontSize.size_xl,
-    textAlign: "center",
-    position: "absolute",
+    width: 404,
   },
   shapesIcon: {
     top: -52,
@@ -169,106 +141,29 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
-  vectorIcon: {
-    height: "42.86%",
-    width: "6.2%",
-    top: "46.43%",
-    right: "0%",
-    bottom: "10.71%",
-    left: "93.8%",
+  container:{
+    left: 20
   },
-  vectorIcon1: {
-    height: "60.71%",
-    width: "6.48%",
-    top: "35.71%",
-    right: "7.61%",
-    bottom: "3.57%",
-    left: "85.92%",
-  },
-  vectorIcon2: {
-    height: "67.86%",
-    width: "5.63%",
-    top: "32.14%",
-    right: "16.06%",
-    bottom: "0%",
-    left: "78.31%",
-  },
-  text: {
-    top: "42.86%",
-    left: "0%",
-    fontSize: FontSize.size_sm,
-    textAlign: "center",
-    color: Color.colorBlack,
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-    position: "absolute",
-  },
-  notification: {
-    width: 355,
-    height: 28,
-    top: 0,
-  },
-  groupChild: {
-    borderRadius: Border.br_3xs,
-    backgroundColor: Color.colorLightgray,
-    left: 0,
+  buttonContainer: {
     height: 63,
-    width: 354,
-    top: 0,
-    position: "absolute",
+    width: 370,
+    backgroundColor: Color.colorLightgray,
+    borderRadius: Border.br_3xs,
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
-  chatAlt2FillIcon: {
-    left: 21,
-    width: 30,
-    height: 30,
-    top: 17,
-    position: "absolute",
+  buttonText: {
+    fontFamily: FontFamily.manropeBold,
+    fontSize: FontSize.size_xl,
+    color: Color.colorBlack,
+    flex: 1,
   },
-  communicate: {
-    left: 67,
-    textAlign: "left",
-  },
-  rectangleParent: {
-    top: 339,
-  },
-  groupShareIcon: {
-    top: 13,
-    width: 35,
-    height: 35,
-  },
-  rectangleGroup: {
-    top: 260,
-  },
-  phoneFillIcon: {
-    left: 23,
-    top: 20,
+  iconStyle: {
     height: 24,
     width: 24,
-  },
-  rectangleContainer: {
-    top: 182,
-  },
-  vendorsHistory: {
-    left: 66,
-    textAlign: "left",
-  },
-  userLightIcon: {
-    top: 19,
-    left: 24,
-    borderRadius: Border.br_4xl,
-  },
-  groupView: {
-    top: 418,
-  },
-  flagFinishFillIcon: {
-    left: 28,
-    top: 20,
-    height: 24,
-    width: 24,
-    
-  },
-  rectangleParent1: {
-    top: 497,
+    marginRight: 20
   },
   vendorsProfile: {
     top: 50,
@@ -282,10 +177,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
   },
-  icon: {
-    height: "100%",
-    width: "100%",
-  },
   image2: {
     left: 1,
     top: 33,
@@ -293,27 +184,33 @@ const styles = StyleSheet.create({
     height: 79,
     position: "absolute",
   },
-  groupChild2: {
+  vendorInfoContainer: {
     backgroundColor: Color.colorLimegreen_200,
-    top: 0,
+    padding: 20,
+    alignItems: 'center',
+    height: 200,
+    marginTop: 20,
+    width: 380,
+    borderRadius: 17,
+    left: 15
   },
-  shaileshShete: {
-    top: 170,
-    left: 120,
+  vendorName: {
+    color: Color.colorWhite,
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "700",
-    color: Color.colorWhite,
+    fontSize: FontSize.size_xl,
+    top: 85
   },
-  verifiedVendorAt: {
-    top: 194,
-    left: 52,
+  vendorDescription: {
+    color: Color.colorWhite,
     fontFamily: FontFamily.poppinsRegular,
+    top: 85
   },
   ellipseIcon: {
-    top: 41,
-    left: 135,
-    width: 120,
-    height: 118,
+    top: 30,
+    left: 154,
+    width: 60,
+    height: 60,
     position: "absolute",
   },
   removeFromVendorList: {
@@ -323,19 +220,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   removeFromVendorContainer: {
-    left: 78,
-    top: 225,
-    position: "absolute",
-  },
-  rectangleParent2: {
-    top: 581,
-  },
-  vendorsProfilePage: {
-    backgroundColor: Color.colorWhitesmoke,
-    flex: 1,
-    height: 844,
-    overflow: "hidden",
-    width: "100%",
+    marginTop: 85,
   },
 });
 

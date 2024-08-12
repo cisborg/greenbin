@@ -1,580 +1,326 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable,FlatList ,TextInput} from "react-native";
+import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, Border, FontSize } from "../GlobalStyles";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const challenges = [
-  {
-    id: '1',
-    title: 'Plant Two Trees Daily',
-    icon: require("../assets/del-alt-fill.png"),
-    name: 'John Doe'
-  },
-  {
-    id: '2',
-    title: 'Buy a Smart Gadget',
-    icon: require("../assets/favorite.png"),
-    name: 'Joe Smith'
-  },
-  {
-    id: '3',
-    title: 'Buy a Green Home',
-    icon: require("../assets/favorite.png"),
-    name: 'Joe Smith'
-  },
-  {
-    id: '4',
-    title: 'Recycle Plastics',
-    icon: require("../assets/circle-left.png"),
-    name: 'Hassan'
-  },
-  {
-    id: '5',
-    title: 'Recycle Bins',
-    icon: require("../assets/circle-left.png"),
-    name: 'Joyce'
-  }
+  { id: '1', title: 'EcoBikes', icon: require('../assets/bikes.png') },
+  { id: '2', title: 'GreenBins', icon: require('../assets/greenBin.png') },
+  { id: '3', title: 'New Arrivals', icon: require('../assets/NewArrivals.png') },
+  { id: '4', title: 'MoleBio', icon: require('../assets/genetic.png') },
+  { id: '5', title: 'Beauty & Care', icon: require('../assets/visa.png') },
+  { id: '6', title: 'Phones', icon: require('../assets/mpesa.png') },
+  { id: '7', title: 'TVs', icon: require('../assets/Television.png') },
+  { id: '8', title: 'Shoes', icon: require('../assets/Shoes.png') },
+  { id: '9', title: 'Appliances', icon: require('../assets/Appliance.png') },
+  { id: '10', title: 'Trees', icon: require('../assets/Treee.png') },
+  { id: '11', title: 'Beauty & Care', icon: require('../assets/visa.png') },
+  { id: '12', title: 'Phones', icon: require('../assets/mpesa.png') },
+  { id: '13', title: 'TVs', icon: require('../assets/Television.png') },
+  { id: '14', title: 'Shoes', icon: require('../assets/Shoes.png') },
+  { id: '15', title: 'Appliances', icon: require('../assets/Appliance.png') },
+  { id: '16', title: 'Trees', icon: require('../assets/Treee.png') },
 ];
 
-const HomePageExistingUser = () => {
-
-  
+export default function HomePageExistingUser() {
   const navigation = useNavigation();
-  const renderItem = ({ item }) => (
-    <View style={[styles.challengeBox,styles.challengeLayout]}>
-      <Pressable>
-        
-          <View style={styles.challengeBoxChild} />
-          <Text style={styles.challengeText}>{item.title}</Text>
-          <Image style={styles.rainIcon} contentFit="cover" source={item.icon} />
-          <Text style={styles.shaileshText}>{item.name}</Text>
-       
-      </Pressable>
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [filteredChallenges, setFilteredChallenges] = React.useState(challenges);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = challenges.filter(challenge => 
+      challenge.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredChallenges(filtered);
+  };
+
+  const renderVendorItem = ({ item }) => (
+    <TouchableOpacity onPress={()=> navigation.navigate('VendorsProfilePage')} >
+    <View style={styles.vendorDetails} >
+      <Image style={styles.vendorImgIcon} contentFit="cover" source={item.icon} />
+      <Text style={styles.vendorName}>{item.name}</Text>
+      <Text style={styles.vendorProfession}>{item.profession}</Text>
+
     </View>
+    </TouchableOpacity>
   );
 
   return (
-    
     <View style={styles.homePageExistingUser}>
-      <Image
-        style={styles.shapesIcon}
-        contentFit="cover"
-        source={require("../assets/shapes.png")}
-      />
-      <Image
-        style={[styles.shapesIcon1, styles.vectorIconLayout]}
-        contentFit="cover"
-        source={require("../assets/shapes.png")}
-      />
+      <Text style={styles.hello}>Hello!🍀</Text>
+      <Image style={styles.shapesIcon} contentFit="cover" source={require("../assets/shapes.png")} />
+      <Image style={styles.shapesIcon1} contentFit="cover" source={require("../assets/shapes.png")} />
       
-      
-      
-      <View style={styles.challengeFrame}>
-        <FlatList data={challenges} renderItem={renderItem}
-         keyExtractor={item => item.id} 
-         horizontal       
-          />
-          
-      </View>
-    
+      <Text style={styles.vendorsYouFollow}>Vendors you follow:</Text>
 
-      
-     
-      <View style={[styles.noteMessage, styles.noteLayout]}>
-        <View style={[styles.noteMessageChild, styles.noteLayout]} />
-        <Text style={[styles.factAbout201Container, styles.textFlexBox]}>
-          <Text style={styles.textTypo}>Fact</Text>
-          <Text style={styles.about201BillionTypo}>
-            : About 2.01 billion tons of municipal solid waste is generated
-            globally each year
-          </Text>
-        </Text>
-      </View>
-
-      <View style={styles.Bar}>
+      <View style={styles.searchBarContainer}>
         <TextInput
           style={styles.searchBar}
           placeholder="Search Your Top Favorite Challenges"
           placeholderTextColor={Color.colorGray_100}
-          // Add any other props like onChangeText for handling input
+          value={searchQuery}
+          onChangeText={handleSearch}
         />
       </View>
-      <Pressable>
-      <Text style={[styles.hello, styles.helloTypo]}
-      onPress={() => navigation.navigate("EventsInformationPage")}
-      >Hello!🍀</Text>
-      </Pressable>
-      <View style={styles.vendorFrame}>
-        <Pressable
-          style={[styles.vendordetails, styles.vendordetailsLayout]}
-          onPress={() => navigation.navigate("VendorsProfilePage")}
-        >
-          <View style={[styles.vendorname, styles.vendornameLayout]}>
-            <Text style={[styles.shailesh, styles.shaileshTypo]}>John Doe</Text>
-            <Text style={[styles.mumbai, styles.thaneTypo]}>(Nairobi)</Text>
-          </View>
-          <Image
-            style={[styles.vendorimgIcon, styles.vendordetailsLayout]}
-            contentFit="cover"
-            source={require("../assets/vendorimg.png")}
-          />
-        </Pressable>
-        <Pressable 
-          style={[styles.vendordetails1, styles.vendordetailsLayout]}
-          onPress={() => navigation.navigate("VendorsProfilePage")}
-          >
-          <View style={[styles.vendorname1, styles.vendorname1Layout]}>
-            <Text style={[styles.hansenReddy, styles.vendorname1Layout]}>
-              Hassan 
-            </Text>
-            <Text style={[styles.thane, styles.thaneTypo]}>(Nakuru)</Text>
-          </View>
-          <Image
-            style={[styles.vendorimgIcon, styles.vendordetailsLayout]}
-            contentFit="cover"
-            source={require("../assets/vendorimg1.png")}
-          />
-        </Pressable>
-        <Pressable  >
-          <View  style={[styles.addVendorBtn, styles.text1Layout]}>
-            <Image
-              style={[styles.addVendorBtnChild, styles.vendornameLayout]}
-              contentFit="cover"
-              source={require("../assets/ellipse-47.png")}
-            />
-            <Text onPress={()=> navigation.navigate('VendorList')} style={[styles.text1, styles.text1Layout]}>+</Text>
-          </View>
-        </Pressable>
-        <Text style={[styles.vendorsYouFollow, styles.vendorsYouFollowTypo]}>
-          Vendors you follow:
+
+      <View style={styles.noteMessage}>
+        <Text style={styles.factAbout201}>
+          Fact: About 2.01 billion tons of municipal solid waste is generated globally each year!
         </Text>
+      </View>
+
+      <View style={styles.vendorFrame}>
+        <FlatList
+          data={[
+            { id: '1', name: 'Johanna', icon: require("../assets/vendorimg.png") ,profession: '(Tree Vendor)'},
+            { id: '2', name: 'Hassan', icon: require("../assets/vendorimg1.png"), profession: '(Smart Apps)' },
+            { id: '3', name: 'Winnie', icon: require("../assets/anotherWoman.avif"), profession: '(MoleBio)' },
+            { id: '4', name: 'Joseph', icon: require("../assets/anotherMan.avif"), profession: '(Smart Bins)' },
+
+
+          ]}
+          renderItem={renderVendorItem}
+          keyExtractor={item => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+        
+          <View style={styles.addVendorBtn}>
+            <TouchableOpacity onPress={() => navigation.navigate('VendorList')}>
+
+              <AntDesign name="pluscircle" size={30} color="green" />
+            </TouchableOpacity>
+          </View>
+        
+
+      </View>
+
+      <View style={styles.challengeFrame}>
+        <FlatList 
+          data={filteredChallenges} 
+          renderItem={({ item }) => (
+            <View style={styles.challengeBox}>
+              <TouchableOpacity>
+                <View style={styles.challengeBoxChild} />
+                <Text style={styles.challengeText}>{item.title}</Text>
+                <Image style={styles.rainIcon} contentFit="cover" source={item.icon} />
+              </TouchableOpacity>
+            </View>
+          )}
+          keyExtractor={item => item.id}
+          vertical
+          numColumns={6}
+          contentContainerStyle={{ flexWrap: 'wrap',alignItems:'flex-start' }}
+          showsHorizontalScrollIndicator={false}       
+        />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  vectorIconLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    position: "absolute",
-    overflow: "hidden",
-  },
-  textFlexBox: {
-    textAlign: "center",
-    position: "absolute",
-  },
-  challengeLayout: {
-    width: 119,
-    height: 185,
-    top: 0,
+  // Style adjustments to ensure layout consistency
+  challengeBox: {
+    width: 75,
+    height: 100,
     marginHorizontal: 10,
-    
-    
-  },
-  about201BillionTypo: {
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
   },
   challengeBoxChild: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'white',
     borderRadius: Border.br_base,
-    width: 119,
-    borderRadius: 19, // Rounded corners
-    elevation: 3, // Shadow effect for Android
-    shadowColor: '#000', // Shadow color for iOS
-    shadowOffset: { width: 1, height: 4 }, // Shadow offset
-    shadowOpacity: 0.4, // Shadow opacity
-    shadowRadius: 4,
-    height: 135,
+    width: "100%",
+    height: 80,
     overflow: 'hidden',
-  },
-  shaileshText: {
-    fontSize: FontSize.size_xl,
-    fontFamily: FontFamily.manropeSemiBold,
-    width: 100,
-    position: "absolute",
-    left: 5,
-    top: 110,
-    textAlign: "center",
-    contentFit: "center",
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   challengeText: {
-    top: 73,
-    left: 9,
-    fontSize: FontSize.size_base,
-    color: Color.colorWhite,
-    width: 101,
-    height: 78,
-    textAlign: "center",
-    position: "absolute",
-  },
-  groupBorder: {
-    backgroundColor: Color.colorGainsboro,
-    borderWidth: 1,
-    borderColor: Color.colorGainsboro,
-    borderStyle: "solid",
-    height: 10,
-    borderRadius: Border.br_base,
-    left: 0,
-    top: 0,
-    position: "absolute",
-  },
-  vendorsYouFollowTypo: {
-    height: 35,
-    width: 300,
-    fontSize: FontSize.size_5xl,
-    color: Color.colorGray_800,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    position: "absolute",
-  },
-  noteLayout: {
-    height: 57,
-    width: 359,
-    position: "absolute",
-  },
-  helloTypo: {
-    fontSize: FontSize.size_13xl,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  vendordetailsLayout: {
-    width: 141,
-    position: "absolute",
-  },
-  vendornameLayout: {
-    height: 41,
-    position: "absolute",
-  },
-  shaileshTypo1: {
-    color: Color.colorLimegreen_100,
-    height: 150,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
+    top: 55,
     left: 5,
+    marginLeft: -8,
+    fontSize: 11,
+    color: Color.colorGray_100,
+    width: 80,
+    height: 50,
+    marginTop: 5,
+    fontFamily: FontFamily.manropeBold,
     textAlign: "center",
-    top: 144,
-  },
-  Bar: {
-    width: 365,
+    position: "absolute"
     
-    padding: 10,
-    backgroundColor: '#f0f0f0', // Background color of the search bar
-    borderRadius: 8, // Rounded corners
-    elevation: 3, // Shadow effect for Android
-    shadowColor: '#000', // Shadow color for iOS
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset
-    shadowOpacity: 0.2, // Shadow opacity
-    shadowRadius: 4, 
-    top: 480,// 
-    left: 10,
     
-},
-searchBar: {
-  flex: 1, // Takes the remaining space
-  height: 40, // Height of the search bar
-  fontSize: 16, // Font size
-  color: '#333', // Text color
-  textDecorationStyle: 'solid'
- 
-},
-
-  
-  thaneTypo: {
-    height: 18,
-    width: 60,
-    fontSize: FontSize.size_3xs,
-    color: Color.colorDarkslategray,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
+  },
+  challengeFrame: {
+    height: 195,
+    width: 370,
+    position: "absolute",
+    top: 610,
+    left: 17,
+    
+  },
+  rainIcon: {
+    top: 10,
+    left: 15,
+    width: 43,
+    height: 40,
+    marginBottom: 5,
+    borderRadius: 15,
     position: "absolute",
   },
-  shaileshTypo: {
-    height: 30,
-    width: 89,
-    fontSize: FontSize.size_lg,
-    color: Color.colorDarkslategray,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
+  vendorFrame: {
+    top: 190,
+    left: 0,
+    height: 100,
+    width: "100%",
     position: "absolute",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
-  vendorname1Layout: {
-    width: 117,
-    position: "absolute",
+  vendorDetails: {
+    flexDirection: 'row',
+    alignItems: 'space-between',
+    padding: 5,
+    justifyContent: 'space-between',
+    top: 90,
+    marginBottom: 25,
+    backgroundColor: Color.colorWhite,
+    borderRadius: 20,
+    elevation: 4,
+    marginTop: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    height: 220,
+    width: 140,
   },
-  text1Layout: {
-    height: 45,
-    position: "absolute",
+  vendorImgIcon: {
+    width: 100,
+    height: 100,
+    borderRadius: 30,
+    marginLeft: 15,
+    
   },
   shapesIcon: {
-    top: -52,
-    left: -54,
-    width: 235,
-    height: 173,
+    bottom: 0,
+    left: 290,
+    width: 150,
+    height: 150,
     position: "absolute",
   },
   shapesIcon1: {
-    height: "20.5%",
-    width: "60.26%",
-    top: "84.24%",
-    right: "-18.97%",
-    bottom: "-4.74%",
-    left: "58.72%",
-  },
-  vectorIcon: {
-    height: "42.86%",
-    width: "6.2%",
-    top: "46.43%",
-    right: "0%",
-    bottom: "10.71%",
-    left: "93.8%",
-  },
-  vectorIcon1: {
-    height: "60.71%",
-    width: "6.48%",
-    top: "35.71%",
-    right: "7.61%",
-    bottom: "3.57%",
-    left: "85.92%",
-  },
-  vectorIcon2: {
-    height: "67.86%",
-    width: "5.63%",
-    top: "32.14%",
-    right: "16.06%",
-    bottom: "0%",
-    left: "78.31%",
-  },
-  text: {
-    top: "42.86%",
-    left: "0%",
-    fontSize: FontSize.size_sm,
-    color: Color.colorBlack,
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-  },
-  notification: {
-    left: 18,
-    width: 355,
-    height: 28,
     top: 0,
-    position: "absolute",
-  },
-  menuBarIcon: {
-    top: 770,
-    width: 397,
-    height: 74,
     left: 0,
+    width: 150,
+    height: 148,
     position: "absolute",
   },
-  challengeBox1Child: {
-    backgroundColor: Color.colorGray_300,
-    borderRadius: Border.br_base,
-    width: 119,
-    height: 177,
-    left: 0,
-    top: 0,
-     
-    position: "absolute",
+  vendorName: {
+    fontSize: FontSize.size_xl,
+    fontFamily: FontFamily.manropeBold,
+    color: Color.colorGray_800,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    position: 'absolute',
+    left: 29,
+    top: 110,
   },
-  buySmartGadget: {
-    top: 73,
-    left: 9,
+  vendorProfession: {
     fontSize: FontSize.size_base,
-    color: Color.colorWhite,
-    width: 101,
-    height: 72,
-    textAlign: "center",
-    position: "absolute",
+    fontFamily: FontFamily.manropeSemiBold,
+    color: Color.colorLimegreen_200,
+    textAlign: 'center',
+    position: 'absolute',
+    marginTop: 5,
+    left: 29,
+    top: 130,
   },
-  rainIcon: {
-    top: 20,
-    left: 33,
-    width: 53,
-    height: 53,
-    position: "absolute",
-  },
-  groupChild: {
-    borderWidth: 1,
-    borderColor: Color.colorGainsboro,
-    borderStyle: "solid",
-    height: 10,
-    width: 90,
-    borderRadius: Border.br_base,
-    left: 0,
-    top: 0,
-    position: "absolute",
-  },
-  groupItem: {
-    width: 45,
-  },
-  rectangleParent: {
-    top: 155,
-    left: 15,
-    height: 10,
-    width: 90,
-    position: "absolute",
-  },
-  
-  groupInner: {
-    width: 90,
-    backgroundColor: Color.colorGainsboro,
-  },
- 
-  groupChild1: {
-    width: 19,
-  },
-  
-  challengeFrame: {
-    top: 534,
-    left: 23,
-    width: 353,
-    height: 177,
-    position: "absolute",
-  },
-  challengeProgress: {
-    top: 486,
-    left: 8,
-  },
-  noteMessageChild: {
-    shadowColor: "rgba(0, 0, 0, 0.25)",
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowRadius: 8,
-    elevation: 8,
-    shadowOpacity: 1,
-    borderRadius: Border.br_xl,
+  addVendorBtn: {
+    padding: 10,
     backgroundColor: Color.colorWhite,
-    left: 0,
-    top: 0,
+    borderRadius: 40,
+    marginLeft: -20,
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 70,
+    
   },
-  textTypo: {
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-  },
-  factAbout201Container: {
-    top: 9,
-    left: 1,
-    fontSize: FontSize.size_smi,
-    color: Color.colorGray_700,
-    width: 354,
-    height: 48,
-  },
-  noteMessage: {
-    top: 409,
-    left: 17,
+  vendorsYouFollow: {
+    fontSize: FontSize.size_xl,
+    fontFamily: FontFamily.manropeBold,
+    color: Color.colorGray_800,
+    fontWeight: 'bold',
+    position: 'absolute',
+    left: 13,
+    top: 165
   },
   hello: {
-    top: 51,
+    top: 50,
     left: 248,
     width: 145,
     height: 39,
     color: Color.colorGray_800,
     fontSize: FontSize.size_13xl,
+    fontFamily: FontFamily.poppinsBold,
+    textAlign: "left",
     position: "absolute",
   },
-  shailesh: {
-    fontSize: FontSize.size_xl,
-    width: 100,
+  noteMessage: {
+    height: 57,
+    width: 359,
     position: "absolute",
-  },
-  shailesh1: {
-    fontSize: FontSize.size_lg,
-    width: 100,
-    position: "absolute",
-  },
-  mumbai: {
-    top: 24,
+    borderRadius: 13,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    top: 434,
     left: 17,
   },
-  vendorname: {
-    top: 171,
-    left: 24,
-    width: 93,
-  },
-  vendorimgIcon: {
-    borderRadius: Border.br_51xl_5,
-    height: 165,
-    left: 0,
-    top: 0,
-  },
-  vendordetails: {
-    height: 212,
-    left: 0,
-    top: 0,
-  },
-  hansenReddy: {
-    fontSize: FontSize.size_xl,
-    color: Color.colorDarkslategray,
-    height: 35,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    left: 0,
-    textAlign: "center",
-    top: 0,
+  factAbout201: {
+    fontSize: FontSize.size_sm,
+    color: Color.colorGray_800,
+    width: 354,
+    height: 48,
+    marginTop: 10,
+    marginLeft: 10,
+    left: 3,
     position: "absolute",
-    width: 100
   },
-  thane: {
-    top: 22,
-    left: 31,
-  },
-  vendorname1: {
-    top: 165,
-    left: 12,
-    height: 39,
-  },
-  vendordetails1: {
-    top: 6,
-    left: 152,
-    height: 204,
-  },
-  addVendorBtnChild: {
-    top: 3,
-    width: 41,
-    left: 0,
-  },
-  text1: {
+  searchBarContainer: {
+    width: 365,
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    top: 520,
     left: 10,
-    width: 22,
-    fontSize: FontSize.size_13xl,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    color: Color.colorBlack,
-    top: 0,
   },
-  addVendorBtn: {
-    top: 82,
-    left: 312,
-    width: 41,
-  },
-  vendorsYouFollow: {
-    top: -44,
-    left: -15,
-  },
-  vendorFrame: {
-    top: 182,
-    width: 350,
-    height: 212,
-    left: 17,
-    position: "absolute",
+  searchBar: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    color: '#333',
+    textDecorationStyle: 'solid',
   },
   homePageExistingUser: {
-    backgroundColor: Color.colorWhitesmoke,
+    backgroundColor: Color.colorWhite,
     flex: 1,
-    width: "100%",
-    height: 844,
+    height: 834,
     overflow: "hidden",
+    width: 404,
   },
 });
-
-export default HomePageExistingUser;

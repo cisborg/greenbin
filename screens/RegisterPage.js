@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Image, TextInput } from "react-native";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable,TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const RegisterPage = () => {
   const navigation = useNavigation();
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
 
   return (
     <View style={styles.registerPage}>
@@ -24,25 +24,22 @@ const RegisterPage = () => {
       <View style={styles.welcomeMessage}>
         <Text style={styles.greenText}>GreenBin</Text>
         <Text style={styles.howYouManage}>Turn Your Wastes to Wonders?</Text>
-
       </View>
 
-      
       <Image
         style={styles.bayerIcon}
         source={require("../assets/monoline.png")}
       />
       
-      
-      <View style={styles.inputContainer1}>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Phone Number</Text>
         <TextInput
           style={styles.inputField}
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          placeholder="Your Phone Number"
+          placeholder="Enter Phone Number"
           placeholderTextColor={Color.colorGray_100}
-          keyboardType="phone-pad"
+          keyboardType="phone-input"
         />
       </View>
 
@@ -52,7 +49,21 @@ const RegisterPage = () => {
           style={styles.inputField}
           value={password}
           onChangeText={setPassword}
-          placeholder="**********"
+          placeholder="Enter Password"
+          placeholderTextColor={Color.colorGray_100}
+          keyboardType="phone-pad"
+          secureTextEntry
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Confirm Password</Text>
+        <TextInput
+          style={styles.inputField}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm Password"
+          keyboardType="phone-pad"
           placeholderTextColor={Color.colorGray_100}
           secureTextEntry
         />
@@ -64,17 +75,19 @@ const RegisterPage = () => {
         </TouchableOpacity>
       </View>
 
-      <Pressable
-        style={styles.registerBtn}
+      <TouchableOpacity
+        style={styles.getStartedBtn}
         onPress={() => navigation.navigate("SignInPage")}
       >
-        <Text style={styles.registerBtnText}>Register</Text>
-      </Pressable>
+        <Text style={styles.cardText}>Register</Text>
+      </TouchableOpacity>
 
       <Pressable style={styles.alreadyHaveAnContainer}>
         <Text style={styles.text}>
           Already have an account? 
-          <Text style={styles.signIn} onPress={() => navigation.navigate("SignInPage")}> Sign In</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
+            <Text style={styles.signIn}> Sign In</Text>
+          </TouchableOpacity>
         </Text>
       </Pressable>
     </View>
@@ -88,72 +101,84 @@ const styles = StyleSheet.create({
     position: "absolute",
     overflow: "hidden",
   },
-  welcomeToTypo: {
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    position: "absolute",
-  },
-  inputContainer1: {
-    marginBottom: 20,
-    paddingHorizontal: 20,
-    top: 150,
-    paddingTop: 50,
-  },
   inputContainer: {
+    top: 150,
     marginBottom: 20,
     paddingHorizontal: 20,
-    paddingTop: 150,
+    width: 350, // Make the input container full width
   },
   label: {
     fontSize: FontSize.size_base,
-    color: Color.colorGray_800,
+    color: Color.colorLimegreen_200,
     fontFamily: FontFamily.poppinsBold,
     marginBottom: 5,
+
   },
   inputField: {
-    height: 50,
+    height: 40,
     backgroundColor: Color.colorWhite,
     borderRadius: Border.br_base,
     borderWidth: 1,
-    borderColor: Color.colorGray_300,
+    borderColor: 'lightgray',
     justifyContent: "center",
     paddingHorizontal: 10,
     fontSize: FontSize.size_base,
-    width: 330,
-    
+    width: '100%', // Make the input field full width
+    borderRadius: 13,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
   },
   termsContainer: {
     marginVertical: 15,
     alignItems: "center",
+    top: 130
   },
   termsText: {
     color: Color.colorGray_600,
     fontSize: FontSize.size_base,
     textAlign: "center",
   },
-  welcomeMessage : {
+  welcomeMessage: {
     position: "absolute",
     top: 80,
     left: 100,
   },
-  registerBtn: {
-    backgroundColor: Color.colorLimegreen_100,
-    borderRadius: Border.br_base,
+  getStartedBtn: {
+    backgroundColor: Color.colorLimegreen_200,
+    shadowColor: "#000",
+    left: 5,
+    top: 130,
+    shadowOffset: {
+      width: 2,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    alignContent: "center",
+    width: 190,
     height: 50,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 20,
-    width: 150,
+    marginBottom: 8,
   },
-  registerBtnText: {
-    color: Color.colorWhite,
-    fontSize: FontSize.size_lg,
-    fontFamily: FontFamily.poppinsBold,
+  cardText: {
+    color: "white",
+    fontWeight: 700,
+    fontSize: 18,
+    fontFamily: FontFamily.manropeBold,
   },
+ 
   alreadyHaveAnContainer: {
     marginTop: 20,
     alignItems: "center",
+    top: 110
   },
   text: {
     fontSize: FontSize.size_sm,
@@ -167,12 +192,12 @@ const styles = StyleSheet.create({
     top: -52,
     left: -54,
     width: 235,
-    height: 173,
+    height: 153,
     position: "absolute",
   },
   shapesIcon1: {
     height: "20.5%",
-    width: "60.26%",
+    width: "41.26%",
     top: "84.24%",
     right: "-18.97%",
     bottom: "-4.74%",
@@ -214,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorWhitesmoke,
     flex: 1,
     height: "100%",
-    width: 400,
+    width: 404,
     justifyContent: "center",
     alignItems: "center",
   },

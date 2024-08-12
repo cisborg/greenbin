@@ -1,57 +1,126 @@
-import * as React from "react";
-import { Image, Animated, StyleSheet, Text, View, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useRef, useEffect } from "react";
+import { Image, Animated, StyleSheet, Text, View, Easing, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 import { FontFamily, Border, FontSize, Color } from "../GlobalStyles";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const StartPage = () => {
   const navigation = useNavigation();
-  const zoomAnim = React.useRef(new Animated.Value(1)).current; // Initial scale value
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedValues = useRef([1, 2, 3, 4, 5,6].map(() => new Animated.Value(0))).current;
 
-  // Function to start the zoom animation
-  const startZoomAnimation = () => {
+  useEffect(() => {
+    // Looping wave animation for the image
     Animated.loop(
-      Animated.sequence([
-        Animated.timing(zoomAnim, {
-          toValue: 1.1, // Scale up
-          duration: 800, // Duration for zoom in
-          useNativeDriver: true,
-        }),
-        Animated.timing(zoomAnim, {
-          toValue: 1, // Scale back to normal
-          duration: 800, // Duration for zoom out
-          useNativeDriver: true,
-        }),
-      ])
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 5000,
+        easing: Easing.bounce,
+        useNativeDriver: true,
+      })
     ).start();
-  };
 
-  React.useEffect(() => {
-    startZoomAnimation(); // Start the zoom animation when component mounts
-  }, []);
+    // Looping bubble animations
+    const createBubbleAnimation = (animatedValue, delay) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.timing(animatedValue, {
+            toValue: 1,
+            duration: 2000,
+            delay,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animatedValue, {
+            toValue: 0,
+            duration: 2000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    animatedValues.forEach((animatedValue, index) => {
+      createBubbleAnimation(animatedValue, index * 500);
+    });
+  }, [animatedValue, animatedValues]);
+
+  // Interpolating the animated value to create a wave-like effect
+  const waveInterpolation = animatedValue.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ["0deg", "-10deg", "0deg"],
+  });
+
+  const translateYInterpolation = animatedValue.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0],
+  });
+
+  // Interpolations for each bubble's movement, opacity, and initial position
+  const bubbles = animatedValues.map((animatedValue, index) => {
+    let initialY;
+    if (index < 2) {
+      initialY = 800; // from bottom
+    } else if (index < 4) {
+      initialY = 300; // from middle
+    } else {
+      initialY = -150; // from top
+    }
+    
+    return {
+      translateY: animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [initialY, initialY - 300],
+      }),
+      opacity: animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0],
+      }),
+      left: index * 70 + 50,
+    };
+  });
 
   return (
     <View style={styles.startPage}>
+      {bubbles.map((bubbleStyle, index) => (
+        <Animated.View
+          key={index}
+          style={[
+            styles.bubble,
+            {
+              transform: [{ translateY: bubbleStyle.translateY }],
+              opacity: bubbleStyle.opacity,
+              left: bubbleStyle.left,
+            },
+          ]}
+        />
+      ))}
+
       <Animated.Image
-        style={[styles.startimgIcon, { transform: [{ scale: zoomAnim }] }]} // Apply zoom animation
+        style={[
+          styles.startimgIcon,
+          {
+            transform: [
+              { rotate: waveInterpolation },
+              { translateY: translateYInterpolation },
+            ],
+          },
+        ]}
         contentFit="cover"
         source={require("../assets/startimg.png")}
       />
+
       <Text style={[styles.greenbin, styles.textTypo]}>Nature Diversity</Text>
       <Text style={[styles.manageYourWaste, styles.getStartedTypo]}>
-        Connect & Manage your waste effectively!
+        Connect & Join our Green Economic Model today!
       </Text>
-      
-      <Pressable
-        style={[styles.getStartedBtn, styles.getLayout]} // Set button opacity
-        onPress={() => navigation.navigate("EventsInformationPage")}
+
+      <TouchableOpacity
+        style={styles.getStartedBtn}
+        onPress={() => navigation.navigate("RegisterPage")}
       >
-        <View style={[styles.getStartedBtnChild, styles.textPosition]} />
-        <Text style={[styles.getStarted, styles.getStartedTypo]}>
-          Get Started
-        </Text>
-      </Pressable>
-    
+        <Text style={styles.cardText}>Get Started</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -68,7 +137,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "700",
   },
-  getStartedTypo: {
+  getStartedText: {
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
     textAlign: "center",
@@ -84,21 +153,6 @@ const styles = StyleSheet.create({
   textPosition: {
     left: "0%",
     position: "absolute",
-  },
-  shapesIcon: {
-    top: -52,
-    left: -54,
-    width: 235,
-    height: 173,
-    position: "absolute",
-  },
-  shapesIcon1: {
-    height: "20.5%",
-    width: "60.26%",
-    top: "84.24%",
-    right: "-18.97%",
-    bottom: "-4.74%",
-    left: "58.72%",
   },
   greenbin: {
     top: 147,
@@ -117,31 +171,39 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   manageYourWaste: {
-    top: 577,
-    left: 20,
+    top: 590,
+    left: 30,
     fontSize: FontSize.size_base,
     color: Color.colorGray_800,
-  },
-  getStartedBtnChild: {
-    height: "100%",
-    top: "0%",
-    backgroundColor: Color.colorLimegreen_100,
-    bottom: "0%",
-    right: "0%",
-    borderRadius: Border.br_base,
-    left: "0%",
-    width: "100%",
-  },
-  getStarted: {
-    height: "50%",
-    width: "39.01%",
-    top: "25.09%",
-    left: "30.22%",
-    fontSize: FontSize.size_lg,
-    color: Color.colorWhite,
+    fontWeight: 400,
   },
   getStartedBtn: {
-    top: 640,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    left: 80,
+    top: 650,
+    shadowOffset: {
+      width: 2,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    alignContent: "center",
+    width: 230,
+    height: 50,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  cardText: {
+    color: Color.colorLimegreen_200,
+    fontWeight: 700,
+    fontSize: 18,
+    fontFamily: FontFamily.manropeBold,
   },
   vectorIcon: {
     height: "42.86%",
@@ -187,7 +249,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 844,
     overflow: "hidden",
-    width: "100%",
+    width: 404,
+  },
+  bubble: {
+    width: 30,
+    height: 30,
+    backgroundColor: "lightblue",
+    borderRadius: 15,
+    position: "absolute",
   },
 });
 
