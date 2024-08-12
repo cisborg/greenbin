@@ -1,17 +1,27 @@
 import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
+import { useNavigation } from "@react-navigation/native";
 
 const SeeAllEvents = () => {
+
   return (
-    <View style={styles.seeAllEvents}>
+    <View style={styles.seeAllEvents}> 
+       
+      <Text style={[styles.helloAshfak, styles.goingTypo1]}>Events and News</Text>
+
+            
+      <Image style={styles.shapesIcon} contentFit="cover" source={require("../assets/shapes.png")} />
+      <Image style={styles.shapesIcon1} contentFit="cover" source={require("../assets/shapes.png")} />
+
+     
       <View style={styles.groupParent}>
         <View style={[styles.rectangleParent, styles.groupParentLayout]}>
           <View style={styles.groupChildShadowBox} />
           <View style={styles.imGoingToShakeYParent}>
             <Text style={[styles.imGoingTo, styles.goingTypo1]}>
-              A Virtual Evening of Smooth Jazz
+              Renewable Energy Technology Show 
             </Text>
             <View
               style={[
@@ -33,26 +43,26 @@ const SeeAllEvents = () => {
             </View>
             <View style={[styles.minParent, styles.minParentPosition]}>
               <Text style={[styles.min, styles.minPosition]}>
-                Lot 13 • Oakland, CA
+                Lot 13 • Embu, Kenya
               </Text>
               <Image
                 style={[styles.groupItem, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-62.png")}
+                source={require("../assets/location.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/group-33349.png")}
+            source={require("../assets/rectangle-57.png")}
           />
         </View>
         <View style={[styles.rectangleGroup, styles.groupParentLayout]}>
           <View style={styles.groupChildShadowBox} />
           <View style={styles.imGoingToShakeYParent}>
             <Text style={[styles.imGoingTo1, styles.goingTypo]}>
-              International Kids Safe Parents Night Out
+              National Tree Planting Week Out
             </Text>
             <View
               style={[
@@ -74,19 +84,19 @@ const SeeAllEvents = () => {
             </View>
             <View style={[styles.minParent, styles.minParentPosition]}>
               <Text style={[styles.min, styles.minPosition]}>
-                Lot 13 • Oakland, CA
+                Lot 13 • BlueRidge, Mombasa
               </Text>
               <Image
                 style={[styles.groupItem, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-62.png")}
+                source={require("../assets/location1.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/international-kids-safe.png")}
+            source={require("../assets/tree.avif")}
           />
         </View>
         <View style={[styles.rectangleContainer, styles.groupParentLayout]}>
@@ -94,7 +104,7 @@ const SeeAllEvents = () => {
           <View style={styles.imGoingToShakeYParent}>
             <Text
               style={[styles.imGoingTo2, styles.goingTypo1]}
-            >{`Collectivity Plays the Music of Jimi `}</Text>
+            >{`Green Circular Economy Building Expo 2024 `}</Text>
             <View
               style={[
                 styles.iconbookmarkWrapper,
@@ -116,25 +126,25 @@ const SeeAllEvents = () => {
             <View style={[styles.minContainer, styles.minParentPosition]}>
               <Text
                 style={[styles.min2, styles.minPosition]}
-              >{`Longboard Margarita Bar `}</Text>
+              >{`Safari Park Nairobi - Kenya `}</Text>
               <Image
                 style={[styles.groupItem, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-62.png")}
+                source={require("../assets/location1.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/group-333491.png")}
+            source={require("../assets/greenCircular.webp")}
           />
         </View>
         <View style={[styles.groupView, styles.groupParentLayout]}>
           <View style={styles.groupChildShadowBox} />
           <View style={styles.imGoingToShakeYParent}>
             <Text style={[styles.imGoingTo1, styles.goingTypo]}>
-              Women's Leadership Conference 2021
+              Women's Leadership Conference 2024
             </Text>
             <View
               style={[
@@ -156,26 +166,26 @@ const SeeAllEvents = () => {
             </View>
             <View style={[styles.minParent1, styles.minParentPosition]}>
               <Text style={[styles.min3, styles.minPosition]}>
-                53 Bush St • San Francisco, CA
+                53 Bush St • Parklands, Nairobi
               </Text>
               <Image
                 style={[styles.groupItem, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-62.png")}
+                source={require("../assets/location.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/womens-leadership.png")}
+            source={require("../assets/women.avif")}
           />
         </View>
         <View style={[styles.rectangleParent1, styles.groupParentLayout]}>
           <View style={styles.groupChildShadowBox} />
           <View style={styles.imGoingToShakeYParent}>
             <Text style={[styles.imGoingTo4, styles.goingTypo1]}>
-              Jo Malone London’s Mother’s Day Presents
+              Scrap Waste Collection Expo 2024
             </Text>
             <View
               style={[
@@ -197,19 +207,19 @@ const SeeAllEvents = () => {
             </View>
             <View style={[styles.minParent2, styles.minParentPosition]}>
               <Text style={[styles.min4, styles.minPosition]}>
-                Radius Gallery • Santa Cruz, CA
+                Serena • Nairobi, Kenya
               </Text>
               <Image
                 style={[styles.groupItem, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-62.png")}
+                source={require("../assets/location1.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/group-333492.png")}
+            source={require("../assets/rectangle-571.png")}
           />
         </View>
         <View style={[styles.rectangleParent2, styles.groupParentLayout]}>
@@ -237,98 +247,23 @@ const SeeAllEvents = () => {
               <Text style={styles.satMay1}>Sun, Apr 25 • 10:15 AM</Text>
             </View>
             <View style={[styles.minParent3, styles.minParentPosition]}>
-              <Text style={styles.min5}>{`36 Guild Street London, UK  `}</Text>
+              <Text style={styles.min5}>{`Kenyatta Avenue Nairobi, Kenya `}</Text>
               <Image
                 style={[styles.groupChild12, styles.groupPosition]}
                 contentFit="cover"
-                source={require("../assets/group-63.png")}
+                source={require("../assets/location.jpg")}
               />
             </View>
           </View>
           <Image
             style={styles.groupInner}
             contentFit="cover"
-            source={require("../assets/group-333493.png")}
+            source={require("../assets/galaMusic.avif")}
           />
         </View>
       </View>
-      <View style={[styles.barsStatusBarIphoneL, styles.barPosition]}>
-        <View style={[styles.battery, styles.batteryPosition]}>
-          <View style={[styles.border, styles.borderLayout]} />
-          <Image
-            style={[styles.capIcon, styles.capIconPosition]}
-            contentFit="cover"
-            source={require("../assets/cap.png")}
-          />
-          <View style={[styles.capacity, styles.capacityLayout]} />
-        </View>
-        <Image
-          style={styles.wifiIcon}
-          contentFit="cover"
-          source={require("../assets/wifi.png")}
-        />
-        <Image
-          style={styles.cellularConnectionIcon}
-          contentFit="cover"
-          source={require("../assets/cellular-connection.png")}
-        />
-        <View style={[styles.timeStyle, styles.timeLayout]}>
-          <Text style={[styles.time, styles.timeTypo]}>9:41</Text>
-        </View>
-      </View>
-      <View style={[styles.titleBar2, styles.barPosition]}>
-        <Text style={[styles.helloAshfak, styles.goingTypo1]}>Events</Text>
-        <Image
-          style={[styles.backIcon, styles.iconLayout]}
-          contentFit="cover"
-          source={require("../assets/back.png")}
-        />
-        <View
-          style={[
-            styles.barsStatusBarIphoneLWrapper,
-            styles.iconbookmarkWrapperPosition,
-          ]}
-        >
-          <View
-            style={[styles.iconbookmark, styles.iconbookmarkWrapperPosition]}
-          >
-            <View style={[styles.batteryParent, styles.batteryPosition]}>
-              <View style={[styles.battery1, styles.capIconPosition]}>
-                <View style={[styles.border1, styles.borderLayout]} />
-                <Image
-                  style={[styles.capIcon, styles.capIconPosition]}
-                  contentFit="cover"
-                  source={require("../assets/cap1.png")}
-                />
-                <View style={[styles.capacity1, styles.capacityLayout]} />
-              </View>
-              <Image
-                style={styles.wifiIcon}
-                contentFit="cover"
-                source={require("../assets/wifi1.png")}
-              />
-              <Image
-                style={styles.cellularConnectionIcon}
-                contentFit="cover"
-                source={require("../assets/cellular-connection1.png")}
-              />
-              <View style={[styles.timeStyle1, styles.timeLayout]}>
-                <Text style={[styles.time1, styles.timeTypo]}>9:41</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <Image
-          style={[styles.moreIcon, styles.iconLayout]}
-          contentFit="cover"
-          source={require("../assets/more.png")}
-        />
-      </View>
-      <Image
-        style={styles.searchIcon}
-        contentFit="cover"
-        source={require("../assets/search1.png")}
-      />
+     
+     
     </View>
   );
 };
@@ -358,12 +293,37 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
+  headerContainer: {
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 25,
+    height: 42,
+    left: 0,
+    position: "absolute",
+  },
   minParentPosition: {
-    marginTop: 26,
+    marginTop: 22,
     height: 17,
     left: "0%",
-    top: "50%",
+    top: "48%",
     position: "absolute",
+  },
+  shapesIcon: {
+    top: -52,
+    left: -54,
+    width: 150,
+    height: 173,
+    position: "absolute",
+  },
+  shapesIcon1: {
+    height: "20.5%",
+    width: "40%",
+    top: "84.24%",
+    right: "-18.97%",
+    bottom: "-4.74%",
+    left: "58.72%",
   },
   minPosition: {
     color: Color.colorTypographySubColor,
@@ -453,12 +413,12 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_base,
     shadowOpacity: 1,
     elevation: 35,
-    shadowRadius: 35,
+    shadowRadius: 38,
     shadowOffset: {
       width: 0,
       height: 10,
     },
-    shadowColor: "rgba(87, 92, 138, 0.06)",
+    shadowColor: "rgba(87, 92, 138, 0.1)",
     top: 0,
     height: 106,
     left: 0,
@@ -499,7 +459,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   satMay1200PmWrapper: {
-    width: 117,
+    width: 130,
   },
   min: {
     left: "14.18%",
@@ -524,18 +484,19 @@ const styles = StyleSheet.create({
   groupInner: {
     left: 8,
     width: 79,
-    height: 92,
+    height: 78,
     top: 7,
     position: "absolute",
+    borderRadius: 25,
   },
   rectangleParent: {
     top: 118,
   },
   imGoingTo1: {
-    color: Color.colorTypographyTitle,
+    color: Color.colorLimegreen_200,
   },
   friApr23600PmWrapper: {
-    width: 120,
+    width: 128,
   },
   rectangleGroup: {
     top: 354,
@@ -549,9 +510,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     left: "0%",
     top: "50%",
+    color: Color.colorCrimson
   },
   monJun211000PmWrapper: {
-    width: 134,
+    width: 150,
   },
   min2: {
     left: "11.83%",
@@ -564,7 +526,7 @@ const styles = StyleSheet.create({
     top: 477,
   },
   satApr24130PmWrapper: {
-    width: 122,
+    width: 145,
   },
   min3: {
     left: "10.95%",
@@ -585,9 +547,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     left: "0%",
     top: "50%",
+    color: 'blue'
   },
   wedApr28530PmWrapper: {
-    width: 132,
+    width: 145,
   },
   min4: {
     left: "9.76%",
@@ -603,11 +566,11 @@ const styles = StyleSheet.create({
     color: Color.colorBlack,
   },
   sunApr251015AmWrapper: {
-    width: 131,
+    width: 150,
   },
   min5: {
     left: "12.02%",
-    color: "#989aa6",
+    color: Color.colorGray_800,
     marginTop: -8.5,
     fontSize: FontSize.subTitle1_size,
     textAlign: "left",
@@ -627,7 +590,7 @@ const styles = StyleSheet.create({
     top: 595,
   },
   groupParent: {
-    top: 104,
+    top: 125,
     left: 24,
     height: 701,
     width: 327,
@@ -675,9 +638,15 @@ const styles = StyleSheet.create({
     height: 44,
   },
   helloAshfak: {
-    top: "61.25%",
-    left: "15.2%",
-    fontSize: FontSize.h4Eventhub_size,
+    top: 50,
+    left: 140,
+    fontSize: 17,
+    fontFamily: FontFamily.poppinsBold
+  },
+  shaped: {
+    top: 50,
+    left: 200,
+    
   },
   backIcon: {
     right: "87.73%",
@@ -724,8 +693,8 @@ const styles = StyleSheet.create({
     top: 0,
   },
   searchIcon: {
-    top: 53,
-    left: 289,
+    top: 52,
+    left: 345,
     height: 24,
     width: 24,
     position: "absolute",
@@ -735,7 +704,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 812,
     overflow: "hidden",
-    width: "100%",
+    width: 404,
     backgroundColor: Color.colorWhite,
   },
 });

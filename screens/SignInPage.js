@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable, TextInput } from "react-native";
+import { StyleSheet, Text, View, Pressable, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
 
@@ -25,13 +25,13 @@ const SignInPage = () => {
         <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
       </View>
 
-      <Pressable
-        style={styles.loginBtn}
-        onPress={() => navigation.navigate("HomePageExistingUser")}
+      
+      <TouchableOpacity
+        style={styles.getStartedBtn}
+        onPress={() => navigation.navigate("Main")}
       >
-        <View style={[styles.loginBtnChild, styles.text2Position]} />
-        <Text style={[styles.getStarted, styles.welcomeToTypo]}>Login</Text>
-      </Pressable>
+        <Text style={styles.cardText}>Login</Text>
+      </TouchableOpacity>
 
       <Text style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}>
         We Value You! Proceed to log in...
@@ -43,7 +43,9 @@ const SignInPage = () => {
           style={styles.inputField}
           value={password}
           onChangeText={setPassword}
-          placeholder="**********"
+          placeholder="login with password..."
+          placeholderTextColor={Color.colorGray_100}
+          keyboardType="phone-pad"
           secureTextEntry
         />
       </View>
@@ -52,9 +54,11 @@ const SignInPage = () => {
         <Text style={[styles.text, styles.textTypo]}>
           <Text style={styles.dontHaveAn}>Don’t have an account?</Text>
           <Text style={styles.text1}>{` `}</Text>
-          <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>
-            Register
-          </Text>
+          <TouchableOpacity>
+            <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>
+              Register
+            </Text>
+          </TouchableOpacity>
         </Text>
       </View>
 
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
   greenbinFlexBox: {
     textAlign: "center",
     position: "absolute",
-  },
+  },    
   welcomeToTypo: {
     fontFamily: FontFamily.poppinsSemiBold,
     fontWeight: "600",
@@ -90,20 +94,26 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: FontSize.size_base,
-    color: Color.colorGray_800,
+    color: Color.colorLimegreen_200,
     fontFamily: FontFamily.poppinsBold,
     marginBottom: 5,
   },
   inputField: {
-    height: 50,
+    height: 40,
     backgroundColor: Color.colorWhite,
     borderRadius: Border.br_base,
     borderWidth: 1,
-    borderColor: Color.colorGray_300,
+    borderColor: 'lightgray',
     justifyContent: "center",
     paddingHorizontal: 10,
     fontSize: FontSize.size_base,
     width: 330,
+    borderRadius: 13,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
     
   },
  
@@ -118,6 +128,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     top: 520,
+  },
+  getStartedBtn: {
+    backgroundColor: Color.colorLimegreen_200,
+    shadowColor: "#000",
+    left: 120,
+    top: 690,
+    shadowOffset: {
+      width: 2,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    alignContent: "center",
+    width: 150,
+    height: 50,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 21,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  cardText: {
+    color: "white",
+    fontWeight: 700,
+    fontSize: 18,
+    fontFamily: FontFamily.manropeBold,
   },
   textTypo: {
     fontSize: FontSize.size_sm,
@@ -181,14 +219,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.size_lg,
     color: Color.colorWhite,
   },
-  loginBtn: {
-    top: 637,
-    left: 98,
-    width: 200,
-    height: 53,
-    borderRadius: Border.br_base,
-    position: "absolute",
-  },
+ 
   welcomeAgainPlease: {
     top: 190,
     left: 77,
@@ -199,8 +230,8 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsRegular,
   },
   dontHaveAnContainer: {
-    left: 31,
-    top: 693,
+    left: 50,
+    top: 760,
     position: "absolute",
   },
   loginimgIcon: {

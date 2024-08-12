@@ -15,7 +15,7 @@ const ProfilePage = () => {
     <View style={styles.container}>
       <View style={styles.header}>
       <Text style={styles.profileSectionTitle}>Your Profile</Text>
-
+    
         <Image
           style={styles.profileImg}
           source={require("../assets/profile-img.png")}
@@ -27,50 +27,35 @@ const ProfilePage = () => {
      
 
       <View style={styles.cardContainer}>
-        
-        <View style={styles.card} >
-         
-          <Text style={styles.cardValue}>GCPs: 15300</Text>
-        </View>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs")}>
+    <Text style={styles.cardValue}>GCPs: 2000</Text>
+  </TouchableOpacity>
 
-        <View style={styles.card} >
-          <View style={styles.cardRes} >
-          <TouchableOpacity activeOpacity={0.3}>
-           
-            <Image
-              style={styles.cardIcon}
-              source={require("../assets/stats_2500115.png")}
-            />
-           <Text style={styles.cardTitle} onPress={()=> navigation.navigate("LeaderBoard")}>LeaderBoard</Text>
-          </TouchableOpacity>
-          </View>
-        </View>
-        
-        <View style={styles.card}>
-        <TouchableOpacity activeOpacity={0.3}>
-          <Image
-            style={styles.cardIcon}
-            source={require("../assets/vector4.png")}
-          />
-          <Text style={styles.cardTitle1}>Security & Privacy</Text>
-          </TouchableOpacity>
-        </View>
-        
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("LeaderBoard")}>
+    <Image
+      style={styles.cardIcon}
+      source={require("../assets/stats_2500115.png")}
+    />
+    <Text style={styles.cardTitle}>LeaderBoard</Text>
+  </TouchableOpacity>
 
-        <View style={styles.card}>
-          <View style={styles.cardRes}>
-            <TouchableOpacity activeOpacity={0.3}>
-            
-              <Image
-            style={styles.userIcon}
-            source={require("../assets/user-light.png")}
-          />
-          <Text style={styles.cardTitle}>Green Connect</Text>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("SecurityPrivacy")}>
+    <Image
+      style={styles.cardIcon}
+      source={require("../assets/vector4.png")}
+    />
+    <Text style={styles.cardTitle1}>Security & Privacy</Text>
+  </TouchableOpacity>
 
-        </TouchableOpacity>
-      </View>
-        </View>
-      </View>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("GreenConnect")}>
+    <Image
+      style={styles.cardIcon}
+      source={require("../assets/user-light.png")}
+    />
+    <Text style={styles.cardTitle}>Green Connect</Text>
+  </TouchableOpacity>
+</View>
+
       <Text style={[styles.strongestTopics, styles.topicsTypo]}>
           Strongest Topics
         </Text>
@@ -144,20 +129,11 @@ const ProfilePage = () => {
          </View>
 
          </View>
-    
-    
-     
-     
-      <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Image
-          style={styles.backIcon}
-          source={require("../assets/image-2.png")}
-        />
-      </Pressable>
-
-      <Pressable style={styles.signOutButton} onPress={() => navigation.navigate("ProfileGCPs")}>
-        <Text style={styles.signOutText}>Sign Out?</Text>
-      </Pressable>
+      <TouchableOpacity>
+        <Pressable style={styles.signOutButton} onPress={() => navigation.navigate("StartPage")}>
+          <Text style={styles.signOutText}>Sign Out?</Text>
+        </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -167,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhitesmoke,
     padding: 20,
-    width: 393,
+    width: 404,
   },
   header: {
     alignItems: 'center',
@@ -186,8 +162,8 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: FontSize.size_xl,
     fontFamily: FontFamily.poppinsBold,
-    color: Color.colorLimegreen_100,
-    marginTop: 8,
+    color: Color.colorLimegreen_200,
+    marginTop: 0,
   },
   ProgressBar: {
     marginTop: 20,
@@ -245,29 +221,30 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 10,
     marginRight: 2,
-    width: 373,
+    width: 404,
     height: 190,
     alignItems: 'center',
     paddingTop: 10,
     alignItems: 'center',
     backgroundColor: Color.colorWhitesmoke,
-    borderRadius: 20,
+    borderRadius: 22,
     elevation: 3,
     shadowColor: 'lightGray',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
+    width: 375
 
   },
   card: {
-    backgroundColor: Color.colorLightgray,
-    width: '44%', // Responsive width
+    
+    width: 150, // Responsive width
     borderRadius: 20,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
-    shadowRadius: 8,
+    shadowRadius: 6,
     margin: 10,
     padding: 10,
     paddingBottom:20,
@@ -355,9 +332,7 @@ correct: {
     textAlign: "center",
     color: Color.colorBlack,
     fontSize: FontSize.size_lg,
-    marginBottom: 40,
-    
-    
+    marginBottom: 30,
   },
   cardTitle1: {
     fontFamily: FontFamily.Helvetica,
@@ -365,13 +340,10 @@ correct: {
     textAlign: "center",
     color: Color.colorBlack,
     fontSize: FontSize.size_lg,
-    marginBottom: 90,
-    paddingTop: 0,
-    marginTop: -30,
+    marginBottom: 50,
     marginLeft: 20,
-    
-    
-    
+    paddingLeft: 15,
+    marginTop: -30
   },
   cardIcon: {
     width: 25,
@@ -405,8 +377,8 @@ correct: {
     top: 40,
   },
   backIcon: {
-    width: 79,
-    height: 79,
+    width: 59,
+    height: 59,
   },
 });
 
