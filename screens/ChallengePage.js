@@ -1,28 +1,16 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, Image, TextInput, TouchableOpacity, Modal, Button } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Image, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/core';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Color } from '../GlobalStyles';
 
 const ChallengePage = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [cart, setCart] = useState([]);
 
   const handleSidebarItemPress = (categoryName) => {
-    setSelectedCategory(categoryName);
-  };
-
-  const handleCategoryCardPress = (item) => {
-    setSelectedItem(item);
-    setModalVisible(true);
-  };
-
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-    setModalVisible(false);
+    // Handle sidebar item press
   };
 
   // Filter categories based on search query
@@ -30,27 +18,20 @@ const ChallengePage = () => {
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Filter relevant products based on selected category and search query
-  const relevantProducts = selectedCategory 
-    ? filteredCategories.filter(category => category.name.includes(selectedCategory))
-    : filteredCategories;
+  const renderCategoryItem = ({ item }) => (
+    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('productDetail')}>
+      <Image source={item.image} style={styles.categoryImage} />
+      <Text style={styles.categoryText}>{item.name}</Text>
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceText}>{item.price}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TextInput 
-          style={styles.searchBar} 
-          placeholder="Search for items..." 
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate('cart', { cartItems: cart })}>
-          <MaterialCommunityIcons name="cart-outline" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.mainContent}>
-        <ScrollView style={styles.sidebar} showsVerticalScrollIndicator={true}>
+      <View style={styles.sidebar}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {sidebarCategories.map((category, index) => (
             <TouchableOpacity 
               key={index} 
@@ -62,56 +43,44 @@ const ChallengePage = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-
-        <ScrollView style={styles.content}>
-          <View style={styles.banner}>
-            <Image
-              source={{ uri: 'https://example.com/banner-image.jpg' }} // Replace with your banner image URL
-              style={styles.bannerImage}
-            />
-            <View style={styles.bannerTextContainer}>
-              <Text style={styles.bannerText}>Fans Festival Sale</Text>
-              <Text style={styles.bannerSubText}>Fan-tastic Deals for U</Text>
-            </View>
-          </View>
-
-          <Text style={styles.topCategoriesTitle}>Top Categories</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
-            {relevantProducts.map((category, index) => (
-              <TouchableOpacity key={index} style={styles.categoryCard} onPress={() => handleCategoryCardPress(category)}>
-                <Image source={category.image} style={styles.categoryImage} />
-                <Text style={styles.categoryText}>{category.name}</Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.priceText}>GP{category.price}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </ScrollView>
       </View>
 
-      {/* Modal for Item Description */}
-      {selectedItem && (
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          animationType="slide"
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.itemTitle}>{selectedItem.name}</Text>
-              <Image source={selectedItem.image} style={styles.modalItemImage} />
-              <Text style={styles.itemPrice}>Price: ${selectedItem.price}</Text>
-              
-              <Button title="Add to Cart" onPress={() => addToCart(selectedItem)} />
+      <View style={styles.mainContent}>
+        <View style={styles.header}>
+          <TextInput 
+            style={styles.searchBar} 
+            placeholder="Discover Ecogreen products..." 
+            placeholderTextColor={Color.colorGray_100}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate('cart')}>
+            <FontAwesome6 name="cart-plus" size={24} color="#32CD32" />
+          </TouchableOpacity>
+        </View>
 
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.banner}>
+          <Image
+            source={{ uri: 'https://example.com/banner-image.jpg' }} // Replace with your banner image URL
+            style={styles.bannerImage}
+          />
+          <View style={styles.bannerTextContainer}>
+            <Text style={styles.bannerText}>Fun Green Sales Today</Text>
+            <Text style={styles.bannerSubText}>Fan-tastic Deals for U</Text>
           </View>
-        </Modal>
-      )}
+        </View>
+
+        <Text style={styles.topCategoriesTitle}>Top Categories</Text>
+        <FlatList
+          data={filteredCategories}
+          renderItem={renderCategoryItem}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={4} // Display 5 items per row
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.categoriesContainer}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };
@@ -121,63 +90,39 @@ const sidebarCategories = [
   { name: 'Television', icon: 'television-classic' },
   { name: 'Kids Products', icon: 'baby-face-outline' },
   { name: 'Sneakers', icon: 'shoe-sneaker' },
-  { name: 'Accessories', icon: 'cellphone' },
+  { name: 'Smart', icon: 'cellphone' },
   { name: 'Home', icon: 'home' },
   { name: 'Health', icon: 'heart' },
-  { name: 'GreenBins', icon: 'bag-suitcase' },
+  { name: 'Bags', icon: 'bag-suitcase' },
 ];
 
 const categories = [
   { name: 'Smart Phones', image: require('../assets/smartphone.png'), price: 499.99 },
   { name: 'Televisions', image: require('../assets/Television.png'), price: 799.99 },
-  { name: 'GreenBins', image: require('../assets/greenBin.png'), price: 199.99 },
-  { name: 'Accessories', image: require('../assets/refurbished.png'), price: 299.99 },
-  { name: 'SmartPhones', image: require('../assets/earphones.png'), price: 99.99 },
+  { name: 'Kitchen Supplies', image: require('../assets/kitchen.png'), price: 199.99 },
+  { name: 'Refurbished Phones', image: require('../assets/refurbished.png'), price: 299.99 },
+  { name: 'Earphones', image: require('../assets/earphones.png'), price: 99.99 },
   { name: 'Household Appliances', image: require('../assets/Appliance.png'), price: 249.99 },
   { name: 'Home Storage', image: require('../assets/storage.png'), price: 59.99 },
   { name: 'Sneakers', image: require('../assets/sneakers.png'), price: 149.99 },
-  { name: 'Woofers', image: require('../assets/woofer.png'), price: 399.99 },
-  { name: 'Watches', image: require('../assets/watches.png'), price: 199.99 },
-  { name: 'Health', image: require('../assets/genetic.png'), price: 29.99 },
-  { name: 'Clothes', image: require('../assets/clothes.png'), price: 49.99 },
+  { name: 'Woofers', image: require('../assets/woofer.png'), price: 199.99 },
+  { name: 'Watches', image: require('../assets/watches.png'), price: 99.99 },
+  { name: 'Beauty & Personal Care', image: require('../assets/beauty.png'), price: 49.99 },
+  { name: 'Clothes', image: require('../assets/clothes.png'), price: 29.99 },
 ];
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10,
-    flexDirection: 'column',
+    flexDirection: 'row',
     width: 404,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f8f8f8',
-  },
-  searchBar: {
-    flex: 1,
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    marginRight: 10,
-  },
-  cartButton: {
-    padding: 10,
-  },
-  mainContent: {
-    flexDirection: 'row',
-    flex: 1,
-    width: 250
-  },
   sidebar: {
-    width: 50,
+    width: '15%', // Reduced width for sidebar
     backgroundColor: '#f4f4f4',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
     borderRightWidth: 1,
     borderColor: '#ccc',
   },
@@ -187,61 +132,80 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   sidebarText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#333',
-    marginTop: 5,
     textAlign: 'center',
   },
-  content: {
+  mainContent: {
     flex: 1,
-    paddingLeft: 10,
+    padding: 10,
+    backgroundColor: '#f8f8f8',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#f8f8f8',
+  },
+  searchBar: {
+    flex: 1,
+    height: 34,
+    borderColor: Color.colorLimegreen_200,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginRight: 10,
+  },
+  cartButton: {
+    padding: 10,
   },
   banner: {
+    width: '100%',
+    height: 130,
+    marginBottom: 15,
+    borderRadius: 10,
+    backgroundColor: '#ffc107',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    backgroundColor: '#ffc107',
-    marginBottom: 10,
-    borderRadius: 15,
+    overflow: 'hidden',
   },
   bannerImage: {
-    width: 300,
-    height: 150,
-    borderRadius: 10,
+    width: '100%',
+    height: '100%',
   },
   bannerTextContainer: {
     position: 'absolute',
     alignItems: 'center',
-    width: 250,
   },
   bannerText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: 20,
-  },
-  bannerSubText: {
-    fontSize: 16,
-    color: '#fff',
-    marginTop: 5,
-  },
-  topCategoriesTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
+    color: '#333',
+  },
+  bannerSubText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  topCategoriesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   categoriesContainer: {
-    flexDirection: 'row',
+    paddingBottom: 10,
+  },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   categoryCard: {
-    width: 100,
-    height: 120,
-    backgroundColor: '#f9f9f9',
+    width: '22%',
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     alignItems: 'center',
-    justifyContent: 'center',
     marginRight: 10,
+    elevation: 3, // For subtle shadow effect
   },
   categoryImage: {
     width: 50,
@@ -252,65 +216,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 5,
+    textAlign: 'center',
   },
   priceContainer: {
-    backgroundColor: '#e74c3c',
-    borderRadius: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 2,
     marginTop: 5,
   },
   priceText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: 200,
-    height: 200,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
-  itemTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalItemImage: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
-  },
-  itemDescription: {
-    fontSize: 12,
-    color: '#555',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  itemPrice: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#e74c3c',
-    borderRadius: 10,
-  },
-  closeButtonText: {
-    color: '#fff',
+    color: '#32CD32',
     fontWeight: 'bold',
   },
 });

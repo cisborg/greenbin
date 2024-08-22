@@ -16,13 +16,13 @@ const CardScroll = () => {
   const [randomCards, setRandomCards] = useState([]);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
-  // Function to start the animation
+  // this is the Function that starts the animation
   const startAnimation = () => {
     animatedValue.setValue(0);
     Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration: 3000, // Duration of the animation
+        duration: 3000, // Duration of the animation that ive set
         useNativeDriver: true,
       })
     ).start();
@@ -30,7 +30,7 @@ const CardScroll = () => {
 
   const randomizeCards = () => {
     const shuffledCards = [...cards].sort(() => 0.5 - Math.random());
-    setRandomCards(shuffledCards.slice(0, 3)); // Display 3 random cards
+    setRandomCards(shuffledCards.slice(0, 3)); // I am Displaying 3 random cards
   };
 
   const animatedStyle = {
@@ -42,7 +42,7 @@ const CardScroll = () => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [10, 0], // Move up slightly
+          outputRange: [10, 0], // Moving up slightly
         }),
       },
     ],
@@ -51,7 +51,7 @@ const CardScroll = () => {
   useEffect(() => {
     randomizeCards();
     startAnimation();
-    const interval = setInterval(randomizeCards, 3000); // Change cards every 5 seconds
+    const interval = setInterval(randomizeCards, 3000); // Changing these cards every 5 seconds
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
@@ -75,10 +75,10 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity>
           <AntDesign name="leftcircle" size={24} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Hey, Geff</Text>
-        <TouchableOpacity style={styles.manageAcc}>
-          <Text style={styles.manageAccText} onPress={() => navigation.navigate("manageAccount")}>Manage Account</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerText}>Hi,Josh</Text>
+        <TouchableOpacity style={styles.button1} onPress={()=> navigation.navigate('manageAccount')}>
+          <Text style={{color: Color.colorLimegreen_200, fontSize: 14, fontWeight: 500}}>Account</Text>
+      </TouchableOpacity>
       </View>
 
       <View style={styles.balanceContainer}>
@@ -113,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
           <FontAwesome6 name="mobile-retro" size={24} color="green" />
           <Text style={styles.greenMoney}>Green Carbon Points!</Text>
         </View>
-        <Text style={styles.moneyBalance}>GCPS: 14,000!</Text>
+        <Text style={styles.moneyBalance}>GCPS Wallet:  14,000!</Text>
         <Text style={styles.moneyBalance1}>Your Equivalent KES is GCPs BALANCE/10.25</Text>
       </View>
 
@@ -131,15 +131,15 @@ const HomeScreen = ({ navigation }) => {
             <FontAwesome name="wifi" size={24} color="green" />
             <Text style={styles.navButtonText}>Green WiFi</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyAirtime')}>
             <AntDesign name="creditcard" size={24} color="green" />
             <Text style={styles.navButtonText}>Buy Airtime</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Binance')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Crypto')}>
             <FontAwesome name="bitcoin" size={24} color="green" />
-            <Text style={styles.navButtonText}>Binance</Text>
+            <Text style={styles.navButtonText}>Trading</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Buy Goods')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods')}>
             <FontAwesome name="shopping-cart" size={24} color="green" />
             <Text style={styles.navButtonText}>Buy Goods</Text>
           </TouchableOpacity>
@@ -244,6 +244,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'green',
   },
+  button1: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    padding: 10,
+    marginVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    maxWidth: 110,
+    maxHeight: 40,
+    left: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+ 
   balanceType: {
     fontSize: 14,
     color: 'black',

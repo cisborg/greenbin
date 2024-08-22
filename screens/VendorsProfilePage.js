@@ -73,13 +73,13 @@ const VendorsProfilePage = () => {
           contentFit="cover"
           source={require("../assets/user-light.png")}
         />
-        <Text style={styles.buttonText}>Vendor’s History</Text>
+        <Text style={styles.buttonText}>Products Repository</Text>
         
       </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.buttonContainer]}
-        onPress={() => handleNavigation("ReportVendorPage")}
+        onPress={() => handleNavigation("ReportVendor")}
       >
          <Image
           style={styles.iconStyle}

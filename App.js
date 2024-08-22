@@ -16,13 +16,13 @@ import StartPage from "./screens/StartPage";
 import ManageAccountScreen from "./screens/manageAccount";
 import PrepaidRechargeScreen from "./screens/Payment";
 import ProfileGCPs from "./screens/ProfileGCPs";
-import Cover from "./screens/ProfilePageCopy";
+import MessagesScreen from "./screens/messageUI";
 import BestPlansScreen from "./screens/BuyBundles";
 import LeaderBoard from "./screens/LeaderBoard";
 import GreenConnect from "./screens/GreenConnect";
 import MessageScreen from "./screens/message";
-import SquadsScreen from "./screens/Squads";
-import CallingScreen from "./screens/callPage";
+import YourSquads from "./screens/Squads";
+import CallScreen from "./screens/callPage";
 import JoinSquads from "./screens/JoinSquads";
 import TagList from "./screens/Tags";
 import DialPad from "./screens/DialPad";
@@ -36,6 +36,40 @@ import GoodHome from "./screens/GreenDaily";
 import CartScreen from "./screens/cart";
 import WithdrawalScreen from "./screens/Withdrawal";
 import WithdrawalSuccessScreen from "./screens/WithdrawalSuccess"
+import SendSuccess from "./screens/SendSuccessful";
+import BuySuccess from  "./screens/BuyBundleSuccessful";
+import  WifiSuccess from "./screens/BuyWifiSuccessful";
+import Transactions from "./screens/Transaction";
+import ViewSquadScreen from  "./screens/ViewSquads"
+import NewPostScreen from  "./screens/PostSquad"
+import ChangePassword from "./screens/ChangePassword"
+import ReferAndEarn from "./screens/ReferAndEarn";
+import ProfileSettings from "./screens/ProfileSettings";
+import NotificationScreen from "./screens/ConnectNotification"
+import SettingsScreen from "./screens/Settings";
+import Checkout from "./screens/Checkout";
+import PaymentSuccess from  "./screens/CartPayment"
+import  CartDetail from "./screens/productDetail"
+import GreenBankAccount from "./screens/GreenBank";
+import JoinUsScreen from "./screens/JoinUs";
+import DonatePoints from "./screens/DonatePoints";
+import DonationHistory from "./screens/DonationHistory";
+import BuyAirtimeScreen from "./screens/BuyAirtime";
+import AboutScreen from "./screens/AboutUs";
+import ReportVendorScreen from "./screens/ReportVendor";
+import ProductScreen from "./screens/VendorProducts";
+import BuyGoods from "./screens/BuyGoods";
+import CarbonFootprintCalculator from "./screens/CarbonCalculator"
+import GamesScreen from "./screens/GoGames";
+import WalletScreen from "./screens/Crypto";
+import LegalScreen from "./screens/LegalScreen";
+import SquadScreen from "./screens/SquadsView";
+import LeaderboardScreen from "./screens/SquadsAward";
+import TagSelection from "./screens/+";
+import NotificationsScreen from "./screens/Updates";
+import CommentsSection from "./screens/SquadComments";
+import ConnectToShops from "./screens/ShopLocator"
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -179,16 +213,15 @@ const App = () => {
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
         <Stack.Screen name="message" component={MessageScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="squadList" component={SquadsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
         <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />
         <Stack.Screen name="ChatPage" component={ChatPage} options={{ headerShown: false }} />
         <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
         <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfilePageCopy" component={Cover} options={{ headerShown: false }} />
         <Stack.Screen name="BuyBundles" component={BestPlansScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LeaderBoard" component={LeaderBoard} options={{ headerShown: false }} />
-        <Stack.Screen name="callPage" component={CallingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
         <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
         <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
         <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
@@ -200,7 +233,40 @@ const App = () => {
         <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Withdrawal" component={WithdrawalScreen} options={{ headerShown : false }} />
         <Stack.Screen name="WithdrawalSuccess" component={WithdrawalSuccessScreen} options={{ headerShown: false }} />
-
+        <Stack.Screen name="SendSuccessful" component={SendSuccess} options={{ headerShown: false }} />
+        <Stack.Screen name="BuyBundleSuccessful" component={BuySuccess} options={{ headerShown: false }} />
+        <Stack.Screen name="messageUI" component={MessagesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BuyWifiSuccessful" component={WifiSuccess} options={{ headerShown: false }} />
+        <Stack.Screen name="Transaction" component={Transactions} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewSquads" component={ViewSquadScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PostSquad" component={NewPostScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false  }} />
+        <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} options={{ headerShown: false  }} />
+        <Stack.Screen name="ProfileSettings" component={ProfileSettings} options={{ headerShown: false  }} />
+        <Stack.Screen name="ConnectNotification" component={NotificationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+        <Stack.Screen name="CartPayment" component={PaymentSuccess} options={{ headerShown: false }} />
+        <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
+        <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
+        <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
+        <Stack.Screen name="DonationHistory" component={DonationHistory} options={{ headerShown: false }} />
+        <Stack.Screen name="BuyAirtime" component={BuyAirtimeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BuyGoods" component={BuyGoods} options={{ headerShown: false }} />
+        <Stack.Screen name="CarbonCalculator" component={CarbonFootprintCalculator} options={{ headerShown: false }} />
+        <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Crypto" component={WalletScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SquadsView" component={SquadScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="+" component={TagSelection} options={{ headerShown: false }} />
+        <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
+         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

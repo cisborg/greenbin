@@ -34,7 +34,7 @@ const SignInPage = () => {
       </TouchableOpacity>
 
       <Text style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}>
-        We Value You! Proceed to log in...
+        Ecodigital Solutions for Greener Future!
       </Text>
 
       <View style={styles.inputContainer}>
@@ -58,14 +58,19 @@ const SignInPage = () => {
             <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>
               Register
             </Text>
+
           </TouchableOpacity>
+          <TouchableOpacity onPress={()=> navigation.navigate('ChangePassword')}> 
+            <Text style={{ color: 'green'}}> Forgot Password? </Text>
+          </TouchableOpacity>
+
         </Text>
       </View>
 
       <Image
         style={styles.loginimgIcon}
         contentFit="cover"
-        source={require("../assets/loginimg.png")}
+        source={require("../assets/connect.webp")}
       />
     </View>
   );

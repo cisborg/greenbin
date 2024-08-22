@@ -10,6 +10,16 @@ const RegisterPage = () => {
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
+  const handleChangePassword = () => {
+    if (password === confirmPassword) {
+      // Implement password change logic here
+      Alert.alert('Registered  Successfully!');
+      navigation.navigate("SignInPage"); // Go back to previous screen after successful password change
+    } else {
+      Alert.alert('Error', 'Passwords do not match.');
+    }
+  };
+
   return (
     <View style={styles.registerPage}>
       <Image
@@ -28,16 +38,16 @@ const RegisterPage = () => {
 
       <Image
         style={styles.bayerIcon}
-        source={require("../assets/monoline.png")}
+        source={require("../assets/greenCi.png")}
       />
       
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Phone Number</Text>
+        <Text style={styles.label}>User ID</Text>
         <TextInput
           style={styles.inputField}
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          placeholder="Enter Phone Number"
+          placeholder="Enter ID Number"
           placeholderTextColor={Color.colorGray_100}
           keyboardType="phone-input"
         />
@@ -57,12 +67,12 @@ const RegisterPage = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Confirm Password</Text>
+        <Text style={styles.label}>Promo Code</Text>
         <TextInput
           style={styles.inputField}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
-          placeholder="Confirm Password"
+          placeholder="Enter promo code"
           keyboardType="phone-pad"
           placeholderTextColor={Color.colorGray_100}
           secureTextEntry
@@ -70,7 +80,7 @@ const RegisterPage = () => {
       </View>
 
       <View style={styles.termsContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> navigation.navigate('LegalScreen')}>
           <Text style={styles.termsText}>I accept the terms & conditions</Text>
         </TouchableOpacity>
       </View>
@@ -85,7 +95,7 @@ const RegisterPage = () => {
       <Pressable style={styles.alreadyHaveAnContainer}>
         <Text style={styles.text}>
           Already have an account? 
-          <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
+          <TouchableOpacity onPress={()=> handleChangePassword}>
             <Text style={styles.signIn}> Sign In</Text>
           </TouchableOpacity>
         </Text>
@@ -206,9 +216,9 @@ const styles = StyleSheet.create({
   bayerIcon: {
     top: 190,
     left: 90,
-    width: 220,
-    height: 220,
-    borderRadius: 25,
+    width: 240,
+    height: 240,
+    borderRadius: 50,
     position: "absolute",
   },
   greenText: {

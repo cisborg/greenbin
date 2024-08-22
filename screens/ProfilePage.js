@@ -2,25 +2,31 @@ import * as React from "react";
 import { StyleSheet, View, Text, Pressable, Button } from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
-import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
+import { FontFamily, Color, FontSize } from "../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
-import { ProgressBar } from "react-native-web";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 const ProfilePage = () => {
   const navigation = useNavigation();
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <Text style={styles.profileSectionTitle}>Your Profile</Text>
     
         <Image
           style={styles.profileImg}
           source={require("../assets/profile-img.png")}
         />
-       <Text style={styles.greeting}>Hi, Josh Doe</Text>
+       <Text style={styles.greeting}>Hi, Josh! </Text>
+       <Text style={styles.greeting1}>You are an ecoWarrior and Green Economist!</Text>
+
 
       </View>
 
@@ -28,7 +34,13 @@ const ProfilePage = () => {
 
       <View style={styles.cardContainer}>
   <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs")}>
-    <Text style={styles.cardValue}>GCPs: 2000</Text>
+  <Image
+      style={styles.cardIcon}
+      source={require("../assets/checked.png")}
+    />
+    <Text style={styles.cardValue}>#14,000 💰</Text>
+    <Text style={styles.cardValue1}>Transact GCPs</Text>
+
   </TouchableOpacity>
 
   <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("LeaderBoard")}>
@@ -36,32 +48,38 @@ const ProfilePage = () => {
       style={styles.cardIcon}
       source={require("../assets/stats_2500115.png")}
     />
-    <Text style={styles.cardTitle}>LeaderBoard</Text>
+   <Text style={styles.cardTitle3}>#333</Text>
+
+    <Text style={styles.cardTitle}>LeaderBoard 🏆</Text>
   </TouchableOpacity>
 
-  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("SecurityPrivacy")}>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator")}>
     <Image
       style={styles.cardIcon}
-      source={require("../assets/vector4.png")}
+      source={require("../assets/menu.jpg")}
     />
-    <Text style={styles.cardTitle1}>Security & Privacy</Text>
+    <Text style={styles.cardTitle1}>GCPs  Calculator 🔐</Text>
   </TouchableOpacity>
 
   <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("GreenConnect")}>
     <Image
       style={styles.cardIcon}
-      source={require("../assets/user-light.png")}
+      source={require("../assets/electric.png")}
     />
-    <Text style={styles.cardTitle}>Green Connect</Text>
+      <Text style={styles.cardTitle}>Connect Green</Text>
+      <Text style={styles.cardTitle2}>Today 🪢</Text>
+
+
   </TouchableOpacity>
 </View>
 
       <Text style={[styles.strongestTopics, styles.topicsTypo]}>
-          Strongest Topics
+          Win EcoGreen Promos Now ! 🎉
         </Text>
         <View style={styles.ProgressBar}>
         <View style={[styles.rectangleGroup, styles.rectangleParentLayout1]}>
-           
+        <Image source={require('../assets/Treee.png')} contentFit="cover" style={styles.Picture} />
+
             <Text style={[styles.topicName, styles.topicPosition1]}>
               Tree Planting
             </Text>
@@ -79,11 +97,12 @@ const ProfilePage = () => {
             </View>
             <Text style={[styles.text11, styles.textPosition]}>
               <Text style={styles.text10}>{`46% `}</Text>
-              <Text style={styles.correct}>Correct</Text>
+              <Text style={styles.correct}>Achieved!</Text>
             </Text>
           </View>
           <View style={[styles.rectangleGroup, styles.rectangleParentLayout1]}>
-           
+          <Image source={require('../assets/refurbished.png')} contentFit="cover" style={styles.Picture} />
+
            <Text style={[styles.topicName, styles.topicPosition1]}>
              Waste Recycle
            </Text>
@@ -101,13 +120,14 @@ const ProfilePage = () => {
            </View>
            <Text style={[styles.text11, styles.textPosition]}>
              <Text style={styles.text10}>{`50% `}</Text>
-             <Text style={styles.correct}>Correct</Text>
+             <Text style={styles.correct}>Achieved!</Text>
            </Text>
          </View>
         
          <View style={[styles.rectangleGroup, styles.rectangleParentLayout1]}>
+          <Image source={require('../assets/greenBin.png')} contentFit="cover" style={styles.Picture1} />
            
-           <Text style={[styles.topicName, styles.topicPosition1]}>
+           <Text style={[styles.topicName1, styles.topicPosition1]}>
              Green Bins
            </Text>
            <LinearGradient
@@ -124,16 +144,42 @@ const ProfilePage = () => {
            </View>
            <Text style={[styles.text11, styles.textPosition]}>
              <Text style={styles.text10}>{`48% `}</Text>
-             <Text style={styles.correct}>Correct</Text>
+             <Text style={styles.correct}>Achieved!</Text>
            </Text>
          </View>
 
          </View>
-      <TouchableOpacity>
-        <Pressable style={styles.signOutButton} onPress={() => navigation.navigate("StartPage")}>
-          <Text style={styles.signOutText}>Sign Out?</Text>
-        </Pressable>
-      </TouchableOpacity>
+         <View style={styles.bottomContainer}>
+          <View>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ProfileSettings")}>
+              <MaterialCommunityIcons name="account-edit-outline" size={24} color="green" />
+              <Text style={styles.buttonText2}> Profile Settings </Text>
+              <FontAwesome6 name="arrow-up-from-bracket" size={20} color="orange" />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ShopLocator")}>
+              <MaterialCommunityIcons name="connection" size={20} color="green" marginTop={-10}/>
+              <Text style={styles.buttonText}>Connect With Shops</Text>
+              <FontAwesome6 name="arrow-up-from-bracket" size={20} color="orange" />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ReferAndEarn")}>
+            <MaterialIcons name="connect-without-contact" size={20} color="green" />      
+              <Text style={styles.buttonText}>Refer & Earn Gift  🎁</Text>
+              <FontAwesome6 name="arrow-up-from-bracket" size={20} color="orange"  />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate("StartPage")}>
+              <AntDesign name="logout" size={20} color="green" />
+              <Text style={styles.buttonText1}>LogOut</Text>
+            </TouchableOpacity>
+          </View>
+         </View>
+        
+
     </View>
   );
 };
@@ -156,32 +202,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 8,
     width: 375,
+    height: 150
 
 
   },
-  greeting: {
+ greeting : {
     fontSize: FontSize.size_xl,
     fontFamily: FontFamily.poppinsBold,
     color: Color.colorLimegreen_200,
     marginTop: 0,
   },
+  greeting1 : {
+    fontSize: 12,
+    fontFamily: FontFamily.poppinsBold,
+    marginTop: 0,
+    color: Color.colorGray_100,
+  },
   ProgressBar: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 25,
+    marginBottom: 35,
     paddingHorizontal: 35,
     borderRadius: 22,
     elevation: 3,
     shadowColor: Color.colorGray_100,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    width: 379,
+    width: 378,
+    paddingBottom: 18
     
   },
   profileImg: {
-    width: 90,
-    height: 90,
+    width: 60,
+    height: 60,
     borderRadius: 60,
+    marginTop: -10,
+    marginBottom: 10,
+    left: 0
   },
   signOutButton: {
     alignSelf: 'flex-end',
@@ -204,13 +261,25 @@ const styles = StyleSheet.create({
     alignItems: 'flex-wrap',
 
   },
+  Picture: {
+    height: 40,
+    width: 40,
+    left: 0,
+  },
+ 
+  Picture1: {
+    height: 40,
+    width: 40,
+    left: 0,
+    marginRight: 12
+  },
   strongestTopics : {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: -25,
+    marginBottom: -5,
     paddingTop: 10,
     paddingBottom: 0,
     marginLeft: 2,
-    fontSize: FontSize.size_xl,
+    fontSize: 17,
     fontFamily: FontFamily.poppinsBold,
     color: Color.colorLimegreen_100,
   },
@@ -219,7 +288,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 30,
-    marginTop: 10,
+    marginTop: -10,
     marginRight: 2,
     width: 404,
     height: 190,
@@ -233,7 +302,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
-    width: 375
+    width: 390
 
   },
   card: {
@@ -255,12 +324,23 @@ const styles = StyleSheet.create({
     alignItems: 'flex-wrap',
   },
   cardValue: {
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_sm,
     fontFamily: FontFamily.poppinsSemiBold,
-    color: Color.colorBlack,
+    color: Color.colorLimegreen_200,
+    fontWeight: '580',
+    fontFamily: FontFamily.Helvetica,
+    marginTop: -30,
+    left: 38
 
-    
-    
+  },
+  cardValue1: {
+    fontSize: FontSize.size_sm,
+    fontFamily: FontFamily.poppinsSemiBold,
+    color: Color.colorCrimson,
+    fontWeight: '580',
+    fontFamily: FontFamily.Helvetica,
+    marginTop: 5,
+    left: 38    
   },
   rectangleParent: {
     backgroundColor: '#ffffff',
@@ -280,21 +360,65 @@ rectangleIcon: {
     marginBottom: 10,
 },
 topicName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: -20,
     paddingLeft: 0,
-    left: 0,
+    left: 35,
+    
+    
+},
+buttonText: {
+  fontSize: FontSize.size_sm,
+  fontFamily: FontFamily.poppinsSemiBold,
+  color: Color.colorBlack,
+  fontWeight: '580',
+  fontFamily: FontFamily.Helvetica,
+  marginTop: 0,
+  marginLeft:35,
+  marginRight: 145
+
+},
+buttonText1: {
+  fontSize: FontSize.size_sm,
+  fontFamily: FontFamily.poppinsSemiBold,
+  color: Color.colorBlack,
+  fontWeight: '580',
+  fontFamily: FontFamily.Helvetica,
+  marginTop: 0,
+  marginLeft:20
+
+},
+buttonText2: {
+  fontSize: FontSize.size_sm,
+  fontFamily: FontFamily.poppinsSemiBold,
+  color: Color.colorBlack,
+  fontWeight: '580',
+  fontFamily: FontFamily.Helvetica,
+  marginTop: 0,
+  marginLeft:29,
+  marginRight: 170
+
+},
+topicName1: {
+  fontSize: 14,
+  fontWeight: '600',
+  marginTop: -20,
+  paddingLeft: 0,
+  left: 23,
+  
+  
 },
 adjustableProgressBar: {
     height: 10,
     borderRadius: 5,
+
    
     
     width: 110,
     paddingHorizontal: 25,
     marginTop: 20,
+    marginLeft: -25
 },
 progressWrapper: {
     height: 10,
@@ -303,6 +427,7 @@ progressWrapper: {
     overflow: 'hidden',
     marginEnd: 20,
     marginTop: 21,
+    marginLeft: 0
     
 },
 progress: {
@@ -318,8 +443,50 @@ text10: {
     fontWeight: 'bold',
     color: '#ff4080',
 },
+button: {
+    width: 380, // Responsive width
+    borderRadius: 10,
+    elevation: 3,
+    flexDirection: 'row',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    marginBottom: 10,
+    marginTop: 10,
+    alignItems: 'center',
+    padding: 10,
+    paddingBottom:20,
+    paddingTop:20,
+    height: 25,
+    marginLeft: -5,
+    marginVertical: 10,
+},
+button1: {
+  width: 200, // Responsive width
+  borderRadius: 10,
+  borderStyle: 'solid',
+  borderColor: 'green',
+  elevation: 3,
+  flexDirection: 'row',
+  shadowColor: '#000',
+  shadowOffset: { width: 1, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 6,
+  marginBottom: 10,
+  marginTop: 20,
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 10,
+  paddingBottom:20,
+  paddingTop:20,
+  height: 25,
+  marginVertical: 10,
+  left: 100
+},
 correct: {
-    color: '#666',
+    color: Color.colorLimegreen_200,
+    marginLeft: -12
 },
   cashoutButton: {
     width: '100%',
@@ -328,58 +495,52 @@ correct: {
   },
   cardTitle: {
     fontFamily: FontFamily.Helvetica,
-    fontWeight: "700",
+    fontWeight: "580",
     textAlign: "center",
     color: Color.colorBlack,
-    fontSize: FontSize.size_lg,
+    fontSize: FontSize.size_sm,
     marginBottom: 30,
+    marginLeft: 30,
+    marginTop: -30,
+  },
+  cardTitle3: {
+    fontFamily: FontFamily.Helvetica,
+    fontWeight: "500",
+    textAlign: "center",
+    color: Color.colorLimegreen_200,
+    fontSize: FontSize.size_sm,
+    marginBottom: 30,
+    marginLeft: 15,
+    marginTop: -30,
+  },
+  cardTitle2: {
+    fontFamily: FontFamily.Helvetica,
+    fontWeight: "550",
+    textAlign: "center",
+    color: Color.colorLimegreen_200,
+    fontSize: FontSize.size_sm,
+    marginBottom: 30,
+    marginLeft: 30,
+    marginTop: -25,
   },
   cardTitle1: {
     fontFamily: FontFamily.Helvetica,
-    fontWeight: "700",
+    fontWeight: "550",
     textAlign: "center",
     color: Color.colorBlack,
-    fontSize: FontSize.size_lg,
+    fontSize: FontSize.size_sm,
     marginBottom: 50,
-    marginLeft: 20,
+    marginLeft: 10,
     paddingLeft: 15,
     marginTop: -30
   },
   cardIcon: {
     width: 25,
     height: 25,
+    borderRadius: 8
   },
-  profileSectionTitle: {
-    fontSize: FontSize.size_5xl,
-    fontFamily: FontFamily.poppinsSemiBold,
-    color: "black",
-    marginBottom: 0,
-    marginVertical: 5,
-    alignSelf: "flex-end",
-    paddingEnd: 15,
-    top: 0,
-  },
-  userIcon: {
-    width: 24,
-    height: 24,
-    alignSelf: 'flex-start',
-    left: 2,
-  },
-  profilePeopleImg: {
-    width: '398',
-    height: 100,
-    marginTop: 10,
-    borderRadius: 20,
-  },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 40,
-  },
-  backIcon: {
-    width: 59,
-    height: 59,
-  },
+
+ 
 });
 
 export default ProfilePage;
