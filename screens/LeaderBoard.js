@@ -1,33 +1,40 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { TouchableOpacity } from "react-native-gesture-handler";
+import LeaderboardScreen from './SquadsAward'
+import JoinUsScreen from './JoinUs'
+
+
 
 const LeaderBoard = () => {
   const navigation= useNavigation()
   return (
     <View style={styles.iphone1313Pro1}>
+     
+      <View style={styles.header}>
+        <TouchableOpacity onPress={()=> navigation.goBack()}>
+          <Ionicons name="arrow-back-circle-outline" size={29} color="green" />
+        </TouchableOpacity>
+  
+        <Text style={styles.leaderboard}> Leaderboard</Text>
+        <TouchableOpacity style={styles.Notification}>
+          <Ionicons name="notifications-outline" size={28} color="green" />
 
+        </TouchableOpacity>
+      </View>
       
-      <Pressable onPress={()=> navigation.goBack()}>
-      <Image 
-        style={styles.evaarrowIosBackFillIcon} 
-        contentFit="cover" 
-        source={require("../assets/arrow_8642990.png")}
-      />
-      </Pressable>
- 
-      <Text style={styles.leaderboard}> Leaderboard</Text>
-      <Image
-        style={styles.ellipseIcon1}
-        contentFit="cover"
-        source={require("../assets/notifcationIcon.webp")}
-      />
       <View style={styles.iphone1313Pro1Child} />
       <View style={styles.iphone1313Pro1Item} />
       <View style={styles.iphone1313Pro1Inner} />
       <Text style={[styles.region, styles.eidenTypo]}>GCPs</Text>
+      <Text style={[styles.national, styles.eidenTypo]}>Squads</Text>
+      <Text style={[styles.global, styles.eidenTypo]}>Awards</Text>
+
+
       <Text style={[styles.emmaAria, styles.textTypo2]}>Emma Aria</Text>
       <Text style={[styles.eiden, styles.textTypo2]}>Eiden</Text>
       <Text style={[styles.jackson, styles.textTypo2]}>Jackson</Text>
@@ -37,8 +44,6 @@ const LeaderBoard = () => {
       <Text style={[styles.text, styles.textTypo]}>1674</Text>
       <Text style={[styles.text1, styles.textTypo]}>1847</Text>
       <Text style={[styles.text2, styles.textTypo]}>2430</Text>
-      <Text style={[styles.national, styles.eidenTypo]}>Squads</Text>
-      <Text style={[styles.global, styles.eidenTypo]}>Awards</Text>
       <View style={styles.rectangleView} />
       <View style={styles.iphone1313Pro1Child1} />
       <Image
@@ -184,6 +189,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     borderRadius: 50,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    top: 20,
+    left: 15,
+    alignSelf: 'flex-start'
+    
+
+  },
   iphone1313ChildLayout5: {
     width: 50,
     height: 50,
@@ -264,14 +279,21 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   leaderboard: {
-    top: 28,
-    left: 133,
+    
+    
     fontSize: 20,
-    textAlign: "center",
-    color: Color.colorLimegreen_200,
+    color: 'orange',
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "600",
     position: "absolute",
+    marginRight: 50,
+    marginLeft: 115
+  },
+  Notification: {
+    
+    width: 30,
+    marginLeft: 320,
+    position: 'relative'
   },
   iphone1313Pro1Child: {
     top: 95,
@@ -487,10 +509,11 @@ const styles = StyleSheet.create({
   groupIcon: {
     height: "3.18%",
     width: "3.18%",
-    top: 165,
+    top: 135,
   
     bottom: "77.27%",
     left: 182,
+    borderRadius: 40,
    
  
     position: "relative",
@@ -705,6 +728,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
+
 
 export default LeaderBoard;
 

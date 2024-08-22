@@ -1,18 +1,36 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable, TouchableOpacity, TextInput } from "react-native";
 import { Image } from "expo-image";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from "@react-navigation/native";
 
 const SeeAllEvents = () => {
+  
+  const [searchQuery, setSearchQuery] = React.useState('');
 
+  const handleSearch = () => {
+    // Implement search/filter logic here
+    console.log('Searching for:', searchQuery);
+  };
   return (
     <View style={styles.seeAllEvents}> 
+    
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search events by name, time, or venue"
+          placeholderTextColor={Color.colorGray_100}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSearch}
+        />
+        <TouchableOpacity style={styles.settingsButton}>
+          <AntDesign name="setting" size={30} color="green" />
+        </TouchableOpacity>
+      
        
-      <Text style={[styles.helloAshfak, styles.goingTypo1]}>Events and News</Text>
 
             
-      <Image style={styles.shapesIcon} contentFit="cover" source={require("../assets/shapes.png")} />
       <Image style={styles.shapesIcon1} contentFit="cover" source={require("../assets/shapes.png")} />
 
      
@@ -292,6 +310,29 @@ const styles = StyleSheet.create({
     top: 1,
     left: 0,
     position: "absolute",
+  },
+ 
+  searchInput: {
+    
+    height: 38,
+    borderColor: Color.colorLimegreen_200,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    marginRight: 20,
+    width: 300,
+    marginTop: 30,
+    marginLeft: 20,
+    marginBottom: -70,
+    left: 20
+  },
+  settingsButton: {
+    height: 40,
+    width: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    top: 30,
+    left: 350
   },
   headerContainer: {
     flexDirection: "column",
@@ -639,7 +680,7 @@ const styles = StyleSheet.create({
   },
   helloAshfak: {
     top: 50,
-    left: 140,
+    left: 115,
     fontSize: 17,
     fontFamily: FontFamily.poppinsBold
   },

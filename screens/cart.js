@@ -107,7 +107,7 @@ const CartScreen = ({ navigation }) => {
       />
       <View style={styles.footer}>
         <Text style={styles.totalPrice}>GCPs {getTotalPrice()}</Text>
-        <TouchableOpacity style={styles.checkoutButton}>
+        <TouchableOpacity style={styles.checkoutButton} onPress={()=> navigation.navigate('Checkout')}>
           <Text style={styles.checkoutButtonText}>Check Out({cartItems.length})</Text>
         </TouchableOpacity>
       </View>

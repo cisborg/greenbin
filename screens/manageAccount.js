@@ -12,11 +12,31 @@ const ManageAccountScreen = () => {
   const navigation = useNavigation();
   
   const menuItems = [
-    { title: 'View Balance', description: 'View your current account balance', icon: <MaterialIcons name="account-balance" size={24} color="green" /> },
-    { title: 'View & Add Account', description: 'View and add more accounts', icon: <Ionicons name="add-circle-outline" size={24} color="green" /> },
-    { title: 'Help And Support', description: 'Help on your fingertips', icon: <Feather name="help-circle" size={24} color="green" /> },
-    { title: 'Transaction History', description: 'View transaction history', icon: <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="green" /> },
-    { title: 'Manage Services', description: 'Activate/Deactivate your services', icon: <MaterialIcons name="miscellaneous-services" size={24} color="green" /> },
+    { 
+      title: 'View Balance', 
+      description: 'View your green bank account balance', 
+      icon: <MaterialIcons name="account-balance" size={24} color="green" />,
+      screen: 'GreenBank' // Add screen name
+    },
+    { 
+      title: 'Donate Green Points', 
+      description: 'Donate points and earn a vacation', 
+      icon: <Ionicons name="add-circle-outline" size={24} color="green" />,
+      screen: 'DonatePoints' // Add screen name
+    },
+    
+    { 
+      title: 'Transaction History', 
+      description: 'View transaction history', 
+      icon: <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="green" />,
+      screen: 'Transaction' // Add screen name
+    },
+    { 
+      title: 'Join Us', 
+      description: 'Review Milestone Eligibility ', 
+      icon: <MaterialIcons name="miscellaneous-services" size={24} color="green" />,
+      screen: 'JoinUs' // Add screen name
+    },
   ];
 
   return (
@@ -32,6 +52,7 @@ const ManageAccountScreen = () => {
           <TouchableOpacity
             key={index}
             style={styles.menuItem}
+            onPress={() => navigation.navigate(item.screen)} // Navigate to the respective screen
           >
             <View style={styles.menuItemContent}>
               {item.icon}
@@ -61,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-    width: 409,
+    width: 404,
   },
   header: {
     fontSize: 24,
@@ -69,7 +90,6 @@ const styles = StyleSheet.create({
     color: Color.colorLimegreen_200,
     fontFamily: FontFamily.poppinsBold,
     marginLeft: 60
-
   },
   Header: {
     justifyContent: 'flex-start',
@@ -123,7 +143,8 @@ const styles = StyleSheet.create({
     transform: [
       {perspective: 800},
       {rotateY: '7deg'},
-      {rotateX: '7deg'},]
+      {rotateX: '7deg'},
+    ]
   },
   image: {
     width: '100%',
