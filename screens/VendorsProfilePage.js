@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const VendorsProfilePage = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { name, icon, profession } = route.params;
 
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
@@ -53,7 +55,7 @@ const VendorsProfilePage = () => {
 
       <TouchableOpacity
         style={[styles.buttonContainer]}
-        onPress={() => handleNavigation("ChatPage")}
+        onPress={() => handleNavigation("ChatPage",{name: name})}
       >
          <Image
           style={styles.iconStyle}
@@ -66,7 +68,7 @@ const VendorsProfilePage = () => {
 
       <TouchableOpacity
         style={[styles.buttonContainer]}
-        onPress={() => handleNavigation("VendorHistoryPage")}
+        onPress={() => handleNavigation("VendorProducts")}
       >
         <Image
           style={styles.iconStyle}
@@ -97,13 +99,11 @@ const VendorsProfilePage = () => {
       <View style={styles.vendorInfoContainer}>
        
         <Image
-          style={styles.ellipseIcon}
-          contentFit="cover"
-          source={require("../assets/ellipse-93.png")}
+          source={icon} style={styles.icon}
         />
-         <Text style={styles.vendorName}>Johanna</Text>
+         <Text style={styles.vendorName}>{name}</Text>
         <Text style={styles.vendorDescription}>
-          (Tree Vendor)
+          {profession}
         </Text>
         <TouchableOpacity style={styles.removeFromVendorContainer}>
           <Text
@@ -120,7 +120,7 @@ const VendorsProfilePage = () => {
 
 const styles = StyleSheet.create({
   vendorsProfilePage: {
-    backgroundColor: Color.colorWhitesmoke,
+    backgroundColor: Color.colorWhite,
     flex: 1,
     height: 844,
     overflow: "hidden",
@@ -144,20 +144,33 @@ const styles = StyleSheet.create({
   container:{
     left: 20
   },
+  icon: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: Color.colorGray_100,
+    resizeMode: "cover",
+    marginBottom: -70
+  },
   buttonContainer: {
     height: 63,
     width: 370,
-    backgroundColor: Color.colorLightgray,
+    backgroundColor: '#f2f2f2',
     borderRadius: Border.br_3xs,
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  
   },
   buttonText: {
-    fontFamily: FontFamily.manropeBold,
     fontSize: FontSize.size_xl,
     color: Color.colorBlack,
+    fontWeight: "500",
     flex: 1,
   },
   iconStyle: {
@@ -168,7 +181,7 @@ const styles = StyleSheet.create({
   vendorsProfile: {
     top: 50,
     left: 153,
-    fontSize: FontSize.size_9xl,
+    fontSize: FontSize.size_5xl,
     fontFamily: FontFamily.poppinsSemiBold,
     color: Color.colorGray_800,
     width: 228,

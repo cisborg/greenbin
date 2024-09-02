@@ -8,7 +8,6 @@ import VendorsProfilePage from "./screens/VendorsProfilePage";
 import HomePageExistingUser from "./screens/HomePageExistingUser";
 import ChallengePage from "./screens/ChallengePage";
 import SeeAllEvents from "./screens/SeeAllEvents";
-import ProfilePage from "./screens/ProfilePage";
 import ChatPage from "./screens/ChatPage";
 import SignInPage from "./screens/SignInPage";
 import RegisterPage from "./screens/RegisterPage";
@@ -18,7 +17,7 @@ import PrepaidRechargeScreen from "./screens/Payment";
 import ProfileGCPs from "./screens/ProfileGCPs";
 import MessagesScreen from "./screens/messageUI";
 import BestPlansScreen from "./screens/BuyBundles";
-import LeaderBoard from "./screens/LeaderBoard";
+import LeaderBoard from "./screens/Happy";
 import GreenConnect from "./screens/GreenConnect";
 import MessageScreen from "./screens/message";
 import YourSquads from "./screens/Squads";
@@ -69,7 +68,11 @@ import TagSelection from "./screens/+";
 import NotificationsScreen from "./screens/Updates";
 import CommentsSection from "./screens/SquadComments";
 import ConnectToShops from "./screens/ShopLocator"
-
+import  OTPConfirmScreen from "./screens/otpConfirm";
+import ProfilePage from "./screens/ProfilePage";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Color } from "./GlobalStyles";
+import smsScreen from "./screens/MessageGC";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -99,14 +102,16 @@ const screenOptions = {
 const TabBarIcon = ({ focused, activeIcon, inactiveIcon, label }) => {
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}>
-      <Image
-        source={focused ? activeIcon : inactiveIcon}
-        style={{ width: 25, height: 25, borderRadius: 13 }}
-      />
+      {focused ? (
+        <MaterialCommunityIcons name={activeIcon} size={25} color={Color.colorLimegreen_200} />
+      ) : (
+        <MaterialCommunityIcons name={inactiveIcon} size={25} color={Color.colorGray_100} />
+      )}
       <Text style={{ color: focused ? '#000' : '#888', fontSize: 12 }}>{label}</Text>
     </View>
   );
 };
+
 
 // Define the MainTabs component
 const MainTabs = () => {
@@ -119,9 +124,9 @@ const MainTabs = () => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon
               focused={focused}
-              activeIcon={require('./assets/home.png')}
-              inactiveIcon={require('./assets/homeInactive.jpg')}
-              label="Home"
+              activeIcon="home-circle" 
+              inactiveIcon= "home-circle"
+              
             />
           )
         }}
@@ -133,9 +138,9 @@ const MainTabs = () => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon
               focused={focused}
-              activeIcon={require('./assets/challenge.png')}
-              inactiveIcon={require('./assets/challengeIn.png')}
-              label="Challenges"
+              activeIcon= "lightning-bolt-circle"
+              inactiveIcon = "lightning-bolt-circle"
+              
             />
           )
         }}
@@ -147,9 +152,9 @@ const MainTabs = () => {
               tabBarIcon: ({ focused }) => (
                 <TabBarIcon
                   focused={focused}
-                  activeIcon={require('./assets/eventsActive.avif')}
-                  inactiveIcon={require('./assets/eventsInactive.avif')}
-                  label="GrnDaily"
+                  activeIcon="crowd"
+                  inactiveIcon="crowd"
+                  
                 />
               )
             }}
@@ -161,9 +166,9 @@ const MainTabs = () => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon
               focused={focused}
-              activeIcon={require('./assets/eventsActive.avif')}
-              inactiveIcon={require('./assets/eventsInactive.avif')}
-              label="Events"
+              activeIcon="map-marker"
+              inactiveIcon="map-marker"
+              
             />
           )
         }}
@@ -177,9 +182,9 @@ const MainTabs = () => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon
               focused={focused}
-              activeIcon={require('./assets/profileActive.avif')}
-              inactiveIcon={require('./assets/profileInactive.jpg')}
-              label="Profile"
+              activeIcon="account"
+              inactiveIcon="account"
+              
             />
           )
         }}
@@ -220,7 +225,7 @@ const App = () => {
         <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
         <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BuyBundles" component={BestPlansScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LeaderBoard" component={LeaderBoard} options={{ headerShown: false }} />
+        <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
         <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
         <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
         <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
@@ -266,7 +271,9 @@ const App = () => {
         <Stack.Screen name="+" component={TagSelection} options={{ headerShown: false }} />
         <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
-         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
+        <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
+        <Stack.Screen name="otpConfirm" component={OTPConfirmScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MessageGC" component={smsScreen} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

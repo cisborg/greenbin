@@ -3,19 +3,23 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView, Platform, Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Color } from "../GlobalStyles";
+
 
 
 const ChatPage = () => {
   const navigation = useNavigation();
+  const route = useRoute()
+  const { userName} = route.params
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
   const userContactInfo = {
-    name: "John Doe",
+    name: userName,
     status: "Online",
     phone: "+1234567890",
     email: "johndoe@example.com",
@@ -134,7 +138,7 @@ const ChatPage = () => {
 const styles = StyleSheet.create({
   chatPage: {
     flex: 1,
-    backgroundColor: "#f0f4f8", // Light background color
+    backgroundColor: Color.colorWhite, // Light background color
     width: 404,
   },
   header: {
@@ -144,6 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    
   },
   backButton: {
     marginRight: 10,
@@ -183,7 +188,7 @@ const styles = StyleSheet.create({
   myMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#4CAF50', // Modern green color
-    borderRadius: 20,
+    borderRadius: 12,
     padding: 12,
     marginVertical: 5,
     maxWidth: '80%',
@@ -223,19 +228,18 @@ const styles = StyleSheet.create({
     padding: 5, // Reduced padding for a compact look
     borderTopWidth: 1,
     borderTopColor: '#ddd',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    borderRadius: 12,
     shadowOpacity: 0.2,
     shadowRadius: 2,
+    maxHeight: 40
+
   },
   input: {
     flex: 1,
     height: 40, // Smaller height for compactness
     borderColor: '#ddd',
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 12,
     paddingHorizontal: 10,
     marginRight: 10,
     backgroundColor: '#f4f4f4',
@@ -250,13 +254,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   emojiPicker: {
-    height: 40,
-    width: 50,
+    height: 30,
+    width: 40,
     marginRight: 10,
+    borderRadius: 12
   },
   sendButton: {
     backgroundColor: '#4CAF50',
-    borderRadius: 25,
+    borderRadius: 18,
     padding: 8,
   },
   sendButtonText: {

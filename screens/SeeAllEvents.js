@@ -396,10 +396,7 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  batteryPosition: {
-    right: 15,
-    position: "absolute",
-  },
+  
   borderLayout: {
     opacity: 0.35,
     width: 22,

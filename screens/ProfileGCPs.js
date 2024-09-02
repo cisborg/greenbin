@@ -4,12 +4,15 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color, FontFamily } from "../GlobalStyles";
+import { useRoute } from '@react-navigation/native';
 
 const CardScroll = () => {
   const cards = [
-    { id: 1, image: require('../assets/smartdev.avif') },
-    { id: 2, image: require('../assets/samrt.jpg') },
-    { id: 3, image: require('../assets/again.jpg') },
+    { id: 1, image: require('../assets/greenFriday.png') },
+    { id: 2, image: require('../assets/greenPoints.png') },
+    { id: 3, image: require('../assets/Bags.png') },
+    { id: 4, image: require('../assets/connect.png') },
+
     // Add more cards as needed
   ];
 
@@ -69,13 +72,15 @@ const CardScroll = () => {
 };
 
 const HomeScreen = ({ navigation }) => {
+  const route = useRoute()
+  const { name , bal} = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
           <AntDesign name="leftcircle" size={24} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Hi,Josh</Text>
+        <Text style={styles.headerText}>Welcome, {name}</Text>
         <TouchableOpacity style={styles.button1} onPress={()=> navigation.navigate('manageAccount')}>
           <Text style={{color: Color.colorLimegreen_200, fontSize: 14, fontWeight: 500}}>Account</Text>
       </TouchableOpacity>
@@ -101,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuyBundles')}>
-          <Text style={styles.buttonText}>Buy Bundles</Text>
+          <Text style={styles.buttonText}>Bundles Spots</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DialPad')}>
           <Text style={styles.buttonText}>Self Recharge</Text>
@@ -113,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
           <FontAwesome6 name="mobile-retro" size={24} color="green" />
           <Text style={styles.greenMoney}>Green Carbon Points!</Text>
         </View>
-        <Text style={styles.moneyBalance}>GCPS Wallet:  14,000!</Text>
+        <Text style={styles.moneyBalance}>GCPS Wallet:  {bal}!</Text>
         <Text style={styles.moneyBalance1}>Your Equivalent KES is GCPs BALANCE/10.25</Text>
       </View>
 
@@ -128,34 +133,34 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.navigationContainer}>
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Wifi')}>
-            <FontAwesome name="wifi" size={24} color="green" />
-            <Text style={styles.navButtonText}>Green WiFi</Text>
+            <FontAwesome name="wifi" size={24} color={Color.colorLimegreen_200} />
+            <Text style={styles.navButtonText}>StarLink</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyAirtime')}>
-            <AntDesign name="creditcard" size={24} color="green" />
+            <AntDesign name="creditcard" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Buy Airtime</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Crypto')}>
-            <FontAwesome name="bitcoin" size={24} color="green" />
+            <FontAwesome name="bitcoin" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Trading</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods')}>
-            <FontAwesome name="shopping-cart" size={24} color="green" />
+            <FontAwesome name="shopping-cart" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Buy Goods</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Withdrawal')}>
-            <FontAwesome name="money" size={24} color="green" />
+            <FontAwesome name="money" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Withdraw Points</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('sendMoney')}>
-            <FontAwesome name="send" size={24} color="green" />
+            <FontAwesome name="send" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Send Points</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('GoGames')}>
-            <FontAwesome name="gamepad" size={24} color="green" />
+            <FontAwesome name="gamepad" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Go GAMES</Text>
           </TouchableOpacity>
         </View>
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Color.colorWhite,
     width: 404,
   },
   header: {
@@ -178,9 +183,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: "green",
+    color: Color.colorLimegreen_200,
+    marginLeft: -20
   },
   manageAcc: {
     marginTop: 5,
@@ -197,34 +203,28 @@ const styles = StyleSheet.create({
   },
   balanceBox: {
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 20,
     padding: 10,
-    backgroundColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
     margin: 5,
   },
   balanceBox1: {
     alignItems: 'flex-start',
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -279,13 +279,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     borderRadius: 15,
-    backgroundColor: "#e0e0e0",
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 0,
     },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
   },
@@ -295,12 +293,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     borderRadius: 18,
-    backgroundColor: Color.colorGainsboro,
+    shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 2,
+      height: 4,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
   },
@@ -363,20 +361,20 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     borderRadius: 17,
-    backgroundColor: 'lightgray',
     shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 2,
+      height: 3,
     },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
   },
   navButtonText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: 500,
     color: 'black',
+    marginTop: 5
   },
   cardScrollContainer: {
     paddingVertical: 20,
@@ -391,7 +389,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 0,
     },
-    shadowOpacity: 0.6,
+    shadowOpacity: 0.3,
     shadowRadius: 0,
     elevation: 0,
     width: 365,
