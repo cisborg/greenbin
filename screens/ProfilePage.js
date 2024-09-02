@@ -14,7 +14,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const ProfilePage = () => {
   const navigation = useNavigation();
-  
+  const username = "Josh"
+  const cash = "1400"
 
   return (
     <View style={styles.container}>
@@ -24,7 +25,7 @@ const ProfilePage = () => {
           style={styles.profileImg}
           source={require("../assets/profile-img.png")}
         />
-       <Text style={styles.greeting}>Hi, Josh! </Text>
+       <Text style={styles.greeting}>Hi, {username} </Text>
        <Text style={styles.greeting1}>You are an ecoWarrior and Green Economist!</Text>
 
 
@@ -33,17 +34,17 @@ const ProfilePage = () => {
      
 
       <View style={styles.cardContainer}>
-  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs")}>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs", { name: username, bal: cash})}>
   <Image
       style={styles.cardIcon}
       source={require("../assets/checked.png")}
     />
-    <Text style={styles.cardValue}>#14,000 💰</Text>
+    <Text style={styles.cardValue}>#{cash} 💰</Text>
     <Text style={styles.cardValue1}>Transact GCPs</Text>
 
   </TouchableOpacity>
 
-  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("LeaderBoard")}>
+  <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Happy")}>
     <Image
       style={styles.cardIcon}
       source={require("../assets/stats_2500115.png")}
@@ -187,7 +188,7 @@ const ProfilePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhitesmoke,
+    backgroundColor: Color.colorWhite,
     padding: 20,
     width: 404,
   },
@@ -197,10 +198,7 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     borderRadius: 25,
     elevation: 3,
-    shadowColor: Color.colorGray_100,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
+   
     width: 375,
     height: 150
 
@@ -223,22 +221,20 @@ const styles = StyleSheet.create({
     marginBottom: 35,
     paddingHorizontal: 35,
     borderRadius: 22,
-    elevation: 3,
-    shadowColor: Color.colorGray_100,
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 1 },
+    shadowOpacity: 0.1,
     width: 378,
-    paddingBottom: 18
+    paddingBottom: 18,
     
   },
   profileImg: {
     width: 60,
-    height: 60,
+    height: 60, 
     borderRadius: 60,
     marginTop: -10,
     marginBottom: 10,
-    left: 0
+    left: 0   
   },
   signOutButton: {
     alignSelf: 'flex-end',
@@ -247,7 +243,7 @@ const styles = StyleSheet.create({
   },
   rectangleGroup : {
     flexDirection: 'row',
-    alignItems: "flex-wrap",
+    alignItems: "flex-start",
     paddingTop: 25,
     left: 0,
   },
@@ -295,14 +291,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 10,
     alignItems: 'center',
-    backgroundColor: Color.colorWhitesmoke,
+    backgroundColor: Color.colorWhite,
     borderRadius: 22,
     elevation: 3,
-    shadowColor: 'lightGray',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    width: 390
+   
+    width: 378
 
   },
   card: {
@@ -311,8 +304,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     margin: 10,
     padding: 10,
@@ -347,16 +340,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 4 },
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
 },
 rectangleIcon: {
     width: 393,
     height: 100,
-    borderRadius: 10,
+    borderRadius: 10, 
     marginBottom: 10,
 },
 topicName: {
@@ -365,6 +357,7 @@ topicName: {
     marginTop: -20,
     paddingLeft: 0,
     left: 35,
+    alignItems: 'flex-start',
     
     
 },
@@ -406,15 +399,10 @@ topicName1: {
   marginTop: -20,
   paddingLeft: 0,
   left: 23,
-  
-  
 },
 adjustableProgressBar: {
     height: 10,
     borderRadius: 5,
-
-   
-    
     width: 110,
     paddingHorizontal: 25,
     marginTop: 20,

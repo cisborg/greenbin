@@ -20,10 +20,7 @@ const SignInPage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-      <View style={styles.welcomeMessage}>
-        <Text style={[styles.greenbin, styles.greenbinFlexBox]}>GreenBin!</Text>
-        <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
-      </View>
+     
 
       
       <TouchableOpacity
@@ -106,18 +103,15 @@ const styles = StyleSheet.create({
   inputField: {
     height: 40,
     backgroundColor: Color.colorWhite,
-    borderRadius: Border.br_base,
-    borderWidth: 1,
-    borderColor: 'lightgray',
     justifyContent: "center",
     paddingHorizontal: 10,
     fontSize: FontSize.size_base,
     width: 330,
-    borderRadius: 13,
+    borderRadius: 10,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     
   },
@@ -181,31 +175,8 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
-  greenbin: {
-    top: 7,
-    left: 0,
-    fontSize: FontSize.size_29xl,
-    color: "green",
-    height: 56,
-    fontFamily: FontFamily.poppinsBold,
-    fontWeight: "700",
-    width: 275,
-  },
-  welcomeTo: {
-    left: 127,
-    color: Color.colorGray_800,
-    fontSize: FontSize.size_base,
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    top: 0,
-  },
-  welcomeMessage: {
-    top: 97,
-    left: 80,
-    height: 63,
-    width: 229,
-    position: "absolute",
-  },
+ 
+  
   loginBtnChild: {
     backgroundColor: Color.colorLimegreen_100,
     bottom: "0%",
@@ -259,7 +230,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsRegular,
   },
   signInPage: {
-    backgroundColor: Color.colorWhitesmoke,
+    backgroundColor: Color.colorWhite,
     flex: 1,
     height: 844,
     overflow: "hidden",

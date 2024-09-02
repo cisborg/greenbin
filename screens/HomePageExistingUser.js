@@ -20,10 +20,11 @@ const challenges = [
 ];
 
 const banners = [
-  require('../assets/greenBin.png'),
-  require('../assets/Television.png'),
-  require('../assets/Appliance.png'),
-  require('../assets/bikes.png'),
+  require('../assets/greenFriday.png'),
+  require('../assets/greenPoints.png'),
+  require('../assets/Bags.png'),
+  require('../assets/connect.png'),
+
 ];
 
 export default function HomePageExistingUser() {
@@ -43,13 +44,20 @@ export default function HomePageExistingUser() {
   };
 
   const renderVendorItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('VendorsProfilePage')} >
+    <TouchableOpacity onPress={() => navigation.navigate('VendorsProfilePage', {
+      name: item.name,
+      icon: item.icon,
+      profession: item.profession,
+     })} >
       <View style={styles.vendorDetails}>
         <Image style={styles.vendorImgIcon} contentFit="cover" source={item.icon} />
         <Text style={styles.vendorName}>{item.name}</Text>
         <Text style={styles.vendorProfession}>{item.profession}</Text>
-        <Text style={styles.vendorOnline}>{item.status}</Text>
-        <Text style={styles.vendorOnline}>{item.online}</Text>
+        <TouchableOpacity style={styles.followed}>
+          <Image style={styles.Small} contentFit="cover" source={item.small} />
+          <Text style={styles.followers}>Followed by {item.followers} others</Text>
+        </TouchableOpacity>
+       
       </View>
     </TouchableOpacity>
   );
@@ -79,7 +87,6 @@ export default function HomePageExistingUser() {
 
   return (
     <View style={styles.homePageExistingUser}>
-     <Text style={styles.Welcome}>Welcome to Nature Diversity  ☘️</Text>
 
       {/* Banner Section */}
       <View style={styles.bannerContainer}>
@@ -112,10 +119,10 @@ export default function HomePageExistingUser() {
       <View style={styles.vendorFrame}>
         <FlatList
           data={[
-            { id: '1', name: 'Leakeyy', icon: require("../assets/vendorimg.png"), profession: '(Tree Vendor)', status: 'Online', online: <Octicons name="dot-fill" size={17} color="green" /> },
-            { id: '2', name: 'Hassan', icon: require("../assets/vendorimg1.png"), profession: '(Smart Apps)', status: 'Online', online: <Octicons name="dot-fill" size={17} color="green" /> },
-            { id: '3', name: 'Winnie', icon: require("../assets/anotherWoman.avif"), profession: '(MoleBio)', status: 'Online', online: <Octicons name="dot-fill" size={17} color="green" /> },
-            { id: '4', name: 'Joseph', icon: require("../assets/anotherMan.avif"), profession: '(Smart Bins)', status: 'Online', online: <Octicons name="dot-fill" size={17} color="green" /> },
+            { id: '1', name: 'Leakeyy', icon: require("../assets/vendorimg.png"), profession: 'Tree Vendor',small: require("../assets/man.avif"), followers: 200 },
+            { id: '2', name: 'Hassan', icon: require("../assets/vendorimg1.png"), profession: 'Smart Apps' ,small: require("../assets/man.avif"),followers: `2k` },
+            { id: '3', name: 'Winnie', icon: require("../assets/anotherWoman.avif"), profession: 'MoleBio' ,small: require("../assets/man.avif"), followers: `1k` },
+            { id: '4', name: 'Joseph', icon: require("../assets/anotherMan.avif"), profession: 'Smart Bins' ,small: require("../assets/man.avif"), followers: `2.5k` },
           ]}
           renderItem={renderVendorItem}
           keyExtractor={item => item.id}
@@ -163,23 +170,43 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     height: 200, // Adjust height as needed
-    overflow: 'hidden',
+    overflow: 'visible',
     position: 'relative',
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
     top: 60,
     left: 20,
-    width: 350,
+    width: 360,
+    justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
   },
-  Welcome: {
-    top: 30,
-    fontFamily: FontFamily.poppinsBold,
-    left : 10,
-    fontSize: 20,
-    color: Color.colorLimegreen_200
+  Small: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderRadius: 40,
+    top: 150,
+    marginTop: -5,
+    marginRight: -3,
+    left: -100
+  },
+  followed: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginBottom: 5,
+    left: -10
+  },
+ 
+  followers: {
+    color: Color.colorGray_100,
+    top:150,
+    left: 0,
+    fontSize: 12,
+    width: 100,
+    marginTop: -8,
+    marginLeft: -92
   },
   bannerImage: {
     width: '100%',
@@ -201,7 +228,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
-    top: 420,
+    top: 445,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -218,12 +245,12 @@ const styles = StyleSheet.create({
   },
   noteMessage: {
     height: 57,
-    width: 359,
+    width: 365,
     position: "absolute",
     borderRadius: 13,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     top: 570,
@@ -281,19 +308,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     position: 'absolute',
-    left: 29,
+    left: 10,
     top: 110,
   },
-  vendorOnline: {
-    fontSize: 15,
-    fontFamily: FontFamily.manropeBold,
-    color: Color.colorGray_800,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    position: 'absolute',
-    left: 29,
-    top: 145,
-  },
+ 
   vendorProfession: {
     fontSize: 12,
     fontFamily: FontFamily.manropeSemiBold,
@@ -301,7 +319,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     position: 'absolute',
     marginTop: 5,
-    left: 29,
+    left: 10,
     top: 125,
   },
   addVendorBtn: {

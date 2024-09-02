@@ -121,7 +121,7 @@ const MessagesScreen = ({ navigation }) => {
   );
 
   const renderMessageItem = ({ item }) => (
-    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ChatPage')}>
+    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('MessageGC')}>
       <View style={styles.userInfo}>
         <View style={styles.userImgWrapper}>
           <Image source={item.userImg} style={styles.userImg} />
