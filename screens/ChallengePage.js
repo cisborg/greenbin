@@ -19,7 +19,7 @@ const ChallengePage = () => {
   );
 
   const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('productDetail')}>
+    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('VendorProducts')}>
       <Image source={item.image} style={styles.categoryImage} />
       <Text style={styles.categoryText}>{item.name}</Text>
       <View style={styles.priceContainer}>
@@ -75,7 +75,7 @@ const ChallengePage = () => {
           data={filteredCategories}
           renderItem={renderCategoryItem}
           keyExtractor={(item, index) => index.toString()}
-          numColumns={4} // Display 5 items per row
+          numColumns={4} // Display 4 items per row
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.categoriesContainer}
           showsVerticalScrollIndicator={false}
@@ -97,18 +97,18 @@ const sidebarCategories = [
 ];
 
 const categories = [
-  { name: 'Smart Phones', image: require('../assets/smartphone.png'), price: 499.99 },
-  { name: 'Televisions', image: require('../assets/Television.png'), price: 799.99 },
-  { name: 'Kitchen Supplies', image: require('../assets/kitchen.png'), price: 199.99 },
-  { name: 'Refurbished Phones', image: require('../assets/refurbished.png'), price: 299.99 },
-  { name: 'Earphones', image: require('../assets/earphones.png'), price: 99.99 },
-  { name: 'Household Appliances', image: require('../assets/Appliance.png'), price: 249.99 },
-  { name: 'Home Storage', image: require('../assets/storage.png'), price: 59.99 },
-  { name: 'Sneakers', image: require('../assets/sneakers.png'), price: 149.99 },
-  { name: 'Woofers', image: require('../assets/woofer.png'), price: 199.99 },
-  { name: 'Watches', image: require('../assets/watches.png'), price: 99.99 },
-  { name: 'Beauty & Personal Care', image: require('../assets/beauty.png'), price: 49.99 },
-  { name: 'Clothes', image: require('../assets/clothes.png'), price: 29.99 },
+  { name: 'Smart Phones', image: require('../assets/smartphone.png'), price: '$499.99' },
+  { name: 'Televisions', image: require('../assets/Television.png'), price: '$799.99' },
+  { name: 'Kitchen Supplies', image: require('../assets/kitchen.png'), price: '$199.99' },
+  { name: 'Refurbished Phones', image: require('../assets/refurbished.png'), price: '$299.99' },
+  { name: 'Earphones', image: require('../assets/earphones.png'), price: '$99.99' },
+  { name: 'Household Appliances', image: require('../assets/Appliance.png'), price: '$249.99' },
+  { name: 'Home Storage', image: require('../assets/storage.png'), price: '$59.99' },
+  { name: 'Sneakers', image: require('../assets/sneakers.png'), price: '$149.99' },
+  { name: 'Woofers', image: require('../assets/woofer.png'), price: '$199.99' },
+  { name: 'Watches', image: require('../assets/watches.png'), price: '$99.99' },
+  { name: 'Beauty & Personal Care', image: require('../assets/beauty.png'), price: '$49.99' },
+  { name: 'Clothes', image: require('../assets/clothes.png'), price: '$29.99' },
 ];
 
 const styles = StyleSheet.create({
@@ -150,11 +150,12 @@ const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
     height: 34,
-    borderColor: Color.colorLimegreen_200,
-    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginRight: 10,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   cartButton: {
     padding: 10,

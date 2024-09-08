@@ -72,7 +72,8 @@ import  OTPConfirmScreen from "./screens/otpConfirm";
 import ProfilePage from "./screens/ProfilePage";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
-import smsScreen from "./screens/MessageGC";
+import SmsScreen from "./screens/MessageGC";
+import VendorChat from "./screens/VendorChat";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -273,7 +274,8 @@ const App = () => {
         <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
         <Stack.Screen name="otpConfirm" component={OTPConfirmScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MessageGC" component={smsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MessageGC" component={SmsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

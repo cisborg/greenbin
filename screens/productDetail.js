@@ -68,21 +68,13 @@ const CartDetail = () => {
               source={require('../assets/greenBin.png')} 
               style={styles.colorOption} 
             />
-          </View>
-        </View>
-      </View>
+            <TouchableOpacity style={styles.chatButton}onPress={()=> navigation.navigate('ChatPage')}>
+               <AntDesign name="message1" size={24} color="black" />
+           </TouchableOpacity>
 
-      {/* Fused Add to Cart and Order Now Buttons with Icons */}
-      <View style={styles.buttonContainer}>
-        {/* Chat Icon */}
-        <TouchableOpacity style={styles.chatButton}onPress={()=> navigation.navigate('ChatPage')}>
-        <AntDesign name="message1" size={20} color="black" />
-        </TouchableOpacity>
-
-        {/* Cart Icon with Bouncing Animation */}
-        <TouchableOpacity style={styles.cartButton} onPress={()=> navigation.navigate('cart')}>
+           <TouchableOpacity style={styles.cartButton} onPress={()=> navigation.navigate('cart')}>
           <Animated.View style={{ transform: [{ scale: cartBounce }] }}>
-          <FontAwesome6 name="cart-plus" size={20} color={Color.colorLimegreen_200} />
+          <FontAwesome6 name="cart-plus" size={24} color={Color.colorLimegreen_200} />
           {cartCount > 0 && (
               <View style={styles.cartBadge}>
                 <Text style={styles.badgeText}>{cartCount}</Text>
@@ -90,14 +82,15 @@ const CartDetail = () => {
             )}
           </Animated.View>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
           <Text style={styles.addToCartText}>Add</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.orderNowButton}>
-          <Text style={styles.orderNowText}>Order Now</Text>
-        </TouchableOpacity>
+
+          </View>
+        </View>
       </View>
+
+    
     </ScrollView>
   );
 }
@@ -194,7 +187,8 @@ const styles = StyleSheet.create({
   colorOption: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    marginTop: 11,
+    borderRadius: 16,
     marginRight: 8,
     borderColor: '#e0e0e0',
     borderWidth: 1,
@@ -206,6 +200,7 @@ const styles = StyleSheet.create({
   },
   chatButton: {
     marginRight: 8,
+    marginLeft: 6,
     padding: 16,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -233,32 +228,20 @@ const styles = StyleSheet.create({
   addToCartButton: {
     flex: 1,
     marginRight: 8,
-    borderWidth: 1,
     padding: 16,
-    backgroundColor: Color.colorWhitesmoke,
     borderRadius: 16,
-    borderColor: Color.colorLimegreen_200,
     alignItems: 'center',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    height: 50
   },
   addToCartText: {
-    color: 'black',
+    color: Color.colorLimegreen_200,
     fontSize: 15,
     fontWeight: 'bold',
   },
-  orderNowButton: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: Color.colorWhitesmoke,
-    borderRadius: 16,
-    borderColor: Color.colorLimegreen_200,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  orderNowText: {
-    color: 'black',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
+ 
 });
 
 export default CartDetail;

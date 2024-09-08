@@ -29,7 +29,7 @@
       "package": "com.cisborg.greenbin_app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/404.png"
     },
     "extra": {
       "eas": {

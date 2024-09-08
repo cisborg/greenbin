@@ -15,7 +15,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 const ProfilePage = () => {
   const navigation = useNavigation();
   const username = "Josh"
-  const cash = "1400"
+  const cash = 1400
 
   return (
     <View style={styles.container}>
@@ -39,7 +39,7 @@ const ProfilePage = () => {
       style={styles.cardIcon}
       source={require("../assets/checked.png")}
     />
-    <Text style={styles.cardValue}>#{cash} 💰</Text>
+    <Text style={styles.cardValue}>#{cash} </Text>
     <Text style={styles.cardValue1}>Transact GCPs</Text>
 
   </TouchableOpacity>

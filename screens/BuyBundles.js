@@ -78,7 +78,7 @@ const BestPlansScreen = () => {
         return plans
             .filter(plan => plan.type === type)
             .map((plan, index) => (
-                <TouchableOpacity key={index} style={styles.card} onPress={()=> navigation.navigate('BuyBundleSuccessful')}>
+                <TouchableOpacity key={index} style={styles.card} onPress={()=> navigation.navigate('BuyBundleSuccessful',{token: plan.title, valid: plan.validity})}>
                     <Text style={styles.planTitle}>{plan.title}</Text>
                     <Text style={styles.benefits}>{plan.benefits}</Text>
                     <Text style={styles.validity}>Validity: {plan.validity}</Text>

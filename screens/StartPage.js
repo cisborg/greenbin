@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     left: 30,
     fontSize: FontSize.size_base,
     color: Color.colorGray_800,
-    fontWeight: 400,
+    fontWeight: '400',
   },
   getStartedBtn: {
     backgroundColor: "white",
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     color: Color.colorLimegreen_200,
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     fontFamily: FontFamily.manropeBold,
   },

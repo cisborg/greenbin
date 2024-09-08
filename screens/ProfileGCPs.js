@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerText}>Welcome, {name}</Text>
         <TouchableOpacity style={styles.button1} onPress={()=> navigation.navigate('manageAccount')}>
-          <Text style={{color: Color.colorLimegreen_200, fontSize: 14, fontWeight: 500}}>Account</Text>
+          <Text style={{color: Color.colorLimegreen_200, fontSize: 14, fontWeight: '500'}}>Account</Text>
       </TouchableOpacity>
       </View>
 
@@ -155,7 +155,7 @@ const HomeScreen = ({ navigation }) => {
             <FontAwesome name="money" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Withdraw Points</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('sendMoney')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Transaction')}>
             <FontAwesome name="send" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>Send Points</Text>
           </TouchableOpacity>
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     fontSize: 14,
-    fontWeight: 500,
+    fontWeight: '500',
     color: 'black',
     marginTop: 5
   },

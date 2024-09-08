@@ -55,7 +55,7 @@ const VendorsProfilePage = () => {
 
       <TouchableOpacity
         style={[styles.buttonContainer]}
-        onPress={() => handleNavigation("ChatPage",{name: name})}
+        onPress={() => handleNavigation("VendorChat",{name: name})}
       >
          <Image
           style={styles.iconStyle}

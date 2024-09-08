@@ -2,7 +2,7 @@ import * as React from "react";
 import { StyleSheet, View, Text, Pressable, TouchableOpacity, TextInput } from "react-native";
 import { Image } from "expo-image";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 
 const SeeAllEvents = () => {
@@ -25,7 +25,7 @@ const SeeAllEvents = () => {
           onSubmitEditing={handleSearch}
         />
         <TouchableOpacity style={styles.settingsButton}>
-          <AntDesign name="setting" size={30} color="green" />
+        <Ionicons name="notifications-sharp" size={28} color={Color.colorLimegreen_200} />
         </TouchableOpacity>
       
        
@@ -315,8 +315,6 @@ const styles = StyleSheet.create({
   searchInput: {
     
     height: 38,
-    borderColor: Color.colorLimegreen_200,
-    borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 10,
     marginRight: 20,
@@ -324,7 +322,10 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 20,
     marginBottom: -70,
-    left: 20
+    left: 20,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   settingsButton: {
     height: 40,

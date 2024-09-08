@@ -83,7 +83,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.greenbinapp"
+    namespace 'com.cisborg.greenbin_app'
     defaultConfig {
         applicationId 'com.cisborg.greenbin_app'
         minSdkVersion rootProject.ext.minSdkVersion

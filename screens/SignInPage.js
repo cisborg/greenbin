@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, FontSize, Border } from "../GlobalStyles";
 
@@ -20,16 +20,7 @@ const SignInPage = () => {
         contentFit="cover"
         source={require("../assets/shapes.png")}
       />
-     
-
       
-      <TouchableOpacity
-        style={styles.getStartedBtn}
-        onPress={() => navigation.navigate("Main")}
-      >
-        <Text style={styles.cardText}>Login</Text>
-      </TouchableOpacity>
-
       <Text style={[styles.welcomeAgainPlease, styles.greenbinFlexBox]}>
         Ecodigital Solutions for Greener Future!
       </Text>
@@ -42,25 +33,27 @@ const SignInPage = () => {
           onChangeText={setPassword}
           placeholder="login with password..."
           placeholderTextColor={Color.colorGray_100}
-          keyboardType="phone-pad"
           secureTextEntry
         />
       </View>
+
+      <TouchableOpacity
+        style={styles.getStartedBtn}
+        onPress={() => navigation.navigate("Main")}
+      >
+        <Text style={styles.cardText}>Login</Text>
+      </TouchableOpacity>
 
       <View style={styles.dontHaveAnContainer}>
         <Text style={[styles.text, styles.textTypo]}>
           <Text style={styles.dontHaveAn}>Don’t have an account?</Text>
           <Text style={styles.text1}>{` `}</Text>
-          <TouchableOpacity>
-            <Text onPress={() => navigation.navigate("RegisterPage")} style={styles.register}>
-              Register
-            </Text>
-
+          <TouchableOpacity onPress={() => navigation.navigate("RegisterPage")}>
+            <Text style={styles.register}>Register</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=> navigation.navigate('ChangePassword')}> 
-            <Text style={{ color: 'green'}}> Forgot Password? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
+            <Text style={{ color: 'green' }}>Forgot Password?</Text>
           </TouchableOpacity>
-
         </Text>
       </View>
 
@@ -83,16 +76,6 @@ const styles = StyleSheet.create({
   greenbinFlexBox: {
     textAlign: "center",
     position: "absolute",
-  },    
-  welcomeToTypo: {
-    fontFamily: FontFamily.poppinsSemiBold,
-    fontWeight: "600",
-    textAlign: "center",
-    position: "absolute",
-  },
-  text2Position: {
-    left: "0%",
-    position: "absolute",
   },
   label: {
     fontSize: FontSize.size_base,
@@ -113,26 +96,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    
-  },
- 
-  input: {
-    height: "100%",
-    paddingHorizontal: 10,
-    fontSize: FontSize.size_base,
-    color: Color.colorGray_200,
   },
   inputContainer: {
     marginBottom: 20,
     paddingHorizontal: 20,
     paddingTop: 10,
-    top: 520,
+    top: 570,
   },
   getStartedBtn: {
     backgroundColor: Color.colorLimegreen_200,
     shadowColor: "#000",
     left: 120,
-    top: 690,
+    top: 590,
     shadowOffset: {
       width: 2,
       height: 3,
@@ -152,7 +127,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     color: "white",
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     fontFamily: FontFamily.manropeBold,
   },
@@ -175,27 +150,6 @@ const styles = StyleSheet.create({
     bottom: "-4.74%",
     left: "58.72%",
   },
- 
-  
-  loginBtnChild: {
-    backgroundColor: Color.colorLimegreen_100,
-    bottom: "0%",
-    right: "0%",
-    top: "0%",
-    height: "100%",
-    left: "0%",
-    borderRadius: Border.br_base,
-    width: "100%",
-  },
-  getStarted: {
-    height: "50%",
-    width: "39.01%",
-    top: "25.09%",
-    left: "30.22%",
-    fontSize: FontSize.size_lg,
-    color: Color.colorWhite,
-  },
- 
   welcomeAgainPlease: {
     top: 190,
     left: 77,
@@ -207,7 +161,7 @@ const styles = StyleSheet.create({
   },
   dontHaveAnContainer: {
     left: 50,
-    top: 760,
+    top: 750,
     position: "absolute",
   },
   loginimgIcon: {
@@ -234,7 +188,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 844,
     overflow: "hidden",
-    width: 400,
   },
 });
 

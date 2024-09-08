@@ -13,23 +13,19 @@ const CartScreen = ({ navigation }) => {
   ]);
 
   const increaseQuantity = (id) => {
-    const updatedItems = cartItems.map(item => {
-      if (item.id === id) {
-        item.quantity += 1;
-      }
-      return item;
-    });
-    setCartItems(updatedItems);
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
   };
 
   const decreaseQuantity = (id) => {
-    const updatedItems = cartItems.map(item => {
-      if (item.id === id && item.quantity > 1) {
-        item.quantity -= 1;
-      }
-      return item;
-    });
-    setCartItems(updatedItems);
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+      )
+    );
   };
 
   const getTotalPrice = () => {
@@ -80,7 +76,7 @@ const CartScreen = ({ navigation }) => {
       <Image source={require('../assets/anotherWoman.avif')} style={styles.profileImage} />
       <Image source={require('../assets/anotherMan.avif')} style={styles.profileImage} />
       <Image source={require('../assets/women.avif')} style={styles.profileImage} />
-      <Text style={styles.profileText}>+ 200 have ordered this product </Text>
+      <Text style={styles.profileText}>+ 200 have ordered this product</Text>
     </View>
   );
 
@@ -150,7 +146,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   cartTitle: {
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginRight: -70
+    marginRight: -70,
   },
   itemRow: {
     flexDirection: 'row',
@@ -178,7 +174,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     marginLeft: 10,
-    width: 250
+    width: 250,
   },
   sellerName: {
     fontSize: 14,
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 15,
-    marginTop: -18
+    marginTop: -18,
   },
   itemContent: {
     flex: 1,
@@ -245,7 +241,7 @@ const styles = StyleSheet.create({
   removeButton: {
     padding: 10,
     backgroundColor: 'transparent',
-    marginLeft: 30
+    marginLeft: 30,
   },
   removeButtonHovered: {
     opacity: 0.5,
@@ -302,7 +298,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 8,
-    marginLeft: -55
+    marginLeft: -55,
   },
   profileImage: {
     width: 25,
@@ -338,12 +334,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 11,
-    height: 40
+    height: 40,
   },
   addButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: 600,
+    fontWeight: '600',
   },
 });
 

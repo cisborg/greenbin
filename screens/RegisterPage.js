@@ -82,11 +82,8 @@ const RegisterPage = () => {
       <View style={styles.welcomeMessage}>
         <Text style={[styles.greenbin, styles.greenbinFlexBox]}>GreenBin!</Text>
         <Text style={[styles.welcomeTo, styles.welcomeToTypo]}>Welcome to</Text>
-
       </View>
 
-
-      
       <View style={styles.navbar}>
         <TouchableOpacity 
           onPress={() => setIsPhone(true)} 
@@ -192,15 +189,15 @@ const RegisterPage = () => {
         <Text style={styles.cardText}>{loading ? 'Sending...' : (isPhone ? 'Send OTP' : 'Register')}</Text>
       </TouchableOpacity>
 
-      <View
-        style={styles.createAccountContainer}
-        onPress={() => navigation.navigate("otpConfirm")}
-      >
-        <Text style={styles.createAccountText}>Already have an account? <TouchableOpacity style={{color:Color.colorLimegreen_200}} onPress={()=> navigation.navigate('SignInPage')}>
-          Login</TouchableOpacity></Text>
+      <View style={styles.createAccountContainer}>
+        <Text style={styles.createAccountText}>
+          Already have an account? 
+          <Text style={{color: Color.colorLimegreen_200, marginLeft: 5}} onPress={() => navigation.navigate('SignInPage')}>
+            Login
+          </Text>
+        </Text>
       </View>
       <Text style={styles.title1}>Your GateWay to Sustainable Future!</Text>
-
     </View>
   );
 };
@@ -361,7 +358,7 @@ const styles = StyleSheet.create({
   },
   countryCodeText: {
     fontSize: 14,
-    fontWeight: 600,
+    fontWeight: '600',
   },
   promoCodeHeader: {
     marginTop: 15,

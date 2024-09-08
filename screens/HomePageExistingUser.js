@@ -1,10 +1,9 @@
 import * as React from "react";
-import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Image, Animated } from "react-native";
+import { StyleSheet, Text, View, FlatList, TextInput, Image, Animated } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler"; // <-- Added GestureHandlerRootView
 import { FontFamily, Color, Border, FontSize } from "../GlobalStyles";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { TouchableOpacity } from "react-native-gesture-handler";
-import Octicons from '@expo/vector-icons/Octicons';
 
 const challenges = [
   { id: '1', title: 'EcoBikes', icon: require('../assets/bikes.png') },
@@ -24,14 +23,13 @@ const banners = [
   require('../assets/greenPoints.png'),
   require('../assets/Bags.png'),
   require('../assets/connect.png'),
-
 ];
+
 
 export default function HomePageExistingUser() {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filteredChallenges, setFilteredChallenges] = React.useState(challenges);
-  
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -48,16 +46,15 @@ export default function HomePageExistingUser() {
       name: item.name,
       icon: item.icon,
       profession: item.profession,
-     })} >
+    })}>
       <View style={styles.vendorDetails}>
         <Image style={styles.vendorImgIcon} contentFit="cover" source={item.icon} />
         <Text style={styles.vendorName}>{item.name}</Text>
         <Text style={styles.vendorProfession}>{item.profession}</Text>
         <TouchableOpacity style={styles.followed}>
           <Image style={styles.Small} contentFit="cover" source={item.small} />
-          <Text style={styles.followers}>Followed by {item.followers} others</Text>
+          <Text style={styles.followers}> & {item.followers} others</Text>
         </TouchableOpacity>
-       
       </View>
     </TouchableOpacity>
   );
@@ -86,79 +83,81 @@ export default function HomePageExistingUser() {
   }, []);
 
   return (
-    <View style={styles.homePageExistingUser}>
+    <GestureHandlerRootView style={{ flex: 1 }}> {/* Wrapping everything in GestureHandlerRootView */}
+      <View style={styles.homePageExistingUser}>
 
-      {/* Banner Section */}
-      <View style={styles.bannerContainer}>
-        <Animated.Image 
-          source={banners[currentIndex]} 
-          style={[styles.bannerImage, { opacity: fadeAnim }]} 
-          resizeMode="cover" 
-        />
-      </View>
+        {/* Banner Section */}
+        <View style={styles.bannerContainer}>
+          <Animated.Image 
+            source={banners[currentIndex]} 
+            style={[styles.bannerImage, { opacity: fadeAnim }]} 
+            resizeMode="cover" 
+          />
+        </View>
 
-      <Text style={styles.vendorsYouFollow}>Vendors you follow:</Text>
+        <Text style={styles.vendorsYouFollow}>Vendors you follow:</Text>
 
-     
+        <View style={styles.noteMessage}>
+          <Text style={styles.factAbout201}>
+            Fact: About 2.01 billion tons of municipal solid waste is generated globally each year! 😊
+          </Text>
+        </View>
 
-      <View style={styles.noteMessage}>
-        <Text style={styles.factAbout201}>
-          Fact: About 2.01 billion tons of municipal solid waste is generated globally each year! 😊
-        </Text>
-      </View>
-      <View style={styles.searchBarContainer}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search Your Top Favorite Challenges"
-          placeholderTextColor={Color.colorGray_100}
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
+        <View style={styles.searchBarContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search Your Top Favorite Challenges"
+            placeholderTextColor={Color.colorGray_100}
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        </View>
 
-      <View style={styles.vendorFrame}>
-        <FlatList
-          data={[
-            { id: '1', name: 'Leakeyy', icon: require("../assets/vendorimg.png"), profession: 'Tree Vendor',small: require("../assets/man.avif"), followers: 200 },
-            { id: '2', name: 'Hassan', icon: require("../assets/vendorimg1.png"), profession: 'Smart Apps' ,small: require("../assets/man.avif"),followers: `2k` },
-            { id: '3', name: 'Winnie', icon: require("../assets/anotherWoman.avif"), profession: 'MoleBio' ,small: require("../assets/man.avif"), followers: `1k` },
-            { id: '4', name: 'Joseph', icon: require("../assets/anotherMan.avif"), profession: 'Smart Bins' ,small: require("../assets/man.avif"), followers: `2.5k` },
-          ]}
-          renderItem={renderVendorItem}
-          keyExtractor={item => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-        
-        <View style={styles.addVendorBtn}>
-          <TouchableOpacity onPress={() => navigation.navigate('VendorList')}>
-            <AntDesign name="pluscircle" size={30} color="green" />
-          </TouchableOpacity>
+        <View style={styles.vendorFrame}>
+          <FlatList
+            data={[
+              { id: '1', name: 'Leakey Jokes', icon: require("../assets/vendorimg.png"), profession: 'Tree Vendor', small: require("../assets/man.avif"), followers: 200 },
+              { id: '2', name: 'Hassan Tbag', icon: require("../assets/vendorimg1.png"), profession: 'Smart Technologies' , small: require("../assets/man.avif"), followers: `2k` },
+              { id: '3', name: 'Hassan Tbag', icon: require("../assets/vendorimg1.png"), profession: 'Smart Health' , small: require("../assets/women.avif"), followers: `4k` },
+
+            ]}
+            renderItem={renderVendorItem}
+            keyExtractor={item => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+          
+          <View style={styles.addVendorBtn}>
+            <TouchableOpacity onPress={() => navigation.navigate('VendorList')}>
+              <AntDesign name="pluscircle" size={30} color="green" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.challengeFrame}>
+          <FlatList 
+            data={filteredChallenges} 
+            renderItem={({ item }) => (
+              <View style={styles.challengeBox}>
+                <TouchableOpacity onPress={() => navigation.navigate('VendorProducts')}>
+                  <View style={styles.challengeBoxChild} />
+                  <Image style={styles.rainIcon} contentFit="cover" source={item.icon} />
+                  <Text style={styles.challengeText}>{item.title}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={item => item.id}
+            numColumns={6}
+            contentContainerStyle={{ flexWrap: 'wrap', alignItems: 'flex-start' }}
+            showsHorizontalScrollIndicator={false}       
+          />
         </View>
       </View>
-
-      <View style={styles.challengeFrame}>
-        <FlatList 
-          data={filteredChallenges} 
-          renderItem={({ item }) => (
-            <View style={styles.challengeBox}>
-              <TouchableOpacity onPress={() => navigation.navigate('VendorProducts')}>
-                <View style={styles.challengeBoxChild} />
-                <Text style={styles.challengeText}>{item.title}</Text>
-                <Image style={styles.rainIcon} contentFit="cover" source={item.icon} />
-              </TouchableOpacity>
-            </View>
-          )}
-          keyExtractor={item => item.id}
-          vertical
-          numColumns={6}
-          contentContainerStyle={{ flexWrap: 'wrap', alignItems: 'flex-start' }}
-          showsHorizontalScrollIndicator={false}       
-        />
-      </View>
-    </View>
+    </GestureHandlerRootView> 
   );
-};
+}
+
+
 
 const styles = StyleSheet.create({
   homePageExistingUser: {
@@ -169,44 +168,35 @@ const styles = StyleSheet.create({
     width: 404,
   },
   bannerContainer: {
-    height: 200, // Adjust height as needed
+    height: 180,
     overflow: 'visible',
     position: 'relative',
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
     top: 60,
-    left: 20,
-    width: 360,
+    left: 6,
+    width: 380,
     justifyContent: 'center',
     alignItems: 'center',
-    alignContent: 'center',
   },
   Small: {
     width: 18,
     height: 18,
     borderWidth: 1,
     borderRadius: 40,
-    top: 150,
-    marginTop: -5,
-    marginRight: -3,
-    left: -100
+    marginTop: -2,
+    marginRight: 4,
   },
   followed: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 5,
-    left: -10
   },
- 
   followers: {
     color: Color.colorGray_100,
-    top:150,
-    left: 0,
     fontSize: 12,
-    width: 100,
-    marginTop: -8,
-    marginLeft: -92
+    left: -3
   },
   bannerImage: {
     width: '100%',
@@ -221,18 +211,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     position: 'absolute',
     left: 13,
-    top: 300
+    top: 270,
   },
   searchBarContainer: {
     width: 365,
     padding: 10,
-    backgroundColor: '#f0f0f0',
     borderRadius: 8,
-    top: 445,
+    top: 430,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     left: 15,
   },
@@ -241,7 +230,6 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     color: '#333',
-    textDecorationStyle: 'solid',
   },
   noteMessage: {
     height: 57,
@@ -253,7 +241,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    top: 570,
+    top: 540,
     left: 17,
   },
   factAbout201: {
@@ -263,80 +251,71 @@ const styles = StyleSheet.create({
     height: 48,
     marginTop: 10,
     marginLeft: 10,
-    left: 3,
-    position: "absolute",
   },
   vendorFrame: {
-    top: 325,
+    top: 400,
     left: 0,
-    height: 100,
+    height: 80,
     width: "100%",
     position: "absolute",
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 10,
   },
   vendorDetails: {
     flexDirection: 'row',
-    alignItems: 'space-between',
+    flexWrap: 'wrap',
+    alignItems: 'center',
     padding: 5,
-    justifyContent: 'space-between',
-    top: 90,
+    justifyContent: 'center',
     marginBottom: 43,
     backgroundColor: Color.colorWhite,
     borderRadius: 20,
     elevation: 4,
-    marginTop: 30,
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 2 },
+    shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    height: 220,
+    height: 160,
     width: 140,
+    marginRight: 7
   },
   vendorImgIcon: {
-    width: 100,
-    height: 100,
-    borderRadius: 30,
+    width: 105,
+    height: 75,
+    borderRadius: 18,
     marginLeft: 15,
   },
   vendorName: {
-    fontSize: 15,
+    fontSize: 13,
     fontFamily: FontFamily.manropeBold,
     color: Color.colorGray_800,
     textAlign: 'center',
     fontWeight: 'bold',
-    position: 'absolute',
-    left: 10,
-    top: 110,
+    marginLeft: 5,
+    marginRight: 4
   },
- 
   vendorProfession: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: FontFamily.manropeSemiBold,
     color: Color.colorLimegreen_200,
     textAlign: 'center',
-    position: 'absolute',
-    marginTop: 5,
-    left: 10,
-    top: 125,
+    marginTop: -2,
   },
   addVendorBtn: {
     padding: 10,
-    backgroundColor: Color.colorWhite,
-    borderRadius: 40,
-    marginLeft: -20,
+    marginLeft: 3,
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 70,
+    top: -9,
   },
   challengeFrame: {
     height: 195,
     width: 370,
     position: "absolute",
-    top: 740,
+    top: 710,
     left: 17,
   },
   challengeBox: {
@@ -370,13 +349,11 @@ const styles = StyleSheet.create({
     position: "absolute"
   },
   rainIcon: {
-    top: 10,
+    top: -65,
     left: 15,
     width: 43,
     height: 40,
     marginBottom: 5,
-    borderRadius: 15,
-    position: "absolute",
   },
 });
 
