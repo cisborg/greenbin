@@ -12,7 +12,6 @@ const peopleToFollow = [
     location: 'Nairobi',
     description: 'Selling All kinds of Trees, 5x NYT Best-Selling Author, 2x National Champion, Heisman Trophy...',
     followers: 'Followed by Michael Nyagha, Grace and 19 others you know',
-    image: 'https://example.com/tim-tebow.jpg', // Replace with actual image URL
     coverImage: 'https://example.com/tim-tebow-cover.jpg', // Replace with actual cover image URL
     connections: [
       'https://example.com/connector1.jpg',
@@ -27,7 +26,20 @@ const peopleToFollow = [
     location: 'Mombasa',
     description: 'Part-Time Actor, Business Owner',
     followers: 'Followed by Grace, Antony and 250 others you know',
-    image: 'https://example.com/ryan-reynolds.jpg', // Replace with actual image URL
+    coverImage: 'https://example.com/ryan-reynolds-cover.jpg', // Replace with actual cover image URL
+    connections: [
+      'https://example.com/connector1.jpg',
+      'https://example.com/connector2.jpg',
+      'https://example.com/connector3.jpg',
+    ],
+  },
+  {
+    id: '3',
+    name: 'Joy Pharmaceuticals',
+    job: 'Pharmaceutical Products',
+    location: 'Mombasa',
+    description: 'Part-Time Influencer, marketer,student',
+    followers: 'Followed by Grace, Antony and 500 others you know',
     coverImage: 'https://example.com/ryan-reynolds-cover.jpg', // Replace with actual cover image URL
     connections: [
       'https://example.com/connector1.jpg',
@@ -71,8 +83,8 @@ const VendorList = () => {
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.followers}>{item.followers}</Text>
         {renderConnections(item.connections)}
-        <TouchableOpacity style={styles.followButton}>
-          <Text style={styles.followButtonText}>Connect Now</Text>
+        <TouchableOpacity style={styles.followButton} onPress={()=> navigation.goBack()}>
+          <Text style={styles.followButtonText}>Connect</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -102,9 +114,10 @@ const VendorList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    width: 410
+  
   },
   list: {
     paddingBottom: 20,
@@ -125,47 +138,42 @@ const styles = StyleSheet.create({
   coverImage: {
     width: 80,
     height: 80,
-    borderRadius: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    marginTop: 5,
+    left: 5
   },
   infoContainer: {
     flex: 1,
     padding: 10,
     left: -140,
-    top: 80
+    top: 70
   },
-  profileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    position: 'absolute',
-    top: -36,
-    left: 10,
-  },
+ 
   name: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333333',
     marginTop: 20,
-    marginLeft: 70,
+    marginLeft: 60,
   },
   job: {
-    fontSize: 10,
-    color: '#666666',
-    marginLeft: 70,
-  },
-  description: {
     fontSize: 12,
     color: '#666666',
+    marginLeft: 60,
+  },
+  description: {
+    fontSize: 11,
+    color: '#666666',
     marginVertical: 5,
-    marginLeft: 70,
+    marginLeft: 60,
   },
   followers: {
-    fontSize: 9,
+    fontSize: 10,
     color: '#666666',
-    marginVertical: 4,
-    marginLeft: 70,
+    marginVertical: 3,
+    marginLeft: 60,
   },
   followButton: {
     backgroundColor: 'white',
@@ -183,7 +191,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 12,
     justifyContent: 'center',
-    marginLeft: 70,
+    top: -155,
+    left: 310
   },
   followButtonText: {
     color: Color.colorLimegreen_200,
@@ -205,21 +214,21 @@ const styles = StyleSheet.create({
   connectionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    top: -120,
-    left: 200
+    top: -117,
+    left: 200,
   },
   connectionImage: {
-    width: 30,
-    height: 25,
-    borderRadius: 15,
-    borderWidth: 2,
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    borderWidth: 1,
     borderColor: 'lightgray',
     position: 'absolute',
     left: 0,
   },
   connectionsCount: {
-    fontSize: 12,
-    color: '#666666',
+    fontSize: 14,
+    color: 'orange',
     marginLeft: 40, // Adjust this value as needed
   },
 });

@@ -195,9 +195,9 @@ export default MessagesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 15,
-    width: 404
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   topBar: {
     top: -330

@@ -108,9 +108,9 @@ const WifiPlans = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        padding: 16,
-        width: 404,
+        backgroundColor: Color.colorWhite,
+        padding: 20,
+        overflow: 'hidden',
     },
     heading: {
         flexDirection: 'row',

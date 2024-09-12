@@ -12,7 +12,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Octicons from '@expo/vector-icons/Octicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import TagSelection from './+';
+import TagSelection from './selectTag';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -30,8 +30,47 @@ const GoodHome = () => {
 
 const HomeTabs = ({ searchQuery }) => {
   return (
-    <Tab.Navigator screenOptions={tabStyles}>
-      <Tab.Screen name="+" component={TagSelection} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused }) => {
+          if (route.name === 'selectTag') {
+            return <View style={{ marginTop: 13}}>
+              <MaterialIcons name="add-box" size={22} color={focused ? 'green' : "gray"} />
+              </View>
+          }
+          return null; // No icon for other tabs
+        },
+        tabBarLabel: ({ focused }) => {
+          if (route.name === 'selectTag') {
+            return null; // No label for the selectTag tab
+          }
+          return (
+            <Text style={{ color: focused ? "black" : "gray", fontWeight: '550'}}>
+              {route.name}
+            </Text>
+          ); // Default label for other tabs
+        },
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          height: 45, // Adjust height as needed
+          paddingBottom: 23, // Add padding if needed
+          shadowOpacity: 0.2,
+          shadowOffset: { width: 0, height: 1 },
+          shadowRadius: 1,
+          elevation: 2,
+          borderRadius: 3,
+          marginTop: 10,
+          paddingTop: -5,
+          justifyContent: 'center',
+        },
+        tabBarLabelStyle: {
+          fontWeight: '600',
+          fontSize: 14,
+          textTransform: 'none',
+        },
+      })}
+    >
+      <Tab.Screen name="selectTag" component={TagSelection} />
       <Tab.Screen name="For you">
         {() => <ForYouScreen searchQuery={searchQuery} />}
       </Tab.Screen>
@@ -41,6 +80,10 @@ const HomeTabs = ({ searchQuery }) => {
     </Tab.Navigator>
   );
 };
+
+
+
+
 
 const ForYouScreen = ({ searchQuery }) => {
   const [posts, setPosts] = useState([
@@ -206,14 +249,17 @@ const SearchBar = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    width: 404,
+    backgroundColor: '#fff',
+    padding: 20,
+    overflow: 'hidden',
+    width: 404
+    
   },
   content: {
     padding: 10,
   },
   postCard: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff',
     borderRadius: 15,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -302,7 +348,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   optionsMenu: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     position: 'absolute',
@@ -336,23 +382,5 @@ const styles = StyleSheet.create({
   },
 });
 
-// Tab styles
-const tabStyles = {
-  tabBarStyle: {
-    backgroundColor: '#fff',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 1,
-    elevation: 2,
-    borderRadius: 15,
-    height: 50,
-  },
-  tabBarLabelStyle: {
-    fontWeight: '500',
-    fontSize: 14,
-    textTransform: 'none',
-    color: Color.colorGray_100,
-  },
-};
 
 export default GoodHome;

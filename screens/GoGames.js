@@ -123,9 +123,9 @@ const GamesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404
+    overflow: 'hidden',
   },
   header: {
     fontSize: 20,

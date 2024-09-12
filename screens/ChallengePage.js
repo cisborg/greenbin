@@ -114,9 +114,10 @@ const categories = [
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
+    flexDirection: 'row'
   },
   sidebar: {
     width: '15%', // Reduced width for sidebar

@@ -123,9 +123,9 @@ const ProfileSettings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#ffffff',
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: 28,

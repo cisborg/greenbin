@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons'; // Import Ionicons
 import { Color, FontFamily } from "../GlobalStyles";
 import { useNavigation } from '@react-navigation/core';
@@ -26,16 +26,16 @@ const ManageAccountScreen = () => {
     },
     
     { 
-      title: 'Transaction History', 
-      description: 'View transaction history', 
-      icon: <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="green" />,
+      title: 'Unlock App Premium', 
+      description: 'Get exclusive access to our premium purchases, loans,squads and many more', 
+      icon: <FontAwesome name="unlock" size={24} color="green" />,
       screen: 'Transaction' // Add screen name
     },
     { 
-      title: 'Join Us', 
-      description: 'Review Milestone Eligibility ', 
+      title: 'About Us', 
+      description: 'review the features and documentation for our green app! ', 
       icon: <MaterialIcons name="miscellaneous-services" size={24} color="green" />,
-      screen: 'JoinUs' // Add screen name
+      screen: 'AboutUs' // Add screen name
     },
   ];
 
@@ -80,9 +80,9 @@ const ManageAccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#fff',
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     fontSize: 24,

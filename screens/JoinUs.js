@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: Color.colorWhite,
-    width: 404,
+    overflow: 'hidden',
   },
   headerContainer: {
     alignItems: 'center',

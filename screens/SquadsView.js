@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { Color } from '../GlobalStyles';
 
 const SquadScreen = () => {
   const [url, setUrl] = useState('');
@@ -61,9 +62,9 @@ const SquadScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#FFFFFF',
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     marginBottom: 20,

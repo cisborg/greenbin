@@ -169,9 +169,9 @@ const ConnectToShops = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: 24,

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: Color.colorWhite,
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: FontSize.size_29xl,

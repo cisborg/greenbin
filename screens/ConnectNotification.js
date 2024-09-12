@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Modal, Button } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Color } from '../GlobalStyles';
 
 const notificationsData = [
   { id: '1', type: 'message', content: 'You received a new message from John Doe.', time: '5 min ago' },
@@ -66,9 +67,9 @@ const NotificationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: 24,

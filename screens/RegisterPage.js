@@ -210,7 +210,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    width: 404,
+    overflow: 'hidden'
+    
   },
   welcomeMessage: {
     top: 34,

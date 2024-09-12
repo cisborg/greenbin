@@ -97,10 +97,10 @@ const CartDetail = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 16,
-    width: 404,
+    flex: 1,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   headerContainer: {
     flexDirection: 'row',

@@ -189,9 +189,9 @@ const CarbonFootprintCalculator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#f5f5f5',
-    width: 404
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',

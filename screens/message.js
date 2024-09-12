@@ -4,6 +4,8 @@ import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Keyboard
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import EmojiSelector from 'react-native-emoji-selector';
+import { Color } from '../GlobalStyles';
+
 
 const MessageScreen = ({ route, navigation }) => {
   const { user } = route.params;
@@ -114,7 +116,9 @@ const MessageScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: 404
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   innerContainer: {
     flex: 1,

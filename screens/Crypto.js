@@ -208,9 +208,9 @@ const WalletScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#f0f4f8',
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     fontSize: 28,

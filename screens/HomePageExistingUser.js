@@ -161,11 +161,10 @@ export default function HomePageExistingUser() {
 
 const styles = StyleSheet.create({
   homePageExistingUser: {
-    backgroundColor: Color.colorWhite,
     flex: 1,
-    height: 834,
-    overflow: "hidden",
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   bannerContainer: {
     height: 180,

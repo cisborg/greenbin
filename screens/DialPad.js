@@ -93,9 +93,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
     paddingTop: 50, // To provide some space for the header
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   headerContainer: {
     flexDirection: 'row',

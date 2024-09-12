@@ -7,6 +7,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Foundation from '@expo/vector-icons/Foundation';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/core';
+import { Color } from '../GlobalStyles';
+
 
 const WaveAnimation = () => {
   const waveAnim = useRef(new Animated.Value(0)).current;
@@ -140,8 +142,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',

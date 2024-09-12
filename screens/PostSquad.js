@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Modal, FlatList, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/core';
+import { Color } from '../GlobalStyles';
+
 
 const NewPostScreen = () => {
   const navigation= useNavigation()
@@ -171,10 +173,10 @@ const NewPostScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    overflow: 'hidden',
   },
   topBar: {
     flexDirection: 'row',

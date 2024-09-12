@@ -184,16 +184,16 @@ const Checkout = ({ route }) => {
 // Styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 20,
     justifyContent: 'flex-start',
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    width: 404,
+    flex: 1,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',

@@ -150,9 +150,9 @@ const BuyAirtimeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-        width: 404,
+        backgroundColor: Color.colorWhite,
+        padding: 20,
+        overflow: 'hidden',
     },
     header: {
         flexDirection: 'row',

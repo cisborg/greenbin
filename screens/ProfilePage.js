@@ -159,7 +159,7 @@ const ProfilePage = () => {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ShopLocator")}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ViewSquads")}>
               <MaterialCommunityIcons name="connection" size={20} color="green" marginTop={-10}/>
               <Text style={styles.buttonText}>Connect With Shops</Text>
               <FontAwesome6 name="arrow-up-from-bracket" size={20} color="orange" />
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     alignItems: 'center',

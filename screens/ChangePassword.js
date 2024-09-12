@@ -57,10 +57,10 @@ const ChangePassword = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
     justifyContent: 'center',
-    padding: 16,
-    width: 404,
-    backgroundColor: Color.colorWhite
   },
   title: {
     fontSize: 24,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderRadius: 15,
-    marginBottom: 15,
+    marginBottom: 19,
     paddingHorizontal: 10,
     elevation: 5,
     shadowColor: '#000',

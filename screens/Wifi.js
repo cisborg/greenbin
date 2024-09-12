@@ -68,10 +68,10 @@ const WiFiScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#f5f5f5',
+    flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',

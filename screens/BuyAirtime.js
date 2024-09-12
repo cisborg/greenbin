@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Color, FontFamily } from '../GlobalStyles';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Color } from '../GlobalStyles';
 
 // Mock data for dropdowns
 const paymentMethods = ['Green Bank', 'Request a Friend', 'GCPs Wallet'];
@@ -9,7 +9,6 @@ const presetAmounts = [200, 500, 800, 1200];
 
 const BuyAirtimeScreen = () => {
     const navigation = useNavigation();
-    const route = useRoute();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [customAmount, setCustomAmount] = useState('');
     const [selectedAmount, setSelectedAmount] = useState(null);
@@ -18,6 +17,7 @@ const BuyAirtimeScreen = () => {
     const [totalCost, setTotalCost] = useState(0);
     const [greenBankCode, setGreenBankCode] = useState('');
     const [availablePoints, setAvailablePoints] = useState(1000); // Example available points
+    const [friendPhoneNumber, setFriendPhoneNumber] = useState(''); // New state for friend's phone number
 
     // Handle purchase logic (mocked for this example)
     const handlePurchase = () => {
@@ -103,7 +103,18 @@ const BuyAirtimeScreen = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-           
+
+            {/* Friend's Phone Number Input for Request a Friend */}
+            {selectedPaymentMethod === 'Request a Friend' && (
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter Friend's Phone Number"
+                    placeholderTextColor={Color.colorGray_100}
+                    keyboardType="numeric"
+                    value={friendPhoneNumber}
+                    onChangeText={setFriendPhoneNumber}
+                />
+            )}
 
             {/* Green Bank Code Input */}
             {selectedPaymentMethod === 'Green Bank' && (
@@ -131,7 +142,7 @@ const BuyAirtimeScreen = () => {
                 onChangeText={setPromoCode}
             />
             <TouchableOpacity style={styles.ApplyButton}>
-                <Text style={{ color: 'black' }}>Apply Promo</Text>
+                <Text style={{ color: 'black' }}>Apply Voucher</Text>
             </TouchableOpacity>
 
             {/* Transaction Summary */}
@@ -150,9 +161,9 @@ const BuyAirtimeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-        width: 404,
+        backgroundColor: Color.colorWhite,
+        padding: 20,
+        overflow: 'hidden',
     },
     header: {
         flexDirection: 'row',
@@ -276,7 +287,6 @@ const styles = StyleSheet.create({
     paymentText: {
         color: Color.colorLimegreen_200,
     },
-   
     summarySection: {
         marginBottom: 16,
     },

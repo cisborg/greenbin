@@ -74,8 +74,9 @@ export default function SendMoneyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    width: 404
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     backgroundColor: '#4caf50',

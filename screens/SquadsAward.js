@@ -11,7 +11,7 @@ const squadsData = [
     points: 1500,
     activitiesCompleted: 30,
     memberCount: 25,
-    recentAchievements: 'Completed 5 tree planting events',
+    recentAchievements: 'Reached a milestone of 72% threshold',
   },
   {
     id: '2',
@@ -20,7 +20,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 19,
     memberCount: 20,
-    recentAchievements: 'Organized a recycling drive',
+    recentAchievements: 'Reached a milestone of 68% threshold',
   },
   {
     id: '3',
@@ -29,7 +29,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 42,
     memberCount: 20,
-    recentAchievements: 'Organized a waste collection and treatment ',
+    recentAchievements: 'Reached a milestone of 64% threshold',
   },
   {
     id: '2',
@@ -38,7 +38,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 38,
     memberCount: 20,
-    recentAchievements: 'Organized a smart collection expo',
+    recentAchievements: 'Reached a milestone of 60% threshold',
   },
 ];
 
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404
+    overflow: 'hidden',
   },
   header: {
     fontSize: 24,

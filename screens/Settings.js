@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch, FlatList, Modal, Button } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Color } from '../GlobalStyles';
+
 
 const settingsOptions = [
   { id: '1', title: 'Profile', description: 'Manage your profile settings' },
@@ -68,9 +70,9 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: 24,

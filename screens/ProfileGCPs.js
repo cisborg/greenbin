@@ -172,9 +172,9 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: Color.colorWhite,
-    width: 404,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',

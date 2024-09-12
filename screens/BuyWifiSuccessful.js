@@ -27,11 +27,12 @@ const WifiSuccess = ({route}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f4f4f4',
-        width: 404
+        flex: 1,
+        backgroundColor: Color.colorWhite,
+        padding: 20,
+        overflow: 'hidden',
     },
     modal: {
         backgroundColor: 'white',

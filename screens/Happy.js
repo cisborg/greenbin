@@ -124,8 +124,9 @@ const UserRow = ({ position, name, score, image, squad, award }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    width: 407
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   leaderboardContent: {
     marginTop: 20,
@@ -260,7 +261,7 @@ const tabStyles = {
     elevation: 4,
     borderRadius: 15,
     height: 50,
-    width: 407
+    overflow: 'hidden'
   },
   tabBarLabelStyle: {
     fontWeight: '500',

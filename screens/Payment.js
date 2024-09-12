@@ -163,10 +163,10 @@ const PrepaidRechargeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 20,
+    flex: 1,
     backgroundColor: Color.colorWhite,
-    width: 404,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     fontSize: 20,

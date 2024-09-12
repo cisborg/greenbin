@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../GlobalStyles';
+import { colorsDark } from 'react-native-elements/dist/config';
 
 const squadsData = [
   {
@@ -54,7 +55,7 @@ const JoinSquads = () => {
             onPress={handleJoinPress}
           >
             <Text style={styles.viewButtonText}>
-              {isJoined ? 'Joined' : 'Join'}
+              {isJoined ? 'Pending' : 'Join'}
             </Text>
           </TouchableOpacity>
           <Text style={styles.squadName}>{item.name}</Text>
@@ -93,9 +94,9 @@ const JoinSquads = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   listContainer: {
     paddingBottom: 20,
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   joinedButton: {
-    backgroundColor: '#28a745', // Change color to indicate it's joined
+    backgroundColor: 'orange', // Change color to indicate it's joined
   },
   viewButtonText: {
     color: '#000000',

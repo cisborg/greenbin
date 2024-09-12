@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, FlatList, Share } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { Color } from '../GlobalStyles';
 
 const donationCategories = [
@@ -82,7 +82,7 @@ const DonatePoints = () => {
         style={styles.slider}
       />
 
-      <TouchableOpacity style={styles.donateButton} onPress={handleDonation}>
+      <TouchableOpacity style={styles.donateButton} onPress={()=> navigation.navigate('DonationSuccessful')}>
         <Text style={styles.buttonText}>Donate</Text>
       </TouchableOpacity>
 
@@ -123,10 +123,10 @@ const DonatePoints = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#f9f9f9',
-    justifyContent: 'flex-start',
-    width: 404,
+    overflow: 'hidden',
+    justifyContent: 'flex-start'
   },
   headerContainer: {
     flexDirection: 'row',

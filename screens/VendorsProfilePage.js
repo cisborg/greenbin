@@ -120,11 +120,10 @@ const VendorsProfilePage = () => {
 
 const styles = StyleSheet.create({
   vendorsProfilePage: {
-    backgroundColor: Color.colorWhite,
     flex: 1,
-    height: 844,
-    overflow: "hidden",
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   shapesIcon: {
     top: -52,

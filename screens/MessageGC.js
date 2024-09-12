@@ -115,8 +115,9 @@ const SmsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: 404,
     backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   innerContainer: {
     flex: 1,

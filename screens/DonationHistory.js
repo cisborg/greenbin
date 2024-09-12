@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert, Platform } f
 import Icon from 'react-native-vector-icons/Ionicons';
 // Import VictoryPie for non-web platforms only
 import { VictoryPie } from 'victory-native';
+import { Color } from '../GlobalStyles';
+
 
 const DonationHistory = ({ navigation, donationHistory = [] }) => {
   const renderDonationItem = ({ item }) => (
@@ -108,9 +110,9 @@ const DonationHistory = ({ navigation, donationHistory = [] }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#f9f9f9',
-    width: 404
+    overflow: 'hidden',
   },
   headerContainer: {
     flexDirection: 'row',

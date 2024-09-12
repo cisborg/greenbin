@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Alert, S
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { BarChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/core';
+import { Color } from '../GlobalStyles';
 
 
 const GreenBankAccount = () => {
@@ -141,9 +142,9 @@ const GreenBankAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#ffff',
-    width: 404,
+    overflow: 'hidden',
   },
   profileContainer: {
     flexDirection: 'row',

@@ -741,10 +741,9 @@ const styles = StyleSheet.create({
   },
   seeAllEvents: {
     flex: 1,
-    height: 812,
-    overflow: "hidden",
-    width: 404,
     backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
 });
 

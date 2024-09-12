@@ -128,9 +128,9 @@ const ReportVendorScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#FFFFFF',
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     fontSize: 24,

@@ -64,7 +64,7 @@ import WalletScreen from "./screens/Crypto";
 import LegalScreen from "./screens/LegalScreen";
 import SquadScreen from "./screens/SquadsView";
 import LeaderboardScreen from "./screens/SquadsAward";
-import TagSelection from "./screens/+";
+import TagSelection from "./screens/selectTag";
 import NotificationsScreen from "./screens/Updates";
 import CommentsSection from "./screens/SquadComments";
 import ConnectToShops from "./screens/ShopLocator"
@@ -74,6 +74,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
 import SmsScreen from "./screens/MessageGC";
 import VendorChat from "./screens/VendorChat";
+import DonationSuccess from "./screens/DonationSuccessful";
+import ViewSquad2Screen from  "./screens/ViewSquads2"
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -269,13 +271,15 @@ const App = () => {
         <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadsView" component={SquadScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="+" component={TagSelection} options={{ headerShown: false }} />
+        <Stack.Screen name="selectTag" component={TagSelection} options={{ headerShown: false }} />
         <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
         <Stack.Screen name="otpConfirm" component={OTPConfirmScreen} options={{ headerShown: false }} />
         <Stack.Screen name="MessageGC" component={SmsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
+        <Stack.Screen name="DonationSuccessful" component={DonationSuccess} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

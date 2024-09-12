@@ -10,10 +10,10 @@ const ReferAndEarn = () => {
 
   const [referralCount, setReferralCount] = React.useState(0);
   const rewards = [
-    { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 10 friends!' },
+    { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 20 friends!' },
     { id: '2', title: 'KES 400 Cash', description: 'Earn KES 400 cash after referring 10 friends!' },
-    { id: '3', title: 'KES 800 Cash', description: 'Earn KES 400 cash after referring 15 friends!' },
-    { id: '4', title: 'Green Bank Deposit', description: 'Earn KES 400 cash deposited in your Green Bank!' },
+    { id: '3', title: 'KES 500 Cash', description: 'Earn KES 500 cash after referring 15 friends!' },
+    { id: '4', title: 'Green Bank Deposit', description: 'Earn KES 400 cash deposited in your Green Bank plus add-ons!' },
 
 
   ];
@@ -35,7 +35,7 @@ const ReferAndEarn = () => {
       <Text style={styles.subtitle}>Invite your friends to GreenBin and earn rewards!</Text>
       
       <View style={styles.rewardsContainer}>
-        <Text style={styles.rewardsTitle}>You Earn:</Text>
+        <Text style={styles.rewardsTitle}>Unlock Rewards! 🎉:</Text>
         <FlatList
           data={rewards}
           keyExtractor={item => item.id}
@@ -80,9 +80,9 @@ const ReferAndEarn = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404
+    overflow: 'hidden',
   },
   title: {
     fontSize: 24,

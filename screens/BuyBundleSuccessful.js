@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Color } from '../GlobalStyles';
+
 
 const BuySuccess = ({ route }) => {
     const navigation = useNavigation();
@@ -32,8 +34,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f4f4f4',
-        width: 404,
+        backgroundColor: Color.colorWhite,
+        padding: 20,
+        overflow: 'hidden',
     },
     modal: {
         backgroundColor: 'white',

@@ -8,6 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import { Color } from '../GlobalStyles';
+
 
 const commentsData = [
   {
@@ -77,9 +79,9 @@ const CommentsSection = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Changed to white
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    width: 404,
+    overflow: 'hidden',
   },
   header: {
     fontSize: 24,

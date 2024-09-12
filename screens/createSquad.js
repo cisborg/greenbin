@@ -123,10 +123,10 @@ const CreateSquad = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+    backgroundColor: Color.colorWhite,
     padding: 20,
-    backgroundColor: '#fff',
-    width: 404,
+    overflow: 'hidden',
   },
   title: {
     fontSize: 22,

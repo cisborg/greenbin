@@ -249,12 +249,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 844,
     overflow: "hidden",
-    width: 404,
+    
   },
   bubble: {
     width: 30,
     height: 30,
-    backgroundColor: "lightblue",
+    backgroundColor: "lightgreen",
     borderRadius: 15,
     position: "absolute",
   },

@@ -136,8 +136,9 @@ const VendorChat = () => {
 const styles = StyleSheet.create({
   chatPage: {
     flex: 1,
-    backgroundColor: Color.colorWhite, // Light background color
-    width: 404,
+    backgroundColor: Color.colorWhite,
+    padding: 20,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
