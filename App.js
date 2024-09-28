@@ -4,78 +4,85 @@ import { View, Image, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import VendorsProfilePage from "./screens/VendorsProfilePage";
-import HomePageExistingUser from "./screens/HomePageExistingUser";
-import ChallengePage from "./screens/ChallengePage";
-import SeeAllEvents from "./screens/SeeAllEvents";
-import ChatPage from "./screens/ChatPage";
-import SignInPage from "./screens/SignInPage";
-import RegisterPage from "./screens/RegisterPage";
-import StartPage from "./screens/StartPage";
-import ManageAccountScreen from "./screens/manageAccount";
-import PrepaidRechargeScreen from "./screens/Payment";
-import ProfileGCPs from "./screens/ProfileGCPs";
-import MessagesScreen from "./screens/messageUI";
-import BestPlansScreen from "./screens/BuyBundles";
-import LeaderBoard from "./screens/Happy";
-import GreenConnect from "./screens/GreenConnect";
-import MessageScreen from "./screens/message";
-import YourSquads from "./screens/Squads";
-import CallScreen from "./screens/callPage";
-import JoinSquads from "./screens/JoinSquads";
-import TagList from "./screens/Tags";
-import DialPad from "./screens/DialPad";
-import WiFiScreen from "./screens/Wifi";
-import SendMoneyScreen from "./screens/sendMoney"
-import WifiPlans from "./screens/WifiPlan";
+import VendorsProfilePage from "./screens/Vendors/VendorsProfilePage";
+import HomePageExistingUser from "./screens/MainPage/HomePageExistingUser";
+import ChallengePage from "./screens/MainPage/ChallengePage";
+import SeeAllEvents from "./screens/MainPage/SeeAllEvents";
+import SignInPage from "./screens/Registration/SignInPage";
+import RegisterPage from "./screens/Registration/RegisterPage";
+import StartPage from "./screens/MainPage/StartPage";
+import ManageAccountScreen from "./screens/Registration/manageAccount";
+import PrepaidRechargeScreen from "./screens/GreenPoints/Payment";
+import ProfileGCPs from "./screens/e-Commerce/ProfileGCPs";
+import MessagesScreen from "./screens/GreenConnect/messageUI";
+import BestPlansScreen from "./screens/QuickActions/BuyBundles";
+import LeaderBoard from "./screens/MainPage/Happy";
+import GreenConnect from "./screens/MainPage/GreenConnect";
+import YourSquads from "./screens/Squads/Squads";
+import CallScreen from "./screens/Vendors/callPage";
+import JoinSquads from "./screens/Squads/JoinSquads";
+import TagList from "./screens/Squads/Tags";
+import DialPad from "./screens/GreenPoints/DialPad";
+import WiFiScreen from "./screens/QuickActions/Wifi";
+import WifiPlans from "./screens/QuickActions/WifiPlan";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import VendorList from "./screens/VendorList";
-import CreateSquad from "./screens/createSquad";
-import GoodHome from "./screens/GreenDaily";
-import CartScreen from "./screens/cart";
-import WithdrawalScreen from "./screens/Withdrawal";
-import WithdrawalSuccessScreen from "./screens/WithdrawalSuccess"
-import SendSuccess from "./screens/SendSuccessful";
-import BuySuccess from  "./screens/BuyBundleSuccessful";
-import  WifiSuccess from "./screens/BuyWifiSuccessful";
-import Transactions from "./screens/Transaction";
-import ViewSquadScreen from  "./screens/ViewSquads"
-import NewPostScreen from  "./screens/PostSquad"
-import ChangePassword from "./screens/ChangePassword"
-import ReferAndEarn from "./screens/ReferAndEarn";
-import ProfileSettings from "./screens/ProfileSettings";
-import NotificationScreen from "./screens/ConnectNotification"
-import SettingsScreen from "./screens/Settings";
-import Checkout from "./screens/Checkout";
-import PaymentSuccess from  "./screens/CartPayment"
-import  CartDetail from "./screens/productDetail"
-import GreenBankAccount from "./screens/GreenBank";
-import JoinUsScreen from "./screens/JoinUs";
-import DonatePoints from "./screens/DonatePoints";
-import DonationHistory from "./screens/DonationHistory";
-import BuyAirtimeScreen from "./screens/BuyAirtime";
-import AboutScreen from "./screens/AboutUs";
-import ReportVendorScreen from "./screens/ReportVendor";
-import ProductScreen from "./screens/VendorProducts";
-import BuyGoods from "./screens/BuyGoods";
-import CarbonFootprintCalculator from "./screens/CarbonCalculator"
-import GamesScreen from "./screens/GoGames";
-import WalletScreen from "./screens/Crypto";
-import LegalScreen from "./screens/LegalScreen";
-import SquadScreen from "./screens/SquadsView";
-import LeaderboardScreen from "./screens/SquadsAward";
-import TagSelection from "./screens/selectTag";
-import NotificationsScreen from "./screens/Updates";
-import CommentsSection from "./screens/SquadComments";
-import ConnectToShops from "./screens/ShopLocator"
-import  OTPConfirmScreen from "./screens/otpConfirm";
-import ProfilePage from "./screens/ProfilePage";
+import VendorList from "./screens/Vendors/VendorList";
+import CreateSquad from "./screens/Squads/createSquad";
+import GoodHome from "./screens/MainPage/GreenDaily";
+import CartScreen from "./screens/e-Commerce/cart";
+import BuySuccess from  "./screens/QuickActions/BuyBundleSuccessful";
+import  WifiSuccess from "./screens/QuickActions/BuyWifiSuccessful";
+import Transactions from "./screens/e-Commerce/Transaction";
+import ViewSquadScreen from  "./screens/Squads/ViewSquads"
+import NewPostScreen from  "./screens/Squads/PostSquad"
+import ChangePassword from "./screens/Registration/ChangePassword"
+import ReferAndEarn from "./screens/GreenPoints/ReferAndEarn";
+import ProfileSettings from "./screens/Registration/ProfileSettings";
+import NotificationScreen from "./screens/GreenConnect/ConnectNotification"
+import SettingsScreen from "./screens/GreenConnect/Settings";
+import Checkout from "./screens/e-Commerce/Checkout";
+import  CartDetail from "./screens/e-Commerce/productDetail"
+import GreenBankAccount from "./screens/e-Commerce/GreenBank";
+import JoinUsScreen from "./screens/AboutApp/JoinUs";
+import DonatePoints from "./screens/GreenPoints/DonatePoints";
+import NotifScreen from "./screens/GreenPoints/NotificationTransact";
+import BuyAirtimeScreen from "./screens/QuickActions/BuyAirtime";
+import AboutScreen from "./screens/AboutApp/AboutUs";
+import ReportVendorScreen from "./screens/Vendors/ReportVendor";
+import ProductScreen from "./screens/Vendors/VendorProducts";
+import BuyGoods from "./screens/QuickActions/BuyGoods";
+import CarbonFootprintCalculator from "./screens/GreenPoints/CarbonCalculator"
+import GamesScreen from "./screens/QuickActions/GoGames";
+import WalletScreen from "./screens/QuickActions/Crypto";
+import LegalScreen from "./screens/AboutApp/LegalScreen";
+import SquadScreen from "./screens/Squads/SquadsView";
+import LeaderboardScreen from "./screens/Squads/SquadsAward";
+import TagSelection from "./screens/Squads/selectTag";
+import NotificationsScreen from "./screens/Squads/Updates";
+import CommentsSection from "./screens/Squads/SquadComments";
+import ConnectToShops from "./screens/e-Commerce/ShopLocator"
+import  OTPConfirmScreen from "./screens/Registration/otpConfirm";
+import ProfilePage from "./screens/MainPage/ProfilePage";
+import VendorChat from "./screens/Vendors/VendorChat";
+import ViewSquad2Screen from  "./screens/Squads/ViewSquads2"
+import PaymentConfirmed from "./screens/GreenPoints/paymentConfirmed";
+import ItemGridScreen from "./screens/e-Commerce/allProducts";
+import DonationConfirmed from "./screens/GreenPoints/donationConfirmed";
+import GetPremium from "./screens/AboutApp/getPremium";
+import HelpSupportScreen from "./screens/AboutApp/Support";
+import FAQScreen from "./screens/AboutApp/FAQ";
+import VendorRegister from "./screens/Vendors/VendorRegister";
+import HelpfulTips from "./screens/AboutApp/HelpFull";
+import SquadConfirmation from "./screens/Squads/Confirmed";
+import SquadCreated from "./screens/Squads/SquadCreated";
+import RatingModal from "./screens/AboutApp/AppRating";
+import ChatScreen  from "./screens/GreenConnect/chatConnect"
+import HistoryScreen from "./screens/GreenPoints/donationHist"
+import FollowedVendors from "./screens/Vendors/VendorsFollowed"
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
-import SmsScreen from "./screens/MessageGC";
-import VendorChat from "./screens/VendorChat";
-import DonationSuccess from "./screens/DonationSuccessful";
-import ViewSquad2Screen from  "./screens/ViewSquads2"
+
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -110,7 +117,7 @@ const TabBarIcon = ({ focused, activeIcon, inactiveIcon, label }) => {
       ) : (
         <MaterialCommunityIcons name={inactiveIcon} size={25} color={Color.colorGray_100} />
       )}
-      <Text style={{ color: focused ? '#000' : '#888', fontSize: 12 }}>{label}</Text>
+      <Text style={{ color: focused ? '#000' : '#888', fontSize: 10 }}>{label}</Text>
     </View>
   );
 };
@@ -128,8 +135,8 @@ const MainTabs = () => {
             <TabBarIcon
               focused={focused}
               activeIcon="home-circle" 
-              inactiveIcon= "home-circle"
-              
+              inactiveIcon="home-circle"
+              label="Home" // Add label here
             />
           )
         }}
@@ -141,27 +148,27 @@ const MainTabs = () => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon
               focused={focused}
-              activeIcon= "lightning-bolt-circle"
-              inactiveIcon = "lightning-bolt-circle"
-              
+              activeIcon="lightning-bolt-circle"
+              inactiveIcon="lightning-bolt-circle"
+              label="Explore" // Add label here
             />
           )
         }}
       />
       <Tab.Screen
-            name="GreenDaily"
-            component={GoodHome}
-            options={{
-              tabBarIcon: ({ focused }) => (
-                <TabBarIcon
-                  focused={focused}
-                  activeIcon="crowd"
-                  inactiveIcon="crowd"
-                  
-                />
-              )
-            }}
-          />
+        name="GreenDaily"
+        component={GoodHome}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon
+              focused={focused}
+              activeIcon="crowd"
+              inactiveIcon="crowd"
+              label="Daily" // Add label here
+            />
+          )
+        }}
+      />
       <Tab.Screen
         name="SeeAllEvents"
         component={SeeAllEvents}
@@ -171,13 +178,11 @@ const MainTabs = () => {
               focused={focused}
               activeIcon="map-marker"
               inactiveIcon="map-marker"
-              
+              label="Events" // Add label here
             />
           )
         }}
       />
-
-     
       <Tab.Screen
         name="ProfilePage"
         component={ProfilePage}
@@ -187,7 +192,7 @@ const MainTabs = () => {
               focused={focused}
               activeIcon="account"
               inactiveIcon="account"
-              
+              label="Me" // Add label here
             />
           )
         }}
@@ -195,6 +200,7 @@ const MainTabs = () => {
     </Tab.Navigator>
   );
 };
+
 
 const App = () => {
   const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
@@ -220,10 +226,8 @@ const App = () => {
         <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
-        <Stack.Screen name="message" component={MessageScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
         <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />
-        <Stack.Screen name="ChatPage" component={ChatPage} options={{ headerShown: false }} />
         <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
         <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
@@ -234,14 +238,10 @@ const App = () => {
         <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
         <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
         <Stack.Screen name="Wifi" component={WiFiScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="sendMoney" component={SendMoneyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="WifiPlan" component={WifiPlans} options={{ headerShown: false }} />
         <Stack.Screen name="VendorList" component={VendorList} options={{ headerShown: false }} />
         <Stack.Screen name="createSquad" component={CreateSquad} options={{ headerShown: false }} />
         <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Withdrawal" component={WithdrawalScreen} options={{ headerShown : false }} />
-        <Stack.Screen name="WithdrawalSuccess" component={WithdrawalSuccessScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SendSuccessful" component={SendSuccess} options={{ headerShown: false }} />
         <Stack.Screen name="BuyBundleSuccessful" component={BuySuccess} options={{ headerShown: false }} />
         <Stack.Screen name="messageUI" component={MessagesScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BuyWifiSuccessful" component={WifiSuccess} options={{ headerShown: false }} />
@@ -254,12 +254,10 @@ const App = () => {
         <Stack.Screen name="ConnectNotification" component={NotificationScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-        <Stack.Screen name="CartPayment" component={PaymentSuccess} options={{ headerShown: false }} />
         <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
         <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
         <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
-        <Stack.Screen name="DonationHistory" component={DonationHistory} options={{ headerShown: false }} />
+        <Stack.Screen name="NotificationTransact" component={NotifScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BuyAirtime" component={BuyAirtimeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
@@ -276,10 +274,23 @@ const App = () => {
         <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
         <Stack.Screen name="otpConfirm" component={OTPConfirmScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MessageGC" component={SmsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
-        <Stack.Screen name="DonationSuccessful" component={DonationSuccess} options={{ headerShown: false }} />
         <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
+        <Stack.Screen name="paymentConfirmed" component={PaymentConfirmed} options={{ headerShown: false }} />
+        <Stack.Screen name="allProducts" component={ItemGridScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="donationConfirmed" component={DonationConfirmed} options={{ headerShown: false }} />
+        <Stack.Screen name="getPremium" component={GetPremium} options={{ headerShown: false }} />
+        <Stack.Screen name="Support" component={HelpSupportScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="FAQ" component={FAQScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VendorRegister" component={VendorRegister} options={{ headerShown: false }} />
+        <Stack.Screen name="HelpFull" component={HelpfulTips} options={{ headerShown: false }} />
+        <Stack.Screen name="Confirmed" component={SquadConfirmation} options={{ headerShown: false }} />
+        <Stack.Screen name="SquadCreated" component={SquadCreated} options={{ headerShown: false }} />
+        <Stack.Screen name="AppRating" component={RatingModal} options={{ headerShown: false }} />
+        <Stack.Screen name="chatConnect" component={ChatScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="donationHist" component={HistoryScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
+        <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>
