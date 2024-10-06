@@ -1,56 +1,116 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Text, Dimensions, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, SafeAreaView, Animated, ScrollView } from 'react-native';
 import { PieChart, BarChart } from 'react-native-chart-kit';
-import { LinearGradient } from 'expo-linear-gradient'; // For gradients
-import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons for back icon
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
-// Sample Data for Pie Charts
+// Refactored Pie Chart Data
 const pieData = {
   activities: [
-    { name: "Waste Clean", population: 50, color: "#4CAF50" },
-    { name: "Tree Planting", population: 30, color: "#FF9800" },
-    { name: "Recycling", population: 20, color: "#2196F3" }
+    { name: "Waste Clean", population: 70, color: "#4CAF50" },
+    { name: "Tree Planting", population: 50, color: "#FF9800" },
+    { name: "Recycling", population: 40, color: "#2196F3" }
   ],
   donations: [
-    { name: "Disasters", population: 40, color: "#00BCD4" },
-    { name: "Poverty", population: 30, color: "#FFC107" },
-    { name: "Pollution", population: 30, color: "#E91E63" }
+    { name: "Bronze", population: 12, color: "#CD7F32" },
+    { name: "Silver", population: 5, color: "#9C27B0" },
+    { name: "Titanium", population: 3, color: "#00BCD4" },
+    { name: "Gold", population: 2, color: "#FFD700" },
+    { name: "Platinum", population: 1, color: "green" },
+    { name: "Diamond", population: 0, color: "blue" }
   ],
   purchases: [
-    { name: "Electronics", population: 70, color: "#9C27B0" },
-    { name: "Clothes", population: 20, color: "#FF5722" },
-    { name: "Other", population: 10, color: "#FF9800" }
+    { name: "Sprout", population: 6, color: "#9C27B0" },
+    { name: "Blossom", population: 2, color: "#FF5722" },
+    { name: "Canopy", population: 1, color: "#FF9800" },
+    { name: "Ecosystem", population: 1, color: "#4CAF50" },
+    { name: "Champion", population: 1, color: "#00BCD4" }
   ]
 };
 
-// Sample Bar Data (Monthly Thresholds for Modules)
-const barData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  datasets: [
-    {
-      data: [30, 45, 28, 80, 99, 43, 50, 67, 78, 90, 56, 72], // Average threshold data for each month
+// Function to calculate the percentage based on input tiers and focus value tiers
+const calculatePercentage = (userValues, focusValues) => {
+  let satisfiedTotal = 0;
+  const focusTotal = focusValues.reduce((acc, val) => acc + val, 0);
+
+  for (let i = 0; i < userValues.length; i++) {
+    if (userValues[i] > 0) {
+      satisfiedTotal += focusValues[i];
     }
-  ]
+  }
+
+  return (satisfiedTotal / focusTotal) * 100;
+};
+
+// Define focus value tiers
+const donationFocusValues = [6, 2, 1, 1, 1, 1]; // Tiers for donations
+const purchaseFocusValues = [6, 2, 1, 1, 1]; // Tiers for purchases
+
+// Calculate percentages for donations and purchases
+const donationPercentage = calculatePercentage(
+  [12, 5, 3, 2, 1, 0], // User donations
+  donationFocusValues
+);
+
+const purchasePercentage = calculatePercentage(
+  [6, 2, 1, 1, 1], // User purchases
+  purchaseFocusValues
+);
+
+// Calculate overall activity percentage
+const activitiesPercentage = pieData.activities.reduce((acc, item) => acc + item.population, 0) / 3; // Average activity percentage
+
+// Calculate final carbon calculator percentage
+const finalPercentage = (activitiesPercentage + donationPercentage + purchasePercentage) / 3;
+
+const monthlyThresholds = {
+  Jan: 210,
+  Feb: 250,
+  Mar: 190,
+  Apr: 220,
+  May: 300,
+  Jun: 180,
+  Jul: 240,
+  Aug: 210,
+  Sep: 260,
+  Oct: 230,
+  Nov: 200,
+  Dec: 250,
+};
+
+const maxThreshold = 300; // 100% max for the three categories
+
+const calculateUserThreshold = (total) => {
+  return (total / maxThreshold) * 100; // Convert to percentage
 };
 
 // Function to determine bar color based on value
 const getBarColor = (value) => {
   if (value < 50) {
-    return '#A9A9A9'; // Gray for < 50%
+    return '#A9A9A9'; // Gray for below 50%
   } else if (value >= 50 && value <= 59) {
-    return '#FFA500'; // Orange for 50%-59%
+    return '#FFA500'; // Orange for 50-59%
   } else {
-    return '#4CAF50'; // Green for >= 60%
+    return '#4CAF50'; // Green for 60% and above
   }
 };
 
-// Main App Component
 const CarbonFootprintCalculator = () => {
   const [activeCard, setActiveCard] = useState('activities');
-  const navigation  = useNavigation();
+  const navigation = useNavigation();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1, 
+      duration: 1000, 
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   const handleToggleCard = (card) => {
     setActiveCard(card);
   };
@@ -70,164 +130,186 @@ const CarbonFootprintCalculator = () => {
 
   const currentData = getCurrentData();
 
+  // Prepare bar chart data
+  const barData = {
+    labels: Object.keys(monthlyThresholds),
+    datasets: [{
+      data: Object.values(monthlyThresholds).map(calculateUserThreshold),
+    }],
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.header}>Hi, You!</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="#4CAF50" />
+            </TouchableOpacity>
+            <Text style={styles.header}>Monitor Your Focus Value Chain!</Text>
+          </View>
 
-      {/* Circular progress / Pie chart */}
-      <View style={styles.pieChartContainer}>
-        <PieChart
-          data={currentData}
-          width={screenWidth - 40}
-          height={160}
-          chartConfig={{
-            backgroundColor: 'transparent',
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-          accessor="population"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          absolute
-        />
-        <View style={styles.legend}>
-          {currentData.map((item, index) => (
-            <Text key={index} style={{ color: item.color, fontSize: 12 }}>
-              {item.name}: {item.population}%
-            </Text>
-          ))}
-        </View>
-      </View>
+          <View style={styles.pieChartContainer}>
+            <PieChart
+              data={currentData}
+              width={screenWidth - 40}
+              height={150} // Reduced height
+              chartConfig={{
+                backgroundColor: 'transparent',
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              absolute
+            />
+            <View style={styles.legend}>
+              {currentData.map((item, index) => (
+                <Text key={index} style={{ color: item.color, fontSize: 10 }}> {/* Reduced font size */}
+                  {item.name}: {item.population}%
+                </Text>
+              ))}
+            </View>
+          </View>
 
-      {/* Card displaying the circular progress and toggling */}
-      <View style={styles.cardContainer}>
-        {['activities', 'donations', 'purchases'].map((card) => (
-          <TouchableOpacity
-            key={card}
-            style={styles.card}
-            onPress={() => handleToggleCard(card)}
-          >
-            <LinearGradient
-              colors={
-                card === 'activities' ? ['#4CAF50', '#81C784'] :
-                card === 'donations' ? ['#FF9800', '#FFB74D'] :
-                ['#9C27B0', '#CE93D8']
-              }
-              style={styles.cardGradient}
-            >
-              <Text style={styles.cardTitle}>{card.charAt(0).toUpperCase() + card.slice(1)}</Text>
-              <Text style={styles.cardDescription}>
-                {card === 'activities' ? 'Engage in activities like waste cleanups, tree planting, and recycling.' :
-                card === 'donations' ? 'Contribute to disaster relief, fight poverty, and combat pollution.' :
-                'Track purchases like electronics, clothing, and more.'}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        ))}
-      </View>
+          <View style={styles.cardContainer}>
+            {['activities', 'donations', 'purchases'].map((card) => (
+              <TouchableOpacity
+                key={card}
+                style={styles.card}
+                onPress={() => handleToggleCard(card)}
+              >
+                <LinearGradient
+                  colors={
+                    card === 'activities' ? ['#4CAF50', '#81C784'] :
+                    card === 'donations' ? ['#FF9800', '#FFB74D'] :
+                    ['#9C27B0', '#CE93D8']
+                  }
+                  style={styles.cardGradient}
+                >
+                  <Text style={styles.cardTitle}>{card.charAt(0).toUpperCase() + card.slice(1)}</Text>
+                  <Text style={styles.cardDescription}>
+                    {card === 'activities' ? 'Tackle Eco-green pilot activities to boost your eco-impact.' :
+                    card === 'donations' ? `Aid critical causes/havocs with ${donationPercentage.toFixed(2)}% donations.` :
+                    `Track ecogreen purchases with ${purchasePercentage.toFixed(2)}% purchases.`}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-      {/* Toggle Dots for switching between cards */}
-      <View style={styles.toggleDots}>
-        {['activities', 'donations', 'purchases'].map((card) => (
-          <TouchableOpacity
-            key={card}
-            style={activeCard === card ? styles.activeDot : styles.dot}
-            onPress={() => handleToggleCard(card)}
-          />
-        ))}
-      </View>
+          <View style={styles.toggleDots}>
+            {['activities', 'donations', 'purchases'].map((card) => (
+              <TouchableOpacity
+                key={card}
+                style={activeCard === card ? styles.activeDot : styles.dot}
+                onPress={() => handleToggleCard(card)}
+              />
+            ))}
+          </View>
 
-      {/* Bar Chart for Monthly Threshold Distribution */}
-      <View style={styles.barChartContainer}>
-        <Text style={styles.barChartTitle}>Monthly Threshold Distribution</Text>
-        <BarChart
-          data={{
-            labels: barData.labels,
-            datasets: [{
-              data: barData.datasets[0].data.map(value => ({
-                value,
-                color: getBarColor(value)
-              })),
-            }]
-          }}
-          width={screenWidth - 40}
-          height={220}
-          fromZero={true}
-          chartConfig={{
-            backgroundColor: '#fff', // Set background color to white
-            backgroundGradientFrom: '#fff',
-            backgroundGradientTo: '#fff',
-            decimalPlaces: 0, // For whole numbers
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            barPercentage: 0.7,
-          }}
-          style={{
-            borderRadius: 15, 
-            backgroundColor: '#fff' // White background for clarity
-          }}
-          verticalLabelRotation={30}
-          showBarTops={false}
-        />
-      </View>
-    </ScrollView>
+          <View style={styles.barChartContainer}>
+            <Text style={styles.barChartTitle}>Monthly Eco Threshold</Text>
+            <BarChart
+              data={barData}
+              width={screenWidth - 40}
+              height={200} // Reduced height
+              fromZero={true}
+              chartConfig={{
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                barPercentage: 0.5,
+                useShadowColorFromDataset: false,
+              }}
+              verticalLabelRotation={30}
+            />
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </SafeAreaView>
   );
 };
 
-// Stylesheet
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f0f4f7',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
+    padding: 10, // Reduced padding
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  scrollView: {
+    paddingBottom: 20,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15, // Reduced margin
   },
   header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginLeft: 10,
+    fontSize: 18, // Reduced font size
+    fontWeight: '700',
+    marginLeft: 10, // Reduced margin
+    color: 'green',
   },
   pieChartContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 15, // Reduced margin
+    padding: 10,
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    justifyContent: 'center',
   },
   legend: {
-    marginTop: 10,
-    alignItems: 'center',
-    marginLeft: -20
+    marginTop: 5, // Reduced margin
   },
   cardContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginBottom: 15, // Reduced margin
   },
   card: {
     width: '30%',
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginVertical: 5, // Reduced margin
   },
   cardGradient: {
-    padding: 15,
-    borderRadius: 18,
-    alignItems: 'center',
+    padding: 10, // Reduced padding
+    borderRadius: 10,
   },
   cardTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
     color: '#fff',
+    fontSize: 16, // Reduced font size
+    fontWeight: 'bold',
   },
   cardDescription: {
-    fontSize: 12,
-    textAlign: 'center',
     color: '#fff',
+    fontSize: 10, // Reduced font size
   },
   toggleDots: {
     flexDirection: 'row',
@@ -235,28 +317,41 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#ddd',
-    marginHorizontal: 5,
+    height: 8, // Reduced size
+    width: 8, // Reduced size
+    borderRadius: 4, // Reduced size
+    backgroundColor: '#A9A9A9',
+    marginHorizontal: 4,
   },
   activeDot: {
-    width: 20,
-    height: 10,
-    borderRadius: 5,
+    height: 8, // Reduced size
+    width: 8, // Reduced size
+    borderRadius: 4, // Reduced size
     backgroundColor: '#4CAF50',
-    marginHorizontal: 5,
+    marginHorizontal: 4,
   },
   barChartContainer: {
     marginTop: 20,
-    backgroundColor: 'white'
+    padding: 10,
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   barChartTitle: {
-    fontSize: 18,
+    fontSize: 12, // Reduced font size
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 5, // Reduced margin
+    color: 'green',
   },
 });
 

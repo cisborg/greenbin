@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  Animated,Platform
+  Animated,Platform, StatusBar
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
@@ -91,14 +91,14 @@ const GreenConnectMain = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // For screen animation
 
   const users = [
-    { id: '1', name: 'Valary Akinyi', description: 'Data Assistant at Dapstrem Entertainment', followers: 100, awards: 5, mutuals: 3, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '2', name: 'Mercy Njeri', description: 'Environmental Education and Advocacy', followers: 50, awards: 3, mutuals: 2, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '3', name: 'Geff Kirui', description: 'Web Developer specializing in Web Technologies', followers: 150, awards: 10, mutuals: 5, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Popular' },
-    { id: '4', name: 'Abdijabar Saney', description: 'Humanitarian | Emergency Response', followers: 80, awards: 4, mutuals: 1, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '5', name: 'Michael Brown', description: 'Software Engineer', followers: 200, awards: 8, mutuals: 4, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
-    { id: '6', name: 'Jane Smith', description: 'AI Researcher', followers: 250, awards: 6, mutuals: 6, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
+    { id: '1', name: 'Valary Akinyi', description: 'Data Assistant at Dapstrem Entertainment', followers: 100, awards: 5, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '2', name: 'Mercy Njeri', description: 'Environmental Education and Advocacy', followers: 50, awards: 3, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '3', name: 'Geff Kirui', description: 'Web Developer specializing in Web Technologies', followers: 150, awards: 10,  coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Popular' },
+    { id: '4', name: 'Abdijabar Saney', description: 'Humanitarian | Emergency Response', followers: 80, awards: 4, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '5', name: 'Michael Brown', description: 'Software Engineer', followers: 200, awards: 8, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
+    { id: '6', name: 'Jane Smith', description: 'AI Researcher', followers: 250, awards: 6, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
     { id: '7', name: 'John Doe', description: 'Data Scientist', followers: 300, awards: 12, mutuals: 7, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
-    { id: '8', name: 'Alice Johnson', description: 'Community Organizer', followers: 90, awards: 2, mutuals: 0, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
+    { id: '8', name: 'Alice Johnson', description: 'Community Organizer', followers: 90, awards: 2,  coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
   ];
 
   const filteredUsers = users.filter(user =>
@@ -145,7 +145,6 @@ const GreenConnectMain = ({ navigation }) => {
         <Text style={styles.userName}>{item.name}</Text>
         <Text>{item.description}</Text>
         <Text>{item.followers} Followers</Text>
-        <Text>{item.mutuals} Mutual Connections</Text>
         <TouchableOpacity
           style={styles.connectButton}
           onPress={() => {
@@ -283,7 +282,7 @@ const styles = StyleSheet.create({
   searchInput: {
     padding: 10,
     borderRadius: 14,
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowColor: '#ccc',
     shadowOpacity: 0.2,
     shadowRadius: 5,

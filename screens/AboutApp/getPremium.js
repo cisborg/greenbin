@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions,Platform, SafeAreaView, Animated, ActivityIndicator, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView, Animated, ActivityIndicator, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -75,7 +75,7 @@ const TogglePlans = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color="#fff" />
+          <Icon name="arrow-back" size={18} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.titleText}>Discover features and compare plans</Text>
       </View>
@@ -85,7 +85,7 @@ const TogglePlans = () => {
         
         {currentPlan.features.map((feature, index) => (
           <View key={index} style={styles.featureContainer}>
-            <Icon name={feature.icon} size={20} color="#4CAF50" />
+            <Icon name={feature.icon} size={16} color="#4CAF50" />
             <Text style={styles.featureText}>{feature.text}</Text>
           </View>
         ))}
@@ -101,11 +101,11 @@ const TogglePlans = () => {
 
         <View style={styles.arrowContainer}>
           <TouchableOpacity style={styles.arrowButton} onPress={() => togglePlan('left')}>
-            <Icon name="arrow-back" size={18} color="#fff" />
+            <Icon name="arrow-back" size={14} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.arrowButton} onPress={() => togglePlan('right')}>
-            <Icon name="arrow-forward" size={18} color="#fff" />
+            <Icon name="arrow-forward" size={14} color="#fff" />
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -127,24 +127,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    padding: 10,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   backButton: {
-    marginRight: 10,
+    marginRight: 5,
     backgroundColor: '#4CAF50',
-    borderRadius: 50,
-    padding: 10,
+    borderRadius: 20,
+    padding: 6,
+    marginLeft: 10
   },
   titleText: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#4CAF50',
     textAlign: 'center',
@@ -153,88 +153,79 @@ const styles = StyleSheet.create({
   arrowContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   arrowButton: {
-    padding: 5,
+    padding: 4,
     backgroundColor: '#4CAF50',
-    borderRadius: 50,
-    elevation: 3,
-    marginHorizontal: 5,
+    borderRadius: 20,
+    elevation: 2,
+    marginHorizontal: 2,
   },
   planContainer: {
-    width: width * 0.8,
-    maxWidth: 400,
+    width: width * 0.85,
+    maxWidth: 380,
     backgroundColor: '#f2f2f2',
-    borderRadius: 16,
-    padding: 20,
-    elevation: 4,
-    marginHorizontal: 10,
+    borderRadius: 15,
+    padding: 10,
+    elevation: 2,
+    marginHorizontal: 5,
     borderWidth: 1,
-    borderColor: '#ccc',
-    alignItems: 'center',
+    borderColor: '#ddd',
   },
   planTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#000',
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
   },
   featureContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 5,
+    marginBottom: 6,
   },
   featureText: {
-    fontSize: 16,
-    color: '#000',
-    marginLeft: 10,
+    marginLeft: 5,
+    fontSize: 14,
+    color: '#555',
   },
   priceText: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#4CAF50',
     marginTop: 10,
-    color: '#FFD700',
   },
   yearlyPriceText: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 5,
+    fontSize: 14,
+    color: '#777',
   },
   savingsContainer: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    padding: 10,
-    marginTop: 5,
-    alignItems: 'center',
+    marginTop: 8,
   },
   savingsText: {
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 14,
+    color: '#FF5722',
   },
   trialText: {
-    fontSize: 14,
-    color: '#000',
-    marginTop: 10,
+    fontSize: 12,
+    color: '#666',
+    marginTop: 5,
     textAlign: 'center',
   },
   registerButton: {
     backgroundColor: '#4CAF50',
-    borderRadius: 14,
-    padding: 15,
-    marginTop: 20,
-    width: '50%',
-    alignItems: 'center',
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    marginTop: 15,
   },
   loadingButton: {
-    backgroundColor: '#FFD700',
+    opacity: 0.7,
   },
   registerButtonText: {
+    fontSize: 16,
     color: '#fff',
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

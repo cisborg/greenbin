@@ -143,15 +143,14 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 2,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 2
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3
   },
   image: {
     width: '100%',

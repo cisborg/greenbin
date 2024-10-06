@@ -1,0 +1,29 @@
+// authentication methods
+export const REGISTER_REQUEST= 'REGISTER_REQUEST';
+export const REGISTER_SUCCESS= 'REGISTER_SUCCESS';
+export const REGISTER_FAILURE= 'REGISTER_FAILURE';
+
+
+export const VERIFY_OTP_REQUEST = 'VERIFY_OTP_REQUEST';
+export const VERIFY_OTP_SUCCESS = 'VERIFY_OTP_SUCCESS';
+export const VERIFY_OTP_FAILURE = 'VERIFY_OTP_FAILURE';
+
+export const RESEND_OTP_REQUEST = 'RESEND_OTP_REQUEST';
+export const RESEND_OTP_SUCCESS = 'RESEND_OTP_SUCCESS';
+export const RESEND_OTP_FAILURE = 'RESEND_OTP_FAILURE';
+
+export const LOGIN_REQUEST= 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS= 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE= 'LOGIN_FAILURE';
+
+export const LOGOUT= 'LOGOUT';
+
+//  transaction methods 
+export const DEPOSIT_CASH = 'DEPOSIT_CASH';
+export const CONVERT_TO_POINTS = 'CONVERT_TO_POINTS';
+export const BUY_PRODUCT = 'BUY_PRODUCT';
+export const PAY_SQUAD = 'PAY_SQUAD';
+export const DONATE_POINTS = 'DONATE_POINTS';
+export const BUY_AIRTIME = 'BUY_AIRTIME';
+export const BUY_GOODS = 'BUY_GOODS';
+export const PAY_WIFI_PACKAGE = 'PAY_WIFI_PACKAGE';

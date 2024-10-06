@@ -1,14 +1,43 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Animated, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView, Animated, StyleSheet, FlatList, ActivityIndicator, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/core';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+const { width, height } = Dimensions.get('window');
+
 const CartDetail = () => {
   const navigation = useNavigation();
   const [cartCount, setCartCount] = useState(0);
-  const cartBounce = new Animated.Value(1);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [showReviews, setShowReviews] = useState(false);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [cartBounce] = useState(new Animated.Value(1));
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [loadingOrder, setLoadingOrder] = useState(false); // Loading state for the order button
+
+  const images = [
+    require('../../assets/greenBin.png'),
+    require('../../assets/Appliance.png'),
+    require('../../assets/bikes.png'),
+    require('../../assets/greenBin.png')
+  ];
+
+  const reviewers = [
+    { name: "John Doe", stars: 5, message: "Excellent product, highly recommend!", date: new Date() },
+    { name: "Jane Smith", stars: 4, message: "Good quality, but the zipper could be better.", date: new Date() },
+    { name: "Bob Johnson", stars: 3, message: "Average product, but decent value for the price.", date: new Date() },
+  ].sort((a, b) => b.date - a.date);
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const handleAddToCart = () => {
     setCartCount(cartCount + 1);
@@ -18,98 +47,143 @@ const CartDetail = () => {
     ]).start();
   };
 
+  const handleNextImage = () => {
+    if (currentImage < images.length - 1) {
+      setCurrentImage(currentImage + 1);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (currentImage > 0) {
+      setCurrentImage(currentImage - 1);
+    }
+  };
+
+  const handleLoadMoreReviews = () => {
+    setLoadingReviews(true);
+    setTimeout(() => {
+      setLoadingReviews(false);
+    }, 100);
+  };
+
+  const handleOrderNow = () => {
+    setLoadingOrder(true); // Set loading state to true
+    setTimeout(() => {
+      setLoadingOrder(false); // Reset loading state
+      navigation.navigate('ChallengePage'); // Navigate to another screen
+    }, 300); // Duration for the spinner
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Header */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="leftcircle" size={27} color="#4CAF50" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Product Details</Text>
-      </View>
-
-      {/* Product Image */}
-      <View style={styles.productImageContainer}>
-        <Image 
-          source={require('../../assets/greenBin.png')} 
-          style={styles.productImage} 
-        />
-        <View style={styles.imageIndicatorContainer}>
-          <Text style={styles.imageIndicator}>1/4</Text>
-        </View>
-      </View>
-      
-      {/* Product Info */}
-      <View style={styles.productInfoContainer}>
-        <Text style={styles.discountedPrice}>GCPs 459</Text>
-        <Text style={styles.originalPrice}>GCPs 1,299</Text>
-        <Text style={styles.discountPercentage}>-64%</Text>
-
-        <Text style={styles.productTitle}>
-          Green Bin - 100% Recycled and Renewable Green Bins with Zippered Handles
-        </Text>
-
-        <View style={styles.ratingContainer}>
-          <Icon name="star" type="font-awesome" color="#f5c518" size={16} />
-          <Text style={styles.ratingText}>4.4</Text>
-          <Text style={styles.reviewText}>Reviews(16152)</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="leftcircle" size={27} color="#4CAF50" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Product Details</Text>
         </View>
 
-        {/* Color Options */}
-        <View style={styles.colorContainer}>
-          <Text style={styles.colorText}>Color: black</Text>
-          <View style={styles.colorOptions}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.productImageContainer}>
+            <TouchableOpacity onPress={handlePrevImage}>
+              <AntDesign name="leftcircle" size={27} color="#4CAF50" />
+            </TouchableOpacity>
             <Image 
-              source={require('../../assets/greenBin.png')} 
-              style={styles.colorOption} 
+              source={images[currentImage]} 
+              style={styles.productImage} 
             />
-            <Image 
-              source={require('../../assets/greenBin.png')} 
-              style={styles.colorOption} 
-            />
+            <TouchableOpacity onPress={handleNextImage}>
+              <AntDesign name="rightcircle" size={27} color="#4CAF50" />
+            </TouchableOpacity>
+            <View style={styles.imageIndicatorContainer}>
+              <Text style={styles.imageIndicator}>{currentImage + 1}/4</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Add to Cart and Chat Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('ChatPage')}>
-            <AntDesign name="message1" size={24} color="black" />
-          </TouchableOpacity>
+          <View style={styles.productInfoContainer}>
+            <Text style={styles.discountedPrice}>GCPs 459</Text>
+            <Text style={styles.originalPrice}>GCPs 1,299</Text>
+            <Text style={styles.discountPercentage}>-64%</Text>
+            <Text style={styles.productTitle}>
+              Green Bin - 100% Recycled and Renewable Green Bins with Zippered Handles. Material: 100% Recycled Plastic, Dimensions: 30 x 30 x 30 cm, Weight: 1.5 kg, Warranty: 2 years.
+            </Text>
 
-          <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate('cart')}>
-            <Animated.View style={{ transform: [{ scale: cartBounce }] }}>
-              <FontAwesome6 name="cart-plus" size={24} color="#4CAF50" />
-              {cartCount > 0 && (
-                <View style={styles.cartBadge}>
-                  <Text style={styles.badgeText}>{cartCount}</Text>
-                </View>
-              )}
-            </Animated.View>
-          </TouchableOpacity>
+            <View style={styles.ratingContainer}>
+              <Icon name="star" type="font-awesome" color="#f5c518" size={16} />
+              <Text style={styles.ratingText}>4.4</Text>
+              <TouchableOpacity onPress={() => setShowReviews(!showReviews)}>
+                <Text style={styles.reviewText}>Reviews ({reviewers.length})</Text>
+              </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
-            <Text style={styles.addToCartText}>Add to Cart</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            {showReviews && (
+              <FlatList
+                data={reviewers}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <View style={styles.review}>
+                    <Text style={styles.reviewerName}>{item.name}</Text>
+                    <View style={styles.ratingContainer}>
+                      {Array(item.stars).fill().map((_, i) => (
+                        <Icon key={i} name="star" type="font-awesome" color="#f5c518" size={16} />
+                      ))}
+                    </View>
+                    <Text style={styles.reviewMessage}>{item.message}</Text>
+                  </View>
+                )}
+                onEndReached={handleLoadMoreReviews}
+                onEndReachedThreshold={0.1}
+                ListFooterComponent={() => (
+                  loadingReviews ? <ActivityIndicator size="small" color="#4CAF50" /> : null
+                )}
+              />
+            )}
 
-      {/* Additional Product Details */}
-      <View style={styles.additionalInfoContainer}>
-        <Text style={styles.additionalInfoTitle}>Additional Information</Text>
-        <Text style={styles.additionalInfoText}>Material: 100% Recycled Plastic</Text>
-        <Text style={styles.additionalInfoText}>Dimensions: 30 x 30 x 30 cm</Text>
-        <Text style={styles.additionalInfoText}>Weight: 1.5 kg</Text>
-        <Text style={styles.additionalInfoText}>Warranty: 2 years</Text>
-      </View>
-    </ScrollView>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('ChatPage')}>
+                <AntDesign name="message1" size={24} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate('cart')}>
+                <Animated.View style={{ transform: [{ scale: cartBounce }] }}>
+                  <FontAwesome6 name="cart-plus" size={24} color="#4CAF50" />
+                  {cartCount > 0 && (
+                    <View style={styles.cartBadge}>
+                      <Text style={styles.badgeText}>{cartCount}</Text>
+                    </View>
+                  )}
+                </Animated.View>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+                <Text style={styles.addToCartText}>Add to Cart</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.orderNowButton} onPress={handleOrderNow}>
+                {loadingOrder ? (
+                  <ActivityIndicator size="small" color="#fff" style={styles.spinner} />
+                ) : (
+                  <Text style={styles.orderNowText}>Order Now</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  container: {
+    flexGrow: 1,
     padding: 20,
+    backgroundColor: '#fff',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -122,12 +196,14 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   productImageContainer: {
-    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 20,
   },
   productImage: {
-    width: '100%',
-    height: 300,
+    width: width * 0.7,
+    height: height * 0.4,
     borderRadius: 8,
   },
   imageIndicatorContainer: {
@@ -143,120 +219,100 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   productInfoContainer: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    marginTop: 20,
   },
   discountedPrice: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#4CAF50',
   },
   originalPrice: {
+    fontSize: 20,
     textDecorationLine: 'line-through',
-    color: '#9e9e9e',
   },
   discountPercentage: {
-    color: '#ff5722',
+    fontSize: 18,
+    color: 'red',
+    marginBottom: 10,
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#424242',
-    marginVertical: 8,
+    marginBottom: 16,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   ratingText: {
-    fontSize: 14,
-    marginLeft: 4,
-    color: '#424242',
+    fontSize: 16,
+    marginLeft: 5,
   },
   reviewText: {
-    fontSize: 12,
-    marginLeft: 8,
-    color: '#757575',
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#4CAF50',
   },
-  colorContainer: {
-    marginTop: 16,
+  review: {
+    marginBottom: 10,
   },
-  colorText: {
-    fontSize: 14,
-    color: '#424242',
+  reviewerName: {
+    fontWeight: 'bold',
   },
-  colorOptions: {
-    flexDirection: 'row',
-    marginTop: 8,
-  },
-  colorOption: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-    borderColor: '#e0e0e0',
-    borderWidth: 1,
+  reviewMessage: {
+    marginTop: 5,
   },
   buttonContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 20,
   },
   chatButton: {
-    marginRight: 8,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    alignItems: 'center',
+    padding: 10,
   },
   cartButton: {
-    marginRight: 8,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -10,
-    backgroundColor: 'red',
-    borderRadius: 8,
-    paddingHorizontal: 5,
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 12,
+    padding: 10,
   },
   addToCartButton: {
-    flex: 1,
-    marginLeft: 8,
-    padding: 16,
-    borderRadius: 16,
     backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 12,
+    flex: 1,
+    marginLeft: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   addToCartText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  additionalInfoContainer: {
-    marginTop: 20,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-  },
-  additionalInfoTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
   },
-  additionalInfoText: {
-    fontSize: 14,
-    color: '#424242',
+  orderNowButton: {
+    backgroundColor: 'orange',
+    padding: 10,
+    borderRadius: 12,
+    flex: 1,
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  orderNowText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#f44336',
+    borderRadius: 40,
+    padding: 5,
+  },
+  badgeText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  spinner: {
+    marginRight: 5,
   },
 });
 

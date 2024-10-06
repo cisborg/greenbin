@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Color, FontFamily } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
-import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Animated } from 'react-native';
@@ -55,7 +54,7 @@ const DialPad = () => {
         {/* Top Header with Back Button and Title */}
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Feather name="arrow-left-circle" size={24} color="black" />
+            <AntDesign name="arrowleft" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.headerText}>Enter Amount</Text>
         </View>
@@ -175,7 +174,8 @@ const styles = StyleSheet.create({
   padButton: {
     width: '25%',
     height: 60,
-    marginBottom: 15,
+    marginBottom: 12,
+    marginRight: 5,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 18,

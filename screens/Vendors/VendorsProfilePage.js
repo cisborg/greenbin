@@ -1,9 +1,18 @@
 import * as React from "react";
-import { Image, StyleSheet, Text, View, Animated, Dimensions , Platform, StatusBar } from "react-native";
+import { Image, StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { FontFamily, FontSize, Color, Border } from "../../GlobalStyles";
+import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+// ActionButton Component
+const ActionButton = ({ onPress, iconSource, text }) => (
+  <TouchableOpacity style={styles.buttonContainer} onPress={onPress} accessibilityLabel={text}>
+    <Image style={styles.iconStyle} source={iconSource} />
+    <Text style={styles.buttonText}>{text}</Text>
+  </TouchableOpacity>
+);
 
 const VendorsProfilePage = () => {
   const navigation = useNavigation();
@@ -25,10 +34,10 @@ const VendorsProfilePage = () => {
     const onChange = ({ window }) => {
       setScreenWidth(window.width);
     };
-    Dimensions.addEventListener('change', onChange);
+    const subscription = Dimensions.addEventListener('change', onChange);
 
     return () => {
-      Dimensions.removeEventListener('change', onChange);
+      subscription?.remove(); // Cleanup listener
     };
   }, [screenAnim]);
 
@@ -39,17 +48,51 @@ const VendorsProfilePage = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
-        
-        {/* Vendor Profile Container at the top */}
-        <View style={styles.vendorInfoContainer}>
-          <Image
-            source={usericon}
-            style={styles.icon}
+          <StatusBar barStyle="dark-content" />
+
+          {/* Header with Vendor Name */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={()=> navigation.goBack()}>
+              <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
+            </TouchableOpacity>
+            <Text style={styles.heading}>{username}'s Profile</Text>
+          </View>
+
+
+        {/* Buttons and navigation options */}
+        <View style={styles.container}>
+          <ActionButton
+            onPress={() => handleNavigation("callPage")}
+            iconSource={require("../../assets/phone-fill.png")}
+            text="Call Vendor"
           />
+          <ActionButton
+            onPress={() => handleNavigation("ShareVendorPage")}
+            iconSource={require("../../assets/group-share.png")}
+            text="Share Vendor"
+          />
+          <ActionButton
+            onPress={() => handleNavigation("VendorChat", { name: username })}
+            iconSource={require("../../assets/chat-alt-2-fill.png")}
+            text="Chat"
+          />
+          <ActionButton
+            onPress={() => handleNavigation("VendorProducts")}
+            iconSource={require("../../assets/user-light.png")}
+            text="Products Repository"
+          />
+          <ActionButton
+            onPress={() => handleNavigation("ReportVendor")}
+            iconSource={require("../../assets/Untitled.png")}
+            text="Report Vendor as scam"
+          />
+        </View>
+
+        {/* Vendor Profile Container at the bottom */}
+        <View style={styles.vendorInfoContainer}>
+          <Image source={usericon} style={styles.icon} />
           <Text style={styles.vendorName}>{username}</Text>
-          <Text style={styles.vendorDescription}>
-            {userprofession}
-          </Text>
+          <Text style={styles.vendorDescription}>{userprofession}</Text>
           <TouchableOpacity style={styles.removeFromVendorContainer}>
             <Text
               style={styles.removeFromVendorList}
@@ -57,69 +100,6 @@ const VendorsProfilePage = () => {
             >
               Remove from Vendor List?
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Buttons and navigation options */}
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleNavigation("callPage")}
-          >
-            <Image
-              style={styles.iconStyle}
-              contentFit="cover"
-              source={require("../../assets/phone-fill.png")}
-            />
-            <Text style={styles.buttonText}>Call Vendor</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleNavigation("ShareVendorPage")}
-          >
-            <Image
-              style={styles.iconStyle}
-              contentFit="cover"
-              source={require("../../assets/group-share.png")}
-            />
-            <Text style={styles.buttonText}>Share Vendor</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleNavigation("VendorChat", { name })}
-          >
-            <Image
-              style={styles.iconStyle}
-              contentFit="cover"
-              source={require("../../assets/chat-alt-2-fill.png")}
-            />
-            <Text style={styles.buttonText}>Chat</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleNavigation("VendorProducts")}
-          >
-            <Image
-              style={styles.iconStyle}
-              contentFit="cover"
-              source={require("../../assets/user-light.png")}
-            />
-            <Text style={styles.buttonText}>Products Repository</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleNavigation("ReportVendor")}
-          >
-            <Image
-              style={styles.iconStyle}
-              contentFit="cover"
-              source={require("../../assets/Untitled.png")}
-            />
-            <Text style={styles.buttonText}>Report Vendor as scam</Text>
           </TouchableOpacity>
         </View>
 
@@ -132,8 +112,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   vendorsProfilePage: {
     flex: 1,
@@ -141,11 +120,21 @@ const styles = StyleSheet.create({
     padding: 20,
     overflow: 'hidden',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent:'flex-start',
+    alignItems: 'center',
+    marginBottom: 20
+  },
+  heading: {
+    fontSize: FontSize.size_xl,
+    fontWeight: "700",
+    color: Color.colorBlack,
+    marginLeft: 30
+  },
   container: {
     marginTop: 20,
     alignItems: 'center',
-    width: '100%', // Ensure container takes full width
-
   },
   icon: {
     height: 80,
@@ -160,32 +149,35 @@ const styles = StyleSheet.create({
     height: 63,
     width: '100%', // Set all buttons to full width
     backgroundColor: '#f9f9f9',
-    borderRadius: Border.br_3xs,
+    borderRadius: 16,
     marginVertical: 10,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 10,
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5, // For Android shadow
+    shadowRadius: 3,
+    paddingRight: 70,
+    elevation: 3, // For Android shadow
   },
   buttonText: {
     fontSize: FontSize.size_xl,
     color: Color.colorBlack,
     fontWeight: "500",
+    alignSelf: "center",
   },
   iconStyle: {
     height: 24,
     width: 24,
     marginRight: 20,
+    alignSelf: "center",
   },
   vendorInfoContainer: {
     backgroundColor: Color.colorLimegreen_200,
     padding: 20,
     alignItems: 'center',
     borderRadius: 22,
-    marginBottom: 30,
+    marginTop: 30, // Adjusted to push it to the bottom
     width: '100%',
   },
   vendorName: {

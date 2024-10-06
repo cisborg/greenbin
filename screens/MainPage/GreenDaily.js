@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, Alert, Animated, SafeAreaView, StatusBar, Platform } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, Alert, Animated, SafeAreaView, StatusBar, Platform, Modal, TextInput, RefreshControl } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/core';
 import TagList from '../Squads/Tags';
@@ -102,6 +102,7 @@ const ForYouScreen = () => {
       likes: 450,
       comments: 296,
       moderated: false,
+      connections: 1200,
       imageUri: "https://example.com/image1.jpg",
     },
     {
@@ -112,16 +113,18 @@ const ForYouScreen = () => {
       likes: 656,
       comments: 60,
       moderated: true,
+      connections: 999,
       imageUri: "https://example.com/image2.jpg",
     },
     {
-      title: "With GreenBins we wake waste collection possible",
+      title: "With GreenBins we make waste collection possible",
       author: "George Doyle",
       squad: "Nature Diversity",
       date: "Today",
       likes: 892,
       comments: 300,
       moderated: false,
+      connections: 1500,
       imageUri: "https://example.com/image2.jpg",
     },
     {
@@ -129,12 +132,18 @@ const ForYouScreen = () => {
       author: "Ashley Young",
       squad: "Eco Warriors",
       date: "Today",
-      likes: 656,
+      likes: 999,
       comments: 60,
       moderated: true,
+      connections: 200,
       imageUri: "https://example.com/image2.jpg",
     },
   ]);
+  
+  const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
+  const [comment, setComment] = useState('');
 
   const handleLike = (index) => {
     const newPosts = [...posts];
@@ -146,24 +155,87 @@ const ForYouScreen = () => {
     setPosts(newPosts);
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      // Randomize post order
+      const shuffledPosts = [...posts].sort(() => Math.random() - 0.5);
+      setPosts(shuffledPosts);
+      setRefreshing(false);
+    }, 2000);
+  };
+
+  const openModal = (post) => {
+    setCurrentPost(post);
+    setModalVisible(true);
+  };
+
+  const submitComment = () => {
+    if (comment.trim()) {
+      const newPosts = posts.map(post => {
+        if (post.title === currentPost.title) {
+          return { ...post, comments: post.comments + 1 };
+        }
+        return post;
+      });
+      setPosts(newPosts);
+      Alert.alert("Comment submitted: " + comment);
+      setComment('');
+      setModalVisible(false);
+    } else {
+      Alert.alert("Please enter a comment.");
+    }
+  };
+
   return (
     <View style={styles.content}>
       <FlatList
         data={posts}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <Post 
-            key={index} 
-            {...item} 
-            onLike={() => handleLike(index)} 
-          />
+          <TouchableOpacity onPress={() => openModal(item)}>
+            <Post 
+              key={index} 
+              {...item} 
+              onLike={() => handleLike(index)} 
+            />
+          </TouchableOpacity>
         )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
+      {currentPost && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{currentPost.title}</Text>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Add a comment..."
+                value={comment}
+                onChangeText={setComment}
+              />
+              <TouchableOpacity onPress={submitComment} style={styles.submitButton}>
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
 
-const Post = ({ title, author, squad, date, likes, comments, moderated, imageUri, onLike }) => {
+const Post = ({ title, author, squad, date, likes, comments, moderated, connections, imageUri, onLike }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
 
@@ -228,15 +300,21 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, imageUri
       <View style={styles.postStats}>
         <TouchableOpacity style={styles.statButton} onPress={handleLike}>
           <Ionicons name={isLiked ? "heart" : "heart-outline"} size={17} color={isLiked ? Color.colorLimegreen_200 : "black"} />
-          <Text style={styles.statText}>{isLiked ? likes + 1 : likes}</Text>
+          <Text style={styles.statText}>
+            {likes >= 1000 ? `${(likes / 1000).toFixed(1)}k` : likes} upvotes
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statButton}>
           <Ionicons name="chatbubble-outline" size={17} color="black" />
-          <Text style={styles.statText}>{comments}</Text>
+          <Text style={styles.statText}>
+            {comments >= 1000 ? `${(comments / 1000).toFixed(1)}k` : comments} comments
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statButton}>
           <Ionicons name="stats-chart" size={17} color="black" />
-          <Text style={styles.statText}>129k</Text>
+          <Text style={styles.statText}>
+            {connections >= 1000 ? `${(connections / 1000).toFixed(1)}k` : connections} views
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statButton}>
           <Ionicons name="share-social-outline" size={17} color="black" />
@@ -274,6 +352,7 @@ const styles = StyleSheet.create({
   },
   animatedContainer: {
     flex: 1,
+    padding: 10
   },
   content: {
     flex: 1,
@@ -368,6 +447,48 @@ const styles = StyleSheet.create({
   blackText: {
     fontSize: 12,
     color: 'black',
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  commentInput: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  submitButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'red',
     fontWeight: 'bold',
   },
 });

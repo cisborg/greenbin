@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  Modal,
+  Button,
 } from 'react-native';
 import { Color } from '../../GlobalStyles';
-
 
 const commentsData = [
   {
@@ -17,7 +18,7 @@ const commentsData = [
     user: 'BossX',
     username: '@yourmom24',
     timestamp: '3 weeks ago',
-    message: "Gradually I think we won't need to write a message for your commit; it should be generated. If you need, then just stash it on your local.",
+    message: "Gradually I think we won't need to write a message for your commit; it should be generated.",
     upvotes: 4,
   },
   {
@@ -25,7 +26,7 @@ const commentsData = [
     user: 'Krzysztof',
     username: '@kris007iron',
     timestamp: '2 weeks ago',
-    message: "@yourmom24 good idea, Copilot tries to do that in VSCode but often it crashes in catching the sense of commit even if it is quite obvious, or I just do not know when to commit ;)",
+    message: "@yourmom24 good idea, Copilot tries to do that in VSCode but often it crashes.",
     upvotes: 1,
   },
   {
@@ -38,12 +39,16 @@ const commentsData = [
   },
 ];
 
-const CommentsSection = () => {
+const CommentsSection = ({ visible, onClose }) => {
+  const [newComment, setNewComment] = useState('');
+
   const renderComment = ({ item }) => (
     <View style={styles.commentContainer}>
       <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
       <View style={styles.commentContent}>
-        <Text style={styles.userName}>{item.user} <Text style={styles.username}>{item.username}</Text></Text>
+        <Text style={styles.userName}>
+          {item.user} <Text style={styles.username}>{item.username}</Text>
+        </Text>
         <Text style={styles.timestamp}>{item.timestamp}</Text>
         <Text style={styles.message}>{item.message}</Text>
         <View style={styles.footer}>
@@ -53,40 +58,65 @@ const CommentsSection = () => {
     </View>
   );
 
+  const handleSendComment = () => {
+    if (newComment.trim()) {
+      // Logic to add the new comment to commentsData
+      // For now, just reset the input
+      setNewComment('');
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Comments</Text>
-      <FlatList
-        data={commentsData}
-        renderItem={renderComment}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.commentList}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Share your thoughts"
-          placeholderTextColor="#B0B0B0"
-        />
-        <TouchableOpacity style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Comments</Text>
+          <FlatList
+            data={commentsData}
+            renderItem={renderComment}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.commentList}
+          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Share your thoughts"
+              placeholderTextColor="#B0B0B0"
+              value={newComment}
+              onChangeText={setNewComment}
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={handleSendComment}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
+          </View>
+          <Button title="Close" onPress={onClose} />
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  modalContainer: {
     flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  container: {
     backgroundColor: Color.colorWhite,
     padding: 20,
-    overflow: 'hidden',
+    borderRadius: 10,
+    margin: 20,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000', // Changed to black
+    color: '#000000',
     marginBottom: 10,
   },
   commentList: {
@@ -95,7 +125,7 @@ const styles = StyleSheet.create({
   commentContainer: {
     flexDirection: 'row',
     marginBottom: 15,
-    backgroundColor: '#F5F5F5', // Changed to light gray
+    backgroundColor: '#F5F5F5',
     borderRadius: 10,
     padding: 10,
   },
@@ -111,20 +141,20 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000000', // Changed to black
+    color: '#000000',
   },
   username: {
     fontSize: 14,
-    color: '#007BFF', // Keep username color as blue
+    color: '#007BFF',
   },
   timestamp: {
     fontSize: 12,
-    color: '#333333', // Changed to dark gray for better contrast
+    color: '#333333',
     marginBottom: 5,
   },
   message: {
     fontSize: 14,
-    color: '#000000', // Changed to black
+    color: '#000000',
   },
   footer: {
     flexDirection: 'row',
@@ -133,7 +163,7 @@ const styles = StyleSheet.create({
   },
   upvotes: {
     fontSize: 12,
-    color: '#333333', // Changed to dark gray for better contrast
+    color: '#333333',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -142,19 +172,19 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: '#F5F5F5', // Changed to light gray
+    backgroundColor: '#F5F5F5',
     borderRadius: 20,
     padding: 10,
-    color: '#000000', // Changed to black
+    color: '#000000',
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#007BFF', // Keep button color as blue
+    backgroundColor: '#007BFF',
     borderRadius: 20,
     padding: 10,
   },
   sendButtonText: {
-    color: '#FFFFFF', // Keep button text color white
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
 });

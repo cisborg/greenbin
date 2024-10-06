@@ -16,23 +16,23 @@ const BuyAirtimeScreen = () => {
     const [customAmount, setCustomAmount] = useState('');
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods[0]);
-    const [promoCode, setPromoCode] = useState('');
+    const [voucherApplied, setVoucherApplied] = useState(false);
     const [totalCost, setTotalCost] = useState(0);
     const [greenBankCode, setGreenBankCode] = useState('');
-    const [availablePoints, setAvailablePoints] = useState(1000); 
+    const [availablePoints, setAvailablePoints] = useState(1000);
     const [friendPhoneNumber, setFriendPhoneNumber] = useState('');
-
-    const fadeAnim = useState(new Animated.Value(0))[0];
-
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [purchaseSuccessful, setPurchaseSuccessful] = useState(false);
+
+    const fadeAnim = useState(new Animated.Value(0))[0];
 
     const validateInputs = () => {
         const amount = parseFloat(customAmount) || selectedAmount;
         const isValidPhoneNumber = phoneNumber.length === 10 && /^\d+$/.test(phoneNumber);
         const isValidGreenBankCode = greenBankCode.length === 10 && /^\d+$/.test(greenBankCode);
-        
+        const isValidFriendPhone = friendPhoneNumber.length === 10 && /^\d+$/.test(friendPhoneNumber);
+
         if (!isValidPhoneNumber) {
             Alert.alert("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
             return false;
@@ -43,7 +43,17 @@ const BuyAirtimeScreen = () => {
             return false;
         }
 
-        if (amount <= 0) {
+        if (selectedPaymentMethod === 'Request a Friend' && !isValidFriendPhone) {
+            Alert.alert("Invalid Friend's Phone Number", "Please enter a valid 10-digit friend's phone number.");
+            return false;
+        }
+
+        if (selectedPaymentMethod === 'GCPs Wallet' && availablePoints < totalCost) {
+            Alert.alert("Insufficient GCP Points", `You only have GCPs ${availablePoints}, but you need GCPs ${totalCost}`);
+            return false;
+        }
+
+        if (totalCost <= 0) {
             Alert.alert("Invalid Amount", "The amount must be greater than zero.");
             return false;
         }
@@ -55,16 +65,30 @@ const BuyAirtimeScreen = () => {
         if (!validateInputs()) return;
 
         setIsProcessing(true);
-        setShowModal(true);
 
+        // Simulate a 300ms process for payment
         setTimeout(() => {
             setIsProcessing(false);
             setPurchaseSuccessful(true);
-        }, 600);
+            setShowModal(true);
+        }, 300);
     };
 
     const calculateTotal = (amount) => {
-        setTotalCost(amount);
+        let discount = 0;
+        if (amount >= 2000 && amount <= 5000) {
+            discount = 200;
+        } else if (amount > 5000 && amount <= 10000) {
+            discount = 500;
+        } else if (amount > 10000) {
+            discount = 700;
+        }
+        setTotalCost(amount - (voucherApplied ? discount : 0));
+    };
+
+    const applyVoucher = () => {
+        setVoucherApplied(true);
+        calculateTotal(selectedAmount || parseFloat(customAmount));
     };
 
     useEffect(() => {
@@ -85,7 +109,7 @@ const BuyAirtimeScreen = () => {
                             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                                 <AntDesign name="leftcircleo" size={24} color="black" />
                             </TouchableOpacity>
-                            <Text style={styles.title}>Buy Goods And Enjoy Exclusive Airtime</Text>
+                            <Text style={styles.title}>Buy Airtime Today</Text>
                         </View>
 
                         {/* User Information */}
@@ -145,7 +169,7 @@ const BuyAirtimeScreen = () => {
                                     onPress={() => {
                                         setSelectedPaymentMethod(method);
                                         if (method !== 'Green Bank') {
-                                            setGreenBankCode(''); 
+                                            setGreenBankCode('');
                                         }
                                     }}
                                 >
@@ -183,16 +207,14 @@ const BuyAirtimeScreen = () => {
                             <Text style={styles.availablePointsText}>Available Points: GCPs {availablePoints}</Text>
                         )}
 
-                        {/* Promotions/Discounts */}
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter Promo Code"
-                            placeholderTextColor={Color.colorGray_100}
-                            value={promoCode}
-                            onChangeText={setPromoCode}
-                        />
-                        <TouchableOpacity style={styles.ApplyButton}>
-                            <Text style={{ color: 'black' }}>Apply Voucher</Text>
+                        {/* Apply Voucher Button */}
+                        <TouchableOpacity
+                            style={[styles.ApplyButton, voucherApplied && styles.voucherAppliedButton]}
+                            onPress={applyVoucher}
+                        >
+                            <Text style={{ color: 'black' }}>
+                                {voucherApplied ? 'Voucher Applied' : 'Apply Voucher (GP 100)'}
+                            </Text>
                         </TouchableOpacity>
 
                         {/* Transaction Summary */}
@@ -219,27 +241,18 @@ const BuyAirtimeScreen = () => {
                     >
                         <View style={styles.modalOverlay}>
                             <View style={styles.modalContainer}>
-                                {isProcessing ? (
-                                    <>
-                                        <ActivityIndicator size="large" color={Color.colorLimegreen_200} />
-                                        <Text style={styles.modalText}>Processing Airtime Redeem...</Text>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Text style={styles.modalText}>Purchase Successful!</Text>
-                                        <Text style={styles.modalSubText}>Conserve your environment with green token</Text>
-                                        <TouchableOpacity
-                                            style={styles.okButton}
-                                            onPress={() => {
-                                                setShowModal(false);
-                                                setPurchaseSuccessful(false);
-                                                navigation.goBack();
-                                            }}
-                                        >
-                                            <Text style={styles.okButtonText}>OK</Text>
-                                        </TouchableOpacity>
-                                    </>
-                                )}
+                                <Text style={styles.modalText}>Airtime Purchased Successfully!</Text>
+                                <Text style={styles.modalSubText}>Continue to conserve your environment!</Text>
+                                <TouchableOpacity
+                                    style={styles.okButton}
+                                    onPress={() => {
+                                        setShowModal(false);
+                                        setPurchaseSuccessful(false);
+                                        navigation.goBack();
+                                    }}
+                                >
+                                    <Text style={styles.okButtonText}>OK</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </Modal>
@@ -258,7 +271,7 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
-        padding: 20
+        padding: 20,
     },
     header: {
         flexDirection: 'row',
@@ -271,8 +284,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        left: 20,
-        color: 'green'
+        left: 50,
+        color: 'green',
     },
     userInfo: {
         flexDirection: 'row',
@@ -294,10 +307,10 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         backgroundColor: 'white',
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
     input1: {
         flex: 1,
@@ -315,16 +328,20 @@ const styles = StyleSheet.create({
     ApplyButton: {
         padding: 10,
         borderRadius: 12,
-        backgroundColor: Color.colorGray_100,
+        backgroundColor: 'orange',
         alignItems: 'center',
         marginHorizontal: 5,
         marginTop: -10,
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
         width: 200,
+    },
+    voucherAppliedButton: {
+        backgroundColor: 'gray',
+        marginTop: 10,
     },
     amountSection: {
         flexDirection: 'row',
@@ -344,10 +361,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 5,
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
     selectedAmountButton: {
         backgroundColor: Color.colorLimegreen_200,
@@ -369,10 +386,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 5,
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
     selectedPaymentButton: {
         backgroundColor: Color.colorLimegreen_200,
@@ -401,10 +418,10 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
     confirmButtonText: {
         color: 'white',
@@ -426,8 +443,8 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
+        shadowRadius: 3,
+        elevation: 3,
     },
     modalText: {
         marginTop: 15,
@@ -448,10 +465,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
     okButtonText: {
         color: 'white',

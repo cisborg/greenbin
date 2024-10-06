@@ -4,7 +4,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Color, FontFamily } from "../../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 import { useRoute } from '@react-navigation/native';
 
 const CardScroll = () => {
@@ -13,20 +13,17 @@ const CardScroll = () => {
     { id: 2, image: require('../../assets/greenPoints.png') },
     { id: 3, image: require('../../assets/Bags.png') },
     { id: 4, image: require('../../assets/connect.png') },
-
-    // Add more cards as needed
   ];
 
   const [randomCards, setRandomCards] = useState([]);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
-  // this is the Function that starts the animation
   const startAnimation = () => {
     animatedValue.setValue(0);
     Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration: 3000, // Duration of the animation that ive set
+        duration: 3000,
         useNativeDriver: true,
       })
     ).start();
@@ -34,7 +31,7 @@ const CardScroll = () => {
 
   const randomizeCards = () => {
     const shuffledCards = [...cards].sort(() => 0.5 - Math.random());
-    setRandomCards(shuffledCards.slice(0, 3)); // I am Displaying 3 random cards
+    setRandomCards(shuffledCards.slice(0, 3));
   };
 
   const animatedStyle = {
@@ -46,7 +43,7 @@ const CardScroll = () => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [10, 0], // Moving up slightly
+          outputRange: [10, 0],
         }),
       },
     ],
@@ -55,26 +52,27 @@ const CardScroll = () => {
   useEffect(() => {
     randomizeCards();
     startAnimation();
-    const interval = setInterval(randomizeCards, 3000); // Changing these cards every 5 seconds
-    return () => clearInterval(interval); // Cleanup on unmount
+    const interval = setInterval(randomizeCards, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardScrollContainer}>
       {randomCards.map(card => (
-        <TouchableOpacity key={card.id} onPress={() => onCardPress(card.id)}>
-        <Animated.View style={[styles.cardContainer, animatedStyle]}>
-          <Image source={card.image} style={styles.cardImage} />
-        </Animated.View>
-      </TouchableOpacity>
+        <TouchableOpacity key={card.id}>
+          <Animated.View style={[styles.cardContainer, animatedStyle]}>
+            <Image source={card.image} style={styles.cardImage} />
+          </Animated.View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
 };
 
 const HomeScreen = ({ navigation }) => {
-  const route = useRoute()
-  const { name , bal} = route.params;
+  const route = useRoute();
+  const { name, bal } = route.params;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -82,27 +80,19 @@ const HomeScreen = ({ navigation }) => {
           <AntDesign name="leftcircle" size={24} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Welcome, {name}</Text>
-        <TouchableOpacity style={styles.button1} onPress={()=> navigation.navigate('manageAccount')}>
-          <Text style={{color: Color.colorLimegreen_200, fontSize: 14, fontWeight: '500'}}>Account</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('manageAccount')}>
+          <Text style={styles.button1Text}>Account</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.balanceContainer}>
-        <View style={styles.balanceBox}>
-          <Text style={styles.balanceAmount}>0.01</Text>
-          <Text style={styles.balanceLabel}>KES</Text>
-          <Text style={styles.balanceType}>Airtime Balance</Text>
-        </View>
-        <View style={styles.balanceBox}>
-          <Text style={styles.balanceAmount}>0</Text>
-          <Text style={styles.balanceLabel}>Mins</Text>
-          <Text style={styles.balanceType}>Voice Balance</Text>
-        </View>
-        <View style={styles.balanceBox}>
-          <Text style={styles.balanceAmount}>520.20</Text>
-          <Text style={styles.balanceLabel}>MB</Text>
-          <Text style={styles.balanceType}>Data Balance</Text>
-        </View>
+        {['Airtime Balance', 'Donation', 'Purchases'].map((type, index) => (
+          <View key={index} style={styles.balanceBox}>
+            <Text style={styles.balanceAmount}>{index === 0 ? '200' : index === 1 ? '120' : '520'}</Text>
+            <Text style={styles.balanceLabel}>{index === 0 ? 'KES' : 'Tiers'}</Text>
+            <Text style={styles.balanceType}>{type}</Text>
+          </View>
+        ))}
       </View>
 
       <View style={styles.actionsContainer}>
@@ -117,13 +107,12 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.balanceBox1}>
         <View style={styles.Container}>
           <FontAwesome6 name="mobile-retro" size={24} color="green" />
-          <Text style={styles.greenMoney}>Green Carbon Points!</Text>
+          <Text style={styles.greenMoney}>Green Carbon Points</Text>
         </View>
-        <Text style={styles.moneyBalance}>GCPS Wallet:  {bal}!</Text>
+        <Text style={styles.moneyBalance}>GCPS Wallet: {bal}</Text>
         <Text style={styles.moneyBalance1}>Your Equivalent KES is GCPs BALANCE/10.25</Text>
       </View>
 
-      {/* Horizontal Scrollable Cards Section */}
       <CardScroll />
 
       <View style={styles.quickActionsTitle}>
@@ -152,8 +141,8 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.navigationRow}>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('SmartAgric')}>
-            <MaterialIcons name="health-and-safety" size={24} color={Color.colorLimegreen_200} />      
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('getPremium')}>
+            <MaterialIcons name="health-and-safety" size={24} color={Color.colorLimegreen_200} />
             <Text style={styles.navButtonText}>HealthSmart</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Transaction')}>
@@ -173,242 +162,182 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    padding: 20,
-    overflow: 'hidden',
+    backgroundColor: '#ffff',
+    padding: 15,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Color.colorLimegreen_200,
-    marginLeft: -20
-  },
-  manageAcc: {
-    marginTop: 5,
-  },
-  manageAccText: {
-    fontSize: 15,
-    color: 'blue',
-    textDecorationLine: 'underline',
   },
   balanceContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    justifyContent: 'space-between',
+    marginBottom: 15,
   },
   balanceBox: {
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    backgroundColor: '#f9f9f9',
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-    margin: 5,
+    elevation: 2,
+    marginRight: 10,
   },
   balanceBox1: {
     alignItems: 'flex-start',
-    borderRadius: 17,
+    borderRadius: 15,
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: '#f9f9f9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     elevation: 3,
+    marginRight: 10,
+    shadowColor: '#000',
   },
   Container: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-    marginTop: 5,
+    marginBottom: 5,
   },
   balanceAmount: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
+    marginTop: 10
   },
   balanceLabel: {
-    fontSize: 16,
+    fontSize: 15,
     color: 'green',
+    marginTop: 5
   },
   button1: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 14,
-    padding: 10,
-    marginVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    padding: 8,
     elevation: 2,
-    maxWidth: 110,
-    maxHeight: 40,
-    left: 9,
+    maxWidth: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
     alignItems: 'center',
     justifyContent: 'center',
   },
- 
+  button1Text: {
+    color: Color.colorLimegreen_200,
+    fontSize: 15,
+    fontWeight: '600',
+  },
   balanceType: {
     fontSize: 14,
     color: 'black',
-    fontFamily: FontFamily.manropeBold,
   },
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    alignItems: 'center',
-    borderRadius: 17,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    marginBottom: 15,
+    marginTop: 20,
   },
   button: {
     flex: 1,
-    marginHorizontal: 10,
-    paddingVertical: 15,
+    paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 18,
+    borderRadius: 15,
+    backgroundColor: '#f9f9f9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
     elevation: 3,
+    marginRight: 10,
+
   },
   buttonText: {
     color: 'black',
     fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: FontFamily.manropeBold,
+    fontWeight: '550',
   },
   greenMoney: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
-    marginBottom: 10,
-    fontFamily: FontFamily.manropeSemiBold,
     color: 'black',
-    marginLeft: 10,
-    marginTop: 5,
+    marginLeft: 10
   },
   moneyBalance: {
-    fontSize: 18,
+    fontSize: 15,
     color: Color.colorLimegreen_200,
-    marginBottom: 10,
-    fontFamily: FontFamily.manropeBold,
+    marginBottom: 5,
   },
   moneyBalance1: {
-    fontSize: 12,
+    fontSize: 14,
     color: Color.colorGray_100,
     marginBottom: 10,
-    fontFamily: FontFamily.manropeBold,
   },
   quickActionsTitle: {
-    marginBottom: 5,
-    color: 'black',
     flexDirection: "row",
     justifyContent: 'space-between',
+    marginBottom: 5,
   },
   ActionText: {
-    fontSize: 18,
+    fontSize: 17,
     color: 'black',
-    fontFamily: FontFamily.manropeSemiBold,
     fontWeight: 'bold',
   },
   ActionText1: {
-    fontSize: 18,
+    fontSize: 16,
     color: Color.colorLimegreen_100,
-    fontFamily: FontFamily.poppinsSemiBold,
   },
   navigationContainer: {
-    marginTop: 20,
-    marginBottom: 230,
+    marginTop: 10,
   },
   navigationRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   navButton: {
     flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 15,
+    paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 17,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    borderRadius: 15,
+    backgroundColor: '#f9f9f9',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
     elevation: 3,
+    marginRight: 10,
+    shadowColor: '#000',
   },
   navButtonText: {
     fontSize: 14,
     fontWeight: '500',
     color: 'black',
-    marginTop: 5
+    marginTop: 5,
   },
   cardScrollContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    paddingTop: 80,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Light background with opacity
-    borderRadius: 18,
-    marginBottom: 20,
-    marginTop: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 0,
-    elevation: 0,
-    width: '100%',
-    height: 250,
-    alignSelf: 'center',
+    paddingVertical: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 15,
+    marginBottom: 15,
+    maxHeight: 130,
+    marginTop: 15
+  },
+  cardContainer: {
+    width: 150,
+    height: 100,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginRight: 10,
   },
   cardImage: {
-    width: 150,
-    height: 85,
+    width: '100%',
+    height: '90%',
     borderRadius: 17,
-    marginBottom: 0,
-    marginTop: -73,
-    marginLeft: 10,
-    transform: [
-      { perspective: 600 },
-      { rotateY: '7deg' },
-      { rotateX: '7deg' },
-    ],
   },
 });
 

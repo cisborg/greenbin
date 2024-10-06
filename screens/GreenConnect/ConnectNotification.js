@@ -5,12 +5,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from '../../GlobalStyles';
 
 const notificationsData = [
-  { id: '1', type: 'message', content: 'You received a new message from John Doe.', time: '5 min ago' },
+  { id: '1', type: 'message', content: 'John Doe and 5 others sent you a message.', time: '5 min ago', images: ['john.jpg', 'michael.jpg', 'jane.jpg'] },
   { id: '2', type: 'squad', content: 'Emily posted a new update in the squad.', time: '10 min ago' },
   { id: '3', type: 'update', content: 'New version of the app is available!', time: '1 hr ago' },
-  { id: '4', type: 'connection', content: 'You have a new connection request from Jane Smith.', time: '2 hrs ago' },
-  { id: '5', type: 'message', content: 'Michael Brown sent you a message.', time: '3 hrs ago' },
-  { id: '6', type: 'squad', content: 'David Wilson shared a post in the squad.', time: '4 hrs ago' },
+  { id: '4', type: 'connection', content: 'Jane Smith has accepted your connection request.', time: '2 hrs ago', images: ['jane.jpg'] },
+  { id: '5', type: 'connection-request', content: 'John and 99 others have requested to connect with you!', time: '3 hrs ago', images: ['john.jpg', 'michael.jpg', 'jane.jpg'] },
+  { id: '6', type: 'squad-removed', content: 'You have been removed from these squads.', time: '4 hrs ago', images: ['squad1.jpg', 'squad2.jpg', 'squad3.jpg'] },
 ];
 
 const NotificationScreen = () => {
@@ -20,16 +20,27 @@ const NotificationScreen = () => {
   const renderNotification = ({ item }) => (
     <TouchableOpacity style={styles.notificationContainer} onPress={() => handleNotificationPress(item)}>
       <View style={styles.iconContainer}>
-        {item.type === 'message' && <AntDesign name="message1" size={24} color="#007BFF" />}
+        {item.type === 'message' && renderCascadedImages(item.images)}
         {item.type === 'squad' && <MaterialIcons name="group" size={24} color="#4CAF50" />}
         {item.type === 'update' && <AntDesign name="notification" size={24} color="#FFA500" />}
         {item.type === 'connection' && <AntDesign name="user" size={24} color="#FF5722" />}
+        {item.type === 'connection-request' && renderCascadedImages(item.images)}
+        {item.type === 'squad-removed' && renderCascadedImages(item.images)}
       </View>
       <View style={styles.notificationContent}>
         <Text style={styles.notificationText}>{item.content}</Text>
         <Text style={styles.notificationTime}>{item.time}</Text>
       </View>
     </TouchableOpacity>
+  );
+
+  // Render cascaded overlapping images
+  const renderCascadedImages = (images) => (
+    <View style={styles.cascadedImagesContainer}>
+      {images.map((image, index) => (
+        <Image key={index} source={{ uri: image }} style={[styles.cascadedImage, { left: index * 15 }]} />
+      ))}
+    </View>
   );
 
   const handleNotificationPress = (notification) => {
@@ -92,6 +103,18 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginRight: 10,
+  },
+  cascadedImagesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cascadedImage: {
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    position: 'absolute',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   notificationContent: {
     flex: 1,

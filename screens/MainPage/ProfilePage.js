@@ -6,6 +6,7 @@ import { FontFamily, Color, FontSize } from "../../GlobalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProfilePage = () => {
   const navigation = useNavigation();
@@ -57,8 +58,9 @@ const ProfilePage = () => {
   const cardData = [
     { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },
     { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
-    { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "Payment" },
-    { name: "Logout", icon: <MaterialIcons name="logout" size={24} color="white" />, screen: "ShopLocator" },
+    { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
+    { name: "Visit Shop", icon: <Ionicons name="location" size={24} color="white" />, screen: "ShopLocator" },
+    { name: "Logout", icon: <MaterialIcons name="logout" size={24} color="white" />, screen: "SignInPage" },
   ];
 
   const CARDS_PER_VIEW = 3; // Display 3 cards at a time
@@ -99,16 +101,22 @@ const ProfilePage = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          
+          {/* Cover Image that overlaps the profile */}
+          <View style={styles.coverImageContainer}>
+            <Image style={styles.coverImage} source={require("../../assets/profile-img.png")} />
+          </View>
+
           <View style={styles.header}>
             <Image style={styles.profileImg} source={require("../../assets/profile-img.png")} />
             <Text style={styles.greeting}>Hi, {username}</Text>
-            <Text style={styles.greeting1}>You are an ecogreen patriot and champ! </Text>
+            <Text style={styles.greeting1}>I am an ecogreen patriot and circular economist! </Text>
           </View>
 
           <View style={styles.cardContainer}>
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs", { name: username, bal: cash })}>
               <Image style={styles.cardIcon} source={require("../../assets/checked.png")} />
-              <Text style={styles.cardValue}>#{cash}</Text>
+              <Text style={styles.cardValue}>GCP {cash}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Happy")}>
@@ -185,32 +193,47 @@ const ProfilePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     backgroundColor: Color.colorWhite,
-    paddingTop: 20,
-    overflow: 'hidden',
+    paddingTop: 10,
   },
   scrollContainer: {
     paddingBottom: 20,
-    padding: 12
+    margin: 15
+
+  },
+  coverImageContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    marginTop: 10,
+    borderBottomRadius: 10,
+    marginBottom: -25, // Negative margin to slightly overlap with the profile image
+  },
+  coverImage: {
+    width: '92%',
+    height: 130,
+    borderBottomRadius: 10,
+    
   },
   header: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginBottom: 20,
   },
   profileImg: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    marginBottom: 10,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: Color.colorWhite, // Ensures a border between the cover image and the profile image
+    marginTop: -10, // Move profile image up to overlap with cover image
   },
   greeting: {
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_lg,
     fontFamily: FontFamily.poppinsBold,
     color: Color.colorLimegreen_200,
   },
   greeting1: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.colorGray_100,
   },
   cardContainer: {
@@ -218,15 +241,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     width: '100%',
-    paddingLeft: 20,
     alignItems: 'center',
   },
   card: {
-    width: '40%',
+    width: '45%',
     padding: 5,
-    marginVertical: 5,
+    marginVertical: 6,
     backgroundColor: Color.colorWhite,
-    borderRadius: 19,
+    borderRadius: 18,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -235,24 +257,24 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   cardIcon: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     marginBottom: 10,
   },
   cardTitle: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.colorGray_400,
     textAlign: 'center',
   },
   sectionTitle: {
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_lg,
     fontFamily: FontFamily.poppinsBold,
     color: Color.colorLimegreen_200,
     textAlign: 'center',
     marginVertical: 10,
   },
   progressBarContainer: {
-    marginVertical: 15,
+    marginVertical: 10,
   },
   topicContainer: {
     marginBottom: 20,
@@ -262,15 +284,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topicIcon: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     marginRight: 10,
   },
   topicInfo: {
     flex: 1,
   },
   topicName: {
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: FontFamily.poppinsSemiBold,
     color: Color.colorGray_300,
     marginBottom: 5,
@@ -287,7 +309,7 @@ const styles = StyleSheet.create({
   },
   achievementText: {
     marginTop: 5,
-    fontSize: 12,
+    fontSize: 11,
     color: Color.colorGray_100,
   },
   gradientCardsContainer: {
@@ -296,33 +318,39 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   gradientCard: {
-    width: '40%',
+    width: '30%',
     height: '20%',
     marginHorizontal: 5,
   },
   cardGradient: {
     borderRadius: 20,
     paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     alignItems: 'center',
   },
   cardText: {
     color: 'white',
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: FontFamily.poppinsSemiBold,
-    marginTop: 10,
+    marginTop: 5,
     textAlign: 'center',
   },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginVertical: 5,
   },
   dot: {
-    width: 10,
-    height: 10,
+    width: 8,
+    height: 8,
     borderRadius: 5,
-    marginHorizontal: 5,
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: Color.colorLimegreen_200,
+  },
+  inactiveDot: {
+    backgroundColor: '#ccc',
   },
 });
 

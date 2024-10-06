@@ -109,7 +109,6 @@ const WiFiScreen = () => {
 
             {/* Terms Agreement */}
             <View style={styles.checkboxContainer}>
-              <Text style={styles.checkboxText}>I agree</Text>
               <Text style={styles.termsConditions}>I've already purchased a Router/MiFi Device</Text>
             </View>
 
@@ -137,11 +136,11 @@ const WiFiScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#f5f5f5',
   },
   container: {
     flexGrow: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#f5f5f5',
     padding: '5%', // Padding as a percentage for responsive design
   },
   scrollContainer: {
@@ -163,16 +162,16 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 14,
     padding: '6%', // Padding for responsive layout
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 5,
+    elevation: 3,
   },
   subHeader: {
     fontSize: width * 0.045, // Responsive font size based on screen width
@@ -185,10 +184,13 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 17,
     paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: Color.colorGray_200,
     marginBottom: 15,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#ffff',
+    elevation: 3,
+    shadowOffset: { width: 0, height: 2},
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   invalidInput: {
     borderColor: 'red', // Red border for invalid input
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 15,
     marginTop: 20,
   },
   disabledButton: {

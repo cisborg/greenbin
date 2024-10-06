@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, Switch, Dimensions, ActivityIndicator , Alert} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, Switch, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -20,12 +20,12 @@ const DonatePoints = () => {
   const [isRecurring, setIsRecurring] = useState(false);
   const [loading, setLoading] = useState(false); // Activity Indicator state
 
-  // 🚀 Calculate total required points for selected categories
+  // Calculate total required points for selected categories
   const getTotalPointsRequired = () => {
     return selectedCategories.reduce((total, category) => total + category.pointsRequired, 0);
   };
 
-  // 🚀 Enhanced donation handling: ensure donation matches or exceeds total required points
+  // Enhanced donation handling: ensure donation matches or exceeds total required points
   const handleDonation = () => {
     const totalPointsRequired = getTotalPointsRequired();
 
@@ -47,7 +47,7 @@ const DonatePoints = () => {
     }, 2000); // 2 second delay for spinner
   };
 
-  // 📲 Share donation details with spinner
+  // Share donation details with spinner
   const shareDonation = () => {
     const totalPointsRequired = getTotalPointsRequired();
     if (donationAmount < totalPointsRequired) {
@@ -66,7 +66,7 @@ const DonatePoints = () => {
     }, 2000); // 2 second delay for spinner
   };
 
-  // ⚙️ Handle category selection, limit to 3 categories
+  // Handle category selection, limit to 3 categories
   const handleSelectCategory = (category) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter(cat => cat.id !== category.id));
@@ -96,7 +96,7 @@ const DonatePoints = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color="#FFF" />
+          <Icon name="arrow-back" size={22} color="#FFF" />
         </TouchableOpacity>
         <Text style={styles.header}>Donate Points</Text>
       </View>
@@ -115,7 +115,7 @@ const DonatePoints = () => {
       <Text style={styles.sliderLabel}>Donation Amount: {donationAmount} points</Text>
       <Slider
         minimumValue={100}  // Minimum 100 points to donate
-        maximumValue={100000}
+        maximumValue={1000000}
         step={250}
         value={donationAmount}
         onValueChange={setDonationAmount}
@@ -138,6 +138,36 @@ const DonatePoints = () => {
               <Text style={styles.impactText}>
                 Total points required: {getTotalPointsRequired()}.
               </Text>
+              {donationAmount >= 1000 && donationAmount < 5000 && (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Bronze Tier!
+                </Text>
+              )}
+              {donationAmount >= 5000 && donationAmount < 10000 && (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Silver Tier!
+                </Text>
+              )}
+              {donationAmount >= 10000 && donationAmount < 50000 && (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Titanium Tier!
+                </Text>
+              )}
+              {donationAmount >= 50000 && donationAmount < 100000 && (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Gold Tier!
+                </Text>
+              )}
+              {donationAmount >= 100000 && donationAmount <700000 && (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Platinum Tier!
+                </Text>
+              )}
+              {donationAmount > 700000 &&  (
+                <Text style={styles.impactText1}>
+                  And you have been awarded Diamond Tier!
+                </Text>
+              )}
             </View>
           )}
 
@@ -172,38 +202,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: width * 0.05,
+    padding: width * 0.03, // Reduced padding
     justifyContent: 'flex-start',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.015, // Reduced margin
     backgroundColor: '#4CAF50',
-    padding: height * 0.02,
-    borderRadius: 12,
+    padding: height * 0.015, // Reduced padding
+    borderRadius: 10, // Reduced border radius
   },
   header: {
-    fontSize: width * 0.05,
+    fontSize: width * 0.045, // Reduced font size
     fontWeight: 'bold',
-    marginLeft: 20,
+    marginLeft: 15, // Reduced margin
     color: '#FFF',
   },
   description: {
-    fontSize: width * 0.04,
-    marginBottom: height * 0.02,
+    fontSize: width * 0.035, // Reduced font size
+    marginBottom: height * 0.015, // Reduced margin
     color: '#333',
   },
   categoryList: {
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.015, // Reduced margin
     maxHeight: height * 0.25,
   },
   categoryItem: {
-    padding: height * 0.02,
+    padding: height * 0.015, // Reduced padding
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 16,
-    marginBottom: height * 0.01,
+    borderRadius: 14, // Reduced border radius
+    marginBottom: height * 0.005, // Reduced margin
     backgroundColor: '#fff',
   },
   selectedCategory: {
@@ -211,76 +241,80 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8f5e9',
   },
   categoryName: {
-    fontSize: width * 0.045,
+    fontSize: width * 0.04, // Reduced font size
     fontWeight: 'bold',
   },
   buttonText: {
-    fontSize: width * 0.040,
+    fontSize: width * 0.035, // Reduced font size
     fontWeight: '600',
     color: 'black',
   },
   categoryImpact: {
-    fontSize: width * 0.035,
+    fontSize: width * 0.03, // Reduced font size
     color: '#555',
   },
   sliderLabel: {
-    fontSize: width * 0.04,
-    marginVertical: height * 0.01,
+    fontSize: width * 0.035, // Reduced font size
+    marginVertical: height * 0.005, // Reduced margin
   },
   slider: {
     width: '100%',
-    height: 40,
-    marginBottom: height * 0.02,
+    height: 30, // Reduced height
+    marginBottom: height * 0.015, // Reduced margin
   },
   donateButton: {
     backgroundColor: '#4CAF50',
-    padding: height * 0.015,
-    borderRadius: 16,
+    padding: height * 0.01, // Reduced padding
+    borderRadius: 14, // Reduced border radius
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: height * 0.01,
+    marginBottom: height * 0.005, // Reduced margin
   },
   shareButton: {
     backgroundColor: '#2196F3',
-    padding: height * 0.015,
-    borderRadius: 16,
+    padding: height * 0.01, // Reduced padding
+    borderRadius: 14, // Reduced border radius
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: height * 0.01,
-    marginTop: height * 0.02,
+    marginBottom: height * 0.005, // Reduced margin
+    marginTop: height * 0.015, // Reduced margin
   },
   impactVisualization: {
-    marginTop: height * 0.02,
-    padding: height * 0.02,
+    marginTop: height * 0.015, // Reduced margin
+    padding: height * 0.015, // Reduced padding
     borderColor: '#4CAF50',
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 12, // Reduced border radius
     backgroundColor: '#e8f5e9',
   },
   impactText: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.035, // Reduced font size
     color: '#333',
+  },
+  impactText1: {
+    fontSize: width * 0.03, // Reduced font size
+    color: 'orange',
   },
   recurringContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: height * 0.02,
+    marginTop: height * 0.015, // Reduced margin
   },
   recurringText: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.035, // Reduced font size
     color: '#333',
   },
   recurringInfo: {
-    marginTop: height * 0.01,
-    padding: height * 0.02,
+    marginTop: height * 0.005, // Reduced margin
+    padding: height * 0.015, // Reduced padding
     borderColor: '#FFC107',
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 12, // Reduced border radius
     backgroundColor: '#fff3cd',
   },
   activityIndicator: {
-    marginTop: height * 0.02, // Adjust spinner position
+    marginTop: height * 0.015, // Reduced margin
   },
 });
 

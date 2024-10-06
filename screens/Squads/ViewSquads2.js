@@ -23,7 +23,7 @@ const ViewSquad2Screen = () => {
     posts: 309,
     views: '12K',
     upvotes: '1K',
-    description: 'We initiate pilot monitoring, manage and control of pollution effluents!',
+    description: 'We initiate pilot monitoring, manage and controlling pollution effluents!',
     moderator: {
       name: 'Vicky Mickey',
       role: 'Admin',

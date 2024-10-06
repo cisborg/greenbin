@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Platform,TouchableOpacity, Image, Animated, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Platform,StatusBar,TouchableOpacity, Image, Animated, SafeAreaView } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
@@ -83,7 +83,7 @@ const gamesData = [
     description: 'Participate in sponsored events like park clean-ups and educational workshops.',
     format: 'Sign up through the app to participate and earn rewards.',
     howToPlay: 'Join events, complete tasks, and log your participation in the app.',
-    image: require('../../assets/events.png'), // Add your image path
+    image: require('../../assets/likeButton.avif'), // Add your image path
   },
 ];
 
@@ -134,72 +134,71 @@ const GamesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    padding: 20,
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    backgroundColor: '#f5f5f5',
+    padding: 15, // Reduced padding
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerContainer: {
-    padding: 10,
+    padding: 5, // Reduced padding
     flexDirection: "row",
     alignItems: 'flex-start',
+    marginTop: 10,
   },
   header: {
-    fontSize: 20,
+    fontSize: 18, // Decreased font size
     fontWeight: 'bold',
     color: Color.colorLimegreen_200,
     textAlign: 'center',
-    marginLeft: 10,
+    marginLeft: 5, // Reduced margin
     flex: 1,
   },
   cardList: {
-    paddingBottom: 20,
+    paddingBottom: 15, // Reduced padding
     flexGrow: 1,
-    paddingLeft: 15,
-    paddingRight: 15,
-
+    paddingLeft: 10, // Reduced padding
+    paddingRight: 10, // Reduced padding
   },
   cardListContent: {
-    paddingBottom: 20,
+    paddingBottom: 15, // Reduced padding
   },
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 10,
+    borderRadius: 14, // Adjusted border radius
+    padding: 10, // Reduced padding
+    marginVertical: 5, // Reduced margin
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1, // Adjusted shadow offset
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.15, // Adjusted shadow opacity
+    shadowRadius: 2, // Adjusted shadow radius
+    elevation: 3, // Adjusted elevation
   },
   cardImage: {
     width: '100%',
-    height: 100,
-    borderRadius: 10,
-    marginBottom: 10,
+    height: 80, // Decreased height
+    borderRadius: 8, // Adjusted border radius
+    marginBottom: 8, // Reduced margin
   },
   cardTitle: {
-    fontSize: 22,
+    fontSize: 20, // Decreased font size
     fontWeight: 'bold',
     color: '#27ae60',
   },
   cardDescription: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     color: '#34495e',
-    marginVertical: 5,
+    marginVertical: 3, // Reduced margin
   },
   cardFormat: {
-    fontSize: 14,
+    fontSize: 12, // Decreased font size
     color: '#7f8c8d',
   },
   cardHowToPlay: {
-    fontSize: 14,
+    fontSize: 12, // Decreased font size
     color: '#7f8c8d',
-    marginTop: 5,
+    marginTop: 3, // Reduced margin
   },
 });
 

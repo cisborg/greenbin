@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Platform,FlatList, ActivityIndicator, Alert, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
+import { View, Text, TextInput, Button, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For Dropdown
 import { useNavigation } from '@react-navigation/native'; // For Back Navigation
 import { Color } from '../../GlobalStyles';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
 
 const TOKEN_RATE = 0.25; // Token rate for converting green points to dollars
 const GreenBankAccount = () => {
@@ -125,11 +127,35 @@ const GreenBankAccount = () => {
     }).start();
   }, []);
 
+  // 7. Handle clear all transactions
+  const clearAllTransactions = () => {
+    Alert.alert('Clear All Transactions', 'Are you sure you want to delete all transaction history?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Clear All', onPress: () => setTransactions([]) }
+    ]);
+  };
+
+  // 8. Handle swipe-to-delete for individual transaction
+  const deleteTransaction = (transactionId) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.filter((transaction) => transaction.id !== transactionId)
+    );
+  };
+
   // Screen style interpolation
   const screenStyle = {
     opacity: screenAnimation,
     transform: [{ scale: screenAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 1] }) }]
   };
+
+  // Render delete button when swiping left
+  const renderDeleteButton = (transactionId) => (
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() => deleteTransaction(transactionId)}>
+      <Text style={styles.deleteButtonText}>Delete</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -138,8 +164,8 @@ const GreenBankAccount = () => {
         <Animated.View style={[styles.animatedContainer, screenStyle]}>
           {/* Header with Back Navigation */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.backIcon}>←</Text>
+            <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.goBack()}>
+              <AntDesign name="leftcircle" size={22} color="green" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>🌍 GreenBank Account</Text>
           </View>
@@ -147,7 +173,7 @@ const GreenBankAccount = () => {
           {/* Display Static Balance */}
           <View style={styles.balanceContainer}>
             <Text style={styles.balance}>Balance: GCPs {balance.toFixed(2)}</Text>
-            <Text style={styles.tokenBalance}>Bootstrap Maturated Tokens: {tokenBalance.toFixed(2)} pts</Text>
+            <Text style={styles.tokenBalance}>Bootstrap Tokens: {tokenBalance.toFixed(2)} pts</Text>
             <Text style={styles.totalPoints}>Total: GCPs {calculateTotalPoints().toFixed(2)}</Text>
           </View>
 
@@ -210,19 +236,29 @@ const GreenBankAccount = () => {
             data={transactions}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={[styles.transactionItem, item.type === 'Deposit' ? styles.depositSidebar : styles.defaultSidebar]}>
-                <View style={styles.transactionDetails}>
-                  <Text style={styles.transactionType}>{item.type}</Text>
-                  <Text style={styles.transactionAmount}>${item.amount.toFixed(2)}</Text>
-                  <View style={styles.transactionMeta}>
-                    <Text style={styles.transactionDate}>{item.date}</Text>
-                    <Text style={styles.transactionTime}>{item.time}</Text>
+              <Swipeable
+                renderRightActions={() => renderDeleteButton(item.id)}>
+                <View style={[styles.transactionItem, item.type === 'Deposit' ? styles.depositSidebar : styles.defaultSidebar]}>
+                  <View style={styles.transactionDetails}>
+                    <Text style={styles.transactionType}>{item.type}</Text>
+                    <Text style={styles.transactionAmount}>GP {item.amount.toFixed(2)}</Text>
+                    <View style={styles.transactionMeta}>
+                      <Text style={styles.transactionDate}>{item.date}</Text>
+                      <Text style={styles.transactionTime}>{item.time}</Text>
+                    </View>
+                    <Text style={[styles.transactionStatus, item.status === 'Completed' ? styles.completed : styles.pending]}>{item.status}</Text>
                   </View>
-                  <Text style={[styles.transactionStatus, item.status === 'Completed' ? styles.completed : styles.pending]}>{item.status}</Text>
                 </View>
-              </View>
+              </Swipeable>
             )}
           />
+
+          {/* Clear All Button */}
+          {transactions.length > 0 && (
+            <TouchableOpacity style={styles.clearAllButton} onPress={clearAllTransactions}>
+              <Text style={styles.clearAllText}>Clear All Transactions</Text>
+            </TouchableOpacity>
+          )}
 
           {/* Footer */}
           <Text style={styles.footnote}>🌍 GreenBank - The Future of Eco-friendly Banking</Text>
@@ -236,107 +272,99 @@ const GreenBankAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10, // Reduced padding
     backgroundColor: '#f5f5f5',
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   animatedContainer: {
     flex: 1,
-    padding: 10
+    padding: 5, // Reduced padding
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  backIcon: {
-    fontSize: 24,
-    color: '#000',
-    marginRight: 10,
+    marginBottom: 10, // Reduced margin
+    marginTop: 10, // Reduced margin
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 20, // Reduced font size
+    fontWeight: '600',
     color: '#000',
   },
   balanceContainer: {
-    marginBottom: 20,
+    marginBottom: 10, // Reduced margin
   },
   balance: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 20, // Reduced font size
+    fontWeight: '600',
     color: '#2e7d32',
   },
   tokenBalance: {
-    fontSize: 18,
+    fontSize: 16, // Reduced font size
     color: '#2e7d32',
-    marginTop: 5,
   },
   totalPoints: {
-    fontSize: 18,
+    fontSize: 16, // Reduced font size
     color: '#00695c',
-    fontWeight: '600',
-    marginTop: 5,
+    fontWeight: '500',
   },
   input: {
-    padding: 10,
-    borderRadius: 14,
-    marginBottom: 10,
-    elevation: 3,
+    padding: 8, // Reduced padding
+    borderRadius: 10, // Slightly reduced border radius
+    marginBottom: 8, // Reduced margin
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
   },
   picker: {
-    height: 40,
+    height: 35, // Reduced height
     width: '100%',
-    marginBottom: 10,
-    borderRadius: 14,
+    marginBottom: 8, // Reduced margin
+    borderRadius: 10, // Slightly reduced border radius
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 10, // Reduced margin
   },
   button: {
     flex: 1,
-    marginHorizontal: 5,
+    marginHorizontal: 3, // Reduced margin
     backgroundColor: '#2e7d32',
-    padding: 12,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 10, // Reduced padding
+    borderRadius: 10, // Slightly reduced border radius
   },
   buttonText: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: '500', // Reduced font weight
   },
   transferToggleText: {
     color: '#00695c',
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 10,
+    fontSize: 16, // Reduced font size
+    fontWeight: '500', // Reduced font weight
+    marginBottom: 8, // Reduced margin
     textAlign: 'center',
   },
   subTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16, // Reduced font size
+    fontWeight: '500', // Reduced font weight
     color: '#000',
-    marginBottom: 10,
+    marginBottom: 8, // Reduced margin
   },
   transactionItem: {
     backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 14,
-    borderLeftWidth: 4,
+    padding: 10, // Reduced padding
+    marginVertical: 5, // Reduced margin
+    borderRadius: 10, // Slightly reduced border radius
   },
   depositSidebar: {
     borderLeftColor: '#f57c00', // Orange for deposits
+    borderLeftWidth: 4,
   },
   defaultSidebar: {
     borderLeftColor: '#2e7d32', // Green for others
+    borderLeftWidth: 4,
   },
   transactionDetails: {
     flexDirection: 'column',
@@ -346,25 +374,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   transactionType: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Color.colorLimegreen_200
+    fontSize: 16, // Reduced font size
+    fontWeight: '500', // Reduced font weight
+    color: Color.colorLimegreen_200,
   },
   transactionAmount: {
-    fontSize: 16,
+    fontSize: 16, // Reduced font size
     color: '#000',
   },
   transactionDate: {
-    fontSize: 12,
+    fontSize: 12, // Reduced font size
     color: '#888',
   },
   transactionTime: {
-    fontSize: 12,
+    fontSize: 12, // Reduced font size
     color: '#888',
   },
   transactionStatus: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 14, // Reduced font size
+    fontWeight: '600', // Reduced font weight
   },
   completed: {
     color: '#2e7d32',
@@ -372,10 +400,34 @@ const styles = StyleSheet.create({
   pending: {
     color: '#fbc02d',
   },
+  deleteButton: {
+    backgroundColor: '#f44336', // Red delete button
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    borderRadius: 14,
+    height: '100%',
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  clearAllButton: {
+    backgroundColor: '#f57c00', // Orange clear button
+    padding: 10, // Slightly increased padding
+    borderRadius: 10, // Slightly increased border radius
+    alignItems: 'center',
+    marginTop: 10, // Add margin for spacing
+  },
+  clearAllText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16, // Consistent font size
+  },
   footnote: {
-    fontSize: 14,
+    fontSize: 12, // Reduced font size
     color: '#00695c',
-    marginTop: 30,
+    marginTop: 20, // Reduced margin
     textAlign: 'center',
   },
 });

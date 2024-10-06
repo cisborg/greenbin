@@ -4,25 +4,21 @@ import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Foundation from '@expo/vector-icons/Foundation';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
 
 // Mock function to simulate fetching user status
 const fetchUserStatus = async () => {
-  // Replace with actual API call
   return 'On another call';
 };
 
 // Mock function to simulate subscribing to user status updates
 const subscribeToUserStatus = (callback) => {
-  // Simulate real-time updates
   const interval = setInterval(() => {
-    callback('Available'); // Simulate user status change
-  }, 10000); // Change status every 10 seconds
-
-  return () => clearInterval(interval);
+    callback('Available');
+  }, 10000);
+  return () => clearInterval(interval); // Cleanup interval on unsubscribe
 };
 
 const WaveAnimation = () => {
@@ -46,7 +42,7 @@ const WaveAnimation = () => {
 
     waveAnimation.start();
 
-    return () => waveAnimation.stop();
+    return () => waveAnimation.stop(); // Cleanup wave animation on unmount
   }, [waveAnim]);
 
   const waveStyle = {
@@ -70,20 +66,20 @@ const WaveAnimation = () => {
 const CallScreen = () => {
   const navigation = useNavigation();
   const [callStatus, setCallStatus] = useState('Calling...');
-  const [userStatus, setUserStatus] = useState('Loading...'); // Initial loading state
+  const [userStatus, setUserStatus] = useState('Loading...');
   const [talkTime, setTalkTime] = useState(0);
+  const [isMuted, setIsMuted] = useState(false); // Mute state
+  const [isSmallScreen, setIsSmallScreen] = useState(false); // Resize state
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const timerRef = useRef(null); // Timer reference for cleanup
 
   useEffect(() => {
-    // Fetch initial user status
     const fetchStatus = async () => {
       const status = await fetchUserStatus();
       setUserStatus(status);
     };
-
     fetchStatus();
 
-    // Subscribe to real-time updates
     const unsubscribe = subscribeToUserStatus((newStatus) => {
       setUserStatus(newStatus);
     });
@@ -101,25 +97,28 @@ const CallScreen = () => {
           useNativeDriver: true,
         }).start(() => {
           setTimeout(() => {
-            setCallStatus(''); 
-            startTalkTime(); 
-          }, 4000); 
+            setCallStatus('');
+            startTalkTime(); // Start the talk time when status is updated
+          }, 4000);
         });
       });
     }, 2000);
 
     return () => {
-      clearTimeout(callingTimeout);
-      unsubscribe(); // Cleanup subscription on unmount
+      clearTimeout(callingTimeout); // Clear timeout on cleanup
+      unsubscribe(); // Unsubscribe from updates
+      clearInterval(timerRef.current); // Clear the interval timer on unmount
     };
   }, [fadeAnim]);
 
   const startTalkTime = () => {
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setTalkTime(prevTime => prevTime + 1);
     }, 1000);
+  };
 
-    return () => clearInterval(timer);
+  const stopTalkTime = () => {
+    clearInterval(timerRef.current);
   };
 
   const formatTalkTime = (seconds) => {
@@ -132,34 +131,70 @@ const CallScreen = () => {
   const handleEndCall = () => {
     Alert.alert("End Call", "Are you sure you want to end the call?", [
       { text: "Cancel", style: "cancel" },
-      { text: "End Call", onPress: () => navigation.goBack() }
+      { text: "End Call", onPress: () => {
+        clearInterval(timerRef.current); // Stop timer
+        navigation.goBack(); // Exit screen
+      }}
     ]);
   };
 
+  const toggleMute = () => {
+    setIsMuted((prevMute) => {
+      if (!prevMute) {
+        stopTalkTime(); // Stop timer if muted
+        setCallStatus('Muted');
+      } else {
+        startTalkTime(); // Resume timer if unmuted
+        setCallStatus('');
+      }
+      return !prevMute; // Toggle mute state
+    });
+  };
+
+  const handleGroupCall = () => {
+    Alert.alert("Group Call", "Group call initiated!");
+    // Logic for initiating group call goes here
+  };
+
+  const toggleScreenSize = () => {
+    setIsSmallScreen(!isSmallScreen); // Toggle between full and small screen
+    if (!isSmallScreen) {
+      navigation.goBack(); // Navigate back if screen is minimized
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isSmallScreen && styles.smallScreenContainer]}>
       <View style={styles.header}>
-        <Foundation name="arrows-compress" size={24} color="black" />
+        <TouchableOpacity onPress={toggleScreenSize}>
+          <MaterialCommunityIcons name="arrow-collapse" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={styles.userName}>Cecilia Jessica</Text>
-        <FontAwesome5 name="users" size={24} color="black" />
+        <TouchableOpacity onPress={handleGroupCall}>
+          <Ionicons name="person-add-sharp" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
-      {/* Call Status Text */}
-      <Animated.Text style={[styles.callDuration, { opacity: fadeAnim }]}>
-        {callStatus || formatTalkTime(talkTime)}
-      </Animated.Text>
+      {/* Wrap Text inside another Text component to prevent errors */}
+      <View>
+        <Animated.Text style={[styles.callDuration, { opacity: fadeAnim }]}>
+          {callStatus || formatTalkTime(talkTime)}
+        </Animated.Text>
+      </View>
       
-      {/* User Status */}
-      <Text style={styles.userStatus}>{userStatus}</Text>
-
-      {/* Wave Animation in the middle of the screen */}
-      <View style={styles.animationContainer}>
-        <WaveAnimation />
+      <View>
+        <Text style={styles.userStatus}>{userStatus}</Text>
       </View>
+
+      {!isSmallScreen && (
+        <View style={styles.animationContainer}>
+          <WaveAnimation />
+        </View>
+      )}
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Octicons name="unmute" size={24} color="green" />
+        <TouchableOpacity style={styles.button} onPress={toggleMute}>
+          <Octicons name={isMuted ? "mute" : "unmute"} size={24} color="green" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Feather name="video" size={24} color="green" />
@@ -183,6 +218,21 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorWhite,
     padding: 20,
     overflow: 'hidden',
+  },
+  smallScreenContainer: {
+    width: '80%', // Reduced screen width
+    height: '40%', // Reduced screen height
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    borderRadius: 15,
+    borderColor: 'black',
+    borderWidth: 1,
+    backgroundColor: 'white',
+    padding: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
   header: {
     flexDirection: 'row',
@@ -218,10 +268,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    paddingHorizontal: 40,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomRightRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    margin: 20,
+    elevation: 3,
+    borderRadius: 17,
   },
   button: {
     alignItems: 'center',
@@ -232,7 +287,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
-    marginTop: -12,
   },
   waveContainer: {
     flexDirection: 'row',

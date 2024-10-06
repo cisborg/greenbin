@@ -174,13 +174,14 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#f5f5f5',
     padding: 20,
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
   },
   animatedView: {
     flex: 1,
+    margin: 20
   },
   header: {
     flexDirection: 'row',
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fff',
   },
   itemRow: {
     flexDirection: 'row',
@@ -280,7 +281,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   footer: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f5f5f5',
     borderRadius: 20,
     padding: 20,
     elevation: 5,

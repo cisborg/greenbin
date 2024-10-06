@@ -48,7 +48,7 @@ const ItemGridScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleProductClick(item)}>
       <View style={styles.productContainer}>
-        <Image source={item.image} style={styles.productImage} />
+        <Image source={item.image || require('../../assets/Bags.png')} style={styles.productImage} />
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
       </View>
@@ -68,7 +68,7 @@ const ItemGridScreen = ({ navigation }) => {
       <FlatList
         data={section.data}
         renderItem={renderItem}
-        keyExtractor={(item, index) => item.title + index}
+        keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
         numColumns={3}
         columnWrapperStyle={styles.columnWrapper}
         scrollEnabled={false}
@@ -80,9 +80,9 @@ const ItemGridScreen = ({ navigation }) => {
     <View style={styles.container}>
       <SectionList
         sections={DATA}
-        keyExtractor={(item, index) => item.title + index}
+        keyExtractor={(item, index) => `${item.title}-${index}`}  
         renderSectionHeader={({ section }) => renderSection({ section })}
-        renderItem={() => null}
+        renderItem={() => null} 
         stickySectionHeadersEnabled={false}
       />
     </View>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   productContainer: {
     backgroundColor: '#f8f8f8',
     borderRadius: 10,
-    width: width / 4 - 20, // Adjust width to fit 4 items in a row with spacing
+    width: width / 3.5 - 20, // Adjusted width to fit 3 items per row
     margin: 5,
     padding: 10,
     alignItems: 'center',

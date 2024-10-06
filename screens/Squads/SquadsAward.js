@@ -20,7 +20,7 @@ const squadsData = [
     name: 'Green Guardians',
     logo: require('../../assets/greenBin.png'), // Replace with actual logo
     points: 1300,
-    activitiesCompleted: 19,
+    activitiesCompleted: 8,
     memberCount: 20,
     recentAchievements: 'Reached a milestone of 68% threshold',
   },
@@ -29,7 +29,7 @@ const squadsData = [
     name: 'Digital Green',
     logo: require('../../assets/greenBin.png'), // Replace with actual logo
     points: 1300,
-    activitiesCompleted: 42,
+    activitiesCompleted: 7,
     memberCount: 20,
     recentAchievements: 'Reached a milestone of 64% threshold',
   },
@@ -38,7 +38,7 @@ const squadsData = [
     name: 'Nature Diversity Custodians',
     logo: require('../../assets/greenBin.png'), // Replace with actual logo
     points: 1300,
-    activitiesCompleted: 38,
+    activitiesCompleted: 6,
     memberCount: 20,
     recentAchievements: 'Reached a milestone of 60% threshold',
   },
@@ -75,7 +75,7 @@ const LeaderboardScreen = () => {
       <Image source={item.logo} style={styles.logo} />
       <View style={styles.squadInfo}>
         <Text style={styles.squadName}>{item.name}</Text>
-        <Text style={styles.points}>Points: {item.points}</Text>
+        <Text style={styles.points}>Total Tiers: {item.points}</Text>
         <Text style={styles.activities}>Activities: {item.activitiesCompleted}</Text>
         <Text style={styles.members}>Members: {item.memberCount}</Text>
         <Text style={styles.achievements}>{item.recentAchievements}</Text>
@@ -118,7 +118,7 @@ const LeaderboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#F5F5F5',
     padding: 20,
     overflow: 'hidden',
   },
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
   squadCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2',
-    borderRadius: 10,
+    backgroundColor: '#ffff',
+    borderRadius: 14,
     padding: 15,
     marginVertical: 10,
     shadowColor: '#000',

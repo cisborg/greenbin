@@ -51,11 +51,7 @@ const TagList = () => {
         keyExtractor={(item, index) => index.toString()}
         style={styles.list}
       />
-      <TouchableOpacity onPress={()=> navigation.goBack()}>
-        <View style={styles.proceed}>
-            <Text style={styles.cardText}>Go Back</Text>
-        </View>
-      </TouchableOpacity>
+      
     </View>
     
   );
@@ -69,35 +65,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   header: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     marginVertical: 1,
     color: Color.colorLimegreen_200,
     FontFamily: FontFamily.manropeBold
   },
-  proceed: {
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    left: 250,
-    marginTop:0,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-    alignContent: 'center',
-    width: 120,
-    height: 35,
-    bottom: 0,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
+ 
   cardText: {
     color: Color.colorLimegreen_200,
     fontWeight: 'bold',
@@ -106,17 +80,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   tagContainer: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f5f5f5',
     borderRadius: 12,
     padding: 10,
     marginVertical: 5,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    
   },
   tagText: {
     fontSize: 16,

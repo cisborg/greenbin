@@ -144,117 +144,117 @@ const ReferAndEarn = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#F5F5F5'
+    padding: 15, // Reduced padding
+    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 10, // Reduced padding
     borderBottomWidth: 1,
     borderColor: '#ddd',
     elevation: 2,
   },
   backButton: {
-    marginRight: 10,
+    marginRight: 5, // Reduced margin
   },
   title: {
-    fontSize: 24,
+    fontSize: 20, // Decreased font size
     fontWeight: 'bold',
     color: '#333',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     color: '#555',
-    marginBottom: 20,
+    marginBottom: 15, // Reduced margin
   },
   rewardsContainer: {
-    marginBottom: 20,
+    marginBottom: 15, // Reduced margin
   },
   rewardsTitle: {
-    fontSize: 18,
+    fontSize: 16, // Decreased font size
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 8, // Reduced margin
   },
   rewardCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    padding: 10, // Reduced padding
+    borderRadius: 8, // Adjusted border radius
+    marginBottom: 8, // Reduced margin
     ...(Platform.OS === 'ios'
       ? {
           shadowColor: '#000',
           shadowOffset: { width: 1, height: 2 },
           shadowOpacity: 0.1,
-          shadowRadius: 4,
+          shadowRadius: 3,
         }
       : {
-          elevation: 4,
+          elevation: 3,
         }),
   },
   rewardDetails: {
-    marginLeft: 10,
+    marginLeft: 8, // Reduced margin
   },
   rewardTitle: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     fontWeight: 'bold',
   },
   rewardDescription: {
-    fontSize: 14,
+    fontSize: 12, // Decreased font size
     color: '#777',
   },
   referralInfo: {
     backgroundColor: '#e9ecef',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    padding: 10, // Reduced padding
+    borderRadius: 8, // Adjusted border radius
+    marginBottom: 15, // Reduced margin
   },
   referralText: {
-    fontSize: 18,
+    fontSize: 16, // Decreased font size
     fontWeight: 'bold',
   },
   friendReward: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     fontWeight: 'bold',
     color: 'green',
   },
   friendDescription: {
-    fontSize: 14,
+    fontSize: 13, // Decreased font size
     color: '#555',
   },
   promoCodeContainer: {
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    padding: 10, // Reduced padding
+    borderRadius: 11, // Adjusted border radius
+    marginBottom: 16, // Reduced margin
     alignItems: 'center',
     ...(Platform.OS === 'ios'
       ? {
           shadowColor: '#000',
           shadowOffset: { width: 1, height: 2 },
           shadowOpacity: 0.1,
-          shadowRadius: 4,
+          shadowRadius: 3,
         }
       : {
-          elevation: 4,
+          elevation: 3,
         }),
   },
   promoCodeTitle: {
-    fontSize: 18,
+    fontSize: 16, // Decreased font size
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 8, // Reduced margin
   },
   promoCode: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     fontWeight: 'bold',
     color: '#007bff',
   },
   copyButton: {
     backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 8, // Reduced padding
+    paddingHorizontal: 15, // Reduced padding
     borderRadius: 5,
   },
   copyButtonText: {
@@ -266,18 +266,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    padding: 10, // Reduced padding
+    borderRadius: 8, // Adjusted border radius
+    marginBottom: 15, // Reduced margin
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 14, // Decreased font size
     fontWeight: 'bold',
     color: '#fff',
-    marginRight: 10,
+    marginRight: 5, // Reduced margin
   },
   termsText: {
-    fontSize: 12,
+    fontSize: 10, // Decreased font size
     color: '#777',
     textAlign: 'center',
   },
@@ -289,13 +289,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalText: {
-    marginTop: 10,
-    fontSize: 16,
+    padding: 15, // Reduced padding
+    borderRadius: 8, // Adjusted border radius
   },
 });
 

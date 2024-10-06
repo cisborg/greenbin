@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffff',
   },
   header: {
     flexDirection: 'row',
@@ -109,19 +109,20 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 16,
     padding: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f5f5f5',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
     elevation: 3,
     fontSize: 16,
     color: '#333',
-    marginRight: 10,
+    marginRight: 20,
   },
   content: {
-    marginBottom: 20,
-    marginLeft: 10
+    margin: 20
   },
   emptyMessage: {
     textAlign: 'center',
@@ -130,8 +131,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 14,
     padding: 15,
     marginBottom: 15,
     elevation: 3,

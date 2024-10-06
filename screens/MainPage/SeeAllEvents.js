@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Dimensions, Animated } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text,Platform, StatusBar, TouchableOpacity, TextInput, Dimensions, Animated } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontFamily, Color, FontSize, Border } from "../../GlobalStyles";
@@ -55,8 +55,9 @@ const SeeAllEvents = () => {
   };
 
   return (
-    <View style={styles.seeAllEvents}> 
-      <TextInput
+    <SafeAreaView style={styles.seeAllEvents}> 
+    <View style={styles.header}>
+    <TextInput
         style={styles.searchInput}
         placeholder="Search events by name, time, or venue"
         placeholderTextColor={Color.colorGray_100}
@@ -64,10 +65,10 @@ const SeeAllEvents = () => {
         onChangeText={handleSearch}
       />
       <TouchableOpacity style={styles.settingsButton}>
-        <Ionicons name="notifications-sharp" size={28} color={Color.colorLimegreen_200} />
+        <Ionicons name="settings" size={28} color={Color.colorLimegreen_200} />
       </TouchableOpacity>
-
-      <Image style={styles.shapesIcon1} contentFit="cover" source={require("../../assets/shapes.png")} />
+    </View>
+      
 
       <View style={styles.groupParent}>
         {/* Animated View for Event Cards */}
@@ -90,7 +91,7 @@ const SeeAllEvents = () => {
           </Animated.View>
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -119,17 +120,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: 20,
+    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
+  },
+  header:{ 
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginLeft: 15,
   },
   searchInput: {
     height: 38,
     borderRadius: 12,
     paddingHorizontal: 10,
     marginBottom: 20,
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-    width: '100%', // Full width for responsiveness
+    shadowRadius: 3,
+    elevation: 3,
+    marginTop: 12,
+    width: '80%', // Full width for responsiveness
   },
   settingsButton: {
     height: 40,
@@ -137,16 +146,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    top: 30,
     right: 20,
   },
-  shapesIcon1: {
-    height: "20%",
-    width: "40%",
-    position: "absolute",
-    top: 0,
-    right: 0,
-  },
+  
   groupParent: {
     marginTop: 10,
   },
@@ -168,14 +170,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 20,
     padding: 12,
+    backgroundColor: '#fff',
     marginBottom: -50,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    
     elevation: 3,
+    
   },
   imGoingTo: {
     fontSize: FontSize.body2_size,

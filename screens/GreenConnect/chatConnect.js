@@ -5,17 +5,19 @@ import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import EmojiSelector from 'react-native-emoji-selector';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import * as Audio from 'expo-av'; // For recording voice notes
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Ensures gestures work properly
 
 const ChatScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { userName } = route.params;
   const [messages, setMessages] = useState([
     {
       id: 1,
       text: 'Hello! How are you?',
       timestamp: new Date(),
-      sender: 'Sender',
+      sender: userName,
       read: false, // Add read status
     },
     {
@@ -30,9 +32,9 @@ const ChatScreen = () => {
   const [quotedMessage, setQuotedMessage] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [recording, setRecording] = useState(null);
+  const [isOnline, setIsOnline] = useState(true); // Change this based on actual online status
 
   const currentUser = 'You'; // Identifier for the current user
-  const isOnline = true; // Change this based on actual online status
 
   const sendMessage = () => {
     if (inputMessage.trim() !== '') {
@@ -118,8 +120,18 @@ const ChatScreen = () => {
         <Text style={styles.messageText}>{item.text}</Text>
         <Text style={styles.messageTimestamp}>{item.timestamp.toLocaleTimeString()}</Text>
 
-        {item.sender !== currentUser && item.read && (
-          <Ionicons name="checkmark-done" size={14} color="blue" style={styles.readIndicator} />
+        {/* Message Receipt Indicator */}
+        {item.sender !== currentUser && (
+          <View style={styles.receiptContainer}>
+            {!item.read ? (
+              <View style={styles.greyDot} />
+            ) : isOnline ? (
+              <View style={styles.greenDotsContainer}>
+                <View style={styles.greenDot} />
+                <View style={styles.greenDot} />
+              </View>
+            ) : null}
+          </View>
         )}
       </View>
     </Swipeable>
@@ -153,11 +165,11 @@ const ChatScreen = () => {
   return (
     <GestureHandlerRootView style={styles.safeAreaView}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={()=> navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>Ogallo Apopa</Text>
+          <Text style={styles.headerTitle}>{userName}</Text>
           <Text style={styles.headerSubtitle}>
             {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
           </Text>
@@ -301,10 +313,27 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#999',
   },
-  readIndicator: {
-    position: 'absolute',
-    bottom: 5,
-    right: 10,
+  receiptContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  greyDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'grey',
+    marginLeft: 5,
+  },
+  greenDotsContainer: {
+    flexDirection: 'row',
+    marginLeft: 5,
+  },
+  greenDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'green',
+    marginLeft: 2,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, Platform,Alert, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, Platform, Alert, TouchableOpacity, Dimensions, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
 
@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%', // Responsive width
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   image: {
     borderRadius: 20,
@@ -99,16 +98,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    height: 40,
+    height: 45, // Slightly taller for better touch experience
     borderRadius: 15,
     marginBottom: 19,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     width: '100%', // Responsive width
-    elevation: 5,
-    shadowColor: '#000',
+    backgroundColor: Color.colorWhite, // Ensure a solid background
+    elevation: 3, // Only for Android
+    shadowColor: '#000', // Shadow for iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
   },
   proceed: {
     backgroundColor: Color.colorLimegreen_200,

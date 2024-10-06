@@ -64,8 +64,8 @@ const NotificationsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    padding: 20,
+    backgroundColor: '#f5f5f5',
+    padding: 5,
     overflow: 'hidden',
   },
   
@@ -73,11 +73,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   notificationContainer: {
-    backgroundColor: '#F5F5F5', // Changed to light gray
-    borderRadius: 12,
-    padding: 15,
+    backgroundColor: '#fff', // Changed to light gray
+    borderRadius: 16,
+    padding: 12,
     marginBottom: 15,
-    elevation: 5,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,

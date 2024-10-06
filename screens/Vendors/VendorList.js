@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SafeAreaView, View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, Dimensions } from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
+
 
 const peopleToFollow = [
   {
@@ -73,6 +86,7 @@ const VendorList = () => {
   const handleConnect = (id) => {
     setLoading(prev => ({ ...prev, [id]: true }));
 
+    // Simulating an async action
     setTimeout(() => {
       setLoading(prev => ({ ...prev, [id]: false }));
       setApprovedVendors(prev => ({ ...prev, [id]: true }));
@@ -85,42 +99,46 @@ const VendorList = () => {
 
   const renderConnections = (connections) => (
     <View style={styles.connectionsContainer}>
-      {connections.map((uri, index) => (
+      {connections.length > 0 && connections.map((uri, index) => (
         <Image
           key={index}
           source={{ uri }}
-          style={[styles.connectionImage, { zIndex: connections.length - index }]} // Ensure overlapping effect
+          style={[styles.connectionImage, { zIndex: connections.length - index }]}
         />
       ))}
-      <Text style={styles.connectionsCount}>{connections.length}k</Text>
+      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k</Text>
     </View>
   );
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.coverImage }} style={styles.coverImage} />
-      <View style={styles.infoContainer}>
-        <Image source={{ uri: item.image }} style={styles.profileImage} />
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.job}>{item.job}</Text>
-        <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.followers}>{item.followers}</Text>
-        {renderConnections(item.connections)}
-        <TouchableOpacity
-          style={[styles.followButton, approvedVendors[item.id] ? styles.approvedButton : styles.connectButton]}
-          onPress={() => approvedVendors[item.id] ? handleProfileNavigation(item.id) : handleConnect(item.id)}
-        >
-          {loading[item.id] ? (
-            <ActivityIndicator size="small" color="white" style={styles.spinner} />
-          ) : (
-            <Text style={styles.followButtonText}>
-              {approvedVendors[item.id] ? 'Approved' : 'Connect'}
-            </Text>
-          )}
-        </TouchableOpacity>
+  const renderItem = ({ item }) => {
+    const isLoading = loading[item.id];
+    return (
+      <View style={styles.card}>
+        {/* Add coverImage if defined */}
+        <View style={styles.infoContainer}>
+          <Image source={{ uri: item.image }} style={styles.profileImage} />
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.job}>{item.job}</Text>
+          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.followers}>{item.followers}</Text>
+          {renderConnections(item.connections)}
+          <TouchableOpacity
+            style={[styles.followButton, approvedVendors[item.id] ? styles.approvedButton : styles.connectButton]}
+            onPress={() => approvedVendors[item.id] ? handleProfileNavigation(item.id) : handleConnect(item.id)}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="white" style={styles.spinner} />
+            ) : (
+              <Text style={styles.followButtonText}>
+                {approvedVendors[item.id] ? 'Approved' : 'Connect'}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -136,7 +154,7 @@ const VendorList = () => {
             placeholderTextColor={Color.colorGray_100}
             onChangeText={setSearchQuery}
           />
-          <TouchableOpacity onPress={()=> navigation.navigate('VendorsFollowed')}>
+          <TouchableOpacity onPress={() => navigation.navigate('VendorsFollowed')}>
             <MaterialIcons name="group-add" size={30} color="green" />
           </TouchableOpacity>
         </View>
@@ -169,13 +187,15 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 15,
     overflow: 'hidden',
-    elevation: 4,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     flexDirection: 'row',
     maxWidth: '100%',
+    justifyContent:'center',
+    alignContent: 'center',
   },
   coverImage: {
     width: 80,
@@ -189,29 +209,29 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     padding: 10,
-    left: -140,
+    left: 10,
     top: 70,
   },
   name: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#333333',
     marginTop: 20,
     marginLeft: 60,
   },
   job: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#666666',
     marginLeft: 60,
   },
   description: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#666666',
     marginVertical: 5,
     marginLeft: 60,
   },
   followers: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#666666',
     marginVertical: 3,
     marginLeft: 60,
@@ -231,7 +251,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 12,
     justifyContent: 'center',
-    top: -155,
+    top: -145,
     left: 310,
   },
   connectButton: {
@@ -251,15 +271,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchInput: {
-    borderColor: Color.colorGray_100,
     borderRadius: 10,
     paddingHorizontal: 12,
     height: 40,
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 4,
+    elevation: 3,
     marginBottom: 10,
+    shadowColor: '#000',
     marginLeft: 30,
     marginRight: 13,
     width: '80%'

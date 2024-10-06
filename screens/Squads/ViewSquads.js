@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/core';
+import { StyleSheet, View,Alert, Text, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions, Modal } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const ViewSquadScreen = ({ route }) => {
+const ViewSquadScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [isMember, setIsMember] = useState(false);
   const { squadName } = route.params;
 
+  // State for the modal
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  // Mock data for the squad
   const squadData = {
     name: squadName,
-    handle: "@wastedaily",
-    createdDate: 'Sept 2024',
-    posts: 109,
-    views: '12.3K',
-    upvotes: '1.5K',
-    description: 'We collect, disintegrate, and refurbish wastes!',
+    handle: "@pollutiondaily",
+    createdDate: 'Oct 2024',
+    posts: 309,
+    views: '12K',
+    upvotes: '1K',
+    description: 'We initiate pilot monitoring, manage and controlling pollution effluents!',
     moderator: {
-      name: 'Bobby Shivley',
+      name: 'Vicky Mickey',
       role: 'Admin',
       avatar: 'https://example.com/avatar.jpg'
     },
@@ -34,111 +39,170 @@ const ViewSquadScreen = ({ route }) => {
     ],
   };
 
-  const [fadeAnim] = useState(new Animated.Value(1));
+  // Animation for blinking description
+  const [fadeAnim] = useState(new Animated.Value(1)); // Initial opacity of 1
 
   useEffect(() => {
     const blink = () => {
       Animated.sequence([
-        Animated.timing(fadeAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
-        Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       ]).start();
     };
-
+  
     const interval = setInterval(() => {
       blink();
-    }, 1000);
-
+    }, 1000); // Blink every second
+  
     const timeout = setTimeout(() => {
       clearInterval(interval);
-      fadeAnim.setValue(1);
+      clearTimeout(timeout);
+      fadeAnim.setValue(1); // Reset opacity to 1 after blinking
     }, 4000);
-
+  
     return () => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
   }, [fadeAnim]);
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
-          <Text style={{ color: 'green', fontWeight: '600' }}>goBack</Text>
-        </TouchableOpacity>
-        <Image source={{ uri: squadData.moderator.avatar }} style={styles.squadAvatar} />
-        <Text style={styles.headerTitle}>{squadData.name}</Text>
-        <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
-        <TouchableOpacity style={styles.feature}>
-          <FontAwesome name="user-circle-o" size={24} color="black" />
-          <Text style={styles.featuredSquad}>Featured Activities</Text>
-        </TouchableOpacity>
-        <View style={styles.statsContainer}>
-          <Text style={styles.statText}>{squadData.posts} Posts</Text>
-          <Text style={styles.statText}>{squadData.views} Views</Text>
-          <Text style={styles.statText}>{squadData.upvotes} Likes</Text>
-        </View>
-        {/* Using Animated.View for the description */}
-        <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.description}>
-            {squadData.description}
-          </Text>
-        </Animated.View>
-      </View>
+  const handleLeaveSquad = () => {
+    // Logic to leave the squad
+    Alert.alert('You have left the squad.');
+    setModalVisible(false); // Close the modal
+  };
 
-      <Text style={styles.moderatedByText}>Moderated By</Text>
-      <View style={styles.moderatedByContainer}>
-        <View style={styles.moderatorInfo}>
-          <Image source={{ uri: squadData.moderator.avatar }} style={styles.moderatorAvatar} />
-          <View style={styles.moderatorDetails}>
-            <Text style={styles.moderatorName}>{squadData.moderator.name}</Text>
-            <Text style={styles.moderatorRole}>
-              {squadData.moderator.role} <Ionicons name="star" size={12} color="#FFD700" />
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.back} 
+            onPress={() => navigation.goBack()}
+            accessibilityLabel="Go back"
+          >
+            <Text style={{ color: 'green', fontWeight: '600' }}>goBack</Text>
+          </TouchableOpacity>
+
+          {/* Cover Image */}
+          <Image 
+            source={{ uri: 'https://example.com/cover.jpg' }} // Add cover image URL here
+            style={styles.coverImage}
+            accessibilityLabel={`${squadData.name} cover image`}
+          />
+
+          {/* Small Avatar for the squad */}
+          <Image 
+            source={{ uri: squadData.moderator.avatar }} 
+            style={styles.squadAvatar} 
+            accessibilityLabel={`${squadData.moderator.name}'s avatar`}
+          />
+          <Text style={styles.headerTitle}>{squadData.name}</Text>
+          <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
+          <TouchableOpacity style={styles.feature}>
+            <FontAwesome name="user-circle-o" size={24} color="black" />
+            <Text style={styles.featuredSquad}>Featured Activities</Text>
+          </TouchableOpacity>   
+          
+          {/* Posts, Views, Upvotes Section */}
+          <View style={styles.statsContainer}>
+            <Text style={styles.statText}>{squadData.posts} Posts</Text>
+            <Text style={styles.statText}>{squadData.views} Views</Text>
+            <Text style={styles.statText}>{squadData.upvotes} Likes</Text>
+          </View>
+          
+          {/* Blinking Description */}
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <Text style={styles.description}>
+              {squadData.description}
             </Text>
+          </Animated.View>
+        </View>
+
+        {/* Moderated By Section */}
+        <Text style={styles.moderatedByText}>Created By</Text>
+        <View style={styles.moderatedByContainer}>
+          <View style={styles.moderatorInfo}>
+            <Image 
+              source={{ uri: squadData.moderator.avatar }} 
+              style={styles.moderatorAvatar} 
+              accessibilityLabel={`${squadData.moderator.name}'s avatar`}
+            />
+            <View style={styles.moderatorDetails}>
+              <Text style={styles.moderatorName}>{squadData.moderator.name}</Text>
+              <Text style={styles.moderatorRole}>
+                {squadData.moderator.role} <Ionicons name="star" size={12} color="#FFD700" />
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.addAdminButton}>
+            <Text style={styles.addAdminText}>+1</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Members Section */}
+        <View style={styles.membersContainer}>
+          <View style={styles.membersList}>
+            {squadData.members.map((member, index) => (
+              <Image key={index} source={{ uri: member.avatar }} style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
+            ))}
+            <Text style={styles.totalMembers}>{squadData.upvotes}</Text>
+          </View>
+          <View style={styles.actionsContainer}>
+            {/* Ellipsis button with modal */}
+            <TouchableOpacity 
+              style={styles.icons} 
+              accessibilityLabel="More options"
+              onPress={() => setModalVisible(true)} // Open modal
+            >
+              <Ionicons name="ellipsis-vertical" size={25} color="#333" />
+            </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.addAdminButton}>
-          <Text style={styles.addAdminText}>+1</Text>
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.membersContainer}>
-        <View style={styles.membersList}>
-          {squadData.members.map((member, index) => (
-            <Image key={index} source={{ uri: member.avatar }} style={styles.memberAvatar} />
-          ))}
-          <Text style={styles.totalMembers}>{squadData.members.length}</Text>
-        </View>
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.icons}>
-            <FontAwesome5 name="user-check" size={24} color="green" />
-            <View style={styles.notificationBubble}>
-              <Text style={styles.notificationCount}>5</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.icons}>
-            <Ionicons name="notifications-outline" size={25} color="#333" />
-            <View style={styles.notificationBubble}>
-              <Text style={styles.notificationCount}>3</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.icons}>
-            <Ionicons name="ellipsis-vertical" size={25} color="#333" />
+        {/* Invitation Link Section */}
+        <View style={styles.invitationContainer}>
+          <TouchableOpacity style={styles.invitationButton} accessibilityLabel="Invitation link">
+            <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
+            <Text style={styles.invitationText}>Invitation link</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.invitationContainer}>
-        <TouchableOpacity style={styles.invitationButton}>
-          <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
-          <Text style={styles.invitationText}>Invitation link</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Post Restrictions Section */}
+        <View style={styles.postRestrictionsContainer}>
+          <Fontisto name="locked" size={24} color="green" />
+          <Text style={styles.postRestrictionsText}>Only Admins and moderators can post</Text>
+        </View>
+        
+      </ScrollView>
 
-      <View style={styles.postRestrictionsContainer}>
-        <Fontisto name="locked" size={24} color="red" />
-        <Text style={styles.postRestrictionsText}>Only admins and moderators can post</Text>
-      </View>
-    </ScrollView>
+      {/* Modal for Leave Squad */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Do you want to leave the squad?</Text>
+            <TouchableOpacity 
+              style={styles.leaveButton} 
+              onPress={handleLeaveSquad}
+            >
+              <Text style={styles.leaveButtonText}>Leave Squad</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.cancelButton} 
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 };
 
@@ -146,19 +210,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+  },
+  scrollView: {
+    paddingHorizontal: width * 0.05, // 5% padding on both sides
   },
   header: {
     alignItems: 'center',
     marginBottom: 20,
   },
   squadAvatar: {
-    width: '100%', 
-    height: width * 0.45, 
-    borderRadius: 26,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    marginTop: 10,
+    width: 80, // Reduced size for smaller avatar
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+
+    borderColor: Color.colorWhite,
+    marginTop: -40, // Slight overlap with cover image
+  },
+  coverImage: {
+    width: '100%',
+    height: height * 0.2, // Cover image takes 20% of the screen height
   },
   feature: {
     borderWidth: 1,
@@ -169,6 +240,10 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     flexDirection: 'row',
     marginBottom: 13,
+  },
+  back: {
+    left: 10,
+    marginLeft: -320,
   },
   featuredSquad: {
     fontSize: 16,
@@ -202,30 +277,13 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderColor: 'lightgray',
     height: 50,
-    position: 'relative',
-  },
-  notificationBubble: {
-    position: 'absolute',
-    right: 5,
-    top: 5,
-    backgroundColor: 'red',
-    borderRadius: 10,
-    padding: 3,
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationCount: {
-    color: 'white',
-    fontSize: 12,
-    textAlign: 'center',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'orange',
     marginBottom: 5,
+    marginTop: 10,
   },
   headerHandle: {
     fontSize: 14,
@@ -243,10 +301,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
-  },
-  back: {
-    left: 10,
-    marginLeft: -320,
   },
   moderatorInfo: {
     flexDirection: 'row',
@@ -328,27 +382,65 @@ const styles = StyleSheet.create({
   },
   invitationButton: {
     backgroundColor: Color.colorLimegreen_200,
-    borderRadius: 14,
-    padding: 15,
+    borderRadius: 12,
+    padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    left: 90,
-    width: 150,
   },
   invitationIcon: {
-    marginRight: 5,
+    marginRight: 10,
   },
   invitationText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontSize: 16,
   },
   postRestrictionsContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 20,
+    left: 55,
   },
   postRestrictionsText: {
-    color: '#333',
-    marginLeft: 5,
+    marginLeft: 10,
+    color: '#555',
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  leaveButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  leaveButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  cancelButton: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: 'gray',
   },
 });
 

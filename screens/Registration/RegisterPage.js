@@ -1,7 +1,10 @@
 import * as React from "react";
-import { TextInput, Alert, TouchableOpacity, FlatList,Image, ActivityIndicator, Dimensions, Animated } from "react-native";
+import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
+import { Picker } from "@react-native-picker/picker"; // Import Picker
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../../redux/actions/authActions'; // Adjust the import path as necessary
 import { FontFamily, FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,15 +26,15 @@ const countryCodes = [
 
 const RegisterPage = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0]);
+  const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0].code);  // Use country code as the initial state
   const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [promoCode, setPromoCode] = React.useState('');
   const [showPromoCodeInput, setShowPromoCodeInput] = React.useState(false);
   const [promoCodeError, setPromoCodeError] = React.useState('');
   const [isSendingOTP, setIsSendingOTP] = React.useState(false);
-  const [showCountryCodeDropdown, setShowCountryCodeDropdown] = React.useState(false);
   
   // Animation state
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -43,6 +46,16 @@ const RegisterPage = () => {
       duration: 500,
       useNativeDriver: true,
     }).start();
+
+    const handleResize = () => {
+      const { width: newWidth, height: newHeight } = Dimensions.get('window');
+      if (newWidth !== width || newHeight !== height) {
+        // Handle any additional scaling logic if necessary
+      }
+    };
+
+    const subscription = Dimensions.addEventListener('change', handleResize);
+    return () => subscription?.remove(); // Cleanup
   }, [fadeAnim]);
 
   const validatePhoneNumber = (number) => {
@@ -58,6 +71,7 @@ const RegisterPage = () => {
     try {
       if (!validatePhoneNumber(phoneNumber)) {
         setErrorMessage('Invalid contact number. Please enter a valid phone number.');
+        setLoading(false);
         return;
       }
 
@@ -65,6 +79,7 @@ const RegisterPage = () => {
       const isRegistered = false; // Replace with actual API call
       if (isRegistered) {
         setErrorMessage('Number already registered. Proceed to login.');
+        setLoading(false);
         return;
       }
 
@@ -73,17 +88,23 @@ const RegisterPage = () => {
         const isValidPromoCode = await checkPromoCode(promoCode);
         if (!isValidPromoCode) {
           setPromoCodeError('Promo code is invalid or already used.');
+          setLoading(false);
           return;
         }
       }
 
       setIsSendingOTP(true);
+      
+      // Dispatch the registerUser action
+      await dispatch(registerUser(selectedCountryCode + phoneNumber, promoCode));
+
       // Simulate sending OTP
       setTimeout(() => {
-        Alert.alert('OTP sent to:', selectedCountryCode.code + phoneNumber);
+        Alert.alert('OTP sent to:', selectedCountryCode + phoneNumber);
         navigation.navigate('otpConfirm', {
-          phoneNumber: selectedCountryCode.code + phoneNumber,
+          phoneNumber: selectedCountryCode + phoneNumber,
         });
+        setIsSendingOTP(false);
       }, 2000); // Delay for 2 seconds
     } catch (error) {
       setErrorMessage('Failed to send OTP. Please try again.');
@@ -106,12 +127,15 @@ const RegisterPage = () => {
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Phone Number</Text>
           <View style={styles.phoneInput}>
-            <TouchableOpacity 
-              style={styles.countryCodeContainer} 
-              onPress={() => setShowCountryCodeDropdown(!showCountryCodeDropdown)}
+            <Picker
+              selectedValue={selectedCountryCode}
+              style={styles.countryCodePicker}
+              onValueChange={(itemValue) => setSelectedCountryCode(itemValue)} // Update selected country code
             >
-              <Text style={styles.countryCode}>{selectedCountryCode.code}</Text>
-            </TouchableOpacity>
+              {countryCodes.map((item) => (
+                <Picker.Item key={item.code} label={item.code} value={item.code} />  
+              ))}
+            </Picker>
             <TextInput
               style={styles.inputContainer1}
               value={phoneNumber}
@@ -123,24 +147,6 @@ const RegisterPage = () => {
               accessibilityHint="Enter your phone number"
             />
           </View>
-          {showCountryCodeDropdown && (
-            <FlatList
-              data={countryCodes}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.countryCodeItem}
-                  onPress={() => {
-                    setSelectedCountryCode(item);
-                    setShowCountryCodeDropdown(false);
-                  }}
-                >
-                  <Text style={styles.countryCodeText}>{item.code} {item.name}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.code}
-              style={styles.dropdown}
-            />
-          )}
         </View>
 
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
@@ -177,7 +183,12 @@ const RegisterPage = () => {
           accessibilityHint="Press to send OTP to your phone number"
         >
           {isSendingOTP ? (
-            <ActivityIndicator size="small" color="#fff" />
+            <ActivityIndicator 
+              size="small" 
+              color="#fff" 
+              accessibilityLabel="Loading OTP" 
+              accessibilityHint="Please wait while we send the OTP"
+            />
           ) : (
             <Text style={styles.cardText}>Send OTP</Text>
           )}
@@ -211,6 +222,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
     marginBottom: verticalScale(14),
+    
   },
   dontHaveAnContainer: {
     flexDirection: 'row',
@@ -225,15 +237,14 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     borderRadius: Border.br_base,
     overflow: 'hidden',
+    
   },
-  countryCodeContainer: {
-    backgroundColor: Color.colorWhite,
-    justifyContent: 'center',
-    paddingHorizontal: scale(10),
-    borderRightWidth: 1,
-    borderColor: 'lightgray',
+  countryCodePicker: {
+    width: scale(110), // Adjust width for picker
     height: verticalScale(40),
-    width: scale(70),
+    fontSize: scale(FontSize.size_base),
+    color: Color.colorWhite,
+    borderRadius: 14
   },
   register: {
     color: 'green',
@@ -241,63 +252,20 @@ const styles = StyleSheet.create({
     marginLeft: scale(8),
     fontSize: scale(14),
   },
-  countryCode: {
-    fontSize: scale(FontSize.size_base),
-    fontWeight: 'bold',
-    color: Color.colorGray_600,
-  },
   inputContainer1: {
     flex: 1,
-    paddingLeft: scale(10),
     height: verticalScale(40),
-  },
-  label: {
+    padding: 10,
     fontSize: scale(FontSize.size_base),
-    color: Color.colorLimegreen_200,
-    fontFamily: FontFamily.poppinsBold,
-    marginTop: verticalScale(10),
-    marginBottom: verticalScale(8),
-  },
-  errorText: {
-    color: 'red',
-    marginTop: verticalScale(10),
-  },
-  getStartedBtn: {
-    backgroundColor: Color.colorLimegreen_200,
-    borderRadius: 14,
-    height: verticalScale(40),
-    justifyContent: "center",
-    alignItems: "center",
-    width: '100%',
-    marginTop: verticalScale(10),
-  },
-  cardText: {
-    color: "white",
-    fontWeight: 'bold',
-    fontSize: scale(18),
-  },
-  dropdown: {
-    position: 'absolute',
-    top: verticalScale(50),
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    elevation: 3,
-    zIndex: 1000,
-  },
-  countryCodeItem: {
-    padding: scale(10),
-  },
-  countryCodeText: {
-    fontSize: scale(FontSize.size_base),
+    color: Color.colorGray_600,
   },
   promoCodeButton: {
-    marginTop: verticalScale(20),
+    marginTop: verticalScale(10),
+    alignItems: 'center',
   },
   promoCodeText: {
-    fontSize: scale(FontSize.size_base),
-    color: Color.colorLimegreen_200,
-    fontWeight: 'bold',
+    color: 'green',
+    textDecorationLine: 'underline',
   },
   promoCodeContainer: {
     marginTop: verticalScale(10),
@@ -306,7 +274,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     borderRadius: Border.br_base,
-    padding: scale(10),
+    height: verticalScale(40),
+    padding: 10,
+    fontSize: scale(FontSize.size_base),
+    color: Color.colorGray_600,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 4,
+    fontSize: scale(FontSize.size_sm),
+  },
+  getStartedBtn: {
+    backgroundColor: Color.colorLimegreen_200,
+    padding: verticalScale(10),
+    borderRadius: Border.br_base,
+    alignItems: 'center',
+    marginTop: verticalScale(10),
+  },
+  cardText: {
+    color: Color.colorWhite,
+    fontSize: scale(FontSize.size_base),
+    fontWeight: 'bold',
   },
 });
 

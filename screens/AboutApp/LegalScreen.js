@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, SafeAreaView,Platform, StatusBar } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 
@@ -156,39 +156,37 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Color.colorWhite,
-        paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-        padding: 20,
-        overflow: 'hidden',
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        padding: 15,
     },
     header: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#2c3e50',
-        marginBottom: 15,
+        marginBottom: 10,
         textAlign: 'center',
     },
     sectionTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '600',
         color: '#34495e',
-        marginTop: 15,
+        marginTop: 10,
     },
     sectionText: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#7f8c8d',
-        lineHeight: 24,
-        marginVertical: 5,
+        lineHeight: 22,
+        marginVertical: 4,
     },
     divider: {
         height: 1,
         backgroundColor: '#bdc3c7',
-        marginVertical: 20,
+        marginVertical: 15,
     },
     button: {
-        flex: 1,
         backgroundColor: '#ffffff',
-        borderRadius: 12,
-        padding: 10,
+        borderRadius: 10,
+        padding: 8,
         marginVertical: 5,
         shadowColor: '#000',
         shadowOffset: {
@@ -197,20 +195,17 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.2,
         shadowRadius: 1.41,
-        elevation: 4,
-        margin: 10,
-        marginTop: 15,
-        width: 220,
-        maxHeight: 40,
-        left: 70,
+        elevation: 3,
+        marginHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        height: 40,
     },
     buttonText: {
         color: Color.colorLimegreen_200,
         textAlign: 'center',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 16,
     },
 });
 

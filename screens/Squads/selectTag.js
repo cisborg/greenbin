@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: 10,
     overflow: 'hidden',
   },
  
@@ -86,17 +86,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
     marginBottom: 15,
-    color: '#000000',
+    shadowColor: '#000',
     height: 30,
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 3,
+    elevation: 3,
     marginBottom: 10
   },
   tagList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
+    paddingRight: 10,
+    paddingVertical: 10,
+    margin: 5
   },
   tag: {
     backgroundColor: '#F0F0F0',

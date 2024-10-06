@@ -5,17 +5,19 @@ import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import EmojiSelector from 'react-native-emoji-selector';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import * as Audio from 'expo-av'; // For recording voice notes
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Ensures gestures work properly
 
 const ChatScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { name } = route.params;
   const [messages, setMessages] = useState([
     {
       id: 1,
       text: 'Hello! How are you?',
       timestamp: new Date(),
-      sender: 'Sender',
+      sender: name,
       read: false, // Add read status
     },
     {
@@ -157,7 +159,7 @@ const ChatScreen = () => {
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>Ogallo Apopa</Text>
+          <Text style={styles.headerTitle}>{name}</Text>
           <Text style={styles.headerSubtitle}>
             {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
           </Text>

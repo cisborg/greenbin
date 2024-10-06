@@ -10,13 +10,12 @@ const NewPostScreen = () => {
   const [squads, setSquads] = useState(['Green Circular Economy', 'Nature Diversity', 'Tree Planting Expo']);
   const [selectedSquad, setSelectedSquad] = useState('');
   const [activeTab, setActiveTab] = useState('Write');
-  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnails, setThumbnails] = useState([]); // Changed to an array for multiple images
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
   const [newSquad, setNewSquad] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Handle image picker with both camera and media library permissions
   const handleImagePick = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     const cameraPermissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -31,10 +30,12 @@ const NewPostScreen = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      selectionLimit: 3, // Limit selection to 3 images
     });
 
     if (!result.canceled && result.assets) {
-      setThumbnail(result.assets[0].uri);
+      const newThumbnails = result.assets.map(asset => asset.uri);
+      setThumbnails(newThumbnails);
     }
   };
 
@@ -49,12 +50,12 @@ const NewPostScreen = () => {
       console.log('Post Title:', postTitle);
       console.log('Post Content:', postContent);
       console.log('Selected Squad:', selectedSquad);
-      console.log('Thumbnail:', thumbnail);
+      console.log('Thumbnails:', thumbnails);
 
       setPostTitle('');
       setPostContent('');
       setSelectedSquad('');
-      setThumbnail(null);
+      setThumbnails([]);
       setLoading(false);
       Alert.alert('Success', 'Post created successfully!');
     }, 2000);
@@ -71,41 +72,49 @@ const NewPostScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.cancelButton}>Cancel</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.postButton, loading && styles.disabledButton]} // Disable button when loading
-            onPress={handlePost}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="green" />
-            ) : (
-              <Text style={styles.postButtonText}>Post</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.title}>New Post</Text>
-
-        <TouchableOpacity style={styles.squadSelect} onPress={() => setSquadModalVisible(true)}>
-          <Text style={styles.squadText}>{selectedSquad || 'Select Squad'}</Text>
-          <Text style={styles.chevron}>▼</Text>
+    <View style={styles.container}>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.cancelButton}>Cancel</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.thumbnail} onPress={handleImagePick}>
-          {thumbnail ? (
-            <Image source={{ uri: thumbnail }} style={styles.thumbnailImage} />
+        <TouchableOpacity
+          style={[styles.postButton, loading && styles.disabledButton]} // Disable button when loading
+          onPress={handlePost}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="green" />
           ) : (
-            <Text style={styles.thumbnailText}>Thumbnail</Text>
+            <Text style={styles.postButtonText}>Post</Text>
           )}
         </TouchableOpacity>
+      </View>
 
+      <Text style={styles.title}>New Post</Text>
+
+      {/* Squad Selection */}
+      <TouchableOpacity style={styles.squadSelect} onPress={() => setSquadModalVisible(true)}>
+        <Text style={styles.squadText}>{selectedSquad || 'Select Squad'}</Text>
+        <Text style={styles.chevron}>▼</Text>
+      </TouchableOpacity>
+
+      {/* Thumbnail Section */}
+      <TouchableOpacity style={styles.thumbnail} onPress={handleImagePick}>
+        {thumbnails.length > 0 ? (
+          <View style={styles.thumbnailContainer}>
+            {thumbnails.map((uri, index) => (
+              <Image key={index} source={{ uri }} style={styles.thumbnailImage} />
+            ))}
+          </View>
+        ) : (
+          <Text style={styles.thumbnailText}>Upload up to 3 Photos</Text>
+        )}
+      </TouchableOpacity>
+
+      {/* Title Input */}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.postTitleContainer}>
           <TextInput
             style={styles.postTitleInput}
@@ -118,6 +127,7 @@ const NewPostScreen = () => {
           <Text style={styles.characterCount}>{250 - postTitle.length}</Text>
         </View>
 
+        {/* Tabs */}
         <View style={styles.tabsContainer}>
           {['Write', 'Preview', 'Saved'].map((tab) => (
             <TouchableOpacity
@@ -130,13 +140,14 @@ const NewPostScreen = () => {
           ))}
         </View>
 
+        {/* Content Input or Preview */}
         {activeTab === 'Write' && (
           <TextInput
             style={styles.textArea}
             placeholder="Share your thoughts"
             placeholderTextColor="#999"
             multiline={true}
-            maxLength={500} // Character limit added for post content
+            maxLength={500}
             value={postContent}
             onChangeText={setPostContent}
           />
@@ -148,58 +159,59 @@ const NewPostScreen = () => {
             <Text>{postContent}</Text>
           </View>
         )}
+      </KeyboardAvoidingView>
 
-        {loading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#007AFF" />
-          </View>
-        )}
+      {/* Loading Indicator */}
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+        </View>
+      )}
 
-        {/* Squad Selection Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={squadModalVisible}
-          onRequestClose={() => setSquadModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={squads}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.squadItem}
-                    onPress={() => {
-                      setSelectedSquad(item);
-                      setSquadModalVisible(false);
-                    }}
-                  >
-                    <Text style={styles.squadText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                style={{ maxHeight: 200 }} // Limit the FlatList height
-              />
-              <View style={styles.addSquadContainer}>
-                <TextInput
-                  style={styles.newSquadInput}
-                  placeholder="Add Custom Squad"
-                  placeholderTextColor="gray"
-                  value={newSquad}
-                  onChangeText={setNewSquad}
-                />
-                <TouchableOpacity style={styles.addSquadButton} onPress={addSquad}>
-                  <Text style={styles.addSquadText}>Add</Text>
+      {/* Squad Selection Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={squadModalVisible}
+        onRequestClose={() => setSquadModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <FlatList
+              data={squads}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.squadItem}
+                  onPress={() => {
+                    setSelectedSquad(item);
+                    setSquadModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.squadText}>{item}</Text>
                 </TouchableOpacity>
-              </View>
-              <TouchableOpacity onPress={() => setSquadModalVisible(false)}>
-                <Text style={styles.closeModalText}>Close</Text>
+              )}
+              style={{ maxHeight: 200 }} // Limit the FlatList height
+            />
+            <View style={styles.addSquadContainer}>
+              <TextInput
+                style={styles.newSquadInput}
+                placeholder="Add Custom Squad"
+                placeholderTextColor="gray"
+                value={newSquad}
+                onChangeText={setNewSquad}
+              />
+              <TouchableOpacity style={styles.addSquadButton} onPress={addSquad}>
+                <Text style={styles.addSquadText}>Add</Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={() => setSquadModalVisible(false)}>
+              <Text style={styles.closeModalText}>Close</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
@@ -259,88 +271,96 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     backgroundColor: '#f2f2f2',
-    padding: 40,
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 15,
   },
+  thumbnailContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
   thumbnailImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 17,
+    width: 80,
+    height: 80,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    margin: 5,
   },
   thumbnailText: {
     fontSize: 16,
-    color: '#999',
+    color: '#007AFF',
   },
   postTitleContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   postTitleInput: {
     flex: 1,
-    paddingBottom: 5,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: '#999',
     fontSize: 16,
+    padding: 8,
     color: 'black',
-    paddingTop: 5,
-    borderRadius: 14,
-    paddingLeft: 15,
   },
   characterCount: {
+    fontSize: 14,
+    color: 'gray',
     marginLeft: 10,
-    color: '#999',
   },
   tabsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#007AFF',
-    paddingBottom: 10,
+    marginBottom: 15,
   },
   tab: {
-    paddingBottom: 10,
+    padding: 8,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
+  },
+  activeTab: {
+    padding: 8,
+    backgroundColor: 'green',
+    borderRadius: 10,
   },
   tabText: {
     fontSize: 16,
     color: 'black',
   },
   textArea: {
-    borderColor: '#999',
-    borderRadius: 17,
-    padding: 10,
-    fontSize: 16,
-    color: 'black',
-    minHeight: 150,
+    flex: 1,
+    height: 200,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 15,
     textAlignVertical: 'top',
+    color: 'black',
     marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   previewContainer: {
+    padding: 15,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
     marginBottom: 15,
   },
   previewTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   loadingContainer: {
-    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     justifyContent: 'center',
-    marginVertical: 20,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalContainer: {
     flex: 1,
@@ -349,45 +369,40 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 17,
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   squadItem: {
-    padding: 15,
-    borderBottomWidth: 1,
+    paddingVertical: 10,
     borderBottomColor: '#ccc',
-  },
-  closeModalText: {
-    textAlign: 'center',
-    color: 'red',
-    marginTop: 10,
+    borderBottomWidth: 1,
   },
   addSquadContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 20,
   },
   newSquadInput: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#999',
-    borderRadius: 5,
-    padding: 5,
-    marginRight: 10,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    padding: 8,
   },
   addSquadButton: {
     backgroundColor: '#007AFF',
-    borderRadius: 5,
     padding: 10,
+    borderRadius: 5,
+    marginLeft: 10,
   },
   addSquadText: {
     color: 'white',
+  },
+  closeModalText: {
+    color: '#007AFF',
+    marginTop: 20,
   },
 });
 

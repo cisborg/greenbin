@@ -1,5 +1,6 @@
 import * as React from "react";
-
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import { View, Image, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -15,7 +16,7 @@ import ManageAccountScreen from "./screens/Registration/manageAccount";
 import PrepaidRechargeScreen from "./screens/GreenPoints/Payment";
 import ProfileGCPs from "./screens/e-Commerce/ProfileGCPs";
 import MessagesScreen from "./screens/GreenConnect/messageUI";
-import BestPlansScreen from "./screens/QuickActions/BuyBundles";
+import BuyScreen from "./screens/QuickActions/BuyBundles";
 import LeaderBoard from "./screens/MainPage/Happy";
 import GreenConnect from "./screens/MainPage/GreenConnect";
 import YourSquads from "./screens/Squads/Squads";
@@ -45,7 +46,7 @@ import  CartDetail from "./screens/e-Commerce/productDetail"
 import GreenBankAccount from "./screens/e-Commerce/GreenBank";
 import JoinUsScreen from "./screens/AboutApp/JoinUs";
 import DonatePoints from "./screens/GreenPoints/DonatePoints";
-import NotifScreen from "./screens/GreenPoints/NotificationTransact";
+import NotifScreen from "./screens/GreenPoints/PurchaseHist";
 import BuyAirtimeScreen from "./screens/QuickActions/BuyAirtime";
 import AboutScreen from "./screens/AboutApp/AboutUs";
 import ReportVendorScreen from "./screens/Vendors/ReportVendor";
@@ -55,7 +56,6 @@ import CarbonFootprintCalculator from "./screens/GreenPoints/CarbonCalculator"
 import GamesScreen from "./screens/QuickActions/GoGames";
 import WalletScreen from "./screens/QuickActions/Crypto";
 import LegalScreen from "./screens/AboutApp/LegalScreen";
-import SquadScreen from "./screens/Squads/SquadsView";
 import LeaderboardScreen from "./screens/Squads/SquadsAward";
 import TagSelection from "./screens/Squads/selectTag";
 import NotificationsScreen from "./screens/Squads/Updates";
@@ -79,6 +79,7 @@ import RatingModal from "./screens/AboutApp/AppRating";
 import ChatScreen  from "./screens/GreenConnect/chatConnect"
 import HistoryScreen from "./screens/GreenPoints/donationHist"
 import FollowedVendors from "./screens/Vendors/VendorsFollowed"
+import Approved from "./screens/Squads/Approved";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
 
@@ -219,6 +220,7 @@ const App = () => {
   }
 
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
@@ -231,7 +233,7 @@ const App = () => {
         <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
         <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyBundles" component={BestPlansScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BuyBundles" component={BuyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
         <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
         <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
@@ -257,7 +259,7 @@ const App = () => {
         <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
         <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
         <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="NotificationTransact" component={NotifScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BuyAirtime" component={BuyAirtimeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
@@ -267,7 +269,6 @@ const App = () => {
         <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Crypto" component={WalletScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadsView" component={SquadScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
         <Stack.Screen name="selectTag" component={TagSelection} options={{ headerShown: false }} />
         <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
@@ -291,10 +292,12 @@ const App = () => {
         <Stack.Screen name="donationHist" component={HistoryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
         <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
+        <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 };
 

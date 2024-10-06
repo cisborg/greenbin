@@ -4,16 +4,17 @@ import {
   Text, 
   TextInput, 
   TouchableOpacity, 
-  FlatList, 
   ActivityIndicator, 
   Animated,
   SafeAreaView, 
   KeyboardAvoidingView,
   StyleSheet,
-  Platform, StatusBar
+  Platform, 
+  StatusBar
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { Color } from '../../GlobalStyles';
 
 const TransactionScreen = ({ navigation }) => {
   const [generalPoints, setGeneralPoints] = useState({
@@ -72,11 +73,8 @@ const TransactionScreen = ({ navigation }) => {
 
     // Update recent recipients
     setRecentRecipients(prevRecipients => {
-      const newRecipients = [
-        { id: prevRecipients.length + 1, mobile: recipientNumber, amount: sendAmount },
-        ...prevRecipients
-      ].slice(0, 10); // Limit to 10 recipients
-      return newRecipients;
+      const newRecipient = { id: 1, mobile: recipientNumber, amount: sendAmount };
+      return [newRecipient, ...prevRecipients.slice(0, 1)]; // Keep only the latest 2
     });
 
     // Reset input fields
@@ -166,13 +164,13 @@ const TransactionScreen = ({ navigation }) => {
           {/* Send/Receive Buttons */}
           <View style={styles.actionButtons}>
             <TouchableOpacity onPress={() => { setShowSendInput(true); setShowReceiveInput(false); }} style={styles.actionButton}>
-              <FontAwesome name="send" size={26} color="black" />
-              <Text>Send</Text>
+              <FontAwesome name="send" size={26} color="green" />
+              <Text>Send Cash</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => { setShowReceiveInput(true); setShowSendInput(false); }} style={styles.actionButton}>
-              <Ionicons name="download" size={24} color="black" />
-              <Text>Receive</Text>
+              <Ionicons name="download" size={24} color="green" />
+              <Text>Receive Cash</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleAddUser} style={styles.actionButton}>
@@ -180,7 +178,7 @@ const TransactionScreen = ({ navigation }) => {
                 <ActivityIndicator size="small" color="#0000ff" />
               ) : (
                 <>
-                  <Ionicons name="add" size={24} color="black" />
+                  <Ionicons name="add" size={24} color="green" />
                   <Text>Add</Text>
                 </>
               )}
@@ -248,34 +246,29 @@ const TransactionScreen = ({ navigation }) => {
                 activeStrokeColor="green"
                 inActiveStrokeColor="#e0e0e0"
               />
-              <Text style={styles.incomeValue}>${totalDeducted.toFixed(2)}</Text>
+              <Text style={styles.incomeValue}>GP{totalDeducted.toFixed(2)}</Text>
             </View>
 
             {/* Recent Recipients */}
             <View style={styles.recipient}>
               <View style={styles.recentRecipientsContainer}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text style={styles.recentRecipientsTitle}>Send Again</Text>
-                  <FontAwesome name="send" size={18} color="black" />
+                  <Text style={styles.recentRecipientsTitle}>Recent Recipients</Text>
+                  <FontAwesome name="send" size={18} color="orange" />
                 </View>
-                
-                {/* Show only the latest 2 recipients and allow scrolling for more */}
-                <FlatList
-                  data={recentRecipients.slice(0, 10)} // Limit to 10 recipients
-                  keyExtractor={(item) => item.id.toString()}
-                  horizontal
-                  renderItem={({ item }) => (
-                    <View style={styles.recipientContainer}>
-                      <Text>{item.mobile}</Text>
-                      <Text>Sent: GCP {item.amount}</Text>
-                    </View>
-                  )}
-                />
+
+                {/* Show only the latest 2 recipients */}
+                {recentRecipients.map((item) => (
+                  <View key={item.id} style={styles.recipientContainer}>
+                    <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
+                    <Text style={{ color: 'green', fontSize: 11 }}>Sent: GCP {item.amount}</Text>
+                  </View>
+                ))}
               </View>
               {/* Subscription Button */}
               <TouchableOpacity onPress={handleSubscriptionClick} style={styles.subscriptionButton}>
                 {isLoadingSubscription ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
+                  <ActivityIndicator size="small" color="#ffff" />
                 ) : (
                   <Text style={styles.subscriptionButtonText}>Subscription</Text>
                 )}
@@ -293,8 +286,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-
-
   },
   keyboardAvoiding: {
     flex: 1,
@@ -321,7 +312,13 @@ const styles = StyleSheet.create({
   },
   cardContainer: { 
     marginHorizontal: 15,
-    marginBottom: 20,
+    margin: 20,
+    shadowOffset: { width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    borderRadius: 17,
+    shadowColor: '#000',
+    padding: 8
   },
   cardRow: {
     flexDirection: 'row',
@@ -332,7 +329,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginBottom: 20,
-    marginHorizontal: 15
+    marginTop: 20,
+    marginHorizontal: 15,
+    shadowOffset: { width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowColor: '#000',
+    shadowRadius: 3,
+    borderRadius: 17,
+    padding: 8
   },
   cardTitle: { 
     fontSize: 20, 
@@ -348,21 +352,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    marginHorizontal: 15
+    marginHorizontal: 4
   },
   activeCard: { 
-    backgroundColor: 'green',
+    backgroundColor: Color.colorLimegreen_200,
   },
   inactiveCard: {
     backgroundColor: 'lightgray',
   },
   cardType: {
-    fontSize: 18, 
+    fontSize: 16, 
     fontWeight: 'bold',
     color: '#000',
   },
   cardBalance: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
   },
   dotContainer: {
@@ -377,7 +381,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: 'blue',
+    backgroundColor: 'green',
   },
   inactiveDot: { 
     backgroundColor: 'gray',
@@ -396,10 +400,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     elevation: 3,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f5f5f5',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     marginHorizontal: 15,
   },
@@ -409,15 +413,18 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10, 
-    borderWidth: 1,
     borderRadius: 12,
     marginVertical: 5,
-    borderColor: '#ccc',
+    shadowOffset: {width: 0,height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3
   },
   confirmButton: {
     backgroundColor: 'green',
     padding: 10,
     borderRadius: 12,
+    marginTop: 10,
     alignItems: 'center',
   },
   confirmButtonText: {
@@ -426,7 +433,7 @@ const styles = StyleSheet.create({
   },
   blueContainer: {
     backgroundColor: 'lightblue',
-    padding: 20,
+    padding: 25,
     borderRadius: 20,
     alignItems: 'center',
     marginRight: 10,
@@ -437,7 +444,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   recipient: {
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginLeft: 10,
+    marginBottom: 20,
+    alignItems: 'center',
   },
   incomeText: { 
     fontSize: 16,
@@ -460,22 +470,23 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
+    width: '100%',
     shadowRadius: 3,
-    marginHorizontal: 15
+    marginHorizontal: 5
   },
   recentRecipientsTitle: { 
     fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'green',
-    marginRight: 20
+    marginRight: 15
   },
   recipientContainer: { 
     padding: 10,
     backgroundColor: '#e0e0e0',
     borderRadius: 14,
+    marginVertical: 5,
     marginHorizontal: 10,
-    marginRight: 5
   },
   subscriptionButton: {
     backgroundColor: 'pink',

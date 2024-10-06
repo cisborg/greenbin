@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   Image,
   TextInput,
   TouchableOpacity,
@@ -13,24 +12,24 @@ import {
   RefreshControl,
   Platform,
   StatusBar,
+  ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color } from '../../GlobalStyles';
-import ItemGridScreen from '../e-Commerce/allProducts'; // Assuming ItemGridScreen is a component to display grid
+import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
 
 const ChallengePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [data, setData] = useState(categories); // Data to display in FlatList
+  const [data, setData] = useState(categories);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const scrollViewRef = useRef(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Animation value
 
-  // State for the image banner
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const bannerImages = [
     require('../../assets/greenFriday.png'),
@@ -40,46 +39,39 @@ const ChallengePage = () => {
   ];
 
   useEffect(() => {
-    // Start the fade-in animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start();
 
-    // Image carousel functionality
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
-    }, 4000); // Change image every four seconds
+    }, 4000);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, [fadeAnim]);
 
   const handleSidebarItemPress = (categoryName) => {
     setSelectedCategory(categoryName);
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ y: 0, animated: true });
-    }
   };
 
   const handleHomePress = () => {
-    setSelectedCategory(null); // Reset selected category to show the main categories
+    setSelectedCategory(null);
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Simulate a network request
     await new Promise(resolve => setTimeout(resolve, 2000));
     setRefreshing(false);
   };
 
   const loadMoreItems = async () => {
-    if (!loading) {
+    if (!loading && data.length < categories.length) {
       setLoading(true);
-      // Simulate loading more items
       await new Promise(resolve => setTimeout(resolve, 2000));
+      setData(prevData => [...prevData, ...categories]); // Load more categories
       setLoading(false);
-      setData(prevData => [...prevData, ...categories]); // Add more items
     }
   };
 
@@ -94,14 +86,48 @@ const ChallengePage = () => {
     </TouchableOpacity>
   );
 
+  const renderListHeader = () => (
+    <>
+      <View style={styles.header}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Discover Ecogreen products..."
+          placeholderTextColor={Color.colorGray_100}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <TouchableOpacity onPress={() => navigation.navigate('cart')}>
+          <FontAwesome6 name="cart-plus" size={24} color="#32CD32" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.banner}>
+        <Image
+          source={bannerImages[currentImageIndex]}
+          style={styles.bannerImage}
+          resizeMode="cover"
+        />
+        <View style={styles.dotsContainer}>
+          {bannerImages.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                currentImageIndex === index && styles.activeDot,
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+    </>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <View style={styles.container}>
-          {/* Sidebar */}
           <View style={styles.sidebar}>
             <TouchableOpacity style={styles.homeContainer} onPress={handleHomePress}>
-              <Image source={require('../../assets/home.png')} style={styles.homeImage} />
+              <Image source={require('../../assets/menu.jpg')} style={styles.homeImage} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -111,79 +137,44 @@ const ChallengePage = () => {
                   style={styles.sidebarItem}
                   onPress={() => handleSidebarItemPress(category.name)}
                 >
-                  <MaterialCommunityIcons name={category.icon} size={24} color="#333" />
+                  <MaterialCommunityIcons name={category.icon} size={20} color="#333" />
                   <Text style={styles.sidebarText}>{category.name}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
 
-          {/* Main content area */}
-          <ScrollView 
-            ref={scrollViewRef} 
-            style={styles.mainContent} 
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            <View style={styles.header}>
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Discover Ecogreen products..."
-                placeholderTextColor={Color.colorGray_100}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              <TouchableOpacity onPress={() => navigation.navigate('cart')}>
-                <FontAwesome6 name="cart-plus" size={24} color="#32CD32" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Banner with animated images */}
-            <View style={styles.banner}>
-              <Image
-                source={bannerImages[currentImageIndex]}
-                style={styles.bannerImage}
-                resizeMode="cover"
-              />
-              <View style={styles.dotsContainer}>
-                {bannerImages.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      currentImageIndex === index && styles.activeDot,
-                    ]}
-                  />
-                ))}
-              </View>
-            </View>
+          <View style={styles.mainContent}>
+            {renderListHeader()}
 
             {selectedCategory ? (
               <ItemGridScreen 
-                selectedCategory={selectedCategory} 
-                onRefresh={onRefresh} // Pass refresh handler
-                loadMoreItems={loadMoreItems} // Pass load more items handler
-                navigation={navigation} // Pass navigation handler
+                selectedCategory={selectedCategory}
+                onRefresh={onRefresh}
+                loadMoreItems={loadMoreItems}
+                navigation={navigation}
               />
             ) : (
-              <>
-                <Text style={styles.topCategoriesTitle}>Top Categories</Text>
-                <FlatList
-                  data={filteredCategories}
-                  renderItem={renderCategoryItem}
-                  keyExtractor={(item, index) => index.toString()}
-                  numColumns={4}
-                  columnWrapperStyle={styles.row}
-                  contentContainerStyle={styles.categoriesContainer}
-                  showsVerticalScrollIndicator={false}
-                  onEndReached={loadMoreItems}
-                  onEndReachedThreshold={0.5}
-                  ListFooterComponent={loading ? <Text style={styles.loadingText}>Loading...</Text> : <Text style={styles.loadingText}>Loaded Successfully</Text>}
-                />
-              </>
+              <FlatList
+                data={filteredCategories}
+                renderItem={renderCategoryItem}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={4}
+                columnWrapperStyle={styles.row}
+                contentContainerStyle={styles.categoriesContainer}
+                ListFooterComponent={
+                  loading && data.length < categories.length ? (
+                    <ActivityIndicator size="large" color="#32CD32" />
+                  ) : (
+                    <Text style={styles.loadingText}>Loaded Successfully</Text>
+                  )
+                }
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                onEndReached={loadMoreItems}
+                onEndReachedThreshold={0.5}
+              />
             )}
-          </ScrollView>
+          </View>
         </View>
       </Animated.View>
     </SafeAreaView>
@@ -196,9 +187,11 @@ const sidebarCategories = [
   { name: 'Kids Products', icon: 'baby-face-outline' },
   { name: 'Sneakers', icon: 'shoe-sneaker' },
   { name: 'Smart', icon: 'cellphone' },
-  { name: 'Home', icon: 'home' },
   { name: 'Health', icon: 'heart' },
   { name: 'Bags', icon: 'bag-suitcase' },
+  { name: 'Electronics', icon: 'phone' },
+  { name: 'Books', icon: 'book-open-variant' },
+  { name: 'Garden & Outdoors', icon: 'leaf' },
 ];
 
 const categories = [
@@ -238,11 +231,12 @@ const styles = StyleSheet.create({
   homeContainer: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 20, // Spacing above sidebar items
+    marginBottom: 20,
   },
   homeImage: {
     width: 40,
     height: 40,
+    borderRadius: 25,
   },
   homeText: {
     fontSize: 11,
@@ -257,7 +251,7 @@ const styles = StyleSheet.create({
   },
   sidebarText: {
     marginLeft: 5,
-    fontSize: 11,
+    fontSize: 10,
   },
   mainContent: {
     flex: 1,
@@ -286,6 +280,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderRadius: 20,
+    marginBottom: 15
   },
   bannerImage: {
     width: '100%',
@@ -311,39 +306,34 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: '#32CD32', // Active dot color
-  },
-  topCategoriesTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop: 10,
+    backgroundColor: '#32CD32',
   },
   categoriesContainer: {
-    paddingBottom: 50, // Space for loading indicator
+    paddingBottom: 50,
   },
   categoryCard: {
     flex: 1,
     margin: 5,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    width: '100%', // Ensure the card takes full width
+    borderRadius: 14,
+    backgroundColor: '#f2f2f2',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
   },
   categoryImage: {
-    width: '100%',
-    height: 80,
+    width: 60, // Reduced size
+    height: 60, // Reduced size
     borderRadius: 8,
   },
   categoryText: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 12, // Reduced size
     textAlign: 'center',
   },
   loadingText: {
     textAlign: 'center',
     padding: 10,
+    color:'green'
   },
 });
 

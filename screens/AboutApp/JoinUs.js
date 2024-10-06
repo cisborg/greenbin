@@ -16,7 +16,7 @@ const JoinUsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Join Our Eco-Friendly NGO!</Text>
+        <Text style={styles.header}>Join Our Eco-Friendly Movements!</Text>
         <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.logo} />
       </View>
 
@@ -26,10 +26,10 @@ const JoinUsScreen = () => {
       </View>
 
       <Text style={styles.ecoPoints}>Your Eco Points: {ecoPoints}</Text>
-      <Text style={styles.balance}>Personal Green Bank Balance: ${balance.toFixed(2)}</Text>
-      <Text style={styles.balance}>Squads Green Bank Balance: ${balance.toFixed(2)}</Text>
+      <Text style={styles.balance}>Personal Green Bank Balance: GCPS {balance.toFixed(2)}</Text>
+      <Text style={styles.balance}>Donations Tiers Earned GCPS {balance.toFixed(2)}</Text>
 
-      <Text style={styles.productsPurchased}>Products Purchased: {productsPurchased}</Text>
+      <Text style={styles.productsPurchased}>Purchases Tiers Earned: {productsPurchased}</Text>
       <Text style={styles.productsPurchased}>Aggregated Activities: {productsPurchased}</Text>
 
 
@@ -51,8 +51,8 @@ const JoinUsScreen = () => {
       )}
 
       <View style={styles.milestonesList}>
-        <Text style={styles.milestone}>✔️ Individual/Squad Registration Fee: GPs 2500</Text>
-        <Text style={styles.milestone}>✔️ Eco-Friendly Products Purchased: 200+</Text>
+        <Text style={styles.milestone}>✔️ Squad Registration Fee: GPs 2500</Text>
+        <Text style={styles.milestone}>✔️ Eco-Friendly Total Tiers Earned: 200+</Text>
         <Text style={styles.milestone}>✔️ Percentage Agg Module Threshold: 60+</Text>
         <Text style={styles.milestone}>✔️ Activities Threshold Reached : 60+</Text>
 
@@ -145,9 +145,9 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   description: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 20,
-    color: '#555',
+    color: '#green',
   },
   milestoneContainer: {
     marginBottom: 20,

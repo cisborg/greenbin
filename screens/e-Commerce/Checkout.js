@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar, Clipboard } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,35 +7,58 @@ const Checkout = ({ route }) => {
   const navigation = useNavigation();
   const { totalPrice } = route.params;
   const [paymentMethod, setPaymentMethod] = React.useState('creditCard');
-  const [points, setPoints] = React.useState(100); // Example available points
+  const [points, setPoints] = React.useState(20000); // Example available points
   const [amountToUse, setAmountToUse] = React.useState('');
   const [greenBankCode, setGreenBankCode] = React.useState('');
   const [discountApplied, setDiscountApplied] = React.useState(false);
+  const [cardNumber, setCardNumber] = React.useState('');
+  const [cardholderName, setCardholderName] = React.useState('');
+  const [expiryDate, setExpiryDate] = React.useState('');
+  const [cvv, setCvv] = React.useState('');
 
   const handlePayment = () => {
     let finalAmount = totalPrice;
-  
-    if (paymentMethod === 'greenPoints') {
+
+    if (paymentMethod === 'creditCard') {
+      if (!/^\d{16}$/.test(cardNumber)) {
+        Alert.alert('Invalid Card Number', 'Please enter a valid 16-digit credit card number.');
+        return;
+      }
+      if (!/^[a-zA-Z ]+$/.test(cardholderName)) {
+        Alert.alert('Invalid Name', 'Please enter a valid name with letters only.');
+        return;
+      }
+      if (!/^\d{2}\/\d{4}$/.test(expiryDate)) {
+        Alert.alert('Invalid Expiry Date', 'Please enter a valid expiry date (MM/YYYY).');
+        return;
+      }
+      if (!/^\d{3}$/.test(cvv)) {
+        Alert.alert('Invalid CVV', 'Please enter a valid 3-digit CVV.');
+        return;
+      }
+    } else if (paymentMethod === 'greenPoints') {
       const amount = parseInt(amountToUse, 10);
       if (isNaN(amount) || amount > points || amount <= 0) {
         Alert.alert('Invalid Amount', 'Please enter a valid amount of points to use.');
         return;
       }
+      if (amount > totalPrice) {
+        Alert.alert('Points Exceeded', 'The amount of points exceeds the total price.');
+        return;
+      }
       finalAmount -= amount; // Subtract points from total price
       setPoints(points - amount); // Deduct used points
-    }
-  
-    if (paymentMethod === 'greenBank') {
-      if (greenBankCode.length !== 10) {
+    } else if (paymentMethod === 'greenBank') {
+      if (!/^\d{10}$/.test(greenBankCode)) {
         Alert.alert('Invalid Code', 'Please enter a valid 10-digit Green Bank code.');
         return;
       }
     }
-  
-    // Navigate to payment confirmation only once after all checks
-    navigation.navigate('paymentConfirmed');
+
+    // Proceed to payment confirmation after validation
+    navigation.navigate('paymentConfirmed', { finalAmount });
   };
-  
+
   const togglePaymentMethod = (method) => {
     setPaymentMethod(method);
     if (method !== 'greenPoints') {
@@ -52,17 +75,45 @@ const Checkout = ({ route }) => {
         return (
           <>
             <Text style={styles.label}>Card Number</Text>
-            <TextInput style={styles.inputField} placeholder="**** **** **** ****" placeholderTextColor={Color.colorGray_100} />
+            <TextInput
+              style={styles.inputField}
+              placeholder="**** **** **** ****"
+              value={cardNumber}
+              keyboardType="numeric"
+              onChangeText={setCardNumber}
+              placeholderTextColor={Color.colorGray_100}
+            />
             <Text style={styles.label}>Cardholder Name</Text>
-            <TextInput style={styles.inputField} placeholder="John Doe" placeholderTextColor={Color.colorGray_100} />
+            <TextInput
+              style={styles.inputField}
+              placeholder="John Doe"
+              value={cardholderName}
+              onChangeText={setCardholderName}
+              placeholderTextColor={Color.colorGray_100}
+            />
             <View style={styles.expiryContainer}>
               <View style={styles.expiryInputContainer}>
                 <Text style={styles.label}>Expiry Date</Text>
-                <TextInput style={styles.inputField} placeholder="MM / YYYY" placeholderTextColor={Color.colorGray_100}/>
+                <TextInput
+                  style={styles.inputField}
+                  placeholder="MM / YYYY"
+                  value={expiryDate}
+                  onChangeText={setExpiryDate}
+                  placeholderTextColor={Color.colorGray_100}
+                  keyboardType="numeric"
+                />
               </View>
               <View style={styles.expiryInputContainer}>
                 <Text style={styles.label}>CVV</Text>
-                <TextInput style={styles.inputField} placeholder="***" placeholderTextColor={Color.colorGray_100}/>
+                <TextInput
+                  style={styles.inputField}
+                  placeholder="***"
+                  value={cvv}
+                  onChangeText={setCvv}
+                  keyboardType="numeric"
+                  placeholderTextColor={Color.colorGray_100}
+                  secureTextEntry
+                />
               </View>
             </View>
           </>
@@ -77,7 +128,7 @@ const Checkout = ({ route }) => {
               keyboardType="numeric"
               value={amountToUse}
               onChangeText={setAmountToUse}
-              placeholder="Check excess points in Greenbank"
+              placeholder="Enter points"
               placeholderTextColor={Color.colorGray_100}
             />
             {discountApplied && <Text style={styles.discountText}>Voucher Applied!</Text>}
@@ -99,7 +150,7 @@ const Checkout = ({ route }) => {
               style={styles.inputField}
               value={greenBankCode}
               onChangeText={setGreenBankCode}
-              placeholder="#20 -add- -phone number #ignore 07 "
+              placeholder="Enter your code"
               keyboardType="numeric"
               placeholderTextColor={Color.colorGray_100}
             />
@@ -116,6 +167,7 @@ const Checkout = ({ route }) => {
       await Share.share({
         message: `Check out my order worth GCPs ${totalPrice}! Use this link to earn green vouchers for your next purchase!`,
       });
+      Clipboard.setString(`Check out my order worth GCPs ${totalPrice}!`);
       Alert.alert("Order Shared!", "You've shared your order and earned additional vouchers!");
     } catch (error) {
       Alert.alert("Error", "Failed to share the order.");
@@ -178,6 +230,7 @@ const Checkout = ({ route }) => {
     </View>
   );
 };
+
 
 // Styles
 const styles = StyleSheet.create({

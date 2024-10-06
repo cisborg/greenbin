@@ -21,7 +21,7 @@ const AboutScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back-circle-outline" size={24} color="green" />
+              <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
           </TouchableOpacity>
           <Text style={styles.title}>About Our App</Text>
         </View>
@@ -39,11 +39,11 @@ const AboutScreen = ({ navigation }) => {
 
           <Text style={styles.sectionTitle}>Core Values:</Text>
           <View style={styles.listContainer}>
-            <Text style={styles.listItem}><Icon name="leaf" size={20} color="#27ae60" /> Environmental Conservation</Text>
-            <Text style={styles.listItem}><Icon name="globe" size={20} color="#27ae60" /> Pollution Reduction</Text>
-            <Text style={styles.listItem}><Icon name="tree" size={20} color="#27ae60" /> Tree Planting Initiatives</Text>
-            <Text style={styles.listItem}><Icon name="cloud" size={20} color="#27ae60" /> Clean Air Projects</Text>
-            <Text style={styles.listItem}><Icon name="flash" size={20} color="#27ae60" /> Green Renewable Energy Solutions</Text>
+            <Text style={styles.listItem}><Icon name="leaf" size={18} color="#27ae60" /> Environmental Conservation</Text>
+            <Text style={styles.listItem}><Icon name="globe" size={18} color="#27ae60" /> Pollution Reduction</Text>
+            <Text style={styles.listItem}><Icon name="tree" size={18} color="#27ae60" /> Tree Planting Initiatives</Text>
+            <Text style={styles.listItem}><Icon name="cloud" size={18} color="#27ae60" /> Clean Air Projects</Text>
+            <Text style={styles.listItem}><Icon name="flash" size={18} color="#27ae60" /> Green Renewable Energy Solutions</Text>
           </View>
 
           <Text style={styles.sectionTitle}>Our Currency:</Text>
@@ -75,55 +75,55 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorWhite,
   },
   scrollView: {
-    padding: 20,
+    padding: 15,
     overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginLeft: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontStyle: 'italic',
-    color: '#34495e',
-    marginBottom: 15,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#34495e',
-    marginBottom: 15,
-  },
-  sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#2c3e50',
+    marginLeft: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#34495e',
+    marginBottom: 12,
+  },
+  description: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#34495e',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#27ae60',
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 15,
+    marginBottom: 8,
   },
   listContainer: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
   listItem: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#34495e',
-    marginLeft: 10,
+    marginLeft: 8,
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
   image: {
     width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 20,
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 15,
   },
   fadeContainer: {
     opacity: 1,

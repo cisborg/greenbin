@@ -3,20 +3,19 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   TextInput,
-  Image,
   Animated,
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
   SafeAreaView,
   Platform,
-  ScrollView,StatusBar
+  StatusBar
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image';  // FastImage for vendor images
 import { FontFamily, Color } from "../../GlobalStyles";  // Assuming your GlobalStyles file has required styles
 
 const challenges = [
@@ -93,20 +92,7 @@ export default function HomePageExistingUser() {
     return () => clearInterval(interval);
   }, []);
 
-  React.useEffect(() => {
-    animateBanner();
-  }, []);
-
-  // Animate screen mount
-  const screenAnim = React.useRef(new Animated.Value(0)).current;
-  React.useEffect(() => {
-    Animated.timing(screenAnim, {
-      toValue: 1,
-      duration: 600,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
+  // Render dots for the banner
   const renderDots = () => (
     <View style={styles.dotContainer}>
       {banners.map((_, index) => (
@@ -124,103 +110,98 @@ export default function HomePageExistingUser() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Animated.View style={[styles.homePageExistingUser, { opacity: screenAnim }]}>
-          <ScrollView>
-            {/* Animated Banner */}
-            <View style={styles.bannerContainer}>
-              <Animated.Image
-                source={banners[currentIndex]}
-                style={[styles.bannerImage, { opacity: fadeAnim }]}
-                resizeMode="cover"
-              />
-              {renderDots()}
-            </View>
+        <Animated.View style={[styles.homePageExistingUser, { opacity: fadeAnim }]}>
+          {/* Animated Banner */}
+          <View style={styles.bannerContainer}>
+            <FastImage
+              source={banners[currentIndex]}
+              style={styles.bannerImage}
+              resizeMode="cover"
+            />
+            {renderDots()}
+          </View>
 
-            {/* Vendors Section */}
-            <Text style={styles.vendorsYouFollow}>Recommended For You</Text>
-            <FlatList
-              horizontal
-              data={[
-                { id: '1', name: 'Leakey Jokes', icon: require("../../assets/vendorimg.png"), profession: 'Tree Vendor' },
-                { id: '2', name: 'Hassan Tbag', icon: require("../../assets/vendorimg1.png"), profession: 'Smart Techy' },
-                { id: '3', name: 'Hassan Tbag', icon: require("../../assets/vendorimg1.png"), profession: 'Smart Health' },
-              ]}
-              renderItem={({ item }) => {
-                const { connecting, connected } = vendorConnectState[item.id] || {};
-                return (
-                  <View style={styles.vendorDetails}>
-                    <Image style={styles.vendorImgIcon} source={item.icon} />
-                    <Text style={styles.vendorName}>{item.name}</Text>
-                    <Text style={styles.vendorProfession}>{item.profession}</Text>
+          {/* Vendors Section */}
+          <Text style={styles.vendorsYouFollow}>Recommended For You</Text>
+          <FlashList
+            horizontal
+            data={[
+              { id: '1', name: 'Leakey Jokes', icon: require("../../assets/vendorimg.png"), profession: 'Tree Vendor' },
+              { id: '2', name: 'Hassan Tbag', icon: require("../../assets/vendorimg1.png"), profession: 'Smart Techy' },
+              { id: '3', name: 'Hassan Tbag', icon: require("../../assets/vendorimg1.png"), profession: 'Smart Health' },
+            ]}
+            renderItem={({ item }) => {
+              const { connecting, connected } = vendorConnectState[item.id] || {};
+              return (
+                <View style={styles.vendorDetails}>
+                  <FastImage style={styles.vendorImgIcon} source={item.icon} />
+                  <Text style={styles.vendorName}>{item.name}</Text>
+                  <Text style={styles.vendorProfession}>{item.profession}</Text>
 
-                    <TouchableOpacity
-                      style={[
-                        styles.connectButton,
-                        connected ? styles.approvedButton : styles.connectBlueButton,
-                        { opacity: connected ? 1 : 0.8 }
-                      ]}
-                      onPress={() => {
-                        if (connected) {
-                          navigation.navigate('VendorsProfilePage', { username: item.name, usericon: item.icon, userprofession: item.profession });
-                        } else {
-                          handleConnectPress(item.id);
-                        }
-                      }}
-                      disabled={connecting}
-                    >
-                      {connecting ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                      ) : (
-                        <Text style={styles.buttonText}>
-                          {connected ? 'Approved' : 'Connect'}
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-              keyExtractor={item => item.id}
-              showsHorizontalScrollIndicator={false}
-              style={styles.vendorFrame}
-              ItemSeparatorComponent={() => <View style={styles.vendorSeparator} />}
-              ListFooterComponent={() => (
-                <TouchableOpacity style={styles.addVendorButton} onPress={() => navigation.navigate('VendorList')}>
-                  <AntDesign name="pluscircle" size={35} color="green" />
+                  <TouchableOpacity
+                    style={[
+                      styles.connectButton,
+                      connected ? styles.approvedButton : styles.connectBlueButton,
+                      { opacity: connected ? 1 : 0.8 }
+                    ]}
+                    onPress={() => {
+                      if (connected) {
+                        navigation.navigate('VendorsProfilePage', { username: item.name, usericon: item.icon, userprofession: item.profession });
+                      } else {
+                        handleConnectPress(item.id);
+                      }
+                    }}
+                    disabled={connecting}
+                  >
+                    {connecting ? (
+                      <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                      <Text style={styles.buttonText}>
+                        {connected ? 'Approved' : 'Connect'}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+            keyExtractor={item => item.id}
+            showsHorizontalScrollIndicator={false}
+            style={styles.vendorFrame}
+            estimatedItemSize={130}  // Optimized item size for performance
+            ListFooterComponent={() => (
+              <TouchableOpacity style={styles.addVendorButton} onPress={() => navigation.navigate('VendorList')}>
+                <AntDesign name="pluscircle" size={35} color="green" />
+              </TouchableOpacity>
+            )}
+          />
+
+          {/* Search Bar */}
+          <View style={styles.searchBarContainer}>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search Your Top Favorite Challenges"
+              placeholderTextColor={Color.colorGray_100}
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+          </View>
+
+          {/* Challenges List */}
+          <View style={styles.challengeFrame}>
+            <FlashList
+              data={filteredChallenges.slice(0, 18)} // Limiting the number of items to 18
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.challengeBox} onPress={() => navigation.navigate('VendorProducts')}>
+                  <View style={styles.challengeBoxChild} />
+                  <FastImage style={styles.rainIcon} source={item.icon} />
+                  <Text style={styles.challengeText}>{item.title}</Text>
                 </TouchableOpacity>
               )}
+              keyExtractor={item => item.id}
+              numColumns={4}  // Optimize grid layout
+              estimatedItemSize={90}  // Set an estimated size for performance
             />
-            <View style={styles.note}>
-              <Text style={{ color: Color.colorGray_200, fontSize: 14 }}>Note: With Green App we give exclusive rewards, green tokenization by you helping us conserve our environment!</Text>
-            </View>
-
-            {/* Search Bar */}
-            <View style={styles.searchBarContainer}>
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Search Your Top Favorite Challenges"
-                placeholderTextColor={Color.colorGray_100}
-                value={searchQuery}
-                onChangeText={handleSearch}
-              />
-            </View>
-
-            {/* Challenges Grid */}
-            <View style={styles.challengeFrame}>
-              <FlatList
-                data={filteredChallenges}
-                renderItem={({ item }) => (
-                  <TouchableOpacity style={styles.challengeBox} onPress={() => navigation.navigate('VendorProducts')}>
-                    <View style={styles.challengeBoxChild} />
-                    <Image style={styles.rainIcon} source={item.icon} />
-                    <Text style={styles.challengeText}>{item.title}</Text>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={item => item.id}
-                numColumns={4} // Adjust for better layout on smaller screens
-                contentContainerStyle={styles.challengeListContainer}
-              />
-            </View>
-          </ScrollView>
+          </View>
         </Animated.View>
       </GestureHandlerRootView>
     </SafeAreaView>
@@ -228,10 +209,9 @@ export default function HomePageExistingUser() {
 }
 
 const styles = StyleSheet.create({
-  // Styles restored as per your previous aesthetic
   safeArea: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#f5f5f5',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   homePageExistingUser: {
@@ -240,9 +220,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   bannerContainer: {
-    height: 180,
+    height: 140,
     width: '100%',
-    marginVertical: 15,
+    marginVertical: 10,
     borderRadius: 25,
     overflow: 'hidden',
   },
@@ -279,38 +259,38 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     borderRadius: 13,
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    marginTop: 30
+    shadowOffset: { width: 0, height: 1 },
+    marginTop: 10
   },
   vendorFrame: {
     marginVertical: 10,
   },
   vendorDetails: {
-    width: 140,
+    width: 130,
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 23,
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     elevation: 3,
     alignItems: 'center'
   },
   vendorImgIcon: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 35,
     marginBottom: 10,
   },
   vendorName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   vendorProfession: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.colorGray_200,
   },
   connectButton: {
-    marginTop: 10,
+    marginTop: 7,
     paddingVertical: 5,
     paddingHorizontal: 5,
     borderRadius: 10,
@@ -330,7 +310,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     marginTop: 5,
     marginBottom: 10,
-    top: 40,
+    top: 20,
     elevation: 3,
   },
   searchBar: {
@@ -343,7 +323,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   challengeFrame: {
-    marginTop: 80,
+    marginTop: 40,
     
   },
   challengeBox: {

@@ -35,7 +35,7 @@ const shops = [
     location: { lat: -1.2923, lng: 36.8220 },
     vendors: ['Organic Valley', 'Local Harvest'],
     rating: 4.8,
-    logo: require('../../assets/icon.png'),
+    logo: require('../../assets/woofer.png'),
     distance: '1.5 km',
     hours: '7:00 AM - 7:00 PM'
   },

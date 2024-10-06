@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions, Platform, TouchableOpacity, SafeAreaView, Animated, StatusBar } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-const donationsData = [
-  { id: '1', date: '20 SEP 2024', amount: 'GCPs 1000', project: 'Tree Plantation Drive' },
-  { id: '2', date: '17 SEP 2024', amount: 'GCPs 2500', project: 'Clean Water Initiative' },
-  { id: '3', date: '14 SEP 2024', amount: 'GCPs 1550', project: 'Plastic Waste Management' },
-  { id: '4', date: '12 SEP 2024', amount: 'GCPs 34500', project: 'Renewable Energy Project' },
+const notificationsData = [
+  { id: '1', date: '20 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a bronze tier of 800 points' },
+  { id: '2', date: '22 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a gold tier of 1200 points' },
+  { id: '3', date: '28 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a platinum tier of 1500 points' },
+  { id: '4', date: '30 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a diamond tier of 15000 points' },
 ];
 
 const HistoryScreen = ({ navigation }) => {
-  const [donations, setDonations] = useState(donationsData);
+  const [notifications, setNotifications] = useState(notificationsData);
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -23,29 +22,29 @@ const HistoryScreen = ({ navigation }) => {
     }).start();
   }, [fadeAnim]);
 
-  const clearAllDonations = () => {
-    setDonations([]);
+  const clearAllNotifications = () => {
+    setNotifications([]);
   };
 
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={() => (
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteDonation(item.id)}>
-        <MaterialCommunityIcons name="delete" size={24} color="black" />        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNotification(item.id)}>
+          <Text style={styles.deleteText}>Delete</Text>
+        </TouchableOpacity>
       )}
     >
-      <View style={styles.donationItem}>
+      <View style={styles.notificationItem}>
         <View style={styles.dateContainer}>
           <Text style={styles.dateText}>{item.date}</Text>
         </View>
-        <Text style={styles.projectText}>{item.project}</Text>
-        <Text style={styles.amountText}>{item.amount}</Text>
+        <Text style={styles.messageText}>{item.message}</Text>
       </View>
     </Swipeable>
   );
 
-  const deleteDonation = (id) => {
-    setDonations(prev => prev.filter(donation => donation.id !== id));
+  const deleteNotification = (id) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
 
   return (
@@ -54,22 +53,18 @@ const HistoryScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Donation History</Text>
-        <TouchableOpacity onPress={clearAllDonations}>
+        <Text style={styles.headerTitle}>Donations Catalog</Text>
+        <TouchableOpacity onPress={clearAllNotifications}>
           <Text style={styles.clearAllText}>Clear All</Text>
         </TouchableOpacity>
       </View>
       <Animated.View style={{ ...styles.listContainer, opacity: fadeAnim }}>
-        {donations.length === 0 ? (
-          <Text style={styles.emptyText}>No donation history available.</Text>
-        ) : (
-          <FlatList
-            data={donations}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.listContent}
-          />
-        )}
+        <FlatList
+          data={notifications}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContent}
+        />
       </Animated.View>
     </SafeAreaView>
   );
@@ -78,8 +73,7 @@ const HistoryScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    backgroundColor: '#f5f5f5',
   },
   header: {
     flexDirection: 'row',
@@ -103,9 +97,9 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 20,
   },
-  donationItem: {
-    backgroundColor: '#e0f7fa',
-    borderRadius: 18,
+  notificationItem: {
+    backgroundColor: '#ffff',
+    borderRadius: 14,
     padding: 12,
     marginBottom: 10,
     shadowColor: '#000',
@@ -118,33 +112,25 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   dateText: {
+    fontSize: 16,
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  messageText: {
     fontSize: 14,
-    color: '#888',
-    fontWeight: 'bold',
-  },
-  projectText: {
-    fontSize: 16,
     color: '#333',
-    fontWeight: 'bold',
-  },
-  amountText: {
-    fontSize: 16,
-    color: '#007BFF',
   },
   deleteButton: {
-    backgroundColor: '#FF3D00',
+    backgroundColor: 'green',
     justifyContent: 'center',
+    borderRadius: 14,
     alignItems: 'center',
     width: 80,
-    bordeerRadius: 15,
     height: '100%',
   },
-  
-  emptyText: {
-    textAlign: 'center',
-    fontSize: 18,
-    color: '#888',
-    marginTop: 20,
+  deleteText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

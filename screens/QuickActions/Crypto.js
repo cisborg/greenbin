@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, TextInput,Platform, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Platform, StatusBar, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 
@@ -26,9 +26,8 @@ const WalletScreen = () => {
   }, [searchQuery, transactions]);
 
   const fetchConversionRate = async () => {
-    const response = await fetch('https://api.example.com/conversion-rate');
-    const data = await response.json();
-    setConversionRate(data.rate);
+    // Simulating a fetch request
+    setConversionRate(0.01);
   };
 
   const convertToCrypto = () => {
@@ -150,7 +149,6 @@ const WalletScreen = () => {
         style={styles.input}
         placeholder="Deposit Green Points"
         placeholderTextColor={Color.colorGray_100}
-
         value={depositAmount}
         onChangeText={setDepositAmount}
         keyboardType="numeric"
@@ -210,9 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 20,
-    overflow: 'hidden',
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
     fontSize: 28,
@@ -222,19 +218,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f8f9fa',
     borderRadius: 12,
     padding: 20,
     marginVertical: 10,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    margin: 10
+    margin: 10,
   },
   balance: {
     fontSize: 20,
@@ -249,9 +242,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 10,
     fontSize: 16,
-    width: 350,
-    left: 40,
-    height: 30
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -260,52 +250,38 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
-    marginVertical: 5,
+    margin: 10,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
-    margin: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   button1: {
-    flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 14,
     padding: 10,
     marginVertical: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-    margin: 10,
-    width: 150,
-    maxHeight: 40,
-    left: 80,
+    shadowRadius: 3.84,
+    elevation: 5,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   buttonText: {
+    fontSize: 16,
     color: Color.colorLimegreen_200,
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   conversionRate: {
-    marginTop: 20,
-    fontSize: 16,
-    color: '#7f8c8d',
     textAlign: 'center',
+    marginVertical: 10,
+    fontSize: 18,
+    color: '#2c3e50',
   },
   transactionHeader: {
     fontSize: 20,
@@ -314,61 +290,49 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   transactionList: {
-    marginTop: 10,
+    flex: 1,
   },
   transactionCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 5,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    marginVertical: 8,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
     shadowRadius: 1.41,
     elevation: 2,
   },
   transactionType: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2980b9',
+    color: '#2c3e50',
   },
   transactionAmount: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#27ae60',
+    fontSize: 14,
+    color: '#95a5a6',
   },
   transactionDate: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#7f8c8d',
+    marginTop: 5,
   },
   sortButton: {
-    backgroundColor: '#ffffff',
-    borderRadius: 13,
-    padding: 15,
-    marginVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    backgroundColor: '#3498db',
+    borderRadius: 8,
+    padding: 10,
     alignItems: 'center',
-    width: 200,
-    left: 50
+    marginVertical: 10,
   },
   sortButtonText: {
-    color: Color.colorLimegreen_200,
     fontSize: 16,
+    color: '#fff',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ecf0f1',
     padding: 20,
   },
   modalHeader: {
@@ -378,18 +342,17 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 18,
-    marginBottom: 10,
+    marginVertical: 5,
   },
   closeButton: {
-    marginTop: 20,
     backgroundColor: '#e74c3c',
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 10,
-    alignItems: 'center',
+    marginTop: 20,
   },
   closeButtonText: {
-    color: '#ffffff',
     fontSize: 16,
+    color: '#fff',
   },
 });
 
