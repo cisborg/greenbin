@@ -3,7 +3,6 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ActivityIndi
 import { useNavigation } from '@react-navigation/core';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
-import { Color } from '../../GlobalStyles';
 
 const squadsData = [
   {
@@ -118,7 +117,7 @@ const LeaderboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#ffff',
     padding: 20,
     overflow: 'hidden',
   },
@@ -138,13 +137,13 @@ const styles = StyleSheet.create({
   squadCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffff',
-    borderRadius: 14,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 18,
     padding: 15,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 2,
     elevation: 3,
   },

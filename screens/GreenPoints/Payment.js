@@ -86,8 +86,8 @@ const PrepaidRechargeScreen = () => {
       <Animated.View style={{ ...styles.container, opacity: animation }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.Head}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="leftcircle" size={30} color="black" />
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: '-3%', marginRight: '10%'}}>
+              <AntDesign name="leftcircle" size={23} color="black" />
             </TouchableOpacity>
             <Text style={styles.header}>Select Payment Option</Text>
           </View>
@@ -175,12 +175,8 @@ const PrepaidRechargeScreen = () => {
                 onFocus={() => setEmailError('')}
               />
               {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-              <TouchableOpacity>
-                <View style={styles.proceed}>
-                  <Pressable style={styles.proceedButton} onPress={handleProceedEmail}>
+              <TouchableOpacity style={styles.proceedButton} onPress={handleProceedEmail}>
                     <Text style={styles.proceedButtonText}>Proceed</Text>
-                  </Pressable>
-                </View>
               </TouchableOpacity>
               {gatewayMessage ? <Text style={styles.gatewayStatus}>{gatewayMessage}</Text> : null}
               <Text style={styles.airtimeInfo}>
@@ -223,17 +219,18 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: 15,
   },
   container: {
     flex: 1,
+    padding: 5,
+
   },
 
   header: {
     fontSize: 18,
     marginBottom: 8,
     fontFamily: FontFamily.poppinsSemiBold,
-    color: Color.colorLimegreen_200,
+    color: 'green',
     marginLeft: 30,
   },
   Head: {
@@ -241,6 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginBottom: 10,
+    marginTop: '3%'
   },
   modalContainer: {
     flex: 1,
@@ -289,7 +287,7 @@ const styles = StyleSheet.create({
   },
   gatewayStatus: {
     color : 'orange',
-    left: 34,
+    left: '5%',
     marginTop: 4,
     marginBottom: 8,
     fontWeight: 'bold'
@@ -306,23 +304,23 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 22,
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontWeight: 'bold',
     marginLeft: 30,
     marginTop: -2,
   },
   contHeader: {
     marginBottom: 15,
-    borderRadius: 10,
+    borderRadius: 14,
     padding: 12,
     shadowColor: '#000',
     shadowOffset: {
-      width: 1,
+      width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 4,
+    elevation: 2,
   },
   text: {
     color: Color.colorLimegreen_100,
@@ -344,7 +342,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 4,
+    elevation: 1,
   },
   methodHeader: {
     fontSize: 16,
@@ -370,37 +368,26 @@ const styles = StyleSheet.create({
     width: 300,
   },
   
+ 
   proceedButton: {
-    backgroundColor: Color.colorGreen,
-    padding: 8,
-    borderRadius: 4,
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  proceed: {
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    left: '35%',
-    marginTop: 8,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-    alignContent: 'center',
-    width: 110,
-    height: 35,
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
+   backgroundColor: '#FFFFFF',
+   borderRadius: 14,
+   paddingVertical: 10,
+   paddingHorizontal: 10,
+   marginTop: 8,
+   marginBottom: 8,
+   alignItems: 'center',
+   shadowOffset: { width: 0, height: 2 },
+   shadowColor: '#000',
+   shadowOpacity: 0.25,
+   shadowRadius: 3,
+   elevation: 1,
+   width: '35%',
+   left: '30%'
+ 
   },
   proceedButtonText: {
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontWeight: 'bold',
   },
   airtimeInfo: {
@@ -430,7 +417,7 @@ const styles = StyleSheet.create({
   mpesaHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontFamily: FontFamily.poppinsSemiBold,
   },
   mpesaInput: {
@@ -441,7 +428,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
     marginBottom: 5,
   },
   emailInput: {
@@ -452,7 +439,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
     marginBottom: 5,
   },
   gatewayContainer: {
@@ -466,7 +453,7 @@ const styles = StyleSheet.create({
   gatewayHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontFamily: FontFamily.poppinsSemiBold,
     marginBottom: 12,
   },

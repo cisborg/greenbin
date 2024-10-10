@@ -68,7 +68,7 @@ const VendorRegister = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={{ opacity: animation }}>
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>EcoGreen Vendor Registration</Text>
+          <Text style={styles.title}>EcoGreen Vendor Registration Form</Text>
           <Text style={styles.description}>Join us in promoting sustainable practices in eCommerce!</Text>
 
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -76,7 +76,7 @@ const VendorRegister = ({ navigation }) => {
           </TouchableOpacity>
 
           <TextInput
-            style={[styles.input, { borderBottomColor: 'green' }]}
+            style={[styles.input, { borderBottomColor: 'green', borderBottomRadius: 10 }]}
             placeholder="Vendor Name"
             value={vendorName}
             onChangeText={setVendorName}
@@ -177,14 +177,15 @@ const styles = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-    padding: 20,
+    padding: '3%',
+    marginTop:'10%'
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: Color.colorLimegreen_100,
+    color: 'green',
   },
   description: {
     fontSize: 16,

@@ -40,7 +40,7 @@ const ManageAccountScreen = () => {
     },
     { 
       title: 'About Us', 
-      description: 'Review the features and documentation for our green app!', 
+      description: 'Review the features and documentation of green app!', 
       icon: <MaterialIcons name="miscellaneous-services" size={24} color="green" />,
       screen: 'AboutUs' 
     },
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: '1%',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontFamily: FontFamily.poppinsBold,
     marginLeft: 35,
   },
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
   menuItem: {
     backgroundColor: '#f9f9f9',
     padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    borderRadius: 18,
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

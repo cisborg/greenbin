@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Alert, Platform, PermissionsAndroid } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
@@ -40,6 +40,8 @@ const shops = [
     hours: '7:00 AM - 7:00 PM'
   },
 ];
+
+const { width } = Dimensions.get('window');
 
 const ConnectToShops = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -86,11 +88,12 @@ const ConnectToShops = () => {
       },
       (error) => {
         console.error('Error getting location:', error);
-        Alert.alert('Error', 'Unable to get location. Please enable location services.');
+        Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
+  
 
   const filterShops = (latitude, longitude) => {
     const nearbyShops = shops.filter(shop => {
@@ -158,7 +161,7 @@ const ConnectToShops = () => {
         <Text style={styles.noShopsText}>No shops found within 12 km.</Text>
       )}
       <TouchableOpacity style={styles.returnButton} onPress={() => navigation.goBack()}>
-        <Text style={{ color: Color.colorLimegreen_200 }}>Go Back</Text>
+        <Text style={{ color: 'green'}}>Go Back</Text>
       </TouchableOpacity>
     </View>
   );
@@ -168,17 +171,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
-    overflow: 'hidden',
+    padding: '5%', // Responsive padding
   },
   title: {
-    fontSize: 24,
+    fontSize: width < 400 ? 22 : 25, // Responsive font size
     fontWeight: 'bold',
     marginBottom: 10,
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     marginBottom: 20,
   },
   returnButton: {
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     left: 20,
     backgroundColor: '#fff',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 15,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -201,10 +203,10 @@ const styles = StyleSheet.create({
   },
   shopContainer: {
     flexDirection: 'row',
-    padding: 15,
+    padding: '5%', // Responsive padding
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 8,
+    borderRadius: 14,
     marginBottom: 10,
     backgroundColor: '#f9f9f9',
   },
@@ -215,24 +217,24 @@ const styles = StyleSheet.create({
   logo: {
     width: 60,
     height: 60,
-    borderRadius: 14,
+    borderRadius: 20,
     borderWidth: 1,
   },
   shopName: {
-    fontSize: 18,
+    fontSize: width < 400 ? 18 : 20, // Responsive font size
     fontWeight: 'bold',
   },
   shopDescription: {
-    fontSize: 14,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     color: '#666',
   },
   shopHours: {
-    fontSize: 12,
+    fontSize: width < 400 ? 12 : 14, // Responsive font size
     color: '#888',
     marginVertical: 4,
   },
   shopDistance: {
-    fontSize: 12,
+    fontSize: width < 400 ? 12 : 14, // Responsive font size
     color: '#888',
   },
   ratingContainer: {
@@ -242,22 +244,22 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 4,
-    fontSize: 14,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     color: '#333',
   },
   vendorsHeader: {
-    fontSize: 14,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     fontWeight: 'bold',
     marginTop: 10,
   },
   vendorItem: {
-    fontSize: 12,
+    fontSize: width < 400 ? 12 : 14, // Responsive font size
     color: '#333',
   },
   connectButton: {
     backgroundColor: '#4CAF50',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 14,
     marginTop: 10,
     alignItems: 'center',
   },
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   noShopsText: {
-    fontSize: 16,
+    fontSize: width < 400 ? 16 : 18, // Responsive font size
     color: '#888',
     textAlign: 'center',
     marginTop: 20,

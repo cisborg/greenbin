@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: Color.colorLimegreen_200,
+        color: 'green',
         marginLeft: 10,
     },
     subHeader: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         maxWidth: 150, // Limit the width
     },
     cardText: {
-        color: Color.colorLimegreen_200,
+        color: 'green',
         fontWeight: 'bold',
     },
     categoryHeader: {

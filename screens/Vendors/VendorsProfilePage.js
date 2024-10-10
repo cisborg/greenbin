@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar } from "react-native";
+import { Image, StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar, FlatList } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -13,6 +13,7 @@ const ActionButton = ({ onPress, iconSource, text }) => (
     <Text style={styles.buttonText}>{text}</Text>
   </TouchableOpacity>
 );
+const { width } = Dimensions.get('window');
 
 const VendorsProfilePage = () => {
   const navigation = useNavigation();
@@ -45,46 +46,61 @@ const VendorsProfilePage = () => {
     navigation.navigate(screen, params);
   };
 
+  // List of action buttons
+  const actionButtons = [
+    {
+      onPress: () => handleNavigation("callPage"),
+      iconSource: require("../../assets/phone-fill.png"),
+      text: "Call Vendor",
+    },
+    {
+      onPress: () => handleNavigation("RateVendor"),
+      iconSource: require("../../assets/group-share.png"),
+      text: "Rate Vendor",
+    },
+    {
+      onPress: () => handleNavigation("VendorChat", { name: username }),
+      iconSource: require("../../assets/chat-alt-2-fill.png"),
+      text: "Chat",
+    },
+    {
+      onPress: () => handleNavigation("VendorProducts"),
+      iconSource: require("../../assets/user-light.png"),
+      text: "Products Repository",
+    },
+    {
+      onPress: () => handleNavigation("ReportVendor"),
+      iconSource: require("../../assets/Untitled.png"),
+      text: "Report Vendor as scam",
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
-          <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle="dark-content" />
 
-          {/* Header with Vendor Name */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={()=> navigation.goBack()}>
-              <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
-            </TouchableOpacity>
-            <Text style={styles.heading}>{username}'s Profile</Text>
-          </View>
-
+        {/* Header with Vendor Name */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
+          </TouchableOpacity>
+          <Text style={styles.heading}>{username}'s Profile</Text>
+        </View>
 
         {/* Buttons and navigation options */}
         <View style={styles.container}>
-          <ActionButton
-            onPress={() => handleNavigation("callPage")}
-            iconSource={require("../../assets/phone-fill.png")}
-            text="Call Vendor"
-          />
-          <ActionButton
-            onPress={() => handleNavigation("ShareVendorPage")}
-            iconSource={require("../../assets/group-share.png")}
-            text="Share Vendor"
-          />
-          <ActionButton
-            onPress={() => handleNavigation("VendorChat", { name: username })}
-            iconSource={require("../../assets/chat-alt-2-fill.png")}
-            text="Chat"
-          />
-          <ActionButton
-            onPress={() => handleNavigation("VendorProducts")}
-            iconSource={require("../../assets/user-light.png")}
-            text="Products Repository"
-          />
-          <ActionButton
-            onPress={() => handleNavigation("ReportVendor")}
-            iconSource={require("../../assets/Untitled.png")}
-            text="Report Vendor as scam"
+          <FlatList
+            data={actionButtons}
+            renderItem={({ item }) => (
+              <ActionButton
+                onPress={item.onPress}
+                iconSource={item.iconSource}
+                text={item.text}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()} // Use index as key
+            contentContainerStyle={styles.buttonList} // Added to center the content
           />
         </View>
 
@@ -117,24 +133,24 @@ const styles = StyleSheet.create({
   vendorsProfilePage: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: 5,
     overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
-    justifyContent:'flex-start',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     marginBottom: 20
   },
   heading: {
     fontSize: FontSize.size_xl,
     fontWeight: "700",
-    color: Color.colorBlack,
-    marginLeft: 30
+    color: 'green',
+    marginLeft: '20%'
   },
   container: {
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   icon: {
     height: 80,
@@ -147,7 +163,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     height: 63,
-    width: '100%', // Set all buttons to full width
+    width: width * 0.95, // Set all buttons to full width
     backgroundColor: '#f9f9f9',
     borderRadius: 16,
     marginVertical: 10,
@@ -173,7 +189,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   vendorInfoContainer: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     padding: 20,
     alignItems: 'center',
     borderRadius: 22,
@@ -200,6 +216,9 @@ const styles = StyleSheet.create({
   removeFromVendorContainer: {
     marginTop: 5,
   },
+  buttonList: {
+    alignItems: 'center', // Centering the list items
+  }
 });
 
 export default VendorsProfilePage;

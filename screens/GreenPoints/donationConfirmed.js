@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: Color.colorLimegreen_200
+        color: 'green'
     },
     message: {
         fontSize: 15,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     },
     returnToMenu: {
         padding: 13,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 0.1,

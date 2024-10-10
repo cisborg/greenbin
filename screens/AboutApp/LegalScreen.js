@@ -13,7 +13,7 @@ const LegalScreen = () => {
                 
                 <Text style={styles.sectionTitle}>1. Introduction</Text>
                 <Text style={styles.sectionText}>
-                    Welcome to <Text style={{color: Color.colorLimegreen_200}}>GreenBin</Text>, a platform dedicated to promoting eco-friendly practices and community engagement in the green circular economy.
+                    Welcome to <Text style={{color: 'green'}}>GreenBin</Text>, a platform dedicated to promoting eco-friendly practices and community engagement in the green circular economy.
                 </Text>
 
                 <Text style={styles.sectionTitle}>2. User Eligibility</Text>
@@ -160,20 +160,21 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     header: {
-        fontSize: 24,
+        fontSize: 19,
         fontWeight: 'bold',
         color: '#2c3e50',
-        marginBottom: 10,
+        marginBottom: 7,
+        marginTop: 10,
         textAlign: 'center',
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
         color: '#34495e',
         marginTop: 10,
     },
     sectionText: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#7f8c8d',
         lineHeight: 22,
         marginVertical: 4,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
         marginVertical: 15,
     },
     button: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
         borderRadius: 10,
         padding: 8,
         marginVertical: 5,
@@ -195,14 +196,14 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.2,
         shadowRadius: 1.41,
-        elevation: 3,
+        elevation: 1,
         marginHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'center',
         height: 40,
     },
     buttonText: {
-        color: Color.colorLimegreen_200,
+        color: 'green',
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 16,

@@ -6,11 +6,11 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  FlatList,
   SafeAreaView,
   Animated,
   RefreshControl,
   Platform,
+  Dimensions,
   StatusBar,
   ActivityIndicator,
   ScrollView,
@@ -20,6 +20,9 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color } from '../../GlobalStyles';
 import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list'; // FlashList import
+
+const { width, height } = Dimensions.get('window');
 
 const ChallengePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,10 +35,10 @@ const ChallengePage = () => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const bannerImages = [
-    require('../../assets/greenFriday.png'),
-    require('../../assets/greenPoints.png'),
-    require('../../assets/Bags.png'),
-    require('../../assets/connect.png'),
+    { uri: "https://your-image-url.com/greenFriday.png" },
+    { uri: "https://your-image-url.com/greenPoints.png" },
+    { uri: "https://your-image-url.com/Bags.png" },
+    { uri: "https://your-image-url.com/connect.png" },
   ];
 
   useEffect(() => {
@@ -62,6 +65,7 @@ const ChallengePage = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
+    // Simulate a network request
     await new Promise(resolve => setTimeout(resolve, 2000));
     setRefreshing(false);
   };
@@ -69,6 +73,7 @@ const ChallengePage = () => {
   const loadMoreItems = async () => {
     if (!loading && data.length < categories.length) {
       setLoading(true);
+      // Simulate loading more items
       await new Promise(resolve => setTimeout(resolve, 2000));
       setData(prevData => [...prevData, ...categories]); // Load more categories
       setLoading(false);
@@ -80,7 +85,7 @@ const ChallengePage = () => {
   );
 
   const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('VendorProducts')}>
+    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('Products')}>
       <Image source={item.image} style={styles.categoryImage} />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
@@ -155,7 +160,7 @@ const ChallengePage = () => {
                 navigation={navigation}
               />
             ) : (
-              <FlatList
+              <FlashList
                 data={filteredCategories}
                 renderItem={renderCategoryItem}
                 keyExtractor={(item, index) => index.toString()}
@@ -170,6 +175,7 @@ const ChallengePage = () => {
                   )
                 }
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                estimatedItemSize={40} // FlashList-specific prop for optimization
                 onEndReached={loadMoreItems}
                 onEndReachedThreshold={0.5}
               />
@@ -217,16 +223,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 5,
     flexDirection: 'row',
+    minHeight: 950,
+    
   },
   sidebar: {
-    width: '15%',
+    width: '19%',
     backgroundColor: '#fff',
     paddingVertical: 10,
     borderRightWidth: 1,
     borderColor: '#ccc',
     marginTop: 20,
+    alignItems: 'center',
   },
   homeContainer: {
     flexDirection: 'column',
@@ -244,18 +253,20 @@ const styles = StyleSheet.create({
   sidebarItem: {
     flexDirection: 'column',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
   },
   sidebarText: {
-    marginLeft: 5,
-    fontSize: 10,
+    fontSize: 9,
   },
   mainContent: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 8,
+    paddingVertical: 10,
+    flexWrap: 'wrap'
+    
   },
   header: {
     flexDirection: 'row',
@@ -264,76 +275,69 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
+    borderWidth: 1,
+    borderColor: Color.colorGray_100,
     borderRadius: 14,
-    paddingHorizontal: 10,
-    height: 35,
+    padding: 10,
     marginRight: 10,
-    shadowOffset: { width: 0, height: 2 },
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    height: 40,
   },
   banner: {
     width: '100%',
-    height: 160,
-    position: 'relative',
+    height: 180,
+    borderRadius: 16,
     overflow: 'hidden',
-    borderRadius: 20,
-    marginBottom: 15
+    marginBottom: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
   },
   bannerImage: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
-    resizeMode: 'contain',
-    top: 0,
-    left: 0,
   },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
+    marginTop: 5,
   },
   dot: {
     width: 10,
     height: 10,
     borderRadius: 5,
     backgroundColor: '#ccc',
-    marginHorizontal: 5,
+    margin: 5,
   },
   activeDot: {
     backgroundColor: '#32CD32',
   },
-  categoriesContainer: {
-    paddingBottom: 50,
-  },
   categoryCard: {
-    flex: 1,
-    margin: 5,
-    borderRadius: 14,
-    backgroundColor: '#f2f2f2',
+    width: '100%',
+    marginVertical: 10,
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 10,
+    borderRadius: 10,
+    paddingHorizontal: 5
   },
   categoryImage: {
-    width: 60, // Reduced size
-    height: 60, // Reduced size
-    borderRadius: 8,
+    width: '90%',
+    height: 60,
+    borderRadius: 10,
   },
   categoryText: {
     marginTop: 5,
-    fontSize: 12, // Reduced size
     textAlign: 'center',
+    fontSize: 10
   },
   loadingText: {
     textAlign: 'center',
-    padding: 10,
-    color:'green'
+    marginVertical: 10,
+    color: 'green'
+  },
+  categoriesContainer: {
+    paddingBottom: 50, // Add padding to avoid cut-off
+  },
+  row: {
+    justifyContent: 'space-between',
   },
 });
 

@@ -102,20 +102,20 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '90%',
-    padding: 20,
+    padding: 10,
     backgroundColor: '#FFFFFF',
-    borderRadius: 14,
+    borderRadius: 25,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center',
   },
   starsContainer: {
@@ -127,15 +127,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeStar: {
-    fontSize: 40,
+    fontSize: 20,
     color: '#FFD700', // Gold color for active stars
   },
   inactiveStar: {
-    fontSize: 40,
+    fontSize: 20,
     color: '#D3D3D3', // Light gray for inactive stars
   },
   statusText: {
-    fontSize: 16,
+    fontSize: 12,
     marginTop: 5,
   },
   reasonInput: {

@@ -15,14 +15,13 @@ import {
   ActivityIndicator,
   StatusBar,
   ScrollView,
-  
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../../redux/actions/authActions'; // Adjust the import path as necessary
+import { loginUser } from '../../redux/actions/authActions'; 
 import { FontFamily, Color, FontSize } from "../../GlobalStyles";
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const SignInPage = () => {
   const navigation = useNavigation();
@@ -30,6 +29,7 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const userId = "20";
   const presetPassword = `ND${userId}`;
 
@@ -47,9 +47,9 @@ const SignInPage = () => {
     } else if (password === presetPassword) {
       setIsLoading(true);
       try {
-        // await dispatch(loginUser(userId)); // Dispatch login action
+        // await dispatch(loginUser(userId)); // Uncomment to dispatch login action
         setIsLoading(false);
-        navigation.navigate("Main"); // Navigate only after successful login
+        navigation.navigate("Main"); 
       } catch (error) {
         setIsLoading(false);
         Alert.alert("Error", "Failed to log in. Please try again.");
@@ -63,12 +63,12 @@ const SignInPage = () => {
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjusting behavior for iOS and Android
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0} // Adjusting offset for iOS
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
       >
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
-          keyboardShouldPersistTaps="handled" // Ensure tapping outside dismisses keyboard
+          keyboardShouldPersistTaps="handled"
         >
           <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
             <View style={styles.topContainer}>
@@ -84,15 +84,22 @@ const SignInPage = () => {
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.inputField}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="login with password..."
-                placeholderTextColor={Color.colorGray_100}
-                secureTextEntry
-                accessibilityLabel="Password Input"
-              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.inputField}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="login with password..."
+                  placeholderTextColor={Color.colorGray_100}
+                  secureTextEntry={!showPassword}
+                  accessibilityLabel="Password Input"
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Text style={styles.togglePasswordText}>
+                    {showPassword ? "Hide" : "Show"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -112,7 +119,7 @@ const SignInPage = () => {
             <TouchableOpacity
               style={styles.forgotPasswordContainer}
               onPress={() => navigation.navigate('ChangePassword')}
-              disabled={isLoading}  // Disabled when loading
+              disabled={isLoading}
             >
               <Text style={[styles.forgotPasswordText, { color: 'green' }]}>
                 Forgot Password?
@@ -134,64 +141,74 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05, // Responsive padding
     marginTop: 30,
   },
   scrollViewContent: {
-    flexGrow: 1, // Ensures content fills the screen
-    justifyContent: 'center', // Centers content vertically
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   topContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: height * 0.02, // Responsive margin
   },
   welcomeText: {
-    fontSize: FontSize.size_5xl,
+    fontSize: width * 0.05, // Responsive font size
     color: Color.colorGray_600,
     fontFamily: FontFamily.poppinsRegular,
     textAlign: 'center',
     fontWeight: '900',
-    marginBottom: 40,
+    marginBottom: height * 0.05, // Responsive margin
   },
   loginImage: {
     width: width * 0.8,
-    height: 200,
+    height: height * 0.25, // Responsive height
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: height * 0.03, // Responsive margin
   },
   inputContainer: {
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05, // Responsive padding
   },
   label: {
-    fontSize: FontSize.size_base,
-    color: Color.colorLimegreen_200,
+    fontSize: width * 0.04, // Responsive font size
+    color: 'green',
     fontFamily: FontFamily.poppinsBold,
     marginBottom: 5,
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   inputField: {
-    height: 40,
+    height: height * 0.06, // Responsive height
     backgroundColor: Color.colorWhite,
     paddingHorizontal: 10,
-    fontSize: FontSize.size_base,
+    fontSize: width * 0.04, // Responsive font size
     borderRadius: 13,
-    elevation: 5,
-    marginBottom: 15,
+    elevation: 3,
+    marginBottom: height * 0.02, // Responsive margin
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    flex: 1,
+  },
+  togglePasswordText: {
+    color: 'green',
+    marginLeft: 10,
   },
   buttonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   getStartedBtn: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     width: '80%',
-    height: 47,
-    marginTop: 20,
+    height: height * 0.06, // Responsive height
+    marginTop: height * 0.02, // Responsive margin
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 21,
@@ -210,17 +227,16 @@ const styles = StyleSheet.create({
   cardText: {
     color: "#fff",
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: width * 0.045, // Responsive font size
     fontFamily: FontFamily.manropeBold,
   },
   forgotPasswordContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: height * 0.02, // Responsive margin
   },
   forgotPasswordText: {
-    fontSize: FontSize.size_sm,
-    textAlign: "center",
+    fontSize: width * 0.04, // Responsive font size
   },
 });
 

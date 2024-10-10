@@ -35,13 +35,23 @@ const NotificationScreen = () => {
   );
 
   // Render cascaded overlapping images
-  const renderCascadedImages = (images) => (
-    <View style={styles.cascadedImagesContainer}>
-      {images.map((image, index) => (
-        <Image key={index} source={{ uri: image }} style={[styles.cascadedImage, { left: index * 15 }]} />
-      ))}
-    </View>
-  );
+  const renderCascadedImages = (images) => {
+    return (
+      <View style={styles.cascadedImagesContainer}>
+        {images.length === 1 ? (
+          <>
+            <Image source={{ uri: images[0] }} style={[styles.cascadedImage, { left: 0 }]} />
+            {/* Placeholder image for second position */}
+            <Image source={{ uri: 'placeholder_image_url' }} style={[styles.cascadedImage, { left: 15 }]} />
+          </>
+        ) : (
+          images.map((image, index) => (
+            <Image key={index} source={{ uri: image }} style={[styles.cascadedImage, { left: index * 15 }]} />
+          ))
+        )}
+      </View>
+    );
+  };
 
   const handleNotificationPress = (notification) => {
     setSelectedNotification(notification);
@@ -79,48 +89,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: 5,
     overflow: 'hidden',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
   },
   notificationList: {
     marginBottom: 20,
   },
   notificationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column', // Changed to column to stack image above text
+    alignItems: 'flex-start', // Align items to the start
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 10,
+    borderRadius: 12,
+    marginBottom: 1,
   },
   iconContainer: {
-    marginRight: 10,
+    marginBottom: 5, // Added margin to separate image from text
   },
   cascadedImagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 5, // Added margin for better spacing
   },
   cascadedImage: {
     width: 35,
     height: 35,
     borderRadius: 20,
-    position: 'absolute',
+    position: 'relative', // Changed to relative for stacking
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: '#ccc',
+    marginRight: -15
   },
   notificationContent: {
     flex: 1,
   },
   notificationText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
   },
   notificationTime: {

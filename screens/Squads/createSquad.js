@@ -73,7 +73,7 @@ const CreateSquad = () => {
             <Text style={styles.title}>Launch Squad 🚀</Text>
             <TouchableOpacity style={styles.joinButton} onPress={handleJoinSquad}>
               {loadingJoin ? (
-                <ActivityIndicator size="small" color={Color.colorLimegreen_200} />
+                <ActivityIndicator size="small" color={'green'} />
               ) : (
                 <Text style={styles.joinButtonText}>Join</Text>
               )}
@@ -81,7 +81,7 @@ const CreateSquad = () => {
           </View>
 
           <Text style={styles.subtitle}>
-            Create a <Text style={{ color: Color.colorLimegreen_200 }}>squad</Text> where you can learn and interact with other ecoWarriors around topics that matter to you
+            Create a <Text style={{ color: 'green' }}>squad</Text> where you can learn and interact with other ecoWarriors around topics that matter to you
           </Text>
 
           <TextInput
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   selectedOption: {
     fontSize: 14, // Reduced font size
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   photoPicker: {
     marginVertical: 12, // Reduced margin
@@ -270,30 +270,29 @@ const styles = StyleSheet.create({
   },
   greenPoints: {
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   createButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 3,
-    width: 100,
-    height: 40,
-    padding: 18,
+    height: 50,
+    padding: 5,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     margin: 13
   },
   createButtonText: {
-    color: '#fff',
-    fontSize: 14,
+    color: 'white',
+    fontSize: 16,
     alignSelf: "center",
     fontWeight: 'bold',
   },
   joinButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     paddingHorizontal: 13,
     paddingVertical: 6,
     borderRadius: 13,

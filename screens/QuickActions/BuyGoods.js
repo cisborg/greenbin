@@ -19,7 +19,7 @@ const BuyGoods = () => {
     const [voucherApplied, setVoucherApplied] = useState(false);
     const [totalCost, setTotalCost] = useState(0);
     const [greenBankCode, setGreenBankCode] = useState('');
-    const [availablePoints, setAvailablePoints] = useState(1000);
+    const [availablePoints, setAvailablePoints] = useState(12000);
     const [friendPhoneNumber, setFriendPhoneNumber] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -29,12 +29,12 @@ const BuyGoods = () => {
 
     const validateInputs = () => {
         const amount = parseFloat(customAmount) || selectedAmount;
-        const isValidPhoneNumber = phoneNumber.length === 10 && /^\d+$/.test(phoneNumber);
+        const isValidPhoneNumber = phoneNumber.length === 6 && /^\d+$/.test(phoneNumber);
         const isValidGreenBankCode = greenBankCode.length === 10 && /^\d+$/.test(greenBankCode);
         const isValidFriendPhone = friendPhoneNumber.length === 10 && /^\d+$/.test(friendPhoneNumber);
 
         if (!isValidPhoneNumber) {
-            Alert.alert("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
+            Alert.alert("Invalid Account Number", "Please enter a valid  account number.");
             return false;
         }
 
@@ -266,20 +266,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Color.colorWhite,
-        padding: 20,
+        padding: '1%',
     },
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
-        padding: 20,
+        padding: 10,
+        marginTop: '-20%'
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: '10%',
     },
     backButton: {
-        marginRight: 16,
+        marginRight: '1%',
     },
     title: {
         fontSize: 20,
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     selectedAmountButton: {
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
     },
     amountText: {
         fontSize: 16,
@@ -392,7 +393,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     selectedPaymentButton: {
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
     },
     paymentText: {
         fontSize: 16,
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
     },
     confirmButton: {
         marginTop: 20,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         padding: 15,
         borderRadius: 12,
         alignItems: 'center',
@@ -435,10 +436,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContainer: {
-        width: 250,
+        width: '80%',
         padding: 20,
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderRadius: 14,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -447,10 +448,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     modalText: {
-        marginTop: 15,
-        fontSize: 16,
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 18,
         textAlign: 'center',
-        color: Color.colorLimegreen_200,
+        color: 'orange',
     },
     modalSubText: {
         fontSize: 14,
@@ -460,7 +462,7 @@ const styles = StyleSheet.create({
     },
     okButton: {
         marginTop: 20,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         padding: 10,
         borderRadius: 8,
         alignItems: 'center',

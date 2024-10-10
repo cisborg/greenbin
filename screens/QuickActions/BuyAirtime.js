@@ -19,7 +19,7 @@ const BuyAirtimeScreen = () => {
     const [voucherApplied, setVoucherApplied] = useState(false);
     const [totalCost, setTotalCost] = useState(0);
     const [greenBankCode, setGreenBankCode] = useState('');
-    const [availablePoints, setAvailablePoints] = useState(1000);
+    const [availablePoints, setAvailablePoints] = useState(10000);
     const [friendPhoneNumber, setFriendPhoneNumber] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -117,7 +117,7 @@ const BuyAirtimeScreen = () => {
                             <Image source={{ uri: 'https://example.com/profile.jpg' }} style={styles.profilePicture} />
                             <TextInput
                                 style={styles.input1}
-                                placeholder="Enter Paybill/Pochi/Account"
+                                placeholder="Enter Number "
                                 placeholderTextColor={Color.colorGray_100}
                                 value={phoneNumber}
                                 onChangeText={setPhoneNumber}
@@ -266,17 +266,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Color.colorWhite,
-        padding: 20,
+        padding: 10,
     },
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
-        padding: 20,
+        padding: 5,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
+        marginTop: '-20%'
     },
     backButton: {
         marginRight: 16,
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     selectedAmountButton: {
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
     },
     amountText: {
         fontSize: 16,
@@ -392,7 +393,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     selectedPaymentButton: {
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
     },
     paymentText: {
         fontSize: 16,
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
     },
     confirmButton: {
         marginTop: 20,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         padding: 15,
         borderRadius: 12,
         alignItems: 'center',
@@ -435,10 +436,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContainer: {
-        width: 250,
+        width: '70%',
         padding: 20,
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderRadius: 16,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -447,10 +448,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     modalText: {
-        marginTop: 15,
+        marginTop: 5,
         fontSize: 16,
+        fontWeight: 'bold',
         textAlign: 'center',
-        color: Color.colorLimegreen_200,
+        color: 'orange',
     },
     modalSubText: {
         fontSize: 14,
@@ -460,7 +462,7 @@ const styles = StyleSheet.create({
     },
     okButton: {
         marginTop: 20,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         padding: 10,
         borderRadius: 8,
         alignItems: 'center',

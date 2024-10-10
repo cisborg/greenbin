@@ -36,7 +36,7 @@ const SquadCreated = () => {
       { name: 'Bob', avatar: 'https://example.com/bob.jpg' },
       { name: 'Charlie', avatar: 'https://example.com/charlie.jpg' },
     ],
-    notifications: 5,
+    notifications: 99,
   };
 
   useEffect(() => {
@@ -105,21 +105,27 @@ const SquadCreated = () => {
           <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <TouchableOpacity style={styles.feature} onPress={handleFeaturedClick}>
-              <Text style={styles.featuredSquad}>Featured</Text>
+              <Text style={styles.featuredSquad}>Featured EcoGreen</Text>
             </TouchableOpacity>   
             <TouchableOpacity>
-              <Ionicons name="add-circle-outline" size={35} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
+              <Ionicons name="add-circle-outline" size={37} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
             </TouchableOpacity> 
-            <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
-              <Ionicons name="ellipsis-vertical" size={25} color="#333" />
-            </TouchableOpacity>
+           
           </View>
           
-          <View style={styles.statsContainer}>
-            <Text style={styles.statText}>{squadData.posts} Posts</Text>
-            <Text style={styles.statText}>{squadData.views} Views</Text>
-            <Text style={styles.statText}>{squadData.upvotes} Likes</Text>
-          </View>
+                {/* Posts, Comments, Upvotes Section */}
+        <View style={styles.statsContainer}>
+          <Text style={styles.statText}>
+            {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
+          </Text>
+          <Text style={styles.statText}>
+            {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
+          </Text>
+          <Text style={styles.statText}>
+            {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Likes
+          </Text>
+        </View>
+
           
           <Animated.View style={{ opacity: fadeAnim }}>
             <Text style={styles.description}>{squadData.description}</Text>
@@ -169,6 +175,9 @@ const SquadCreated = () => {
                 <Text style={styles.notificationCount}>{squadData.notifications}</Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => setDeleteModalVisible(true)} style={styles.icons}>
+              <Ionicons name="ellipsis-vertical" size={25} color="#333" />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -184,7 +193,9 @@ const SquadCreated = () => {
           <Text style={styles.postRestrictionsText}>Admins, moderators, and debated members can post</Text>
         </View>
         
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20,
+          marginBottom: 10, top: '-10%'
+         }}>
           <TouchableOpacity style={styles.post} onPress={handleAddPost} accessibilityLabel="Add a post">
             {loading ? (
               <ActivityIndicator size="small" color="green" />
@@ -209,7 +220,7 @@ const SquadCreated = () => {
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>EcoGreen Activities</Text>
+            <Text style={styles.modalTitle}> Register FVC Activities</Text>
             {ecoGreenActivities.map((activity, index) => (
               <Text key={index} style={styles.activityText}>{activity}</Text>
             ))}
@@ -258,16 +269,24 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   scrollView: {
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.023,
     padding: width * 0.04,
   },
   coverContainer: {
     position: 'relative',
     alignItems: 'center',
+    marginBottom: 10,
+    height: height * 0.1,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    borderRadius: 20,
+    width: '90%',
+    marginLeft: '7%'
+    
   },
   coverImage: {
     width: '100%',
-    height: height * 0.2,
+    height: height * 0.025,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -293,13 +312,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    bottom: -50,
-    elevation: 4,
+    bottom: -45,
+    elevation: 1,
     width: width * 0.7,
   },
-  invitationContainer: {
-    left: 10,
-  },
+ 
   addPost: {
     color: 'green',
     fontSize: 18,
@@ -310,30 +327,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 15,
+    marginTop: 2,
+    marginBottom: 5,
     marginLeft: 20,
+  },
+  invitationContainer: {
+    marginBottom: 10,
+    left: '24%'
   },
   invitationButton: {
-    justifyContent: 'center',
-    marginBottom: 15,
-    flexDirection: 'row',
-    left: width * 0.24,
     backgroundColor: 'green',
+    borderRadius: 12,
+    padding: 10,
     alignItems: 'center',
-    padding: width * 0.02,
-    width: width * 0.40,
-    borderRadius: 14,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    left: '35%',
+    width: width < 400 ? 130: 150
+  },
+  invitationIcon: {
+    marginRight: 10,
   },
   invitationText: {
+    color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'orange',
-    marginLeft: 20,
   },
   feature: {
     borderColor: 'lightgray',
-    backgroundColor: 'limegreen',
+    backgroundColor: 'green',
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingTop: 4,
@@ -360,7 +382,7 @@ const styles = StyleSheet.create({
   featuredSquad: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333',
+    color: 'white',
     marginBottom: 10,
     marginLeft: 15,
   },
@@ -377,16 +399,23 @@ const styles = StyleSheet.create({
   },
   postRestrictionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
-    marginLeft: 20,
+    left: '2%',
+    borderRadius: 14,
+    padding: 20,
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    width: '90%',
+  },
+  postRestrictionsText: {
+    marginLeft: 10,
+    color: '#555',
   },
   moderatedByText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: 'center',
   },
   icons: {
@@ -404,15 +433,15 @@ const styles = StyleSheet.create({
     top: 5,
     backgroundColor: 'red',
     borderRadius: 10,
-    padding: 3,
-    width: 20,
+    padding: 2,
+    width: 22,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   notificationCount: {
     color: 'white',
-    fontSize: 12,
+    fontSize: 10,
     textAlign: 'center',
   },
   headerTitle: {
@@ -437,7 +466,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 2,
   },
   moderatorInfo: {
     flexDirection: 'row',
@@ -460,6 +489,15 @@ const styles = StyleSheet.create({
   moderatorDetails: {
     flexDirection: 'column',
   },
+  addAdminButton: {
+    borderRadius: 9,
+    padding: 10,
+    alignItems: 'center',
+    padding: 5,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    marginLeft: 30,
+  },
   moderatorName: {
     fontWeight: 'bold',
     color: '#333333',
@@ -468,25 +506,35 @@ const styles = StyleSheet.create({
     color: '#777777',
   },
   membersContainer: {
-    marginVertical: 20,
+    marginHorizontal: 20,
+    marginBottom: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  totalMembers: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginLeft: 20,
+    color: 'orange',
   },
   membersList: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    margin: 15,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    borderRadius: 12,
+    padding: 8,
+    width: width < 400 ? '34%': '35%'
+
   },
   memberAvatar: {
     width: 30,
     height: 30,
-    borderRadius: 15,
-    marginRight: -10,
+    borderRadius: 9,
+    marginRight: -11,
     borderWidth: 1,
     borderColor: 'lightgray',
-  },
-  totalMembers: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
   },
   modalView: {
     margin: 20,
@@ -501,13 +549,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 4,
   },
   modalTitle: {
     marginBottom: 15,
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'green'
   },
   activityText: {
     marginVertical: 5,
@@ -516,6 +565,7 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: 'green',
     borderRadius: 10,
+    margin: 10
   },
   submitButtonText: {
     color: 'white',

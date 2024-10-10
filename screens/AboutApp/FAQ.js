@@ -258,7 +258,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: '#4CAF50',
-    borderBottomRadius: 3
+    borderRadius: 10,
+    margin:10
   },
   backButton: {
     marginRight: 16,
@@ -290,8 +291,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 10,
-    elevation: 2,
+    padding: 12,
+    elevation: 1,
   },
   questionContainer: {
     flexDirection: 'row',

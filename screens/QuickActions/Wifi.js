@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     padding: '4%', // Padding percentage for responsiveness
     borderRadius: 10,
     marginBottom: '5%',
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045, // Responsive font size based on screen width
     marginBottom: 5,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: Color.dad,
     fontFamily: FontFamily.manropeSemiBold,
   },
   input: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   registerButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

@@ -82,9 +82,10 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    borderBottomRadius: 5
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'orange'
   },
@@ -93,10 +94,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   listContainer: {
-    padding: 16,
+    padding: 10,
   },
   listContent: {
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   notificationItem: {
     backgroundColor: '#ffff',
@@ -107,18 +108,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1,
-    elevation: 3,
+    elevation: 1,
   },
   dateContainer: {
-    marginBottom: 4,
+    marginBottom: 2
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'green',
     fontWeight: 'bold',
   },
   messageText: {
-    fontSize: 15,
+    fontSize: 13,
     color: '#333',
   },
   deleteButton: {

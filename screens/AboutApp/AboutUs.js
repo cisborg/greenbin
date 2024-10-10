@@ -34,14 +34,14 @@ const AboutScreen = ({ navigation }) => {
           <Text style={styles.subtitle}>Empowering the Green Circular Economy</Text>
 
           <Text style={styles.description}>
-            Our app is dedicated to fostering a <Text style={{color: Color.colorLimegreen_200}}>Leading Charge in Sustainable Innovation</Text> through environmental conservation, pollution reduction, and community engagement. Join us in making a positive impact on the planet!
+            Our app is dedicated to fostering a <Text style={{color: 'green'}}>Leading Charge in Sustainable Innovation</Text> through environmental conservation, pollution reduction, and community engagement. Join us in making a positive impact on the planet!
           </Text>
 
           <Text style={styles.sectionTitle}>Core Values:</Text>
           <View style={styles.listContainer}>
             <Text style={styles.listItem}><Icon name="leaf" size={18} color="#27ae60" /> Environmental Conservation</Text>
             <Text style={styles.listItem}><Icon name="globe" size={18} color="#27ae60" /> Pollution Reduction</Text>
-            <Text style={styles.listItem}><Icon name="tree" size={18} color="#27ae60" /> Tree Planting Initiatives</Text>
+            <Text style={styles.listItem}><Icon name="flower" size={18} color="#27ae60" /> Tree Planting Initiatives</Text>
             <Text style={styles.listItem}><Icon name="cloud" size={18} color="#27ae60" /> Clean Air Projects</Text>
             <Text style={styles.listItem}><Icon name="flash" size={18} color="#27ae60" /> Green Renewable Energy Solutions</Text>
           </View>

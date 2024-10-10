@@ -1,39 +1,37 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar, Clipboard } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
+
 
 const Checkout = ({ route }) => {
   const navigation = useNavigation();
-  const { totalPrice } = route.params;
-  const [paymentMethod, setPaymentMethod] = React.useState('creditCard');
+  const [paymentMethod, setPaymentMethod] = React.useState('requestFriend');
   const [points, setPoints] = React.useState(20000); // Example available points
   const [amountToUse, setAmountToUse] = React.useState('');
   const [greenBankCode, setGreenBankCode] = React.useState('');
   const [discountApplied, setDiscountApplied] = React.useState(false);
-  const [cardNumber, setCardNumber] = React.useState('');
-  const [cardholderName, setCardholderName] = React.useState('');
-  const [expiryDate, setExpiryDate] = React.useState('');
-  const [cvv, setCvv] = React.useState('');
+  const [senderName, setSenderName] = React.useState('');
+  const [mobileNumber, setMobileNumber] = React.useState('');
+  const [emailAddress, setEmailAddress] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [totalPrice, setTotalPrice] = React.useState(18960); // Example total price
+
 
   const handlePayment = () => {
-    let finalAmount = totalPrice;
-
-    if (paymentMethod === 'creditCard') {
-      if (!/^\d{16}$/.test(cardNumber)) {
-        Alert.alert('Invalid Card Number', 'Please enter a valid 16-digit credit card number.');
-        return;
-      }
-      if (!/^[a-zA-Z ]+$/.test(cardholderName)) {
+    // Validate user input based on the selected payment method
+    if (paymentMethod === 'requestFriend') {
+      if (!/^[a-zA-Z ]+$/.test(senderName)) {
         Alert.alert('Invalid Name', 'Please enter a valid name with letters only.');
         return;
       }
-      if (!/^\d{2}\/\d{4}$/.test(expiryDate)) {
-        Alert.alert('Invalid Expiry Date', 'Please enter a valid expiry date (MM/YYYY).');
+      if (!/^\d{10}$/.test(mobileNumber)) {
+        Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
         return;
       }
-      if (!/^\d{3}$/.test(cvv)) {
-        Alert.alert('Invalid CVV', 'Please enter a valid 3-digit CVV.');
+      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailAddress)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
         return;
       }
     } else if (paymentMethod === 'greenPoints') {
@@ -46,7 +44,6 @@ const Checkout = ({ route }) => {
         Alert.alert('Points Exceeded', 'The amount of points exceeds the total price.');
         return;
       }
-      finalAmount -= amount; // Subtract points from total price
       setPoints(points - amount); // Deduct used points
     } else if (paymentMethod === 'greenBank') {
       if (!/^\d{10}$/.test(greenBankCode)) {
@@ -54,13 +51,23 @@ const Checkout = ({ route }) => {
         return;
       }
     }
-
-    // Proceed to payment confirmation after validation
-    navigation.navigate('paymentConfirmed', { finalAmount });
+    setLoading(true); // Start loading
+    
+    // Timeout to simulate a loading period
+    setTimeout(() => {
+        // Navigate to the payment confirmation screen
+        navigation.navigate('paymentConfirmed');
+        setLoading(false); // Stop loading
+    }, 400); // 300ms timeout
   };
 
   const togglePaymentMethod = (method) => {
     setPaymentMethod(method);
+    if (method === 'requestFriend') {
+      setSenderName('');
+      setMobileNumber('');
+      setEmailAddress('');
+    }
     if (method !== 'greenPoints') {
       setAmountToUse(''); // Reset points input when switching payment methods
     }
@@ -71,51 +78,35 @@ const Checkout = ({ route }) => {
 
   const renderPaymentDetails = () => {
     switch (paymentMethod) {
-      case 'creditCard':
+      case 'requestFriend':
         return (
           <>
-            <Text style={styles.label}>Card Number</Text>
+            <Text style={styles.label}>Sender's Name</Text>
             <TextInput
               style={styles.inputField}
-              placeholder="**** **** **** ****"
-              value={cardNumber}
+              value={senderName}
+              onChangeText={setSenderName}
+              placeholder="Enter your name"
+              placeholderTextColor={Color.colorGray_100}
+            />
+            <Text style={styles.label}>Mobile Number</Text>
+            <TextInput
+              style={styles.inputField}
+              value={mobileNumber}
+              onChangeText={setMobileNumber}
+              placeholder="Enter your mobile number"
               keyboardType="numeric"
-              onChangeText={setCardNumber}
               placeholderTextColor={Color.colorGray_100}
             />
-            <Text style={styles.label}>Cardholder Name</Text>
+            <Text style={styles.label}>Email Address</Text>
             <TextInput
               style={styles.inputField}
-              placeholder="John Doe"
-              value={cardholderName}
-              onChangeText={setCardholderName}
+              value={emailAddress}
+              onChangeText={setEmailAddress}
+              placeholder="Enter your email"
+              keyboardType="email-address"
               placeholderTextColor={Color.colorGray_100}
             />
-            <View style={styles.expiryContainer}>
-              <View style={styles.expiryInputContainer}>
-                <Text style={styles.label}>Expiry Date</Text>
-                <TextInput
-                  style={styles.inputField}
-                  placeholder="MM / YYYY"
-                  value={expiryDate}
-                  onChangeText={setExpiryDate}
-                  placeholderTextColor={Color.colorGray_100}
-                  keyboardType="numeric"
-                />
-              </View>
-              <View style={styles.expiryInputContainer}>
-                <Text style={styles.label}>CVV</Text>
-                <TextInput
-                  style={styles.inputField}
-                  placeholder="***"
-                  value={cvv}
-                  onChangeText={setCvv}
-                  keyboardType="numeric"
-                  placeholderTextColor={Color.colorGray_100}
-                  secureTextEntry
-                />
-              </View>
-            </View>
           </>
         );
       case 'greenPoints':
@@ -165,12 +156,11 @@ const Checkout = ({ route }) => {
   const shareOrder = async () => {
     try {
       await Share.share({
-        message: `Check out my order worth GCPs ${totalPrice}! Use this link to earn green vouchers for your next purchase!`,
+        message: `I've requested you to pay for my order worth GCPs ${totalPrice}. Sender: ${senderName}, Mobile: ${mobileNumber}, Email: ${emailAddress}.`,
       });
-      Clipboard.setString(`Check out my order worth GCPs ${totalPrice}!`);
-      Alert.alert("Order Shared!", "You've shared your order and earned additional vouchers!");
+      Alert.alert("Request Shared!", "You've shared your payment request!");
     } catch (error) {
-      Alert.alert("Error", "Failed to share the order.");
+      Alert.alert("Error", "Failed to share the payment request.");
     }
   };
 
@@ -180,19 +170,19 @@ const Checkout = ({ route }) => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Checkout</Text>
         <TouchableOpacity style={styles.button1} onPress={() => navigation.goBack()}>
-          <Text style={{ color: Color.colorLimegreen_200, fontSize: 14, fontWeight: '500' }}>Go Back</Text>
+          <Text style={{ color: 'green', fontSize: 14, fontWeight: '500' }}>Go Back</Text>
         </TouchableOpacity>
       </View>
-     
-      <Text style={styles.totalPrice}>Total: GCPs {totalPrice}</Text>
+
+      <Text style={styles.totalPrice}>Total: GCPs 18960</Text>
 
       <Text style={styles.label}>Select Payment Method</Text>
       <View style={styles.paymentOptions}>
         <TouchableOpacity
-          style={[styles.paymentButton, paymentMethod === 'creditCard' && styles.selectedButton]}
-          onPress={() => togglePaymentMethod('creditCard')}
+          style={[styles.paymentButton, paymentMethod === 'requestFriend' && styles.selectedButton]}
+          onPress={() => togglePaymentMethod('requestFriend')}
         >
-          <Text style={styles.paymentButtonText}>Credit Card</Text>
+          <Text style={styles.paymentButtonText}>Request a Friend to Pay</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.paymentButton, paymentMethod === 'greenPoints' && styles.selectedButton]}
@@ -210,17 +200,22 @@ const Checkout = ({ route }) => {
 
       {renderPaymentDetails()}
 
-      <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
-        <Text style={styles.payButtonText}>Pay for the Order</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.payButton} onPress={handlePayment} disabled={loading}>
+        {loading ? (
+            <ActivityIndicator color="white" />
+        ) : (
+            <Text style={styles.payButtonText}>Green Pay</Text>
+        )}
+    </TouchableOpacity>
+
 
       <View style={styles.shareContainer}>
-        <Text style={styles.shareTitle}>Share Your Order</Text>
+        <Text style={styles.shareTitle}>Share My Green Pay</Text>
         <Text style={styles.shareDescription}>
-          Share your order to earn green vouchers for future purchases!
+          Share your payment request to earn green vouchers for future purchases!
         </Text>
         <TouchableOpacity style={styles.shareButton} onPress={shareOrder}>
-          <Text style={styles.shareButtonText}>Share Order</Text>
+          <Text style={styles.shareButtonText}>Share Request</Text>
         </TouchableOpacity>
       </View>
 
@@ -230,7 +225,6 @@ const Checkout = ({ route }) => {
     </View>
   );
 };
-
 
 // Styles
 const styles = StyleSheet.create({
@@ -304,14 +298,17 @@ const styles = StyleSheet.create({
   },
   inputField: {
     borderRadius: 12,
-    padding: 12,
+    borderColor: 'green',
+    paddingHorizontal: 12,
+    paddingVertical: 2,
     fontSize: 16,
     marginBottom: 15,
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 3,
+    elevation: 1,
     height: 40,
-    marginTop: 8,
+    marginTop: 7,
   },
   expiryContainer: {
     flexDirection: 'row',

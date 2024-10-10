@@ -143,10 +143,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 20,
+    padding: 5,
   },
   scrollView: {
-    paddingBottom: 20,
+    paddingBottom: 130,
   },
   squadCard: {
     backgroundColor: '#ffff',
@@ -222,10 +222,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    shadowOffset: { width: 1, height: 3}
+    shadowOffset: { width: 1, height: 3},
+    elevation: 1
   },
   viewButtonText: {
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontWeight: 'bold',
   },
   addButton: {

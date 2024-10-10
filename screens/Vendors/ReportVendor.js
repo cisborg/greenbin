@@ -28,7 +28,6 @@ const ReportVendorScreen = () => {
   const [incidentLocation, setIncidentLocation] = useState('');
   const [severity, setSeverity] = useState('Low');
   const [followUp, setFollowUp] = useState(false);
-  const [vendorProfile, setVendorProfile] = useState(null);
   const [vendorPhone, setVendorPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,7 +63,7 @@ const ReportVendorScreen = () => {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color={Color.colorGray_100} />
             </TouchableOpacity>
-            <Text style={styles.header}>Report Vendor</Text>
+            <Text style={styles.header}>Report Vendor Ticket</Text>
           </View>
 
           <View style={styles.vendorInfo}>
@@ -76,7 +75,6 @@ const ReportVendorScreen = () => {
               placeholder="Enter vendor name"
               placeholderTextColor={Color.colorGray_100}
             />
-            <Image source={{ uri: vendorProfile || 'https://via.placeholder.com/100' }} style={styles.vendorImage} />
           </View>
 
           <Text style={styles.label}>Vendor Phone:</Text>
@@ -164,7 +162,7 @@ const ReportVendorScreen = () => {
         </ScrollView>
 
         {loading && (
-          <ActivityIndicator size="large" color={Color.colorLimegreen_200} style={styles.loader} />
+          <ActivityIndicator size="large" color={'green'} style={styles.loader} />
         )}
 
         <Modal
@@ -201,11 +199,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: '2%',
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: 20,
+    padding: '1%',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -213,9 +211,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   header: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginLeft: '13%',
+    color: 'green'
   },
   vendorInfo: {
     marginBottom: 20,
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 4
+    elevation: 1
   },
   textArea: {
     borderWidth: 1,
@@ -278,7 +277,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1,
     alignItems: 'center',
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     borderRadius: 14,
     marginBottom: 15,
   },
@@ -305,7 +304,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   okButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     padding: 10,
     borderRadius: 10,
   },
@@ -338,7 +337,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1,
     alignItems: 'center',
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     borderRadius: 14,
     paddingBottom: -5,
   },

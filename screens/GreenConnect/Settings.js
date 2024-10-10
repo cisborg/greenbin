@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 5,
   },
   notificationToggle: {
     flexDirection: 'row',
@@ -84,20 +84,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     backgroundColor: '#fff',
-    borderRadius: 14,
+    borderRadius: 18,
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 1,
   },
   toggleLabel: {
     fontSize: 16,
     color: '#333',
   },
   settingsList: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   settingItem: {
     flexDirection: 'row',
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
     backgroundColor: '#fff',
     borderRadius: 14,
-    marginBottom: 10,
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 1,
   },
   settingContent: {
     flex: 1,

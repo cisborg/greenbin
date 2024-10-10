@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image ,Alert} from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 
@@ -40,7 +40,7 @@ const JoinUsScreen = () => {
       {milestonesReached ? (
         <View style={styles.milestoneContainer}>
           <Text style={styles.milestoneText}>Congratulations! You qualify to join our NGO.</Text>
-          <TouchableOpacity style={styles.joinButton} onPress={()=> alert('Visit our Nature Diversity Website and Join')}>
+          <TouchableOpacity style={styles.joinButton} onPress={()=> Alert.alert('Visit our Nature Diversity Website and Join at naturediversity.org')}>
             <Text style={styles.joinButtonText}>Join Now</Text>
           </TouchableOpacity>
         </View>
@@ -64,9 +64,7 @@ const JoinUsScreen = () => {
         <Text style={styles.notification}>You're just a few steps away from joining!</Text>
         <Text style={styles.notification}>Earn more eco points through your purchases!</Text>
       </View>
-      <TouchableOpacity style={styles.ApplyButton} onPress={()=> navigation.navigate('ProfilePage')}>
-        <Text style={{color: Color.colorLimegreen_200}}>Exit</Text>
-      </TouchableOpacity>
+     
     </ScrollView>
   );
 };
@@ -77,13 +75,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Color.colorWhite,
     overflow: 'hidden',
+    paddingBottom: 20,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2e7d32',
   },
@@ -108,39 +107,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  ApplyButton: {
-    padding: 10,
-    borderColor: 'white',
-    borderWidth: 1,
-    alignItems: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 15,
-    marginTop: 15,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    alignItems: 'center',
-    maxWidth: 150,
-    left: 10
-  },
+ 
   ecoPoints: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#2e7d32',
     marginBottom: 10,
   },
   balance: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 10,
     color: '#333',
   },
   productsPurchased: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 10,
     color: '#333',
   },
@@ -153,7 +133,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     backgroundColor: '#dff0d8',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 18,
   },
   milestoneText: {
     fontSize: 16,
@@ -180,18 +160,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   milestonesList: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   milestone: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
     marginBottom: 5,
   },
   notificationsContainer: {
-    marginTop: 20,
+    marginTop: 5,
   },
   notificationsHeader: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#2e7d32',
     marginBottom: 10,

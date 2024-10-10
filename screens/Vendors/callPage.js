@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   userName: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'black',
     marginTop: 10,
     fontWeight: 'bold',
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     margin: 20,
-    elevation: 3,
+    elevation: 1,
     borderRadius: 17,
   },
   button: {

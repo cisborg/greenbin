@@ -61,19 +61,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: 5,
     overflow: 'hidden',
   },
   header: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 1,
-    color: Color.colorLimegreen_200,
+
+    marginVertical: 5,
+    color: 'green',
     FontFamily: FontFamily.manropeBold
   },
  
   cardText: {
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontWeight: 'bold',
   },
   list: {

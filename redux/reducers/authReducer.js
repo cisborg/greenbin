@@ -3,23 +3,26 @@ import {
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
     REGISTER_FAILURE,
-    VERIFY_OTP_REQUEST,
-    VERIFY_OTP_SUCCESS,
-    VERIFY_OTP_FAILURE,
+    VERIFY_ACCESS_REQUEST,
+    VERIFY_TOKEN_SUCCESS,
+    VERIFY_TOKEN_FAILURE,
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
-    RESEND_OTP_REQUEST,
-    RESEND_OTP_SUCCESS,
-    RESEND_OTP_FAILURE,
+    RESEND_TOKEN_REQUEST,
+    RESEND_TOKEN_SUCCESS,
+    RESEND_TOKEN_FAILURE,
     LOGOUT,
   } from '../actions/actionTypes';
   
   const initialState = {
-    phoneNumber: '',
+    email: '',
+    password: '',
     promoCode: '',
-    otp: '',
+    phone: '',
+    token: '',
     loading: false,
+    promoError: false,
     error: null,
     user: null,
   };
@@ -27,25 +30,29 @@ import {
   const authReducer = (state = initialState, action) => {
     switch (action.type) {
       case REGISTER_REQUEST:
-      case VERIFY_OTP_REQUEST:
+      case VERIFY_ACCESS_REQUEST:
       case LOGIN_REQUEST:
-      case RESEND_OTP_REQUEST:
+        return { ...state, loading: true, error: null };
+      case RESEND_TOKEN_REQUEST:
         return { ...state, loading: true, error: null };
       case REGISTER_SUCCESS:
-        return { ...state, loading: false, user: action.payload };
-      case VERIFY_OTP_SUCCESS:
+        return { ...state, loading: false, user: action.payload, token: action.payload.token };
+      case VERIFY_TOKEN_SUCCESS:
         return { ...state, loading: false };
       case LOGIN_SUCCESS:
-        return { ...state, loading: false, user: action.payload };
-      case RESEND_OTP_SUCCESS:
+        return { ...state, loading: false, user: action.payload.user, token: action.payload.token };
+      case RESEND_TOKEN_SUCCESS:
         return { ...state, loading: false };
       case REGISTER_FAILURE:
-      case VERIFY_OTP_FAILURE:
+        return { ...state, loading: false, error: action.payload };
+      case VERIFY_TOKEN_FAILURE:
+        return { ...state, loading: false, error: action.payload };
       case LOGIN_FAILURE:
-      case RESEND_OTP_FAILURE:
+        return { ...state, loading: false, error: action.payload };
+      case RESEND_TOKEN_FAILURE:
         return { ...state, loading: false, error: action.payload };
       case LOGOUT:
-        return { ...initialState }; // Reset state on logout
+        return { ...initialState, token:'', user: null }; // Reset state on logout
       default:
         return state;
     }

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, Image, SafeAreaView,
+   ActivityIndicator,Platform,StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-
+import { FlashList } from '@shopify/flash-list';
 const squadsData = [
   {
     id: '1',
@@ -133,12 +134,11 @@ const JoinSquads = () => {
           onChangeText={setSearchQuery}
         />
       </View>
-      <FlatList
+      <FlashList
         data={filteredSquads}
         renderItem={renderSquadItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
+        estimatedItemSize={100} // Adjust based on your item size
       />
     </SafeAreaView>
   );
@@ -150,10 +150,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 5,
     marginHorizontal: 5,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+
   },
   listContainer: {
     paddingBottom: 10,
-    padding: 5,
   },
   heading: {
     flexDirection: 'row',
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 10,
     overflow: 'hidden',
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

@@ -14,11 +14,9 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { Color } from '../../GlobalStyles';
 
 const TransactionScreen = ({ navigation }) => {
   const [generalPoints, setGeneralPoints] = useState({
-    VISA: 23571,
     GreenPoints: 340000,
     GreenBank: 150000
   });
@@ -34,7 +32,7 @@ const TransactionScreen = ({ navigation }) => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [recentRecipients, setRecentRecipients] = useState([]);
 
-  const cardTypes = ['VISA', 'GreenPoints', 'GreenBank'];
+  const cardTypes = [ 'GreenPoints', 'GreenBank'];
 
   useEffect(() => {
     Animated.timing(opacity, {
@@ -286,6 +284,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingHorizontal: 1,
   },
   keyboardAvoiding: {
     flex: 1,
@@ -295,7 +294,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     left: 20
   },
   headerText: { 
@@ -318,7 +317,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     borderRadius: 17,
     shadowColor: '#000',
-    padding: 8
+    padding: 8,
+    elevation: 1,
+    alignItems: 'center',
   },
   cardRow: {
     flexDirection: 'row',
@@ -330,13 +331,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     marginTop: 20,
-    marginHorizontal: 15,
-    shadowOffset: { width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowColor: '#000',
-    shadowRadius: 3,
-    borderRadius: 17,
-    padding: 8
+    marginHorizontal: 5,
+    
+    padding: 1
   },
   cardTitle: { 
     fontSize: 20, 
@@ -355,7 +352,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4
   },
   activeCard: { 
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
   },
   inactiveCard: {
     backgroundColor: 'lightgray',
@@ -390,8 +387,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 20,
-    paddingHorizontal: 20,
-    marginHorizontal: 15,
+    paddingHorizontal: 5,
   },
   actionButton: {
     alignItems: 'center',
@@ -418,7 +414,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0,height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3
+    elevation: 1
   },
   confirmButton: {
     backgroundColor: 'green',
@@ -445,8 +441,7 @@ const styles = StyleSheet.create({
   },
   recipient: {
     flexDirection: 'column',
-    marginLeft: 10,
-    marginBottom: 20,
+    marginBottom: 5,
     alignItems: 'center',
   },
   incomeText: { 
@@ -470,7 +465,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    width: '100%',
+    width: '80%',
     shadowRadius: 3,
     marginHorizontal: 5
   },

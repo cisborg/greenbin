@@ -4,62 +4,65 @@ import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
-  VERIFY_OTP_REQUEST,
-  VERIFY_OTP_SUCCESS,
-  VERIFY_OTP_FAILURE,
+  VERIFY_ACCESS_TOKEN,
+  VERIFY_TOKEN_SUCCESS,
+  VERIFY_TOKEN_FAILURE,
+  RESEND_TOKEN_REQUEST,
+  RESEND_TOKEN_SUCCESS,
+  RESEND_TOKEN_FAILURE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  RESEND_OTP_REQUEST,
-  RESEND_OTP_SUCCESS,
-  RESEND_OTP_FAILURE,
+  LOGOUT,
 } from './actionTypes';
 
 // Register action
-export const registerUser = (phoneNumber, promoCode) => async (dispatch) => {
+export const registerUser = (email, password, phone, referralCode) => async (dispatch) => {
   dispatch({ type: REGISTER_REQUEST });
   try {
-    const response = await axios.post('/api/register', { phoneNumber, promoCode });
+    const response = await axios.post('/api/register', { email, password,phone, referralCode });
     dispatch({ type: REGISTER_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: REGISTER_FAILURE, payload: error.message });
   }
 };
 
-// Verify OTP action
-export const verifyOtp = (otp) => async (dispatch) => {
-  dispatch({ type: VERIFY_OTP_REQUEST });
+// Verify OTP action (if applicable, otherwise you can remove it)
+export const verifyToken = (token) => async (dispatch) => {
+  dispatch({ type: VERIFY_ACCESS_TOKEN });
   try {
-    const response = await axios.post('/api/verify-otp', { otp });
-    dispatch({ type: VERIFY_OTP_SUCCESS, payload: response.data });
+    const response = await axios.post('/api/verify-token', { token });
+    dispatch({ type: VERIFY_TOKEN_SUCCESS, payload: response.data });
   } catch (error) {
-    dispatch({ type: VERIFY_OTP_FAILURE, payload: error.message });
+    dispatch({ type: VERIFY_TOKEN_FAILURE, payload: error.message });
   }
 };
 
 // Login action
-export const loginUser = (password) => async (dispatch) => {
+// Login action
+export const loginUser = (email, password) => async (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   try {
-    const response = await axios.post('/api/login', { password });
+    const response = await axios.post('/api/login', { email, password });
     dispatch({ type: LOGIN_SUCCESS, payload: response.data });
   } catch (error) {
-    dispatch({ type: LOGIN_FAILURE, payload: error.message });
+    dispatch({ type: LOGIN_FAILURE, payload: error.response?.data?.message || error.message });
   }
 };
 
-// Resend OTP action
-export const resendOtp = (phoneNumber) => async (dispatch) => {
-  dispatch({ type: RESEND_OTP_REQUEST });
+
+// Resend OTP action (if applicable, otherwise you can remove it)
+export const resendToken = (email) => async (dispatch) => {
+  dispatch({ type: RESEND_TOKEN_REQUEST });
   try {
-    const response = await axios.post('/api/resend-otp', { phoneNumber });
-    dispatch({ type: RESEND_OTP_SUCCESS, payload: response.data });
+    const response = await axios.post('/api/resend-token', { email });
+    dispatch({ type: RESEND_TOKEN_SUCCESS, payload: response.data });
   } catch (error) {
-    dispatch({ type: RESEND_OTP_FAILURE, payload: error.message });
+    dispatch({ type: RESEND_TOKEN_FAILURE, payload: error.message });
   }
 };
 
-// LOGOUT
+// Logout action
 export const logoutUser = () => (dispatch) => {
-    dispatch({ type: LOGOUT });
-  };
+  dispatch({ type: LOGOUT });
+};

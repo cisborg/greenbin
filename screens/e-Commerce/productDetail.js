@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Animated, StyleSheet, FlatList, ActivityIndicator, Dimensions } from 'react-native';
+import { 
+  View, 
+  Text, 
+  Image, 
+  TouchableOpacity, 
+  ScrollView, 
+  Animated, 
+  StyleSheet, 
+  ActivityIndicator, 
+  Dimensions 
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/core';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { FlashList } from '@shopify/flash-list'; // Import FlashList
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,9 +72,11 @@ const CartDetail = () => {
 
   const handleLoadMoreReviews = () => {
     setLoadingReviews(true);
+    // Simulate fetching more reviews
     setTimeout(() => {
       setLoadingReviews(false);
-    }, 100);
+      // You can append more reviews to the `reviewers` array here if needed
+    }, 1000);
   };
 
   const handleOrderNow = () => {
@@ -73,6 +86,18 @@ const CartDetail = () => {
       navigation.navigate('ChallengePage'); // Navigate to another screen
     }, 300); // Duration for the spinner
   };
+
+  const renderReviewItem = ({ item }) => (
+    <View style={styles.review}>
+      <Text style={styles.reviewerName}>{item.name}</Text>
+      <View style={styles.ratingContainer}>
+        {Array(item.stars).fill().map((_, i) => (
+          <Icon key={i} name="star" type="font-awesome" color="#f5c518" size={16} />
+        ))}
+      </View>
+      <Text style={styles.reviewMessage}>{item.message}</Text>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -92,12 +117,13 @@ const CartDetail = () => {
             <Image 
               source={images[currentImage]} 
               style={styles.productImage} 
+              resizeMode="contain"
             />
             <TouchableOpacity onPress={handleNextImage}>
               <AntDesign name="rightcircle" size={27} color="#4CAF50" />
             </TouchableOpacity>
             <View style={styles.imageIndicatorContainer}>
-              <Text style={styles.imageIndicator}>{currentImage + 1}/4</Text>
+              <Text style={styles.imageIndicator}>{currentImage + 1}/{images.length}</Text>
             </View>
           </View>
 
@@ -113,27 +139,18 @@ const CartDetail = () => {
               <Icon name="star" type="font-awesome" color="#f5c518" size={16} />
               <Text style={styles.ratingText}>4.4</Text>
               <TouchableOpacity onPress={() => setShowReviews(!showReviews)}>
-                <Text style={styles.reviewText}>Reviews ({reviewers.length})</Text>
+                <Text style={styles.reviewText}> Reviews ({reviewers.length})</Text>
               </TouchableOpacity>
             </View>
 
             {showReviews && (
-              <FlatList
+              <FlashList
                 data={reviewers}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.review}>
-                    <Text style={styles.reviewerName}>{item.name}</Text>
-                    <View style={styles.ratingContainer}>
-                      {Array(item.stars).fill().map((_, i) => (
-                        <Icon key={i} name="star" type="font-awesome" color="#f5c518" size={16} />
-                      ))}
-                    </View>
-                    <Text style={styles.reviewMessage}>{item.message}</Text>
-                  </View>
-                )}
+                renderItem={renderReviewItem}
                 onEndReached={handleLoadMoreReviews}
                 onEndReachedThreshold={0.1}
+                estimatedItemSize={100} // Estimate item size for better performance
                 ListFooterComponent={() => (
                   loadingReviews ? <ActivityIndicator size="small" color="#4CAF50" /> : null
                 )}
@@ -191,7 +208,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     marginLeft: 20,
   },
@@ -203,7 +220,7 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: width * 0.7,
-    height: height * 0.4,
+    height: height * 0.28,
     borderRadius: 8,
   },
   imageIndicatorContainer: {
@@ -222,21 +239,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   discountedPrice: {
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#4CAF50',
   },
   originalPrice: {
-    fontSize: 20,
+    fontSize: 16,
     textDecorationLine: 'line-through',
   },
   discountPercentage: {
-    fontSize: 18,
+    fontSize: 14,
     color: 'red',
     marginBottom: 10,
   },
   productTitle: {
-    fontSize: 16,
+    fontSize: 13,
     marginBottom: 16,
   },
   ratingContainer: {
@@ -244,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ratingText: {
-    fontSize: 16,
+    fontSize: 13,
     marginLeft: 5,
   },
   reviewText: {
@@ -303,8 +320,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -8,
     right: -8,
+    width: 20,
     backgroundColor: '#f44336',
-    borderRadius: 40,
+    borderRadius: 10,
     padding: 5,
   },
   badgeText: {

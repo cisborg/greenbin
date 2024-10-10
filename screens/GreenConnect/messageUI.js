@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    paddingVertical: 15,
+    paddingVertical: 3,
     justifyContent: 'flex-start',
   },
   headerIcons: {
@@ -291,14 +291,14 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    borderColor: Color.colorLimegreen_200,
+    borderColor: 'green',
     borderWidth: 2,
     padding: 10,
     borderRadius: 14,
     marginRight: 15,
     alignSelf: "flex-start",
     justifyContent: "flex-start",
-    width: 360,
+    width: '100%',
     marginRight: 40
   },
   userProfile: {
@@ -318,10 +318,10 @@ const styles = StyleSheet.create({
   },
   lastSeen: {
     fontSize: 12,
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   selectedUserProfile: {
-    borderColor: Color.colorLimegreen_200,
+    borderColor: 'green',
     borderWidth: 2,
     borderRadius: 30,
   },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 1,
   },
   userInfo: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, Alert, Animated, SafeAreaView, StatusBar, Platform, Modal, TextInput, RefreshControl } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Alert, Platform, SafeAreaView, StatusBar} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/core';
 import TagList from '../Squads/Tags';
@@ -9,31 +9,19 @@ import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Octicons from '@expo/vector-icons/Octicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import TagSelection from '../Squads/selectTag';
+import { FlashList } from '@shopify/flash-list';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Tab = createMaterialTopTabNavigator();
 
 const GoodHome = () => {
   const navigation = useNavigation();
-  const [fadeAnim] = useState(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View style={{ ...styles.animatedContainer, opacity: fadeAnim }}>
-        <SearchBar />
-        <HomeTabs />
-      </Animated.View>
+      <SearchBar />
+      <HomeTabs />
     </SafeAreaView>
   );
 };
@@ -46,27 +34,28 @@ const HomeTabs = () => {
         tabBarIcon: ({ focused }) => {
           if (route.name === 'selectTag') {
             return (
-              <View style={{ marginTop: 13 }}>
+              <View style={{ marginTop: 5, top: 9 }}>
                 <MaterialIcons name="add-box" size={22} color={focused ? 'green' : "gray"} />
               </View>
             );
           }
-          return null; // No icon for other tabs
+          return null;
         },
         tabBarLabel: ({ focused }) => {
           if (route.name === 'selectTag') {
-            return null; // No label for the selectTag tab
+            return null;
           }
           return (
             <Text style={{ color: focused ? "black" : "gray", fontWeight: '550' }}>
               {route.name}
             </Text>
-          ); // Default label for other tabs
+          );
         },
         tabBarStyle: {
           backgroundColor: '#fff',
-          height: 50,
-          paddingBottom: 20,
+          height: 73,
+          paddingHorizontal: 5,
+          paddingTop: -20,
           shadowOpacity: 0.2,
           shadowOffset: { width: 0, height: 1 },
           shadowRadius: 1,
@@ -75,8 +64,8 @@ const HomeTabs = () => {
           justifyContent: 'center',
         },
         tabBarLabelStyle: {
-          fontWeight: '650',
-          fontSize: 14,
+          fontWeight: '800',
+          fontSize: 12,
           textTransform: 'none',
         },
       })}
@@ -133,67 +122,29 @@ const ForYouScreen = () => {
       squad: "Eco Warriors",
       date: "Today",
       likes: 999,
-      comments: 60,
+      comments: 69,
       moderated: true,
       connections: 200,
       imageUri: "https://example.com/image2.jpg",
     },
   ]);
-  
-  const [refreshing, setRefreshing] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentPost, setCurrentPost] = useState(null);
-  const [comment, setComment] = useState('');
 
   const handleLike = (index) => {
     const newPosts = [...posts];
     if (!newPosts[index].isLiked) {
       newPosts[index].likes += 1;
       newPosts[index].isLiked = true;
-      Alert.alert(`${newPosts[index].author} liked your post!`);
     }
     setPosts(newPosts);
   };
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      // Randomize post order
-      const shuffledPosts = [...posts].sort(() => Math.random() - 0.5);
-      setPosts(shuffledPosts);
-      setRefreshing(false);
-    }, 2000);
-  };
-
-  const openModal = (post) => {
-    setCurrentPost(post);
-    setModalVisible(true);
-  };
-
-  const submitComment = () => {
-    if (comment.trim()) {
-      const newPosts = posts.map(post => {
-        if (post.title === currentPost.title) {
-          return { ...post, comments: post.comments + 1 };
-        }
-        return post;
-      });
-      setPosts(newPosts);
-      Alert.alert("Comment submitted: " + comment);
-      setComment('');
-      setModalVisible(false);
-    } else {
-      Alert.alert("Please enter a comment.");
-    }
-  };
-
   return (
     <View style={styles.content}>
-      <FlatList
+      <FlashList
         data={posts}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => openModal(item)}>
+          <TouchableOpacity onPress={() => { /* Navigate to post details */ }}>
             <Post 
               key={index} 
               {...item} 
@@ -201,36 +152,7 @@ const ForYouScreen = () => {
             />
           </TouchableOpacity>
         )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
       />
-      {currentPost && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{currentPost.title}</Text>
-              <TextInput
-                style={styles.commentInput}
-                placeholder="Add a comment..."
-                value={comment}
-                onChangeText={setComment}
-              />
-              <TouchableOpacity onPress={submitComment} style={styles.submitButton}>
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
     </View>
   );
 };
@@ -238,10 +160,17 @@ const ForYouScreen = () => {
 const Post = ({ title, author, squad, date, likes, comments, moderated, connections, imageUri, onLike }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark
 
   const handleLike = () => {
     setIsLiked(!isLiked);
     onLike();
+  };
+
+  const handleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    // Increment connections if bookmarked
+   
   };
 
   const handleOptionsPress = () => {
@@ -249,6 +178,7 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
   };
 
   return (
+    <ScrollView>
     <View style={styles.postCard}>
       <View style={styles.header}>
         <Image style={styles.profilePic} source={require('../../assets/anotherWoman.avif')} />
@@ -277,20 +207,8 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
             <Text style={{ marginLeft: 6 }}>Follow @{squad}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.optionToggle}>
-            <MaterialCommunityIcons name="playlist-remove" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Add/remove from Lists</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionToggle}>
-            <Octicons name="mute" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Mute @{squad}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionToggle}>
             <MaterialIcons name="report" size={17} color="green" />
             <Text style={{ marginLeft: 6 }}>Report post</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionToggle}>
-            <MaterialIcons name="speaker-notes" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Request Community Note</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -299,7 +217,7 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
       {imageUri && <Image source={{ uri: imageUri }} style={styles.postImage} />}
       <View style={styles.postStats}>
         <TouchableOpacity style={styles.statButton} onPress={handleLike}>
-          <Ionicons name={isLiked ? "heart" : "heart-outline"} size={17} color={isLiked ? Color.colorLimegreen_200 : "black"} />
+          <Ionicons name={isLiked ? "heart" : "heart-outline"} size={17} color={isLiked ? 'green' : "black"} />
           <Text style={styles.statText}>
             {likes >= 1000 ? `${(likes / 1000).toFixed(1)}k` : likes} upvotes
           </Text>
@@ -310,36 +228,38 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
             {comments >= 1000 ? `${(comments / 1000).toFixed(1)}k` : comments} comments
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.statButton}>
-          <Ionicons name="stats-chart" size={17} color="black" />
-          <Text style={styles.statText}>
-            {connections >= 1000 ? `${(connections / 1000).toFixed(1)}k` : connections} views
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.statButton}>
+        <TouchableOpacity style={styles.statButton} onPress={handleBookmark}>
+        <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={17} color={isBookmarked ? "green" : "black"} />
+        <Text style={styles.statText}>
+          {connections + (isBookmarked ? 1 : 0) >= 1000 
+            ? Math.floor((connections + (isBookmarked ? 1 : 0)) / 1000) + 'k' 
+            : connections + (isBookmarked ? 1 : 0)}
+        </Text>
+      </TouchableOpacity>
+
+        <TouchableOpacity style={styles.statButton} onPress={() => { /* Navigate to messages screen */ }}>
           <Ionicons name="share-social-outline" size={17} color="black" />
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
 const SearchBar = () => {
   const navigation = useNavigation();
   return (
-    <View>
-      <View style={styles.searchBarContainer}>
-        <View style={{ flexDirection: 'column'}}> 
-          <Text style={styles.greenTxt}>Green Squads Daily</Text>
-          <Text style={styles.blackText}>"Your Daily Hubspot Platform for mind Innovation"</Text>
-        </View>
-        <TouchableOpacity style={{ left: 20 }}>
-          <Ionicons name="color-filter-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SquadCreated')}>
-          <Image style={styles.profilePic} source={require('../../assets/anotherWoman.avif')} />
-        </TouchableOpacity>
+    <View style={styles.searchBarContainer}>
+      <View style={{ flexDirection: 'column'}}> 
+        <Text style={styles.greenTxt}>Green Squads Daily</Text>
+        <Text style={styles.blackText}>"Your Daily Hubspot Platform !"</Text>
       </View>
+      <TouchableOpacity style={{ left: 20 }}>
+        <Ionicons name="color-filter-outline" size={30} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.profilePic1} onPress={() => navigation.navigate('SquadCreated')}>
+        <Image source={require('../../assets/anotherWoman.avif')} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -347,12 +267,14 @@ const SearchBar = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 5,
+    backgroundColor: 'white',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   animatedContainer: {
     flex: 1,
-    padding: 10
+    padding: 1,
+    
   },
   content: {
     flex: 1,
@@ -368,13 +290,21 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     backgroundColor: '#fff'
   },
   profilePic: {
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  profilePic1: {
+    width: 40,
+    height: 40,
+    borderRadius: 15,
+    left: -10,
+    borderColor: 'gray',
+    borderWidth: 1,
   },
   authorInfo: {
     flex: 1,
@@ -385,6 +315,7 @@ const styles = StyleSheet.create({
   },
   squadName: {
     color: 'gray',
+    top: 5,
   },
   postDate: {
     color: 'gray',
@@ -438,6 +369,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginLeft: '2%'
   },
   greenTxt: {
     fontSize: 18,

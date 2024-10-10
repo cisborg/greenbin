@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: '2%',
     backgroundColor: Color.colorWhite,
   },
   scrollContainer: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     margin: 5
   },
   title: {
-    fontSize: screenWidth < 350 ? 22 : 28, // Responsive title font size
+    fontSize: screenWidth < 350 ? 22 : 24, // Responsive title font size
     fontWeight: "bold",
     color: "#333",
     marginBottom: 20,
@@ -247,10 +247,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 20,
+    borderRadius: 30,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#fff",
     width: "100%",
     height: 130,
   },
@@ -265,10 +265,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 50,
+    borderRadius: 40,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f5f5f5",
     padding: 10,
     marginTop: -50, // Overlap the profile image
   },
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     shadowColor: "#000",
-    elevation: 3,
+    elevation: 1,
     marginBottom: 10,
     padding: 15,
     marginBottom: 20,

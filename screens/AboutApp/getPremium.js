@@ -134,19 +134,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 10,
+    marginBottom: '5%',
+    marginTop: '-40%'
   },
   backButton: {
     marginRight: 5,
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'green',
     borderRadius: 20,
-    padding: 6,
-    marginLeft: 10
+    padding: 3,
+    marginLeft: 10,
   },
   titleText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: 'green',
     textAlign: 'center',
     flex: 1,
   },
@@ -159,16 +160,18 @@ const styles = StyleSheet.create({
     padding: 4,
     backgroundColor: '#4CAF50',
     borderRadius: 20,
-    elevation: 2,
+    marginRight: '4%',
+    elevation: 1,
     marginHorizontal: 2,
+
+
   },
   planContainer: {
     width: width * 0.85,
-    maxWidth: 380,
     backgroundColor: '#f2f2f2',
     borderRadius: 15,
-    padding: 10,
-    elevation: 2,
+    padding: 15,
+    elevation: 1,
     marginHorizontal: 5,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -201,10 +204,15 @@ const styles = StyleSheet.create({
   },
   savingsContainer: {
     marginTop: 8,
+    backgroundColor: 'orange',
+    width: width * 0.20,
+    alignItems: 'center',
+    padding: '2%',
+    borderRadius: 10
   },
   savingsText: {
     fontSize: 14,
-    color: '#FF5722',
+    color: 'green',
   },
   trialText: {
     fontSize: 12,

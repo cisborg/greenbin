@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, View, Text,Platform, StatusBar, TouchableOpacity, TextInput, Dimensions, Animated } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Platform, StatusBar, TouchableOpacity, TextInput, Dimensions, Animated } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { FontFamily, Color, FontSize, Border } from "../../GlobalStyles";
+import { FontFamily, Color, FontSize } from "../../GlobalStyles";
 
-const { width } = Dimensions.get('window'); // Get the screen width
+const { width } = Dimensions.get('window');
 
 const SeeAllEvents = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,10 +18,9 @@ const SeeAllEvents = () => {
     { title: "International Gala Music Festival", date: "Sun, Apr 25 • 10:15 AM", location: "Kenyatta Avenue Nairobi, Kenya", image: require("../../assets/galaMusic.avif") }
   ];
 
-  const [filteredEvents, setFilteredEvents] = useState(events); // Initial event list
-  const animationRefs = useRef(filteredEvents.map(() => new Animated.Value(0))); // Create an array of animated values
+  const [filteredEvents, setFilteredEvents] = useState(events);
+  const animationRefs = useRef(filteredEvents.map(() => new Animated.Value(0)));
 
-  // Search logic to filter events based on query
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = events.filter(event => 
@@ -30,11 +29,10 @@ const SeeAllEvents = () => {
       event.location.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredEvents(filtered);
-    animationRefs.current = filtered.map(() => new Animated.Value(0)); // Reset animations for new filtered events
-    runAnimations(filtered.length); // Run animations for new filtered events
+    animationRefs.current = filtered.map(() => new Animated.Value(0));
+    runAnimations(filtered.length);
   };
 
-  // Run animations for each event
   const runAnimations = (length) => {
     for (let i = 0; i < length; i++) {
       Animated.timing(animationRefs.current[i], {
@@ -46,32 +44,29 @@ const SeeAllEvents = () => {
   };
 
   useEffect(() => {
-    runAnimations(filteredEvents.length); // Run animation on component mount
+    runAnimations(filteredEvents.length);
   }, []);
 
   const handleEventPress = (event) => {
-    // Handle event click, e.g., navigate to event details
     console.log(`Event clicked: ${event.title}`);
   };
 
   return (
     <SafeAreaView style={styles.seeAllEvents}> 
-    <View style={styles.header}>
-    <TextInput
-        style={styles.searchInput}
-        placeholder="Search events by name, time, or venue"
-        placeholderTextColor={Color.colorGray_100}
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
-      <TouchableOpacity style={styles.settingsButton}>
-        <Ionicons name="settings" size={28} color={Color.colorLimegreen_200} />
-      </TouchableOpacity>
-    </View>
-      
+      <View style={styles.header}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search events by name, time, or venue"
+          placeholderTextColor={Color.colorGray_100}
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+        <TouchableOpacity style={styles.settingsButton}>
+          <Ionicons name="settings" size={28} color='green' />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.groupParent}>
-        {/* Animated View for Event Cards */}
         {filteredEvents.map((event, index) => (
           <Animated.View 
             key={index}
@@ -101,14 +96,13 @@ const EventCard = ({ title, date, location, imageSource }) => {
       <View style={styles.groupChildShadowBox} />
       <View style={styles.imGoingToShakeYParent}>
         <Image style={styles.groupInner} contentFit="cover" source={imageSource} />
-        <View style={styles.groupInnerShadowBox} >
+        <View style={styles.groupInnerShadowBox}>
           <Text style={styles.imGoingTo}>{title}</Text>
           <Text style={styles.satMay1}>{date}</Text>
-          <View style={{flexDirection: 'row'}}>
-          <Image style={styles.groupInner1} contentFit="cover" source={require('../../assets/location.jpg')} />
-          <Text style={styles.min}>{location}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image style={styles.locationIcon} contentFit="cover" source={require('../../assets/location.jpg')} />
+            <Text style={styles.min}>{location}</Text>
           </View>
-          
         </View>
       </View>
     </View>
@@ -119,26 +113,30 @@ const styles = StyleSheet.create({
   seeAllEvents: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 20,
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
+    padding: 8,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  header:{ 
+  header: { 
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginLeft: 15,
   },
   searchInput: {
-    height: 38,
+    height: 40,
     borderRadius: 12,
     paddingHorizontal: 10,
     marginBottom: 20,
-    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
+    marginTop: 12,
+   shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
-    marginTop: 12,
-    width: '80%', // Full width for responsiveness
+    width: '80%',
   },
   settingsButton: {
     height: 40,
@@ -148,22 +146,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
   },
-  
   groupParent: {
     marginTop: 10,
   },
   rectangleParent: {
     height: 120,
-    marginBottom: -10, // Reduced margin
-    elevation: 5,
-    padding: 10,
-    width: width * 0.9, // Responsive width
+    marginBottom: '-3.5%',
+    width: '100%', // Responsive width
     alignSelf: 'center',
   },
   groupChildShadowBox: {
     position: "absolute",
     width: "100%",
-    marginBottom: -10
+    marginBottom: -10,
   },
   imGoingToShakeYParent: {
     marginTop: -10,
@@ -172,38 +167,34 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#fff',
     marginBottom: -50,
-    
-    elevation: 3,
-    
+    elevation: 1,
   },
   imGoingTo: {
-    fontSize: FontSize.body2_size,
+    fontSize: width * 0.032, // Dynamic font size
     fontWeight: "500",
     color: Color.colorTypographyTitle,
   },
   satMay1: {
     color: 'blue',
-    fontSize: FontSize.subTitle1_size,
+    fontSize: width * 0.030, // Dynamic font size
     marginTop: 6,
   },
   min: {
     color: Color.colorTypographySubColor,
-    fontSize: FontSize.subTitle1_size,
+    fontSize: width * 0.029, // Dynamic font size
     marginTop: 4,
   },
   groupInner: {
-    width: '25%',
+    width: '25%', // Responsive width
     height: 75,
-    borderRadius: 19,
-    marginRight: 12
+    borderRadius: 18,
+    marginRight: 10
   },
-  groupInner1: {
-    width: '8%',
-    height: 18,
+  locationIcon: {
+    width: 20,
+    height: 20,
     marginRight: 5,
-    marginTop: 3
   },
-
 });
 
 export default SeeAllEvents;

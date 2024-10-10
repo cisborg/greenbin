@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: width, // Full screen width
-        padding: 20,
+        width: width * 0.99, // Full screen width
+        padding: '2%',
         backgroundColor: '#F0FFF4', // Light green for eco-friendly vibe
         paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
@@ -73,14 +73,14 @@ const styles = StyleSheet.create({
         marginBottom: 25, // Space below image
     },
     title: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: Color.colorLimegreen_200 ,// Eco-friendly green color for title
+        color: 'green' ,// Eco-friendly green color for title
         width: width * 0.8, // Responsive width (40% of screen width)
     },
     message: {
-        fontSize: 16,
+        fontSize: 14,
         textAlign: 'center',
         marginBottom: 20,
         color: '#4CAF50' // Light green for message text
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 10,
-        color: '#388E3C' // Darker green for contrast in subtitle
+        color: 'orange' // Darker green for contrast in subtitle
     },
     nextSteps: {
         fontSize: 15,
@@ -110,25 +110,27 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-        elevation: 2, // Elevation for Android
+        elevation: 1, // Elevation for Android
+        marginBottom: '5%',
     },
     inviteButtonText: {
         color: '#FFFFFF',
-        fontSize: 17,
+        fontSize: 15,
         fontWeight: 'bold',
         marginRight: 10, // Space between text and icon
         textAlign: 'center',
+        
     },
     proceedButton: {
         padding: 13,
-        backgroundColor: Color.colorLimegreen_200, // Light green color for proceed button
+        backgroundColor: 'green', // Light green color for proceed button
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 2,
         borderRadius: 14,
-        width: 220 // Button width
+        width: width * 0.96 // Button width
     },
     proceedButtonText: {
         color: '#FFFFFF',

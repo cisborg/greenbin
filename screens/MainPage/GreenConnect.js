@@ -28,7 +28,7 @@ const CustomHeader = ({ profileImage }) => {
     <View style={styles.headerContainer}>
       <View style={{ flexDirection: 'column' }}>
       <Text style={styles.headerTitle}>Pilot Green Connect</Text>
-      <Text style={styles.subheaderTitle}>Connect and Promote Green Circular Economy </Text>
+      <Text style={styles.subheaderTitle}> Connect and Go green with GreenBin! </Text>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
         <Image source={{ uri: profileImage }} style={styles.profileImageHeader} />
@@ -67,14 +67,14 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         return (
           <TouchableOpacity key={index} onPress={onPress} style={styles.tabButton}>
             <View style={styles.tabIcon}>
-              {options.tabBarIcon({ color: isFocused ? Color.colorLimegreen_200 : 'gray', size: 18 })}
+              {options.tabBarIcon({ color: isFocused ? 'green' : 'gray', size: 18 })}
               {options.tabBarBadge && (
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>{options.tabBarBadge}</Text>
                 </View>
               )}
             </View>
-            <Text style={[styles.tabLabel, { color: isFocused ? Color.colorLimegreen_200 : 'gray' }]}>
+            <Text style={[styles.tabLabel, { color: isFocused ? 'green' : 'gray' }]}>
               {label}
             </Text>
           </TouchableOpacity>
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 10,
+    padding: 5,
     overflow: 'hidden',
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
@@ -260,19 +260,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    marginBottom: '4%',
+    padding: 7,
     backgroundColor: Color.colorWhite,
-    elevation: 3,
-    left: 10
+    borderRadius: 10,
+    marginTop: '-7%'
   },
+  
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   subheaderTitle:{
     fontSize: 16,
     color: Color.colorGray_400,
+    marginLeft: -5
   },
   profileImageHeader: {
     width: 40,
@@ -288,7 +291,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     marginBottom: 15,
     width: '100%',
-    elevation: 3
+    elevation: 1,
+    marginTop: -50
   },
   userContainer: {
     width: 150,
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   connectButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     borderRadius: 10,
     paddingVertical: 5,
     paddingHorizontal: 10,

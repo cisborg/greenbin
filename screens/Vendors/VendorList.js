@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: '2%',
   },
   list: {
     paddingBottom: 20,
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 12,
     justifyContent: 'center',
-    top: -145,
-    left: 310,
+    top: '-65%',
+    left: '68%',
   },
   connectButton: {
     backgroundColor: 'green',
@@ -271,24 +271,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchInput: {
-    borderRadius: 10,
+    borderRadius: 13,
     paddingHorizontal: 12,
     height: 40,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderColor: 'gray',
+    borderWidth: 1,
     marginBottom: 10,
-    shadowColor: '#000',
     marginLeft: 30,
-    marginRight: 13,
-    width: '80%'
+    marginRight: 23,
+    width: '70%'
   },
   connectionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    top: -117,
-    left: 200,
+    top: '-50%',
+    left: '90%',
   },
   connectionImage: {
     width: 35,

@@ -9,10 +9,10 @@ import { useRoute } from '@react-navigation/native';
 
 const CardScroll = () => {
   const cards = [
-    { id: 1, image: require('../../assets/greenFriday.png') },
-    { id: 2, image: require('../../assets/greenPoints.png') },
-    { id: 3, image: require('../../assets/Bags.png') },
-    { id: 4, image: require('../../assets/connect.png') },
+    { id: 1, image: { uri: 'https://your-image-url.com/greenFriday.png' } },
+    { id: 2, image: { uri: 'https://your-image-url.com/greenPoints.png' } },
+    { id: 3, image: { uri: 'https://your-image-url.com/Bags.png' } },
+    { id: 4, image: { uri: 'https://your-image-url.com/connect.png' } },
   ];
 
   const [randomCards, setRandomCards] = useState([]);
@@ -59,7 +59,7 @@ const CardScroll = () => {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardScrollContainer}>
       {randomCards.map(card => (
-        <TouchableOpacity key={card.id}>
+        <TouchableOpacity key={card.id} onPress={() => console.log(`Card ${card.id} pressed`)}>
           <Animated.View style={[styles.cardContainer, animatedStyle]}>
             <Image source={card.image} style={styles.cardImage} />
           </Animated.View>
@@ -123,35 +123,35 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.navigationContainer}>
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Wifi')}>
-            <FontAwesome name="wifi" size={24} color={Color.colorLimegreen_200} />
+            <FontAwesome name="wifi" size={24} color='green' />
             <Text style={styles.navButtonText}>StarLink</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyAirtime')}>
-            <AntDesign name="creditcard" size={24} color={Color.colorLimegreen_200} />
+            <AntDesign name="creditcard" size={24} color='green' />
             <Text style={styles.navButtonText}>Buy Airtime</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Crypto')}>
-            <FontAwesome name="bitcoin" size={24} color={Color.colorLimegreen_200} />
+            <FontAwesome name="bitcoin" size={24} color='green' />
             <Text style={styles.navButtonText}>Trading</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods')}>
-            <FontAwesome name="shopping-cart" size={24} color={Color.colorLimegreen_200} />
+            <FontAwesome name="shopping-cart" size={24} color='green' />
             <Text style={styles.navButtonText}>Buy Goods</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('getPremium')}>
-            <MaterialIcons name="health-and-safety" size={24} color={Color.colorLimegreen_200} />
+            <MaterialIcons name="health-and-safety" size={24} color='green' />
             <Text style={styles.navButtonText}>HealthSmart</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Transaction')}>
-            <FontAwesome name="send" size={24} color={Color.colorLimegreen_200} />
+            <FontAwesome name="send" size={24} color='green' />
             <Text style={styles.navButtonText}>Transactions</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('GoGames')}>
-            <FontAwesome name="gamepad" size={24} color={Color.colorLimegreen_200} />
-            <Text style={styles.navButtonText}>Go GAMES</Text>
+            <FontAwesome name="gamepad" size={24} color='green' />
+            <Text style={styles.navButtonText}>Go Games</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffff',
     padding: 15,
+    marginTop: '8%',
   },
   header: {
     flexDirection: 'row',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color:'green'
   },
   balanceContainer: {
     flexDirection: 'row',
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button1Text: {
-    color: Color.colorLimegreen_200,
+    color:'green',
     fontSize: 15,
     fontWeight: '600',
   },
@@ -271,7 +272,7 @@ const styles = StyleSheet.create({
   },
   moneyBalance: {
     fontSize: 15,
-    color: Color.colorLimegreen_200,
+    color:'green',
     marginBottom: 5,
   },
   moneyBalance1: {
@@ -338,6 +339,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '90%',
     borderRadius: 17,
+    resizeMode: 'contain'
   },
 });
 

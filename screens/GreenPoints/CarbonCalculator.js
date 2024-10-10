@@ -146,7 +146,7 @@ const CarbonFootprintCalculator = () => {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="#4CAF50" />
             </TouchableOpacity>
-            <Text style={styles.header}>Monitor Your Focus Value Chain!</Text>
+            <Text style={styles.header}>Green Carbon Calculator</Text>
           </View>
 
           <View style={styles.pieChartContainer}>
@@ -213,13 +213,13 @@ const CarbonFootprintCalculator = () => {
             <Text style={styles.barChartTitle}>Monthly Eco Threshold</Text>
             <BarChart
               data={barData}
-              width={screenWidth - 40}
+              width={screenWidth - 20}
               height={200} // Reduced height
               fromZero={true}
               chartConfig={{
-                backgroundColor: '#fff',
+                backgroundColor: 'yellow',
                 backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
+                backgroundGradientTo: '#f5f5f5',
                 decimalPlaces: 0,
                 color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
@@ -252,10 +252,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 1,
   },
   scrollView: {
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -263,9 +263,9 @@ const styles = StyleSheet.create({
     marginBottom: 15, // Reduced margin
   },
   header: {
-    fontSize: 18, // Reduced font size
-    fontWeight: '700',
-    marginLeft: 10, // Reduced margin
+    fontSize: 21, // Reduced font size
+    fontWeight: '800',
+    marginLeft: '14%', // Reduced margin
     color: 'green',
   },
   pieChartContainer: {
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
     justifyContent: 'center',
   },
   legend: {
@@ -332,7 +332,8 @@ const styles = StyleSheet.create({
   },
   barChartContainer: {
     marginTop: 20,
-    padding: 10,
+    padding: 15,
+    paddingHorizontal: 10,
     borderRadius: 15,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -342,9 +343,9 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   barChartTitle: {
     fontSize: 12, // Reduced font size

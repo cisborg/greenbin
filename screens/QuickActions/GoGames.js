@@ -93,11 +93,16 @@ const GameCard = ({ game }) => {
       <Image source={game.image} style={styles.cardImage} />
       <Text style={styles.cardTitle}>{game.title}</Text>
       <Text style={styles.cardDescription}>{game.description}</Text>
-      <Text style={styles.cardFormat}><strong>Format:</strong> {game.format}</Text>
-      <Text style={styles.cardHowToPlay}><strong>How to Play:</strong> {game.howToPlay}</Text>
+      <Text style={styles.cardFormat}>
+        <Text style={{ fontWeight: 'bold' }}>Format:</Text> {game.format}
+      </Text>
+      <Text style={styles.cardHowToPlay}>
+        <Text style={{ fontWeight: 'bold' }}>How to Play:</Text> {game.howToPlay}
+      </Text>
     </View>
   );
 };
+
 
 const GamesScreen = () => {
   const navigation = useNavigation();
@@ -135,19 +140,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 15, // Reduced padding
+    padding: 2, // Reduced padding
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerContainer: {
     padding: 5, // Reduced padding
     flexDirection: "row",
     alignItems: 'flex-start',
-    marginTop: 10,
+    marginBottom: '-1%',
+    marginTop: '-5%'
   },
   header: {
     fontSize: 18, // Decreased font size
     fontWeight: 'bold',
-    color: Color.colorLimegreen_200,
+    color: 'green',
     textAlign: 'center',
     marginLeft: 5, // Reduced margin
     flex: 1,
@@ -157,9 +163,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingLeft: 10, // Reduced padding
     paddingRight: 10, // Reduced padding
+    marginBottom: 20
+
   },
   cardListContent: {
-    paddingBottom: 15, // Reduced padding
+    paddingBottom: 5, 
   },
   card: {
     backgroundColor: '#ffffff',
@@ -169,11 +177,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1, // Adjusted shadow offset
+      height: 2, // Adjusted shadow offset
     },
     shadowOpacity: 0.15, // Adjusted shadow opacity
     shadowRadius: 2, // Adjusted shadow radius
-    elevation: 3, // Adjusted elevation
+    elevation: 1, // Adjusted elevation
   },
   cardImage: {
     width: '100%',
@@ -182,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 8, // Reduced margin
   },
   cardTitle: {
-    fontSize: 20, // Decreased font size
+    fontSize: 17, // Decreased font size
     fontWeight: 'bold',
     color: '#27ae60',
   },

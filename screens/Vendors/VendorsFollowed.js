@@ -95,7 +95,7 @@ const FollowedVendorsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: '1%',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     backgroundColor: '#ffff',
   },
@@ -117,12 +117,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
     marginRight: 20,
   },
   content: {
-    margin: 20
+    margin: 5
   },
   emptyMessage: {
     textAlign: 'center',
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 15,
     marginBottom: 15,
-    elevation: 3,
+    elevation: 2,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    maxWidth: width * 0.95,
+    maxWidth: width * 0.98,
   },
   vendorInfo: {
     flexDirection: 'row',
@@ -157,15 +157,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   vendorName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   vendorProfession: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'gray',
   },
   vendorDescription: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'darkgray',
   },
   unfollowButton: {
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: '-10%'
   },
   loadingButton: {
     backgroundColor: 'orange',

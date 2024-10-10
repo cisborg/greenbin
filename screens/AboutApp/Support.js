@@ -74,19 +74,19 @@ const HelpSupportScreen = () => {
 
           <Text style={styles.findUsTitle}>Find us on</Text>
           <View style={styles.socialIcons}>
-            <TouchableOpacity onPress={() => handleSocialPress('https://instagram.com')}>
+            <TouchableOpacity style={styles.tweak} onPress={() => handleSocialPress('https://instagram.com')}>
               <Ionicons name="logo-instagram" size={30} color="#E1306C" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSocialPress('https://facebook.com')}>
+            <TouchableOpacity style={styles.tweak} onPress={() => handleSocialPress('https://facebook.com')}>
               <Ionicons name="logo-facebook" size={30} color="#3b5998" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSocialPress('https://twitter.com/naturediversity')}>
+            <TouchableOpacity  style={styles.tweak} onPress={() => handleSocialPress('https://twitter.com/naturediversity')}>
               <Ionicons name="logo-twitter" size={30} color="#1DA1F2" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSocialPress('https://linkedin.com')}>
+            <TouchableOpacity style={styles.tweak}  onPress={() => handleSocialPress('https://linkedin.com')}>
               <Ionicons name="logo-linkedin" size={30} color="#0077B5" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSocialPress('https://youtube.com')}>
+            <TouchableOpacity style={styles.tweak} onPress={() => handleSocialPress('https://youtube.com')}>
               <Ionicons name="logo-youtube" size={30} color="#FF0000" />
             </TouchableOpacity>
           </View>
@@ -99,8 +99,8 @@ const HelpSupportScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    margin: 15,
+    padding: '1%',
+    margin: 10,
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
   },
@@ -133,10 +133,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 1,
   },
   sectionTitle: {
     fontSize: 18,
@@ -174,8 +174,21 @@ const styles = StyleSheet.create({
   },
   socialIcons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     marginVertical: 5,
+  },
+  tweak: {
+    width: '15%',
+    height: '35%',
+    margin: 10,
+    paddingHorizontal: 2,
+    paddingVertical: 4,
+    borderColor: 'lightgrey',
+    borderWidth: 1,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
   },
 });
 

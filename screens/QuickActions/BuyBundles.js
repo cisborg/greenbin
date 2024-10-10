@@ -6,12 +6,10 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ActivityIndicator,
-    Image,
     FlatList,
-    Modal,
-    Button,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 const categories = {
     Daily: [
@@ -76,7 +74,7 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
     const [isSubscribing, setIsSubscribing] = useState(false);
     const [subscribed, setSubscribed] = useState(false);
     const [isOrdering, setIsOrdering] = useState(false); // Individual loading for the Order button
-    const [modalVisible, setModalVisible] = useState(false); // State for Modal
+    const navigation = useNavigation();
 
     const handleOrder = () => {
         if (stockRemaining <= 0) {
@@ -86,7 +84,7 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
         setIsOrdering(true);
         setTimeout(() => {
             setIsOrdering(false);
-            setModalVisible(true); // Show modal after loading
+            navigation.navigate('Checkout'); 
         }, 300); // Simulate loading
     };
 
@@ -109,15 +107,6 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
         }, 300);
     };
 
-    const confirmOrder = () => {
-        // Handle order confirmation logic here
-        alert(`Confirmed: ${pkg.name} ordered!`);
-        setModalVisible(false);
-    };
-
-    const cancelOrder = () => {
-        setModalVisible(false); // Close modal without confirming
-    };
 
     return (
         <View style={styles.card}>
@@ -173,29 +162,7 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
                 </TouchableOpacity>
             </View>
 
-            {/* Modal for Order Confirmation */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContainer}>
-                        <Text style={styles.modalText}>
-                            Confirm that you are purchasing this "{pkg.name}" for ${pkg.price}.
-                            Your package will arrive in a timely manner.
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Continue enjoying EcoGreen Health!
-                        </Text>
-                        <View style={styles.modalButtonContainer}>
-                            <Button title="Okay" onPress={confirmOrder} />
-                            <Button title="Cancel" onPress={cancelOrder} color="red" />
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+           
         </View>
     );
 };
@@ -273,9 +240,9 @@ const BuyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 5,
         backgroundColor: '#f0f0f0',
-        margin: 15
+        margin: 5
     },
     header: {
         flexDirection: 'row',
@@ -399,30 +366,8 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
-    },
-    modalOverlay: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContainer: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-        width: '80%',
-    },
-    modalText: {
-        fontSize: 16,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    modalButtonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
+   
+    }
 });
 
 export default BuyScreen;

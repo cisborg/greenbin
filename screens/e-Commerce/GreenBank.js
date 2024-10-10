@@ -167,7 +167,7 @@ const GreenBankAccount = () => {
             <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.goBack()}>
               <AntDesign name="leftcircle" size={22} color="green" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>🌍 GreenBank Account</Text>
+            <Text style={styles.headerTitle}> GreenBank Account   🌍</Text>
           </View>
 
           {/* Display Static Balance */}
@@ -272,7 +272,7 @@ const GreenBankAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10, // Reduced padding
+    padding: '2%', // Reduced padding
     backgroundColor: '#f5f5f5',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10, // Reduced margin
-    marginTop: 10, // Reduced margin
+    marginTop: -50, // Reduced margin
   },
   headerTitle: {
     fontSize: 20, // Reduced font size
@@ -309,19 +309,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   input: {
-    padding: 8, // Reduced padding
-    borderRadius: 10, // Slightly reduced border radius
+    padding: 10, // Reduced padding
+    borderRadius: 13, // Slightly reduced border radius
     marginBottom: 8, // Reduced margin
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   picker: {
     height: 35, // Reduced height
     width: '100%',
     marginBottom: 8, // Reduced margin
-    borderRadius: 10, // Slightly reduced border radius
+    borderRadius: 20, // Slightly reduced border radius
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -330,14 +331,16 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    marginHorizontal: 3, // Reduced margin
+    marginHorizontal: 5, // Reduced margin
     backgroundColor: '#2e7d32',
     padding: 10, // Reduced padding
-    borderRadius: 10, // Slightly reduced border radius
+    alignItems: 'center',
+    borderRadius: 15, // Slightly reduced border radius
   },
   buttonText: {
     color: '#fff',
     fontWeight: '500', // Reduced font weight
+    alignSelf: 'center',
   },
   transferToggleText: {
     color: '#00695c',
@@ -376,7 +379,7 @@ const styles = StyleSheet.create({
   transactionType: {
     fontSize: 16, // Reduced font size
     fontWeight: '500', // Reduced font weight
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   transactionAmount: {
     fontSize: 16, // Reduced font size

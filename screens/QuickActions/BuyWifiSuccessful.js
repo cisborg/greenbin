@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         color: '#4CAF50',
     },
     colorText: {
-        color: Color.colorLimegreen_200
+        color: 'green'
     },
     message: {
         color: '#555',

@@ -84,8 +84,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: 'orange'
   },
   clearAllText: {
     color: '#007BFF',
@@ -103,10 +104,10 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 1,
-    elevation: 3,
+    shadowRadius: 3,
+    elevation: 1,
   },
   dateContainer: {
     marginBottom: 4,

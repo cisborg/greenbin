@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Color, FontFamily } from "../../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Animated } from 'react-native';
+import { Platform } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 const DialPad = () => {
-  const [amount, setAmount] = useState('');  // State to hold the entered amount
-  const [fadeAnim] = useState(new Animated.Value(0)); // Initial opacity is 0
+  const [amount, setAmount] = useState('');
+  const [fadeAnim] = useState(new Animated.Value(0));
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Animate the view on mount
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
@@ -23,35 +22,29 @@ const DialPad = () => {
     }).start();
   }, [fadeAnim]);
 
-  const handlePress = (value) => {
+  const handlePress = useCallback((value) => {
     setAmount((prev) => prev + value);
-  };
+  }, []);
 
-  const handleProceed = (enteredAmount) => {
+  const handleProceed = useCallback((enteredAmount) => {
     navigation.navigate('Payment', { amount: enteredAmount });
-  };
+  }, [navigation]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     setAmount((prev) => prev.slice(0, -1));
-  };
+  }, []);
 
-  const handleCheckPress = () => {
+  const handleCheckPress = useCallback(() => {
     if (amount === '') {
-      Alert.alert(
-        'Amount Required',
-        'Please enter an amount before proceeding.',
-        [{ text: 'OK' }]
-      );
+      Alert.alert('Amount Required', 'Please enter an amount before proceeding.', [{ text: 'OK' }]);
     } else {
       handleProceed(amount);
     }
-  };
+  }, [amount, handleProceed]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ ...styles.animatedContainer, opacity: fadeAnim }}>
-        
-        {/* Top Header with Back Button and Title */}
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <AntDesign name="arrowleft" size={24} color="black" />
@@ -59,19 +52,16 @@ const DialPad = () => {
           <Text style={styles.headerText}>Enter Amount</Text>
         </View>
 
-        {/* Prepaid Recharge Text */}
         <View style={styles.rechargeContainer}>
           <Text style={styles.rechargeText}>Recharge Your Wallet and earn more GCPs!</Text>
           <Text style={styles.rechargeText1}>KES {amount} for Self</Text>
         </View>
 
-        {/* Display area */}
         <View style={styles.displayContainer}>
           <Text style={styles.amountText}>KES: {amount}</Text>
           <FontAwesome6 name="delete-left" size={24} color="black" onPress={handleDelete} />
         </View>
 
-        {/* Number pad */}
         <View style={styles.padContainer}>
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((num, index) => (
             <TouchableOpacity key={index} style={styles.padButton} onPress={() => handlePress(num)}>
@@ -79,20 +69,20 @@ const DialPad = () => {
             </TouchableOpacity>
           ))}
           
-          {/* Check Button */}
           <TouchableOpacity 
             style={[styles.checkedButton, amount === '' ? styles.disabledButton : null]} 
             onPress={handleCheckPress}
             disabled={amount === ''}
+            accessibilityLabel="Proceed with the entered amount"
           >
-            <AntDesign name="checkcircle" size={55} color={amount !== '' ? Color.colorLimegreen_200 : 'gray'} />
+            <AntDesign name="checkcircle" size={55} color={amount !== '' ? 'green' : 'gray'} />
           </TouchableOpacity>
         </View>
 
-        {/* Browse Plans Button */}
         <TouchableOpacity style={styles.browseButton} onPress={() => navigation.navigate('BuyBundles')}>
           <Text style={styles.browseText}>Browse Plans</Text>
         </TouchableOpacity>
+
         <Text style={styles.footerText}>
           We will send you 10% of your deposits above 500 to your greenBank after the successful deposits.
         </Text>
@@ -108,62 +98,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: '5%', // Responsive padding
   },
   animatedContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 50,
+    paddingTop: '10%', // Responsive padding
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Color.colorLimegreen_200,
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 10,
+    backgroundColor: 'green',
+    width: '86%',
+    paddingHorizontal: '5%', // Responsive padding
+    paddingVertical: '3%', // Responsive padding
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 1,
   },
   backButton: {
-    marginRight: 15,
+    marginRight: '5%', // Responsive margin
   },
   headerText: {
-    fontSize: 20,
+    fontSize: width < 400 ? 18 : 20, // Responsive font size
     color: 'white',
     fontWeight: 'bold',
-    marginLeft: 80,
+    marginLeft: '10%', // Responsive margin
   },
   rechargeContainer: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: '5%', // Responsive margin
   },
   rechargeText: {
-    fontSize: 18,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     color: 'orange',
-    marginBottom: 5,
+    marginBottom: '2%', // Responsive margin
   },
   rechargeText1: {
-    fontSize: 18,
+    fontSize: width < 400 ? 14 : 16, // Responsive font size
     color: 'black',
-    marginBottom: 5,
+    marginBottom: '2%', // Responsive margin
   },
   displayContainer: {
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: '5%', // Responsive margin
+    paddingHorizontal: '5%', // Responsive padding
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   amountText: {
-    fontSize: 36,
+    fontSize: width < 400 ? 30 : 36, // Responsive font size
     fontWeight: 'bold',
     color: 'green',
-    marginRight: 10,
+    marginRight: '2%', // Responsive margin
   },
   padContainer: {
     width: '80%',
@@ -174,20 +164,20 @@ const styles = StyleSheet.create({
   padButton: {
     width: '25%',
     height: 60,
-    marginBottom: 12,
-    marginRight: 5,
+    marginBottom: '3%', // Responsive margin
+    marginRight: '2%', // Responsive margin
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 18,
-    marginVertical: 10,
+    marginVertical: '2%', // Responsive margin
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 1,
   },
   padText: {
-    fontSize: 24,
+    fontSize: width < 400 ? 20 : 24, // Responsive font size
     color: '#000',
   },
   checkedButton: {
@@ -196,28 +186,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 18,
-    marginVertical: 10,
+    marginVertical: '2%', // Responsive margin
   },
   disabledButton: {
     opacity: 0.5,
   },
   footerText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: '5%', // Responsive margin
     color: '#777',
+    fontSize: width < 400 ? 11 : 13, // Responsive font size
   },
   browseButton: {
-    marginTop: 20,
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    backgroundColor: Color.colorLimegreen_200,
+    marginTop: '5%', // Responsive margin
+    paddingVertical: '3%', // Responsive padding
+    paddingHorizontal: '5%', // Responsive padding
+    backgroundColor: 'green',
     borderRadius: 15,
   },
   browseText: {
-    color: '#FFF',
-    fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
-    fontFamily: FontFamily.poppinsSemiBold,
+    textAlign: 'center',
+    fontSize: width < 400 ? 16 : 18, // Responsive font size
   },
 });
 

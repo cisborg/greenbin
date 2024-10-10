@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View,Alert, Text, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions, Modal } from 'react-native';
+import { StyleSheet, View,Alert, Text, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions, Modal, StatusBar,Platform } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 const { width, height } = Dimensions.get('window');
 
 const ViewSquadScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [isMember, setIsMember] = useState(false);
   const { squadName } = route.params;
 
   // State for the modal
@@ -24,8 +23,8 @@ const ViewSquadScreen = () => {
     handle: "@pollutiondaily",
     createdDate: 'Oct 2024',
     posts: 309,
-    views: '12K',
-    upvotes: '1K',
+    comments: 402,
+    upvotes: 560,
     description: 'We initiate pilot monitoring, manage and controlling pollution effluents!',
     moderator: {
       name: 'Vicky Mickey',
@@ -101,16 +100,24 @@ const ViewSquadScreen = () => {
           <Text style={styles.headerTitle}>{squadData.name}</Text>
           <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
           <TouchableOpacity style={styles.feature}>
-            <FontAwesome name="user-circle-o" size={24} color="black" />
+            <FontAwesome name="user-circle-o" size={24} color="orange" />
             <Text style={styles.featuredSquad}>Featured Activities</Text>
           </TouchableOpacity>   
           
-          {/* Posts, Views, Upvotes Section */}
-          <View style={styles.statsContainer}>
-            <Text style={styles.statText}>{squadData.posts} Posts</Text>
-            <Text style={styles.statText}>{squadData.views} Views</Text>
-            <Text style={styles.statText}>{squadData.upvotes} Likes</Text>
-          </View>
+          {/* Posts, Comments, Upvotes Section */}
+         {/* Posts, Comments, Upvotes Section */}
+        <View style={styles.statsContainer}>
+          <Text style={styles.statText}>
+            {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
+          </Text>
+          <Text style={styles.statText}>
+            {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
+          </Text>
+          <Text style={styles.statText}>
+            {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Upvotes
+          </Text>
+        </View>
+
           
           {/* Blinking Description */}
           <Animated.View style={{ opacity: fadeAnim }}>
@@ -132,7 +139,7 @@ const ViewSquadScreen = () => {
             <View style={styles.moderatorDetails}>
               <Text style={styles.moderatorName}>{squadData.moderator.name}</Text>
               <Text style={styles.moderatorRole}>
-                {squadData.moderator.role} <Ionicons name="star" size={12} color="#FFD700" />
+                {squadData.moderator.role} <Ionicons name="star" size={12} color="green" />
               </Text>
             </View>
           </View>
@@ -146,13 +153,22 @@ const ViewSquadScreen = () => {
           <View style={styles.membersList}>
             {squadData.members.map((member, index) => (
               <Image key={index} source={{ uri: member.avatar }} style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
-            ))}
-            <Text style={styles.totalMembers}>{squadData.upvotes}</Text>
+              ))}
+          <Text style={styles.totalMembers}>
+            {squadData.members.length >= 1000 ? `${(squadData.members.length / 1000).toFixed(1)}k` : squadData.members.length}
+          </Text>
+
           </View>
+          <TouchableOpacity style={styles.notification}>
+             <FontAwesome6 name="user-check" size={23} color="green" />
+         </TouchableOpacity>
+          <TouchableOpacity style={styles.notification}>
+            <Ionicons name="notifications" size={25} color="green" />
+          </TouchableOpacity>
           <View style={styles.actionsContainer}>
             {/* Ellipsis button with modal */}
             <TouchableOpacity 
-              style={styles.icons} 
+              style={styles.notification} 
               accessibilityLabel="More options"
               onPress={() => setModalVisible(true)} // Open modal
             >
@@ -177,7 +193,6 @@ const ViewSquadScreen = () => {
         
       </ScrollView>
 
-      {/* Modal for Leave Squad */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -186,7 +201,7 @@ const ViewSquadScreen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Do you want to leave the squad?</Text>
+            <Text style={styles.modalText}>Do you want to leave the squad ?</Text>
             <TouchableOpacity 
               style={styles.leaveButton} 
               onPress={handleLeaveSquad}
@@ -210,6 +225,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
+    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
   },
   scrollView: {
     paddingHorizontal: width * 0.05, // 5% padding on both sides
@@ -232,9 +248,7 @@ const styles = StyleSheet.create({
     height: height * 0.2, // Cover image takes 20% of the screen height
   },
   feature: {
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingTop: 4,
@@ -248,7 +262,7 @@ const styles = StyleSheet.create({
   featuredSquad: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#fff',
     marginBottom: 10,
     marginLeft: 15,
   },
@@ -270,14 +284,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  icons: {
-    borderWidth: 1,
-    marginRight: 20,
-    padding: 10,
-    borderRadius: 14,
-    borderColor: 'lightgray',
-    height: 50,
-  },
+ 
+
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -315,8 +323,8 @@ const styles = StyleSheet.create({
   moderatorAvatar: {
     width: 36,
     height: 36,
-    borderRadius: 10,
-    marginRight: 10,
+    borderRadius: 9,
+    marginRight: 11,
     borderWidth: 1,
     borderColor: 'lightgray',
   },
@@ -328,7 +336,7 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   moderatorRole: {
-    color: '#777777',
+    color: 'red',
     fontSize: 12,
   },
   addAdminButton: {
@@ -345,9 +353,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   membersContainer: {
-    marginBottom: 20,
+    margin: 20,
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  notification: {
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    padding: 8,
+    borderRadius: 13,
+    margin: 20
   },
   totalMembers: {
     fontSize: 15,
@@ -358,11 +373,13 @@ const styles = StyleSheet.create({
   membersList: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: 'lightgray',
     borderRadius: 12,
     padding: 8,
+    margin: 20,
+    width: width < 400 ? '34%': '35%'
+
   },
   memberAvatar: {
     width: 30,
@@ -381,11 +398,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   invitationButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor: 'green',
     borderRadius: 12,
     padding: 10,
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    left: '35%',
+    width: width < 400 ? 130: 150
   },
   invitationIcon: {
     marginRight: 10,
@@ -398,7 +419,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    left: 55,
+    left: '5%',
+    borderRadius: 14,
+    padding: 20,
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    width: '90%',
   },
   postRestrictionsText: {
     marginLeft: 10,
@@ -414,7 +440,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 14,
     alignItems: 'center',
   },
   modalText: {
@@ -425,7 +451,7 @@ const styles = StyleSheet.create({
   leaveButton: {
     backgroundColor: 'red',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 12,
     marginBottom: 10,
   },
   leaveButtonText: {
@@ -434,7 +460,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: 'gray',
   },

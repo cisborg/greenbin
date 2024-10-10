@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, CheckBox, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
+import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
+import CheckBox from '@react-native-community/checkbox';
 import { Button } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -60,6 +61,57 @@ const initialProducts = [
  
 ];
 
+const StoreHeader = () => {
+
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followText, setFollowText] = useState('Follow');
+    const [followers, setFollowers] = useState(99); // Initial number of followers
+
+    const handleFollow = () => {
+      setIsFollowing(true);
+      setTimeout(() => {
+        setIsFollowing(false);
+        setFollowers(prevFollowers => {
+          if (followText === 'Follow') {
+            setFollowText('Connected');
+            return prevFollowers + 1; // Increment followers
+          } else {
+            setFollowText('Follow');
+            return prevFollowers - 1; // Decrement followers
+          }
+        });
+      }, 300);
+    };
+  
+
+  return (
+    <View style={styles.storeHeaderContainer}>
+      <Image source={require('../../assets/tree.avif')} style={styles.storeImage} />
+      <View style={styles.storeInfoContainer}>
+        <Text style={styles.storeName}>Sysnex Electronics</Text>
+        <Text style={styles.storeDetails}>Total 707 products | {followers} followers</Text>
+        <View style={styles.ratingContainer}>
+          <Text style={styles.storeScore}>Score: 3.95</Text>
+          <Text style={styles.ratingsCount}>(292 Ratings)</Text>
+        </View>
+      </View>
+        <TouchableOpacity 
+        style={[styles.followButton, { backgroundColor: followText === 'Connected' ? 'green' : '#FF5722' }]} 
+        onPress={handleFollow}
+        disabled={isFollowing}  // Disable button when following is in progress
+        >
+        {isFollowing ? (
+          <ActivityIndicator color="#fff" /> // Show indicator if isFollowing is true
+        ) : (
+          <Text style={styles.followText}>{followText}</Text> // Button text changes dynamically
+        )}
+      </TouchableOpacity>
+
+    </View>
+  );
+};
+
+
 const ProductCard = ({ item, addToFavorites, addToCart }) => {
   const swipeableRef = useRef(null);
 
@@ -77,7 +129,7 @@ const ProductCard = ({ item, addToFavorites, addToCart }) => {
         </View>
       )}
     >
-      <TouchableOpacity style={styles.card} onPress={() => alert('Product details: ' + item.title)}>
+      <TouchableOpacity style={styles.card} >
         <Image source={item.image} style={styles.productImage} />
         <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
@@ -104,7 +156,7 @@ const ProductCard = ({ item, addToFavorites, addToCart }) => {
   );
 };
 
-const ProductList = () => {
+export default ProductList = () => {
   const [products, setProducts] = useState(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -178,12 +230,10 @@ const ProductList = () => {
 
   const addToFavorites = (item) => {
     setFavorites([...favorites, item]);
-    Alert.alert("Added to Favorites", `${item.title} has been added to your favorites.`);
   };
 
   const addToCart = (item) => {
     setCartCount(cartCount + 1);
-    Alert.alert("Added to Cart", `${item.title} has been added to your cart.`);
   };
 
   const handleSortChange = (value) => {
@@ -215,7 +265,7 @@ const ProductList = () => {
           {/* Header Section */}
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color="black" />
+              <Ionicons name="arrow-back" size={20} color="black" />
             </TouchableOpacity>
             <TextInput 
               style={styles.searchBar} 
@@ -223,11 +273,12 @@ const ProductList = () => {
               value={searchQuery} 
               onChangeText={handleSearch} 
             />
-            <TouchableOpacity onPress={() => alert(`Cart: ${cartCount} items`)}>
-              <Ionicons name="cart-outline" size={24} color="black" />
-              {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
+            <TouchableOpacity onPress={() => navigation.navigate('cart')}>
+              <FontAwesome5 name="cart-plus" size={24} color="black" />
+            {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
             </TouchableOpacity>
           </View>
+          <StoreHeader />
 
           <View style={styles.sortFilterRow}>
             <View style={styles.pickerContainer}>
@@ -301,8 +352,6 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -315,14 +364,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f5f5f5',
+    padding: '0.50%',
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
+    marginTop: 10,
+    width: '95%',
   },
   searchBar: {
     flex: 1,
@@ -331,17 +382,71 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 17,
     paddingHorizontal: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
+    width: 50
   },
   cartCount: {
     position: 'absolute',
-    top: -5,
-    right: -10,
+    top: -8,
+    right: -17,
     backgroundColor: 'green',
     color: 'white',
     borderRadius: 10,
     paddingHorizontal: 5,
-    fontSize: 12,
+    paddingVertical: 5,
+    width: 25,
+    fontSize: 11,
+  },
+  storeHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  storeImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  storeInfoContainer: {
+    flex: 1,
+  },
+  storeName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  storeDetails: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 2,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  storeScore: {
+    fontSize: 14,
+    color: '#FF9800',
+    marginRight: 4,
+  },
+  ratingsCount: {
+    fontSize: 14,
+    color: '#888',
+  },
+  followButton: {
+    backgroundColor: '#FF5722',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
+  followText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   sortFilterRow: {
     flexDirection: 'row',
@@ -353,19 +458,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
-    padding: 8,
-    borderRadius: 16,
+    padding: 1,
+    borderRadius: 20,
+    borderWidth: 1,
+    width: 150,
   },
   card: {
     flex: 1,
     backgroundColor: '#fff',
-    margin: 10,
+    margin: 9,
     borderRadius: 16,
     padding: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   swipeActions: {
     flexDirection: 'row',
@@ -403,7 +510,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   productTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
   },
   priceContainer: {
@@ -411,13 +518,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   originalPrice: {
-    fontSize: 12,
+    fontSize: 9,
     color: 'grey',
     textDecorationLine: 'line-through',
     marginRight: 5,
   },
   discountedPrice: {
-    fontSize: 14,
+    fontSize: 10,
     color: 'green',
   },
   productPrice: {

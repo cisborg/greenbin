@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },
     returnToMenu: {
         padding: 13,
-        backgroundColor: Color.colorLimegreen_200,
+        backgroundColor: 'green',
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 0.1,

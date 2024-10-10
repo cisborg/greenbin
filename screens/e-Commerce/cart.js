@@ -175,13 +175,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 20,
+    padding: 5,
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
   },
   animatedView: {
     flex: 1,
-    margin: 20
+    margin: 10
   },
   header: {
     flexDirection: 'row',
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     fontSize: 14,
-    color: Color.colorLimegreen_200,
+    color:'green',
     marginTop: 5,
   },
   quantityContainer: {
@@ -245,8 +245,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   quantityButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor:'green',
     padding: 5,
+    paddingVertical: 2,
     borderRadius: 9,
     marginHorizontal: 5,
     width: 25,
@@ -255,8 +256,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityMinusButton: {
-    backgroundColor: Color.colorWhite,
+    backgroundColor:'#f1f1f1',
     padding: 5,
+    paddingVertical: 2,
     borderRadius: 9,
     marginHorizontal: 5,
     width: 25,
@@ -266,11 +268,14 @@ const styles = StyleSheet.create({
   },
   quantityButtonText: {
     color: Color.colorWhite,
-    fontSize: 18,
+    fontSize: 13,
+    alignSelf: 'center',
   },
   quantityMinusText: {
     color: Color.colorBlack,
-    fontSize: 18,
+    fontSize: 20,
+    marginTop: -6,
+    alignSelf: 'center',
   },
   deleteButton: {
     backgroundColor: 'red',
@@ -363,7 +368,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButton: {
-    backgroundColor: Color.colorLimegreen_200,
+    backgroundColor:'green',
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 11,

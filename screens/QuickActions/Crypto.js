@@ -232,12 +232,12 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 20,
     fontWeight: '600',
-    color: Color.colorLimegreen_200,
+    color: 'green',
     textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: Color.colorLimegreen_200,
+    borderColor: 'green',
     borderRadius: 9,
     padding: 15,
     marginVertical: 10,
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    color: Color.colorLimegreen_200,
+    color: 'green',
   },
   conversionRate: {
     textAlign: 'center',

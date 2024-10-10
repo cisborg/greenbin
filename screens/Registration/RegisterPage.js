@@ -1,17 +1,16 @@
 import * as React from "react";
-import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from "react-native";
+import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Animated, Platform } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // Import Picker
+import { Picker } from "@react-native-picker/picker"; 
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../redux/actions/authActions'; // Adjust the import path as necessary
-import { FontFamily, FontSize, Color, Border } from "../../GlobalStyles";
+import { registerUser } from '../../redux/actions/authActions'; 
+import { FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Utility functions for scaling
 const { width, height } = Dimensions.get('window');
-const baseWidth = 375; // Example base width (iPhone 6/7/8)
-const baseHeight = 667; // Example base height (iPhone 6/7/8)
+const baseWidth = 375; 
+const baseHeight = 667; 
 
 const scale = (size) => (width / baseWidth) * size;
 const verticalScale = (size) => (height / baseHeight) * size;
@@ -27,95 +26,75 @@ const countryCodes = [
 const RegisterPage = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0].code);  // Use country code as the initial state
+  const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0].code);
   const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [promoCode, setPromoCode] = React.useState('');
   const [showPromoCodeInput, setShowPromoCodeInput] = React.useState(false);
   const [promoCodeError, setPromoCodeError] = React.useState('');
-  const [isSendingOTP, setIsSendingOTP] = React.useState(false);
   
-  // Animation state
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    // Start the fade-in animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-
-    const handleResize = () => {
-      const { width: newWidth, height: newHeight } = Dimensions.get('window');
-      if (newWidth !== width || newHeight !== height) {
-        // Handle any additional scaling logic if necessary
-      }
-    };
-
-    const subscription = Dimensions.addEventListener('change', handleResize);
-    return () => subscription?.remove(); // Cleanup
   }, [fadeAnim]);
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const validatePhoneNumber = (number) => {
-    const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirements
+    const phoneRegex = /^[0-9]{9}$/; 
     return phoneRegex.test(number);
   };
 
-  const handleSendOTP = async () => {
+  const handleRegister = async () => {
     setLoading(true);
     setErrorMessage('');
     setPromoCodeError('');
     
+    // Validation logic moved to prevent blocking registration
+    if (!validateEmail(email)) {
+      setErrorMessage('Invalid email address. Please enter a valid email.');
+      setLoading(false);
+      return;
+    }
+
+    if (!validatePhoneNumber(phoneNumber)) {
+      setErrorMessage('Invalid phone number. Please enter a valid phone number.');
+      setLoading(false);
+      return;
+    }
+
+    if (promoCode) {
+      const isValidPromoCode = await checkPromoCode(promoCode);
+      if (!isValidPromoCode) {
+        setPromoCodeError('Promo code is invalid or already used.');
+      }
+    }
+
     try {
-      if (!validatePhoneNumber(phoneNumber)) {
-        setErrorMessage('Invalid contact number. Please enter a valid phone number.');
-        setLoading(false);
-        return;
-      }
+      await dispatch(registerUser({ email, password, phoneNumber: selectedCountryCode + phoneNumber, promoCode }));
 
-      // Simulate API call to check if the number is already registered
-      const isRegistered = false; // Replace with actual API call
-      if (isRegistered) {
-        setErrorMessage('Number already registered. Proceed to login.');
-        setLoading(false);
-        return;
-      }
-
-      // Check promo code validity
-      if (promoCode) {
-        const isValidPromoCode = await checkPromoCode(promoCode);
-        if (!isValidPromoCode) {
-          setPromoCodeError('Promo code is invalid or already used.');
-          setLoading(false);
-          return;
-        }
-      }
-
-      setIsSendingOTP(true);
-      
-      // Dispatch the registerUser action
-      await dispatch(registerUser(selectedCountryCode + phoneNumber, promoCode));
-
-      // Simulate sending OTP
-      setTimeout(() => {
-        Alert.alert('OTP sent to:', selectedCountryCode + phoneNumber);
-        navigation.navigate('otpConfirm', {
-          phoneNumber: selectedCountryCode + phoneNumber,
-        });
-        setIsSendingOTP(false);
-      }, 2000); // Delay for 2 seconds
+      Alert.alert('Registration Successful!', 'You can now log in to your account.');
+      navigation.navigate('SignInPage');
     } catch (error) {
-      setErrorMessage('Failed to send OTP. Please try again.');
+      setErrorMessage('Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const checkPromoCode = async (code) => {
-    // Simulate API call to check promo code
-    const usedCodes = ['DAVID', 'DISCOUNT10']; // Example used codes
+    const usedCodes = ['DAVID', 'DISCOUNT10']; 
     return !usedCodes.includes(code);
   };
 
@@ -123,14 +102,42 @@ const RegisterPage = () => {
     <SafeAreaView style={styles.registerPage}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Text style={styles.welcomeHeader}>GreenBin</Text>
-       
+       <View style={styles.header}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Enter Email"
+            placeholderTextColor={Color.colorGray_100}
+            keyboardType="email-address"
+            accessibilityLabel="Email Input"
+            accessibilityHint="Enter your email address"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Enter Password"
+            placeholderTextColor={Color.colorGray_100}
+            secureTextEntry
+            accessibilityLabel="Password Input"
+            accessibilityHint="Enter your password"
+          />
+        </View>
+
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Phone Number</Text>
           <View style={styles.phoneInput}>
             <Picker
               selectedValue={selectedCountryCode}
               style={styles.countryCodePicker}
-              onValueChange={(itemValue) => setSelectedCountryCode(itemValue)} // Update selected country code
+              onValueChange={(itemValue) => setSelectedCountryCode(itemValue)}
             >
               {countryCodes.map((item) => (
                 <Picker.Item key={item.code} label={item.code} value={item.code} />  
@@ -157,7 +164,7 @@ const RegisterPage = () => {
           accessibilityLabel="Promo Code Input"
           accessibilityHint="Press to enter a promo code"
         >
-          <Text style={styles.promoCodeText}>Have a Promo Code?</Text>
+          <Text style={styles.promoCodeText}>Have a referral Code?</Text>
         </TouchableOpacity>
 
         {showPromoCodeInput && (
@@ -166,7 +173,7 @@ const RegisterPage = () => {
               style={styles.promoCodeInput}
               value={promoCode}
               onChangeText={setPromoCode}
-              placeholder="Enter Promo Code"
+              placeholder="Enter referral Code"
               placeholderTextColor={Color.colorGray_100}
               accessibilityLabel="Promo Code Text Input"
               accessibilityHint="Enter your promo code here"
@@ -177,28 +184,29 @@ const RegisterPage = () => {
 
         <TouchableOpacity
           style={styles.getStartedBtn}
-          onPress={handleSendOTP}
-          disabled={loading || isSendingOTP}
-          accessibilityLabel="Send OTP Button"
-          accessibilityHint="Press to send OTP to your phone number"
+          onPress={handleRegister}
+          disabled={loading}
+          accessibilityLabel="Register Button"
+          accessibilityHint="Press to register your account"
         >
-          {isSendingOTP ? (
+          {loading ? (
             <ActivityIndicator 
               size="small" 
               color="#fff" 
-              accessibilityLabel="Loading OTP" 
-              accessibilityHint="Please wait while we send the OTP"
+              accessibilityLabel="Loading Registration" 
+              accessibilityHint="Please wait while we register your account"
             />
           ) : (
-            <Text style={styles.cardText}>Send OTP</Text>
+            <Text style={styles.cardText}>Register</Text>
           )}
         </TouchableOpacity>
         
         <View style={styles.dontHaveAnContainer}>
-          <Text style={{ fontSize: scale(14) }}>Already have an account?</Text>
+          <Text style={{ fontSize: scale(12) }}>Already have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
             <Text style={styles.register}>Login!</Text>
           </TouchableOpacity>
+        </View>
         </View>
       </Animated.View>
     </SafeAreaView>
@@ -210,24 +218,30 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorWhite,
     flex: 1,
     justifyContent: "center",
-    padding: scale(20),
+    padding: scale(15),
   },
  
   welcomeHeader: {
-    fontSize: scale(50),
-    fontWeight: 'bold',
+    fontSize: scale(35),
+    fontWeight: '900',
     color: 'green',
+    position: 'absolute',
+    top: scale(5),
+    right: scale(15),
+    zIndex: 1,
+  },
+  header: {
     marginBottom: verticalScale(20),
+    top: verticalScale(110)
   },
   inputContainer: {
     width: '100%',
-    marginBottom: verticalScale(14),
-    
+    marginBottom: verticalScale(10),
   },
   dontHaveAnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: verticalScale(14),
+    marginTop: verticalScale(10),
     alignSelf: 'center',
   },
   phoneInput: {
@@ -237,64 +251,93 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     borderRadius: Border.br_base,
     overflow: 'hidden',
-    
   },
   countryCodePicker: {
-    width: scale(110), // Adjust width for picker
-    height: verticalScale(40),
+    width: scale(109), 
+    height: verticalScale(30),
     fontSize: scale(FontSize.size_base),
+    color: 'green',
+    borderRadius: 14,
+    ...Platform.select({
+      ios: {
+        backgroundColor: '#f2f2f2',
+      },
+      android: {
+        backgroundColor: '#f2f2f2',
+      },
+    }),
+  },
+  input: {
+    height: verticalScale(30), 
+    borderRadius: Border.br_base,
+    shadowOffset: {width: 0, height: 2},
+    shadowColor: '#000',
+    shadowRadius: 3,
+    shadowOpacity: 0.25,
+    padding: scale(8),
+    fontSize: scale(14),
+    color: Color.colorBlack,
+    backgroundColor: Color.colorWhite,
+  },
+  inputContainer1: {
+    height: verticalScale(30),
+    flex: 1,
+    padding: scale(8),
+    fontSize: scale(14),
+    color: Color.colorBlack,
+    backgroundColor: Color.colorWhite,
+  },
+  promoCodeContainer: {
+    marginTop: verticalScale(5),
+  },
+  promoCodeInput: {
+    height: verticalScale(30),
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    borderRadius: Border.br_base,
+    padding: scale(8),
+    fontSize: scale(14),
+  },
+  promoCodeButton: {
+    marginTop: verticalScale(5),
+    backgroundColor: 'lightgray',
+    borderRadius: Border.br_base,
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: scale(15),
+    alignSelf: 'flex-start',
+  },
+  promoCodeText: {
+    fontSize: scale(12),
+    color: Color.colorGreen,
+    fontWeight: 'bold',
+  },
+  getStartedBtn: {
+    backgroundColor: 'green',
+    borderRadius: Border.br_base,
+    paddingVertical: verticalScale(8),
+    alignItems: 'center',
+    marginTop: verticalScale(15),
+  },
+  errorText: {
+    color: 'red',
+    fontSize: scale(12),
+    marginTop: verticalScale(5),
+  },
+  label: {
+    fontSize: scale(14),
+    marginBottom: verticalScale(5),
+    fontWeight: '600',
+    color: 'green'
+  },
+  cardText: {
     color: Color.colorWhite,
-    borderRadius: 14
+    fontSize: scale(14),
+    fontWeight: 'bold',
   },
   register: {
     color: 'green',
     fontWeight: 'bold',
-    marginLeft: scale(8),
-    fontSize: scale(14),
-  },
-  inputContainer1: {
-    flex: 1,
-    height: verticalScale(40),
-    padding: 10,
-    fontSize: scale(FontSize.size_base),
-    color: Color.colorGray_600,
-  },
-  promoCodeButton: {
-    marginTop: verticalScale(10),
-    alignItems: 'center',
-  },
-  promoCodeText: {
-    color: 'green',
-    textDecorationLine: 'underline',
-  },
-  promoCodeContainer: {
-    marginTop: verticalScale(10),
-  },
-  promoCodeInput: {
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    borderRadius: Border.br_base,
-    height: verticalScale(40),
-    padding: 10,
-    fontSize: scale(FontSize.size_base),
-    color: Color.colorGray_600,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 4,
-    fontSize: scale(FontSize.size_sm),
-  },
-  getStartedBtn: {
-    backgroundColor: Color.colorLimegreen_200,
-    padding: verticalScale(10),
-    borderRadius: Border.br_base,
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-  },
-  cardText: {
-    color: Color.colorWhite,
-    fontSize: scale(FontSize.size_base),
-    fontWeight: 'bold',
+    marginLeft: scale(5),
   },
 });
 

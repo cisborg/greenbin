@@ -61,7 +61,6 @@ import TagSelection from "./screens/Squads/selectTag";
 import NotificationsScreen from "./screens/Squads/Updates";
 import CommentsSection from "./screens/Squads/SquadComments";
 import ConnectToShops from "./screens/e-Commerce/ShopLocator"
-import  OTPConfirmScreen from "./screens/Registration/otpConfirm";
 import ProfilePage from "./screens/MainPage/ProfilePage";
 import VendorChat from "./screens/Vendors/VendorChat";
 import ViewSquad2Screen from  "./screens/Squads/ViewSquads2"
@@ -80,6 +79,8 @@ import ChatScreen  from "./screens/GreenConnect/chatConnect"
 import HistoryScreen from "./screens/GreenPoints/donationHist"
 import FollowedVendors from "./screens/Vendors/VendorsFollowed"
 import Approved from "./screens/Squads/Approved";
+import VendorRating from './screens/Vendors/RateVendor';
+import Products from "./screens/e-Commerce/Products";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
 
@@ -264,6 +265,7 @@ const App = () => {
         <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RateVendor" component={VendorRating} options={{ headerShown: false }} />
         <Stack.Screen name="BuyGoods" component={BuyGoods} options={{ headerShown: false }} />
         <Stack.Screen name="CarbonCalculator" component={CarbonFootprintCalculator} options={{ headerShown: false }} />
         <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
@@ -274,7 +276,6 @@ const App = () => {
         <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
         <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
-        <Stack.Screen name="otpConfirm" component={OTPConfirmScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
         <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
         <Stack.Screen name="paymentConfirmed" component={PaymentConfirmed} options={{ headerShown: false }} />
@@ -293,6 +294,7 @@ const App = () => {
         <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
         <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
         <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
+        <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

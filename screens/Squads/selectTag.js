@@ -78,27 +78,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 10,
+    padding: 2,
     overflow: 'hidden',
   },
  
   input: {
     borderRadius: 12,
     paddingHorizontal: 10,
-    marginBottom: 15,
     shadowColor: '#000',
-    height: 30,
+    height: 35,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
-    marginBottom: 10
+    elevation: 1,
+    marginBottom: 10,
+    marginTop: 15
   },
   tagList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    paddingRight: 10,
     paddingVertical: 10,
     margin: 5
   },
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   buttonText: {
-    color: Color.colorLimegreen_200,
+    color: 'green',
     fontWeight: 'bold',
   },
 });
