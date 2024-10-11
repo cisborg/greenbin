@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
 import  Paystack from 'react-native-paystack-webview';
+
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { FontFamily , Color} from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
