@@ -55,10 +55,10 @@ const ProfilePage = () => {
   }, [currentMonth, lastUpdatedMonth]);
 
   const cardData = [
-    { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },
-    { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
-    { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
     { name: "Visit Shop", icon: <Ionicons name="location" size={24} color="white" />, screen: "ShopLocator" },
+    { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
+    { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
+    { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },
     { name: "Logout", icon: <MaterialIcons name="logout" size={24} color="white" />, screen: "SignInPage" },
   ];
 
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
-    paddingTop: 10,
+    paddingTop: '4%',
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileImg: {
-    width: 80,
+    width: '23%',
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   greeting: {
-    fontSize: 20, // Adjusted for responsiveness
-    fontWeight: 'bold',
+    fontSize: 15, // Adjusted for responsiveness
+    fontWeight: '600',
     color: 'green',
   },
   greeting1: {
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '100%',
     alignItems: 'center',
+    marginBottom: 8
   },
   card: {
     width: '45%',
@@ -253,9 +254,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardIcon: {
-    width: 35,
+    width: '24%',
     height: 35,
     marginBottom: 10,
+    borderRadius: 14
   },
   cardTitle: {
     fontSize: 12,

@@ -223,7 +223,7 @@ const Products = () => {
               onChangeText={handleSearch} 
             />
             <TouchableOpacity onPress={() => navigation.navigate('cart')}>
-              <FontAwesome5 name="cart-plus" size={24} color="black" />
+              <FontAwesome5 name="cart-plus" size={24} color="green" />
             {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
             </TouchableOpacity>
           </View>

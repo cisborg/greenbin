@@ -225,11 +225,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 5,
     flexDirection: 'row',
-    minHeight: 950,
+    minHeight: height * 0.98,
+    marginTop: -35
     
   },
   sidebar: {
-    width: '19%',
+    width: width * 0.17,
     backgroundColor: '#fff',
     paddingVertical: 10,
     borderRightWidth: 1,
@@ -263,9 +264,11 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft:4,
     paddingVertical: 10,
-    flexWrap: 'wrap'
+    width: width * 0.81,
+    height: height * 0.99
+    
     
   },
   header: {
@@ -275,12 +278,12 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
-    borderWidth: 1,
     borderColor: Color.colorGray_100,
     borderRadius: 14,
     padding: 10,
     marginRight: 10,
-    height: 40,
+    height: height * 0.045,
+    backgroundColor: '#f5f5f5',
   },
   banner: {
     width: '100%',

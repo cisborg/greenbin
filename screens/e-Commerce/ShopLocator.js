@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import * as Location from 'expo-location';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
@@ -79,19 +79,22 @@ const ConnectToShops = () => {
     }
   };
 
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setCurrentLocation({ lat: latitude, lng: longitude });
-        filterShops(latitude, longitude);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission denied', 'Location permission is required to find nearby shops.');
+        return;
+      }
+  
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setCurrentLocation({ lat: latitude, lng: longitude });
+      filterShops(latitude, longitude);
+    } catch (error) {
+      console.error('Error getting location:', error);
+      Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
+    }
   };
   
 
@@ -121,7 +124,11 @@ const ConnectToShops = () => {
 
   const renderShopCard = ({ item }) => (
     <View style={styles.shopContainer}>
-      <Image source={{ uri: item.logo }} style={styles.logo} />
+      <Image 
+        source={{ uri: item.logo }} 
+        style={styles.logo} 
+        onError={() => console.error('Image loading error')}
+      />
       <View style={styles.shopDetails}>
         <Text style={styles.shopName}>{item.name}</Text>
         <Text style={styles.shopDescription}>{item.description}</Text>
@@ -143,7 +150,7 @@ const ConnectToShops = () => {
       </View>
     </View>
   );
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Connect to Local Green Shops</Text>
@@ -186,6 +193,7 @@ const styles = StyleSheet.create({
   returnButton: {
     position: 'absolute',
     bottom: 20,
+    elevation: 1,
     left: 20,
     backgroundColor: '#fff',
     padding: 10,

@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
-import { FontFamily, Color } from '../../GlobalStyles';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
+import  Paystack from 'react-native-paystack-webview';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Image } from "expo-image";
+import { FontFamily , Color} from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const PrepaidRechargeScreen = () => {
-  const [mpesaNumber, setMpesaNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [mpesaError, setMpesaError] = useState('');
-  const [emailError, setEmailError] = useState('');
   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +14,7 @@ const PrepaidRechargeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { amount: routeAmount } = route.params;
+  const paystackWebViewRef = useRef();  // Paystack ref
 
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -30,44 +27,16 @@ const PrepaidRechargeScreen = () => {
     }).start();
   }, [routeAmount]);
 
-  const handleProceedEmail = () => {
-    if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address.');
-      return;
-    }
-    setEmailError('');
-    initiatePayment('email', email);
-  };
-
-  const handleProceedMpes = () => {
-    if (!validateMpesaNumber(mpesaNumber)) {
-      setMpesaError('Please enter a valid M-PESA number.');
-      return;
-    }
-    setMpesaError('');
-    initiatePayment('mpesa', mpesaNumber);
-  };
-
-  const initiatePayment = (method, identifier) => {
+  const initiatePayment = (method) => {
     setModalVisible(true);
     setLoading(true);
     
     // Simulate API call with a timeout to represent the payment process
     setTimeout(() => {
-      console.log(`Initiating deposit of KES ${amount} using ${method}: ${identifier}`);
+      console.log(`Initiating deposit of KES ${amount} using ${method}`);
       setLoading(false);
       setModalVisible(false);
     }, 500);
-  };
-
-  const validateMpesaNumber = (number) => {
-    const regex = /^[0-9]{10}$/;
-    return regex.test(number);
-  };
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
   };
 
   const handleGatewayClick = (gateway) => {
@@ -81,12 +50,24 @@ const PrepaidRechargeScreen = () => {
     }, 400);
   };
 
+  const handlePaystackSuccess = (res) => {
+    console.log("Payment successful", res);
+    setGatewayMessage("Payment successful!");
+    setLoading(false);
+  };
+
+  const handlePaystackCancel = (e) => {
+    console.log("Payment canceled", e);
+    setGatewayMessage("Payment canceled!");
+    setLoading(false);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={{ ...styles.container, opacity: animation }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.Head}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: '-3%', marginRight: '10%'}}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: '-3%', marginRight: '10%' }}>
               <AntDesign name="leftcircle" size={23} color="black" />
             </TouchableOpacity>
             <Text style={styles.header}>Select Payment Option</Text>
@@ -109,113 +90,57 @@ const PrepaidRechargeScreen = () => {
               <View style={styles.fit}>
                 <Text style={styles.greenText}>GCPs Balance: </Text>
               </View>
-              
               <Text style={styles.airtimeInfo}>
                 Get <Text style={styles.text}>25% extra Airtime</Text> on Recharge using Green Money
               </Text>
-              <Text style={styles.extraAirtime}>
-                Extra green points of 10.5 KES will be credited to 767549104.
-              </Text>
+              <Text style={styles.extraAirtime}>Extra green points of 10.5 KES will be credited to 767549104.</Text>
               <Text style={styles.extraAirtime}>Dial *256*2# to check bonus balance</Text>
             </View>
 
             <Text style={styles.additionalPaymentMethod}>CHOOSE PAYMENT METHOD</Text>
 
-            <View style={styles.mpesaContainer}>
-              <Text style={styles.mpesaHeader}>M-PESA</Text>
-              <TextInput
-                style={styles.mpesaInput}
-                placeholder="Enter Mpesa number here"
-                value={mpesaNumber}
-                onChangeText={setMpesaNumber}
-                placeholderTextColor={Color.colorGray_100}
-                keyboardType="numeric"
-                onFocus={() => setMpesaError('')}
-              />
-              {mpesaError ? <Text style={styles.errorText}>{mpesaError}</Text> : null}
-              <TouchableOpacity>
-                <View style={styles.proceed}>
-                  <Pressable style={styles.proceedButton} onPress={handleProceedMpes}>
-                    <Text style={styles.proceedButtonText}>Proceed</Text>
-                  </Pressable>
-                </View>
-              </TouchableOpacity>
-              <Text style={styles.airtimeInfo}>
-                Get <Text style={styles.text}>7% extra Green Points</Text> on Recharge above 1000.0 KES using Mpesa.
-              </Text>
-            </View>
-
-            <View style={styles.gatewayContainer}>
-              <Text style={styles.gatewayHeader}>OTHER PAYMENT GATEWAY</Text>
-              <View style={styles.Pics}> 
-                <TouchableOpacity onPress={() => handleGatewayClick('NCBA bank')}>
-                  <Image source={require("../../assets/ncba.jpg")} contentFit="cover" style={styles.pics} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleGatewayClick('Equity Bank')}>
-                  <Image source={require("../../assets/equity.jpg")} contentFit="cover" style={styles.pics} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleGatewayClick('DTB Bank')}>
-                  <Image source={require("../../assets/dtb.png")} contentFit="cover" style={styles.pics} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleGatewayClick('Standard Chartered')}>
-                  <Image source={require("../../assets/chartered.jpg")} contentFit="cover" style={styles.pics} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleGatewayClick('KCB bank')}>
-                  <Image source={require("../../assets/kcb.jpg")} contentFit="cover" style={styles.pics} />
-                </TouchableOpacity>
+            {/* Paystack Payment Integration */}
+            <Paystack
+              paystackKey="your-public-key-here"  // Replace the  Paystack public key
+              billingEmail="paystackuser@example.com"  // Optional email
+              amount={amount * 100}  // Paystack requires amount in kobo (for KES, multiply by 100)
+              onCancel={handlePaystackCancel}  // Handle cancellations
+              onSuccess={handlePaystackSuccess}  // Handle successful transactions
+              ref={paystackWebViewRef}  // Ref for initiating payment
+            />
+            
+            {/* Pay button to initiate the transaction */}
+            <TouchableOpacity onPress={() => paystackWebViewRef.current.startTransaction()}>
+              <View style={styles.proceedButton}>
+                <Text style={styles.proceedButtonText}>Pay with Paystack</Text>
               </View>
-
-              <TextInput
-                style={styles.emailInput}
-                placeholder="Enter Email Id"
-                value={email}
-                onChangeText={setEmail}
-                placeholderTextColor={Color.colorGray_100}
-                keyboardType="email-address"
-                onFocus={() => setEmailError('')}
-              />
-              {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-              <TouchableOpacity style={styles.proceedButton} onPress={handleProceedEmail}>
-                    <Text style={styles.proceedButtonText}>Proceed</Text>
-              </TouchableOpacity>
-              {gatewayMessage ? <Text style={styles.gatewayStatus}>{gatewayMessage}</Text> : null}
-              <Text style={styles.airtimeInfo}>
-                Get <Text style={styles.text}>5% extra Green Points</Text> on Recharge above 1000.0 KES using Debit/Credit Cards & Other Mobile Money Wallets
-              </Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.bottom}>
-            <Text style={styles.secureCheckout}>
-              Secure Checkout Guaranteed 100%
-            </Text>
+            <Text style={styles.secureCheckout}>Secure Checkout Guaranteed 100%</Text>
             <AntDesign name="checkcircle" size={27} color="green" />
           </View>
         </ScrollView>
       </Animated.View>
 
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-          >
+      <Modal transparent={true} animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <ActivityIndicator size="small" color={Color.colorGreen} />
+            <ActivityIndicator size="small" color="green" />
             <Text style={styles.modalText}>Initiating payment of KES {amount}...</Text>
           </View>
         </View>
-     </Modal>
-
+      </Modal>
     </SafeAreaView>
   );
 };
 
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#ffff',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -299,7 +224,7 @@ const styles = StyleSheet.create({
   },
   payableAmount: {
     fontSize: 14,
-    color: Color.colorGray_700,
+    color: 'black',
     fontFamily: FontFamily.poppinsSemiBold,
   },
   amount: {
@@ -323,7 +248,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   text: {
-    color: Color.colorLimegreen_100,
+    color: 'green',
     fontWeight: 'bold',
   },
   bottom: {

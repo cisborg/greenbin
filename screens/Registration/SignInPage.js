@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: width * 0.05, // Responsive padding
-    marginTop: 30,
+    paddingHorizontal: width * 0.01, // Responsive padding
+    marginTop: 20,
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   inputField: {
-    height: height * 0.06, // Responsive height
+    height: height * 0.05, // Responsive height
     backgroundColor: Color.colorWhite,
     paddingHorizontal: 10,
     fontSize: width * 0.04, // Responsive font size

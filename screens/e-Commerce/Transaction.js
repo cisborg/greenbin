@@ -10,10 +10,16 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Platform, 
-  StatusBar
+  StatusBar,
+  Dimensions
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { ScrollView } from 'react-native-gesture-handler';
+
+
+const { width, height } = Dimensions.get('window');
+
 
 const TransactionScreen = ({ navigation }) => {
   const [generalPoints, setGeneralPoints] = useState({
@@ -127,6 +133,7 @@ const TransactionScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ScrollView>
       <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoiding}>
         <Animated.View style={{ opacity }}>
           <View style={styles.header}>
@@ -135,13 +142,13 @@ const TransactionScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={{ flexDirection: 'column' }}> 
               <Text style={styles.headerText}>Hello, Jude!</Text>
-              <Text style={styles.dateText}>Monday, 24 April</Text>
+              <Text style={styles.dateText}>Monday, 24 April, 2024</Text>
             </View>
           </View>
           
           {/* Card Section */}
           <View style={styles.cardContainer}>
-            <Text style={styles.cardTitle}>My Cards</Text>
+            <Text style={styles.cardTitle}>My Green Pay Cards</Text>
             <View style={styles.cardRow}>
               {cardTypes.map((card, index) => (
                 <TouchableOpacity key={index} onPress={() => handleCardSelection(index)}>
@@ -275,6 +282,7 @@ const TransactionScreen = ({ navigation }) => {
           </View>
         </Animated.View>
       </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -295,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 10,
     marginBottom: 10,
-    left: 20
+    left: '2%'
   },
   headerText: { 
     fontSize: 18, 
@@ -311,14 +319,12 @@ const styles = StyleSheet.create({
   },
   cardContainer: { 
     marginHorizontal: 15,
-    margin: 20,
     shadowOffset: { width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 3,
     borderRadius: 17,
     shadowColor: '#000',
     padding: 8,
-    elevation: 1,
     alignItems: 'center',
   },
   cardRow: {
@@ -343,13 +349,17 @@ const styles = StyleSheet.create({
   card: {
     padding: 15,
     marginVertical: 10,
-    borderRadius: 14,
+    borderRadius: 32,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    marginHorizontal: 4
+    marginHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width * 0.42,
+    height: height * 0.15
   },
   activeCard: { 
     backgroundColor: 'green',
@@ -386,7 +396,7 @@ const styles = StyleSheet.create({
   actionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 20,
+    marginVertical: 10,
     paddingHorizontal: 5,
   },
   actionButton: {
@@ -484,7 +494,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   subscriptionButton: {
-    backgroundColor: 'pink',
+    backgroundColor: 'orange',
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',

@@ -7,7 +7,7 @@ import LeaderboardScreen from "../Squads/SquadsAward";  // Assuming you have thi
 import { FontFamily, Color } from "../../GlobalStyles";
 
 const Tab = createMaterialTopTabNavigator();
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Main component rendering the top tab navigation
 const LeaderBoard = () => {
@@ -132,11 +132,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: 20,
+    padding: 15,
+    width: width * 0.98,
+    height: height * 0.98,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   leaderboardContent: {
-    marginTop: 20,
     padding: 14,
     backgroundColor: '#fff'
   },
@@ -144,10 +145,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginBottom: 30,
-    marginTop: 70,
+    marginTop: '18%',
   },
   otherUsersContainer: {
-    width: '100%',
+    width: width * 0.92,
   },
   userTop: {
     alignItems: "center",
@@ -168,13 +169,13 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.2 }],  // Scale up the center user
   },
   userTopFirst: {
-    marginTop: -30,
+    marginTop: '-5%',
     backgroundColor: "#f4f4f4",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3
+    elevation: 4
   },
   userTopImage: {
     width: 60,
