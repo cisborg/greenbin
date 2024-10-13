@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../../redux/actions/authActions'; 
+import { loginUser } from '../../redux/actions/authentication'; 
 import { FontFamily, Color, FontSize } from "../../GlobalStyles";
 
 const { width, height } = Dimensions.get('window');

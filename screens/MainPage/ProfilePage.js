@@ -55,7 +55,7 @@ const ProfilePage = () => {
   }, [currentMonth, lastUpdatedMonth]);
 
   const cardData = [
-    { name: "Visit Shop", icon: <Ionicons name="location" size={24} color="white" />, screen: "ShopLocator" },
+    { name: "Visit Shop", icon: <Ionicons name="location" size={24} color="white" />, screen: "EventForm" },
     { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
     { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
     { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },

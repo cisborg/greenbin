@@ -1,0 +1,46 @@
+// src/redux/actions/reportActions.js
+import axios from 'axios';
+import {
+    CREATE_REPORT_REQUEST,
+    CREATE_REPORT_SUCCESS,
+    CREATE_REPORT_FAILURE,
+    GET_ALL_REPORTS_REQUEST,
+    GET_ALL_REPORTS_SUCCESS,
+    GET_ALL_REPORTS_FAILURE,
+    DELETE_REPORT_REQUEST,
+    DELETE_REPORT_SUCCESS,
+    DELETE_REPORT_FAILURE,
+} from './actionTypes';
+
+// Create Report action
+export const createReport = (reportData) => async (dispatch) => {
+    dispatch({ type: CREATE_REPORT_REQUEST });
+    try {
+        const response = await axios.post('/api/create-report', reportData);
+        dispatch({ type: CREATE_REPORT_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: CREATE_REPORT_FAILURE, payload: error.message });
+    }
+};
+
+// Get All Reports action
+export const getAllReports = () => async (dispatch) => {
+    dispatch({ type: GET_ALL_REPORTS_REQUEST });
+    try {
+        const response = await axios.get('/api/get-all-reports');
+        dispatch({ type: GET_ALL_REPORTS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: GET_ALL_REPORTS_FAILURE, payload: error.message });
+    }
+};
+
+// Delete Report action
+export const deleteReport = (reportId) => async (dispatch) => {
+    dispatch({ type: DELETE_REPORT_REQUEST });
+    try {
+        await axios.delete(`/api/delete-report/${reportId}`);
+        dispatch({ type: DELETE_REPORT_SUCCESS, payload: reportId });
+    } catch (error) {
+        dispatch({ type: DELETE_REPORT_FAILURE, payload: error.message });
+    }
+};

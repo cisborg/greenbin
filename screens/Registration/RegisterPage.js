@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../redux/actions/authActions'; 
+import { registerUser } from '../../redux/actions/authentication'; 
 import { FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
 

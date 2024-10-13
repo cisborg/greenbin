@@ -82,7 +82,6 @@ const CartScreen = ({ navigation }) => {
                       <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
-                  <CascadingProfiles />
                 </View>
               </View>
             </View>
@@ -92,15 +91,7 @@ const CartScreen = ({ navigation }) => {
     );
   };
 
-  const CascadingProfiles = () => (
-    <View style={styles.profileContainer}>
-      <Image source={require('../../assets/anotherWoman.avif')} style={styles.profileImage} />
-      <Image source={require('../../assets/anotherMan.avif')} style={styles.profileImage} />
-      <Image source={require('../../assets/women.avif')} style={styles.profileImage} />
-      <Text style={styles.profileText}>+ 200 have ordered this product</Text>
-    </View>
-  );
-
+  
   const renderEmptyCart = () => (
     <View style={styles.emptyCartContainer}>
       <Text style={styles.emptyCartText}>No products in cart</Text>
@@ -154,7 +145,7 @@ const CartScreen = ({ navigation }) => {
             </View>
             <View style={styles.separator} />
             <View style={styles.priceRow}>
-              <Text style={styles.subTotalLabel}>Sub Total:</Text>
+              <Text style={styles.subTotalLabel}>Cash In:</Text>
               <Text style={styles.subTotal}>GCPs {getTotalPrice() + 5 + getDeliveryFee()}</Text>
             </View>
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>

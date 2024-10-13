@@ -26,8 +26,6 @@ class MainApplication : Application(), ReactApplication {
           override fun getPackages(): List<ReactPackage> {
             // Get default packages from the PackageList
             val packages = PackageList(this).packages
-            // Add RNCWebViewPackage manually if not auto-linked
-            packages.add(RNCWebViewPackage())  // Add WebView Package manually
             return packages
           }
 

@@ -12,7 +12,7 @@ import {
     RESEND_TOKEN_REQUEST,
     RESEND_TOKEN_SUCCESS,
     RESEND_TOKEN_FAILURE,
-    LOGOUT,
+    DELETE_ACCOUNT,
   } from '../actions/actionTypes';
   
   const initialState = {
@@ -51,7 +51,7 @@ import {
         return { ...state, loading: false, error: action.payload };
       case RESEND_TOKEN_FAILURE:
         return { ...state, loading: false, error: action.payload };
-      case LOGOUT:
+      case DELETE_ACCOUNT:
         return { ...initialState, token:'', user: null }; // Reset state on logout
       default:
         return state;

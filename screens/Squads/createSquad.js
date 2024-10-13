@@ -73,7 +73,7 @@ const CreateSquad = () => {
             <Text style={styles.title}>Launch Squad 🚀</Text>
             <TouchableOpacity style={styles.joinButton} onPress={handleJoinSquad}>
               {loadingJoin ? (
-                <ActivityIndicator size="small" color={'green'} />
+                <ActivityIndicator size="small" color='white' />
               ) : (
                 <Text style={styles.joinButtonText}>Join</Text>
               )}

@@ -107,7 +107,7 @@ const SquadCreated = () => {
             <TouchableOpacity style={styles.feature} onPress={handleFeaturedClick}>
               <Text style={styles.featuredSquad}>Featured EcoGreen</Text>
             </TouchableOpacity>   
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate('EventForm')}>
               <Ionicons name="add-circle-outline" size={37} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
             </TouchableOpacity> 
            

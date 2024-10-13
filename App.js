@@ -1,12 +1,14 @@
 import * as React from "react";
+import { SafeAreaView, Platform, Dimensions } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import { View, Image, Text } from "react-native";
+import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VendorsProfilePage from "./screens/Vendors/VendorsProfilePage";
 import HomePageExistingUser from "./screens/MainPage/HomePageExistingUser";
+import EventForm from "./screens/Squads/EventForm";
 import ChallengePage from "./screens/MainPage/ChallengePage";
 import SeeAllEvents from "./screens/MainPage/SeeAllEvents";
 import SignInPage from "./screens/Registration/SignInPage";
@@ -89,6 +91,8 @@ import { Color } from "./GlobalStyles";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
+const windowWidth = Dimensions.get('window').width;
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: false,
@@ -106,7 +110,7 @@ const screenOptions = {
     left: 0,
     right: 0,
     height: 50, // Increased height for text
-    width: 404
+    width: windowWidth
   },
 };
 
@@ -128,6 +132,8 @@ const TabBarIcon = ({ focused, activeIcon, inactiveIcon, label }) => {
 // Define the MainTabs component
 const MainTabs = () => {
   return (
+    <SafeAreaView style={{ flex: 1, paddingTop: Platform.OS === 'android' ? 25 : 0 }}>
+
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
         name="HomePageExistingUser"
@@ -152,7 +158,7 @@ const MainTabs = () => {
               focused={focused}
               activeIcon="lightning-bolt-circle"
               inactiveIcon="lightning-bolt-circle"
-              label="Explore" // Add label here
+              label="Shop" // Add label here
             />
           )
         }}
@@ -166,7 +172,7 @@ const MainTabs = () => {
               focused={focused}
               activeIcon="crowd"
               inactiveIcon="crowd"
-              label="Daily" // Add label here
+              label="Discover" // Add label here
             />
           )
         }}
@@ -200,12 +206,13 @@ const MainTabs = () => {
         }}
       />
     </Tab.Navigator>
+    </SafeAreaView>
   );
 };
 
 
 const App = () => {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
+  const [hideSplashScreen, setHideSplashScreen] = React.useState(false);
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -295,6 +302,7 @@ const App = () => {
         <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
         <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
         <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
+        <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>
