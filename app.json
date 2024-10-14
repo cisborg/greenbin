@@ -4,12 +4,12 @@
     "slug": "greenbin_app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/greenBin.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "green"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

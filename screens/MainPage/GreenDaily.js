@@ -252,7 +252,7 @@ const SearchBar = () => {
     <View style={styles.searchBarContainer}>
       <View style={{ flexDirection: 'column'}}> 
         <Text style={styles.greenTxt}>Green Squads Daily</Text>
-        <Text style={styles.blackText}>"Your Daily Hubspot Platform !"</Text>
+        <Text style={styles.blackText}>"Your Daily Hubspot Platform"</Text>
       </View>
       <TouchableOpacity style={{ left: 20 }}>
         <Ionicons name="color-filter-outline" size={30} color="black" />

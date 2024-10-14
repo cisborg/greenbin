@@ -77,5 +77,6 @@
     "metro": "~0.80.8",
     "metro-react-native-babel-preset": "^0.77.0"
   },
-  "private": true
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js"
 }
