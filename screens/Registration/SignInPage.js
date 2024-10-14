@@ -26,12 +26,14 @@ const { width, height } = Dimensions.get('window');
 const SignInPage = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const userId = "20";
-  const presetPassword = `ND${userId}`;
+  // const userId = "20";
+  // const presetPassword = `ND${userId}`;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -44,19 +46,18 @@ const SignInPage = () => {
   const handleLogin = async () => {
     if (password.trim() === "") {
       Alert.alert("Security Check", "Please enter the correct password.");
-    } else if (password === presetPassword) {
-      setIsLoading(true);
+    }
       try {
-        // await dispatch(loginUser(userId)); // Uncomment to dispatch login action
+        dispatch(loginUser({email,password})); // Uncomment to dispatch login action
         setIsLoading(false);
+        Alert.alert('Login Successful!', 'You can now log in to your account.');
+
         navigation.navigate("Main"); 
       } catch (error) {
         setIsLoading(false);
         Alert.alert("Error", "Failed to log in. Please try again.");
       }
-    } else {
-      Alert.alert("Error", "Incorrect password. Please try again.");
-    }
+   
   };
 
   return (
@@ -81,7 +82,19 @@ const SignInPage = () => {
               resizeMode="cover"
               source={require("../../assets/connect.webp")}
             />
-
+<View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.inputField}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Enter Email"
+            placeholderTextColor={Color.colorGray_100}
+            keyboardType="email-address"
+            accessibilityLabel="Email Input"
+            accessibilityHint="Enter your email address"
+          />
+        </View>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.passwordContainer}>
