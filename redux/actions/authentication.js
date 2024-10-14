@@ -1,5 +1,6 @@
 // src/redux/actions/userActions.js
 // import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../utils/axiosConfig";
 import {
   REGISTER_USER,
@@ -30,13 +31,29 @@ import {
   //   SEND_POINTS_SUCCESS,
   //   SEND_POINTS_FAILURE,
 } from "./actionTypes";
+import { Alert } from "react-native";
 
 // Create User action
 export const registerUser = (userData) => async (dispatch) => {
   dispatch({ type: REGISTER_USER });
   try {
+    console.log("Sending registration request with data:", userData);
+    // Alert.alert('Sending registration request with data:', userData.email);
+
     const response = await api.post("/user/signup", userData);
+
+    console.log('response part',response.data)
+
+    if (response.data.status === 'success'){
+        const token = response.data.token;
+        await AsyncStorage.setItem("token", token);
+        Alert.alert('Token stored successfully');
+
     dispatch({ type: REGISTER_SUCCESS, payload: response.data });
+    }
+    else{
+      dispatch({ type: REGISTER_FAILURE, payload: response.data.message });
+    }
   } catch (error) {
     dispatch({
       type: REGISTER_FAILURE,
@@ -46,17 +63,27 @@ export const registerUser = (userData) => async (dispatch) => {
 };
 
 // Login User action
-export const loginUser = (userData) => async (dispatch) => {
+export const loginUser = (credentials) => async (dispatch) => {
     dispatch({ type: LOGIN_USER });
     try {
-      const response = await api.post("/user/login", userData);
-      console.log('response',response.data)
-      dispatch({ type: LOGIN_SUCCESS, payload: response.data });
+      const response = await api.post("/user/login", credentials);
+
+      const { token, ...user } = response.data.data; 
+      // console.log('response part',response.data)
+      if (response.data.status === 'success'){
+        await AsyncStorage.setItem("token", token);
+        dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
+      }
+      // dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
+
+      return {"token": token};
     } catch (error) {
       dispatch({
         type: LOGIN_FAILURE,
         payload: error.response?.data?.message || error.message,
       });
+
+      throw new Error(error.response?.data?.message || "Login failed");
     }
   };
 
