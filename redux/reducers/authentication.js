@@ -1,6 +1,6 @@
 // src/redux/reducers/authReducer.js
 import {
-  REGISTER_REQUEST,
+  REGISTER_USER,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
   UPDATE_USER,
@@ -12,6 +12,7 @@ import {
   DELETE_USER,
   SEND_POINTS,
   UPDATE_PASSWORD,
+  LOGIN_SUCCESS,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -25,13 +26,13 @@ const initialState = {
   promoError: false,
   error: null,
   user: null,
-  usersList: [],
+  // usersList: [],
   referralCode: "",
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case REGISTER_REQUEST:
+    case REGISTER_USER:
       return { ...state, loading: true, error: null };
 
     case REGISTER_SUCCESS:
@@ -44,12 +45,16 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_FAILURE:
       return { ...state, loading: false, error: action.payload };
     case LOGIN_USER:
+      return { ...state, loading: true, error: null };
+    case LOGIN_SUCCESS:
       return {
         ...state,
         loading: false,
         user: action.payload.user,
         token: action.payload.token,
       };
+    case LOGIN_FAILURE:
+      return { ...state, loading: false, error: action.payload };
 
     case UPDATE_USER:
       return {

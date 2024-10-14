@@ -83,12 +83,14 @@ const RegisterPage = () => {
     }
 
     try {
+      
       dispatch(registerUser({ name,email, password, contact: selectedCountryCode + contact }));
 
       Alert.alert('Registration Successful!', 'You can now log in to your account.');
       navigation.navigate('SignInPage');
     } catch (error) {
       console.error(error);
+      console.log('error part regitser',error)
       setErrorMessage('Failed to register. Please try again.');
 
     } finally {

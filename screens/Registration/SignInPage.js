@@ -17,11 +17,11 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../../redux/actions/authentication'; 
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color, FontSize } from "../../GlobalStyles";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const SignInPage = () => {
   const navigation = useNavigation();
@@ -44,20 +44,31 @@ const SignInPage = () => {
   }, []);
 
   const handleLogin = async () => {
-    if (password.trim() === "") {
-      Alert.alert("Security Check", "Please enter the correct password.");
+    if (password.trim() === "" || email.trim() === "") {
+      setIsLoading(false);
+      Alert.alert("Error", "Please enter both email and password.");
+      return;
     }
-      try {
-        dispatch(loginUser({email,password})); // Uncomment to dispatch login action
-        setIsLoading(false);
-        Alert.alert('Login Successful!', 'You can now log in to your account.');
+    try {
+      console.log("Login credentials", { email, password });
+      const response= await dispatch(loginUser({ email, password })); // Uncomment to dispatch login action
+      console.log("Login response from dispatcher", response);
+      if (response?.token){
+        Alert.alert("Login Successful!", "You can now log in to your account.");
+        navigation.navigate("Main");
 
-        navigation.navigate("Main"); 
-      } catch (error) {
-        setIsLoading(false);
-        Alert.alert("Error", "Failed to log in. Please try again.");
+      }else{
+        throw new Error('Login failed');
       }
-   
+      // setIsLoading(false);
+
+    } catch (error) {
+      setIsLoading(false);
+      console.log("Login error", error);
+      Alert.alert("Error", "Failed to log in. Please try again.");
+    }finally{
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,19 +93,19 @@ const SignInPage = () => {
               resizeMode="cover"
               source={require("../../assets/connect.webp")}
             />
-<View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.inputField}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter Email"
-            placeholderTextColor={Color.colorGray_100}
-            keyboardType="email-address"
-            accessibilityLabel="Email Input"
-            accessibilityHint="Enter your email address"
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.inputField}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Enter Email"
+                placeholderTextColor={Color.colorGray_100}
+                keyboardType="email-address"
+                accessibilityLabel="Email Input"
+                accessibilityHint="Enter your email address"
+              />
+            </View>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.passwordContainer}>
@@ -107,7 +118,9 @@ const SignInPage = () => {
                   secureTextEntry={!showPassword}
                   accessibilityLabel="Password Input"
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
                   <Text style={styles.togglePasswordText}>
                     {showPassword ? "Hide" : "Show"}
                   </Text>
@@ -131,10 +144,10 @@ const SignInPage = () => {
 
             <TouchableOpacity
               style={styles.forgotPasswordContainer}
-              onPress={() => navigation.navigate('ChangePassword')}
+              onPress={() => navigation.navigate("ChangePassword")}
               disabled={isLoading}
             >
-              <Text style={[styles.forgotPasswordText, { color: 'green' }]}>
+              <Text style={[styles.forgotPasswordText, { color: "green" }]}>
                 Forgot Password?
               </Text>
             </TouchableOpacity>
@@ -149,51 +162,51 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: width * 0.01, // Responsive padding
     marginTop: 20,
   },
   scrollViewContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   topContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: height * 0.02, // Responsive margin
   },
   welcomeText: {
     fontSize: width * 0.05, // Responsive font size
     color: Color.colorGray_600,
     fontFamily: FontFamily.poppinsRegular,
-    textAlign: 'center',
-    fontWeight: '900',
+    textAlign: "center",
+    fontWeight: "900",
     marginBottom: height * 0.05, // Responsive margin
   },
   loginImage: {
     width: width * 0.8,
     height: height * 0.25, // Responsive height
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: height * 0.03, // Responsive margin
   },
   inputContainer: {
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: width * 0.05, // Responsive padding
   },
   label: {
     fontSize: width * 0.04, // Responsive font size
-    color: 'green',
+    color: "green",
     fontFamily: FontFamily.poppinsBold,
     marginBottom: 5,
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   inputField: {
     height: height * 0.05, // Responsive height
@@ -203,29 +216,29 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     elevation: 3,
     marginBottom: height * 0.02, // Responsive margin
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     flex: 1,
   },
   togglePasswordText: {
-    color: 'green',
+    color: "green",
     marginLeft: 10,
   },
   buttonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   getStartedBtn: {
-    backgroundColor: 'green',
-    width: '80%',
+    backgroundColor: "green",
+    width: "80%",
     height: height * 0.06, // Responsive height
     marginTop: height * 0.02, // Responsive margin
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 21,
-    shadowColor: '#000',
+    shadowColor: "#000",
     ...Platform.select({
       ios: {
         shadowOffset: { width: 2, height: 3 },
@@ -239,13 +252,13 @@ const styles = StyleSheet.create({
   },
   cardText: {
     color: "#fff",
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: width * 0.045, // Responsive font size
     fontFamily: FontFamily.manropeBold,
   },
   forgotPasswordContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: height * 0.02, // Responsive margin
   },
   forgotPasswordText: {
