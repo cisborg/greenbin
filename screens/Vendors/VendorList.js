@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Animated,
   Dimensions,
+  RefreshControl,Platform, StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
@@ -19,55 +20,55 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
 
-
-const peopleToFollow = [
-  {
-    id: '1',
-    name: 'Tim Tebow',
-    job: 'Tree Vendor',
-    location: 'Nairobi',
-    description: 'Selling All kinds of Trees, 5x NYT Best-Selling Author, 2x National Champion, Heisman Trophy...',
-    followers: 'Followed by Michael Nyagha, Grace and 19 others you know',
-    connections: [
-      'https://example.com/connector1.jpg',
-      'https://example.com/connector2.jpg',
-      'https://example.com/connector3.jpg',
-    ],
-  },
-  {
-    id: '2',
-    name: 'Ryan Reynolds',
-    job: 'Actor, Business Owner',
-    location: 'Mombasa',
-    description: 'Part-Time Actor, Business Owner',
-    followers: 'Followed by Grace, Antony and 250 others you know',
-    connections: [
-      'https://example.com/connector1.jpg',
-      'https://example.com/connector2.jpg',
-      'https://example.com/connector3.jpg',
-    ],
-  },
-  {
-    id: '3',
-    name: 'Joy Pharmaceuticals',
-    job: 'Pharmaceutical Products',
-    location: 'Mombasa',
-    description: 'Part-Time Influencer, marketer, student',
-    followers: 'Followed by Grace, Antony and 500 others you know',
-    connections: [
-      'https://example.com/connector1.jpg',
-      'https://example.com/connector2.jpg',
-      'https://example.com/connector3.jpg',
-    ],
-  },
-];
-
 const VendorList = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [approvedVendors, setApprovedVendors] = useState({});
   const [loading, setLoading] = useState({});
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Define peopleToFollow here
+  const peopleToFollow = [
+    {
+      id: '1',
+      name: 'Tim Tebow',
+      job: 'Tree Vendor',
+      location: 'Nairobi',
+      description: 'Selling All kinds of Trees, 5x NYT Best-Selling Author, 2x National Champion, Heisman Trophy...',
+      followers: 'Followed by Michael Nyagha, Grace and 19 others you know',
+      connections: [
+        'https://example.com/connector1.jpg',
+        'https://example.com/connector2.jpg',
+        'https://example.com/connector3.jpg',
+      ],
+    },
+    {
+      id: '2',
+      name: 'Ryan Reynolds',
+      job: 'Actor, Business Owner',
+      location: 'Mombasa',
+      description: 'Part-Time Actor, Business Owner',
+      followers: 'Followed by Grace, Antony and 250 others you know',
+      connections: [
+        'https://example.com/connector1.jpg',
+        'https://example.com/connector2.jpg',
+        'https://example.com/connector3.jpg',
+      ],
+    },
+    {
+      id: '3',
+      name: 'Joy Pharmaceuticals',
+      job: 'Pharmaceutical Products',
+      location: 'Mombasa',
+      description: 'Part-Time Influencer, marketer, student',
+      connections: [
+        'https://example.com/connector1.jpg',
+        'https://example.com/connector2.jpg',
+        'https://example.com/connector3.jpg',
+      ],
+    },
+  ];
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -76,6 +77,15 @@ const VendorList = () => {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    // Simulate fetching vendors
+    setTimeout(() => {
+      // Reset or fetch your vendor data here
+      setRefreshing(false);
+    }, 2000);
+  };
 
   const filteredPeople = peopleToFollow.filter(person =>
     person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -86,7 +96,6 @@ const VendorList = () => {
   const handleConnect = (id) => {
     setLoading(prev => ({ ...prev, [id]: true }));
 
-    // Simulating an async action
     setTimeout(() => {
       setLoading(prev => ({ ...prev, [id]: false }));
       setApprovedVendors(prev => ({ ...prev, [id]: true }));
@@ -106,7 +115,7 @@ const VendorList = () => {
           style={[styles.connectionImage, { zIndex: connections.length - index }]}
         />
       ))}
-      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k</Text>
+      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k connectors </Text>
     </View>
   );
 
@@ -114,14 +123,13 @@ const VendorList = () => {
     const isLoading = loading[item.id];
     return (
       <View style={styles.card}>
-        {/* Add coverImage if defined */}
         <View style={styles.infoContainer}>
           <Image source={{ uri: item.image }} style={styles.profileImage} />
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.job}>{item.job}</Text>
           <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.followers}>{item.followers}</Text>
           {renderConnections(item.connections)}
+          
           <TouchableOpacity
             style={[styles.followButton, approvedVendors[item.id] ? styles.approvedButton : styles.connectButton]}
             onPress={() => approvedVendors[item.id] ? handleProfileNavigation(item.id) : handleConnect(item.id)}
@@ -139,7 +147,7 @@ const VendorList = () => {
       </View>
     );
   };
-
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
@@ -163,6 +171,9 @@ const VendorList = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         />
       </Animated.View>
     </SafeAreaView>
@@ -173,6 +184,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Color.colorWhite,
+    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,
@@ -213,7 +225,7 @@ const styles = StyleSheet.create({
     top: 70,
   },
   name: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333333',
     marginTop: 20,
@@ -247,12 +259,12 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
     alignItems: 'center',
-    width: 100,
-    height: 40,
+    width: 80,
+    height: 30,
     borderRadius: 12,
     justifyContent: 'center',
-    top: '-65%',
-    left: '68%',
+    top: '-69%',
+    left: '72%',
   },
   connectButton: {
     backgroundColor: 'green',
@@ -263,6 +275,7 @@ const styles = StyleSheet.create({
   followButtonText: {
     color: '#FFF',
     fontWeight: 'bold',
+    fontSize: 12
   },
   header: {
     marginBottom: 20,
@@ -273,19 +286,20 @@ const styles = StyleSheet.create({
   searchInput: {
     borderRadius: 13,
     paddingHorizontal: 12,
-    height: 40,
+    height: 37,
     borderColor: 'gray',
-    borderWidth: 1,
     marginBottom: 10,
     marginLeft: 30,
     marginRight: 23,
-    width: '70%'
+    width: '70%',
+    backgroundColor: '#f2f2f2',
   },
   connectionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    top: '-50%',
-    left: '90%',
+    left: '10%',
+    bottom: 15,
+    marginVertical: 13
   },
   connectionImage: {
     width: 35,
@@ -297,8 +311,8 @@ const styles = StyleSheet.create({
     left: 0,
   },
   connectionsCount: {
-    fontSize: 14,
-    color: 'orange',
+    fontSize: 12,
+    color: 'green',
     marginLeft: 40,
   },
   spinner: {

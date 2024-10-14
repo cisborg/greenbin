@@ -113,13 +113,9 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#f5f5f5',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
     fontSize: 14,
     color: '#333',
-    marginRight: 20,
+    marginRight: '4%',
   },
   content: {
     margin: 5
@@ -127,8 +123,8 @@ const styles = StyleSheet.create({
   emptyMessage: {
     textAlign: 'center',
     fontSize: 18,
-    color: 'gray',
-    marginTop: 50,
+    color: 'darkgrey',
+    marginTop: '20%',
   },
   card: {
     backgroundColor: '#f9f9f9',
@@ -170,12 +166,12 @@ const styles = StyleSheet.create({
   },
   unfollowButton: {
     backgroundColor: 'green',
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '-10%'
+    marginTop: '-4%'
   },
   loadingButton: {
     backgroundColor: 'orange',
@@ -183,6 +179,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 12,
   },
 });
 

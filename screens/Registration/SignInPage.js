@@ -50,7 +50,7 @@ const SignInPage = () => {
       try {
         dispatch(loginUser({email,password})); // Uncomment to dispatch login action
         setIsLoading(false);
-        Alert.alert('Login Successful!', 'You can now log in to your account.');
+        Alert.alert('Login Successful!', 'Discover the ecogreen initiatives!.');
 
         navigation.navigate("Main"); 
       } catch (error) {
@@ -82,7 +82,7 @@ const SignInPage = () => {
               resizeMode="cover"
               source={require("../../assets/connect.webp")}
             />
-<View style={styles.inputContainer}>
+      < View style={styles.inputContainer}>
           <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.inputField}

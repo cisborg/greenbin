@@ -1,4 +1,6 @@
 import * as React from "react";
+import 'react-native-gesture-handler'; 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView, Platform, Dimensions } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -229,6 +231,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
@@ -307,6 +310,7 @@ const App = () => {
 
       </Stack.Navigator>
     </NavigationContainer>
+    </GestureHandlerRootView>
     </Provider>
   );
 };

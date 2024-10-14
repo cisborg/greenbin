@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
-import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
-import CheckBox from '@react-native-community/checkbox';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput, CheckBox } from 'react-native';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Button } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { RefreshControl } from 'react-native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox'; // Import BouncyCheckbox
 
 const initialProducts = [
   {
@@ -78,7 +78,7 @@ const ProductCard = ({ item, addToFavorites, addToCart }) => {
         </View>
       )}
     >
-      <TouchableOpacity style={styles.card} >
+      <TouchableOpacity style={styles.card}>
         <Image source={item.image} style={styles.productImage} />
         <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
@@ -136,7 +136,7 @@ const Products = () => {
       if (sortOrder === 'PriceLowHigh') {
         sortedProducts = [...products].sort((a, b) => a.price - b.price);
       } else if (sortOrder === 'PriceHighLow') {
-        sortedProducts = [...products].sort((a, b) => b.price - a.price);
+        sortedProducts = [...products].sort((b, a) => a.price - b.price);
       }
       setProducts(sortedProducts);
     } catch (error) {
@@ -175,6 +175,27 @@ const Products = () => {
     setIsRefreshing(true);
     // Logic to refresh products from API or database
     setIsRefreshing(false);
+  };
+
+  const loadMoreProducts = () => {
+    // Simulate fetching more products
+    const newProducts = [
+      // Example additional products
+      {
+        id: '5',
+        title: 'New Eco Product',
+        price: 1300,
+        originalPrice: 1400,
+        image: require('../../assets/greenBin.png'),
+        rating: 4.8,
+        reviewCount: 20,
+        brand: 'NewBrand',
+        isBrandOfficial: true,
+        isLocalDispatch: true,
+      },
+      // Add more new products here
+    ];
+    setProducts(prevProducts => [...prevProducts, ...newProducts]);
   };
 
   const addToFavorites = (item) => {
@@ -230,69 +251,78 @@ const Products = () => {
 
           <View style={styles.sortFilterRow}>
             <View style={styles.pickerContainer}>
-              <Picker selectedValue={selectedSort} onValueChange={handleSortChange} style={{ height: 40, width: 150, borderRadius: 14 }}>
+              <Picker selectedValue={selectedSort} onValueChange={handleSortChange}>
                 <Picker.Item label="Best Match" value="Best Match" />
                 <Picker.Item label="Price: Low to High" value="PriceLowHigh" />
                 <Picker.Item label="Price: High to Low" value="PriceHighLow" />
               </Picker>
             </View>
             <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-              <Ionicons name="filter-outline" size={28} color="black" />
+              <Ionicons name="filter-outline" size={24} color="#000" />
             </TouchableOpacity>
           </View>
 
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />}
+          {/* Products List */}
+          <FlatList 
+            data={initialProducts}
+            renderItem={({ item }) => (
+              <ProductCard 
+                item={item} 
+                addToFavorites={addToFavorites} 
+                addToCart={addToCart} 
+
+              />
+            )}
             numColumns={2}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
+            keyExtractor={item => item.id}
             refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshProducts} />}
+            ListFooterComponent={renderFooter}
+            onEndReached={loadMoreProducts}
+            onEndReachedThreshold={0.5}
           />
 
           {/* Filter Modal */}
-          <Modal visible={showFilterModal} animationType="fade" transparent>
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContent}>
+          <Modal visible={showFilterModal} animationType="slide">
+            <ScrollView>
+              <View style={styles.filterContainer}>
                 <Text style={styles.modalTitle}>Filter Products</Text>
-                <ScrollView>
-                  <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500'}}>Brand Filter</Text>
-                  {Object.keys(brandFilters).map((brand) => (
-                    <View key={brand} style={styles.checkboxContainer}>
-                      <CheckBox
-                        value={brandFilters[brand]}
-                        onValueChange={() => setBrandFilters({ ...brandFilters, [brand]: !brandFilters[brand] })}
-                      />
-                      <Text style={{marginLeft: 5}}>{brand}</Text>
-                    </View>
-                  ))}
-                  <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500'}}>Price Range</Text>
-                  <View style={styles.checkboxContainer}>
-                    <CheckBox
-                      value={priceRanges.low}
-                      onValueChange={() => setPriceRanges({ ...priceRanges, low: !priceRanges.low })}
-                    />
-                    <Text style={{marginLeft: 5}}>Below 1000 GCP</Text>
-                  </View>
-                  <View style={styles.checkboxContainer}>
-                    <CheckBox
-                      value={priceRanges.medium}
-                      onValueChange={() => setPriceRanges({ ...priceRanges, medium: !priceRanges.medium })}
-                    />
-                    <Text style={{marginLeft: 5}}>1000 - 1500 GCP</Text>
-                  </View>
-                  <View style={styles.checkboxContainer}>
-                    <CheckBox
-                      value={priceRanges.high}
-                      onValueChange={() => setPriceRanges({ ...priceRanges, high: !priceRanges.high })}
-                    />
-                    <Text style={{marginLeft: 5}}>Above 1500 GCP</Text>
-                  </View>
-                  <Button title="Apply" onPress={filterProducts} style={{ borderRadius:14, width:80, backgroundColor: 'green', marginTop: 5}} />
-                </ScrollView>
+                
+                <Text style={styles.filterLabel}>Brands</Text>
+                <BouncyCheckbox
+                  value={brandFilters.EcoBrand}
+                  onValueChange={(value) => setBrandFilters({ ...brandFilters, EcoBrand: value })}
+                />
+                <Text style={styles.filterLabel}>EcoBrand</Text>
+
+                <View styles={styles.bounce}>
+                <BouncyCheckbox
+                  value={brandFilters.ReGreen}
+                  onValueChange={(value) => setBrandFilters({ ...brandFilters, ReGreen: value })}
+                />
+                <Text style={styles.filterLabel}>ReGreen</Text>
+                </View>
+
+                {/* Price Range Checkboxes */}
+                <Text style={styles.filterLabel}>Price Ranges</Text>
+                <BouncyCheckbox
+                  value={priceRanges.low}
+                  onValueChange={(value) => setPriceRanges({ ...priceRanges, low: value })}
+                />
+                <Text>Less than 1000 GCP</Text>
+                <BouncyCheckbox
+                  value={priceRanges.medium}
+                  onValueChange={(value) => setPriceRanges({ ...priceRanges, medium: value })}
+                />
+                <Text>1000 - 1500 GCP</Text>
+                <BouncyCheckbox
+                  value={priceRanges.high}
+                  onValueChange={(value) => setPriceRanges({ ...priceRanges, high: value })}
+                />
+                <Text>More than 1500 GCP</Text>
+
+                <Button title="Apply Filters" onPress={filterProducts} />
               </View>
-            </View>
+            </ScrollView>
           </Modal>
         </Animated.View>
       )}
@@ -301,6 +331,7 @@ const Products = () => {
 };
 
 export default Products;
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -329,9 +360,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 35,
     borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 17,
+    backgroundColor: '#f5f5f5',
     paddingHorizontal: 10,
+    borderRadius: 10,
     marginHorizontal: 20,
     width: 50
   },
@@ -357,10 +388,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
-    padding: 1,
-    borderRadius: 20,
-    borderWidth: 1,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    color:' #ccc',
+    marginTop: 10,
     width: 150,
+    height: 38,
+    paddingVertical: 10,
+  },
+  bounce: {
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+
   },
   card: {
     flex: 1,
@@ -391,9 +433,17 @@ const styles = StyleSheet.create({
     width: '75%', // Width of the modal
     maxHeight: '80%', // Maximum height of the modal
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#f5f5f5',
     borderRadius: 14,
-    elevation: 5,
+    elevation: 1,
+  },
+  filterContainer: {
+    padding: 10,
+    width: '40%', // Width of the modal
+    maxHeight: '100%', // Maximum height of the modal
+
+
+
   },
   modalTitle: {
     fontSize: 18,

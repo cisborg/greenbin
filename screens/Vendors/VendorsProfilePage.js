@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: '5%'
   },
   heading: {
     fontSize: FontSize.size_xl,
@@ -167,17 +167,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     borderRadius: 16,
     marginVertical: 10,
+    marginHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingHorizontal: 10,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    paddingRight: 70,
     elevation: 3, // For Android shadow
   },
   buttonText: {
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_lg,
     color: Color.colorBlack,
     fontWeight: "500",
     alignSelf: "center",
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     color: Color.colorWhite,
     fontFamily: FontFamily.poppinsBold,
     fontWeight: "600",
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_lg,
   },
   vendorDescription: {
     color: Color.colorWhite,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   removeFromVendorList: {
-    fontSize: FontSize.size_lg,
+    fontSize: FontSize.size_base,
     color: Color.colorDarkturquoise,
     fontFamily: FontFamily.poppinsRegular,
     textAlign: "left",
