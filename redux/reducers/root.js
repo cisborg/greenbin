@@ -31,8 +31,6 @@ const rootReducer = combineReducers({
     reports: reportReducer,
     cart: cartReducer,
 
-
-
 });
 
 export default rootReducer;

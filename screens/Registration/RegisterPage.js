@@ -26,9 +26,10 @@ const countryCodes = [
 const RegisterPage = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [name,setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [contact, setContact] = React.useState('');
   const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0].code);
   const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -51,7 +52,7 @@ const RegisterPage = () => {
     return emailRegex.test(email);
   };
 
-  const validatePhoneNumber = (number) => {
+  const validateContact = (number) => {
     const phoneRegex = /^[0-9]{9}$/; 
     return phoneRegex.test(number);
   };
@@ -68,7 +69,7 @@ const RegisterPage = () => {
       return;
     }
 
-    if (!validatePhoneNumber(phoneNumber)) {
+    if (!validateContact(contact)) {
       setErrorMessage('Invalid phone number. Please enter a valid phone number.');
       setLoading(false);
       return;
@@ -82,12 +83,14 @@ const RegisterPage = () => {
     }
 
     try {
-      await dispatch(registerUser({ email, password, phoneNumber: selectedCountryCode + phoneNumber, promoCode }));
+      dispatch(registerUser({ name,email, password, contact: selectedCountryCode + contact }));
 
       Alert.alert('Registration Successful!', 'You can now log in to your account.');
       navigation.navigate('SignInPage');
     } catch (error) {
+      console.error(error);
       setErrorMessage('Failed to register. Please try again.');
+
     } finally {
       setLoading(false);
     }
@@ -103,6 +106,20 @@ const RegisterPage = () => {
       <Animated.View style={{ opacity: fadeAnim }}>
         <Text style={styles.welcomeHeader}>GreenBin</Text>
        <View style={styles.header}>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholder="e.g John Doe"
+            placeholderTextColor={Color.colorGray_100}
+            // keyboardType="email-address"
+            accessibilityLabel="Name Input"
+            accessibilityHint="Enter your full name"
+          />
+        </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -145,8 +162,8 @@ const RegisterPage = () => {
             </Picker>
             <TextInput
               style={styles.inputContainer1}
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
+              value={contact}
+              onChangeText={setContact}
               placeholder="Enter Phone Number"
               placeholderTextColor={Color.colorGray_100}
               keyboardType="phone-pad"
