@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet,Platform, Image, Dimensions, Animated, StatusBar } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet,Platform, Image, Dimensions, Animated, StatusBar } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window'); // Get screen dimensions
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-        elevation: 2,
+        elevation: 1,
         borderRadius: 14,
         width: width * 0.96 // Button width
     },

@@ -34,7 +34,7 @@ const squadsData = [
   },
   {
     id: '4',
-    name: 'Nature Diversity Custodians',
+    name: 'Nature Custodians',
     logo: require('../../assets/greenBin.png'), // Replace with actual logo
     points: 1300,
     activitiesCompleted: 6,
@@ -145,10 +145,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 2,
-    elevation: 3,
+    elevation: 2,
   },
   rank: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#4CAF50',
     width: 40,
@@ -163,24 +163,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   squadName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '600',
     color: '#333',
   },
   points: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#555',
   },
   activities: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#555',
   },
   members: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#555',
   },
   achievements: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#777',
     marginTop: 5,
   },

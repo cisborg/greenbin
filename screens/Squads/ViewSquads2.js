@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View, Text, Modal, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Modal, Alert, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions ,Platform,StatusBar} from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
@@ -68,7 +68,7 @@ const ViewSquad2Screen = () => {
 
   const handleLeaveSquad = () => {
     // Logic to leave the squad
-    Alert.alert('You have left the squad.');
+    Alert.alert('We regret seeing you leave!.');
     setModalVisible(false); // Close the modal
   };
 
@@ -78,13 +78,7 @@ const ViewSquad2Screen = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         {/* Header Section */}
         <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.back} 
-            onPress={() => navigation.goBack()}
-            accessibilityLabel="Go back"
-          >
-            <Text style={{ color: 'green', fontWeight: '600' }}>goBack</Text>
-          </TouchableOpacity>
+         
           <Image 
             source={{ uri: squadData.moderator.avatar }} 
             style={styles.squadAvatar} 
@@ -173,11 +167,12 @@ const ViewSquad2Screen = () => {
         </View>
 
         {/* Invitation Link Section */}
-        <View style={styles.invitationContainer}>
-          <TouchableOpacity style={styles.invitationButton} accessibilityLabel="Invitation link">
+        <View style={styles.invitationButton}>
+          <TouchableOpacity  accessibilityLabel="Invitation link">
             <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
-            <Text style={styles.invitationText}>Invitation link</Text>
           </TouchableOpacity>
+          <Text style={styles.invitationText}>Invitation link</Text>
+
         </View>
 
         {/* Post Restrictions Section */}
@@ -222,6 +217,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
+    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
+
   },
   scrollView: {
     paddingHorizontal: width * 0.05, // 5% padding on both sides
@@ -265,10 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 13,
   },
-  back: {
-    left: 10,
-    marginLeft: -320,
-  },
+
   featuredSquad: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -372,9 +366,10 @@ const styles = StyleSheet.create({
   },
   membersContainer: {
     marginHorizontal: 10,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-        flexDirection: 'row',
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    marginLeft: 30,
+    marginRight: 30,
     justifyContent: 'center',
   },
   totalMembers: {
@@ -386,12 +381,12 @@ const styles = StyleSheet.create({
   membersList: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: 'lightgray',
     borderRadius: 12,
     padding: 8,
-    width: width < 400 ? '34%': '35%'
+    margin: 20,
+    width: width < 400 ? '37%': '40%'
 
   },
   memberAvatar: {
@@ -407,19 +402,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 50,
   },
-  invitationContainer: {
-    marginBottom: 8,
-  },
+ 
   invitationButton: {
     backgroundColor: 'green',
     borderRadius: 12,
     padding: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-    left: '40%',
-    width: width < 400 ? 130: 150
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    left: '15%',
+    width: width < 400 ? '40%': '45%'
+  
   },
   invitationIcon: {
     marginRight: 10,
@@ -432,12 +426,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    left: '5%',
+    left: '2%',
     borderRadius: 14,
-    padding: 20,
+    padding: 15,
     borderColor: 'lightgray',
     borderWidth: 1,
-    width: '90%',
+    width: '98%',
   },
   postRestrictionsText: {
     marginLeft: 10,

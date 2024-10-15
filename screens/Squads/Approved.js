@@ -15,7 +15,7 @@ const Approved = ({ navigation }) => {
     },
     {
       id: 2,
-      name: "Jane Smith",
+      name: "James Bond",
       profession: "Web Developer",
       description: "Building responsive and user-friendly websites.",
       profilePic: "https://example.com/profile2.jpg",
@@ -54,7 +54,7 @@ const Approved = ({ navigation }) => {
         </TouchableOpacity>
         <TextInput 
           style={styles.searchInput} 
-          placeholder="Search for connectors to approve" 
+          placeholder="Search for connectors to approve..." 
           value={searchTerm} 
           onChangeText={setSearchTerm} 
           placeholderTextColor="#888"
@@ -62,7 +62,7 @@ const Approved = ({ navigation }) => {
       </View>
       <View style={styles.content}>
         {filteredVendors.length === 0 ? (
-          <Text style={styles.emptyMessage}>Approval Complete!</Text>
+          <Text style={styles.emptyMessage}>Approval Complete! </Text>
         ) : (
           filteredVendors.map((vendor) => (
             <Animated.View key={vendor.id} style={styles.card}>
@@ -95,50 +95,48 @@ const Approved = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: '1%',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffff',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: 10,
+    marginTop: 10
+
   },
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 16,
     padding: 10,
-    backgroundColor: '#f9f9f9',
-    elevation: 3,
-    fontSize: 16,
+    backgroundColor: '#f5f5f5',
+    shadowColor: '#000',
+    fontSize: 14,
     color: '#333',
-    marginRight: 10,
+    marginRight: '4%',
   },
   content: {
-    marginBottom: 20,
-    marginLeft: 10,
+    margin: 5
   },
   emptyMessage: {
     textAlign: 'center',
     fontSize: 18,
-    color: 'gray',
-    marginTop: 50,
+    color: 'darkgrey',
+    marginTop: '20%',
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 14,
     padding: 15,
     marginBottom: 15,
-    elevation: 3,
+    elevation: 2,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    maxWidth: width * 0.95,
+    maxWidth: width * 0.98,
   },
   vendorInfo: {
     flexDirection: 'row',
@@ -155,31 +153,33 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   vendorName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   vendorProfession: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'gray',
   },
   vendorDescription: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'darkgray',
   },
   unfollowButton: {
     backgroundColor: 'green',
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: '-4%'
   },
   loadingButton: {
-    backgroundColor: 'darkgreen',
+    backgroundColor: 'orange',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontWeight: 'bold',
+    fontSize: 12,
   },
 });
 

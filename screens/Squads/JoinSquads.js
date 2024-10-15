@@ -11,7 +11,6 @@ const squadsData = [
     name: 'Nature Diversity',
     handle: '@nature_diversity',
     status: 'moderated',
-    members: 'Joined by Michael Nyagha, Grace and 19 others you know',
     description: 'Promoting nature green',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover1.jpg',
@@ -22,7 +21,6 @@ const squadsData = [
     name: 'Smarty Tech',
     handle: '@smarty_tech',
     status: 'add post',
-    members: 'Joined by Grace, Antony and 250 others you know',
     description: 'Smart Green Homes and Roofs',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover2.jpg',
@@ -33,7 +31,6 @@ const squadsData = [
     name: 'Green Waste Management',
     handle: '@green_waste',
     status: 'moderated',
-    members: 'Joined by Don, Antony and 200 others you know',
     description: 'Recycling, Reducing and Reusing Wastes',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover3.jpg',
@@ -80,7 +77,6 @@ const JoinSquads = () => {
           <Text style={[styles.status, item.status === 'moderated' ? styles.moderated : styles.addPost]}>
             {item.status}
           </Text>
-          <Text style={styles.members}>{item.members}</Text>
           
           <View style={styles.connectionsContainer}>
             {Array.from({ length: 3 }).map((_, index) => (
@@ -235,10 +231,7 @@ const styles = StyleSheet.create({
   addPost: {
     color: 'green',
   },
-  members: {
-    color: '#666666',
-    fontSize: 10,
-  },
+ 
   connectionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -258,7 +251,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   joinButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'green',
     borderRadius: 10,
     paddingVertical: 6,
     paddingHorizontal: 10,

@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import { Color } from '../../GlobalStyles';
+import { FlashList } from '@shopify/flash-list'; // Import FlashList
 
 const notificationsData = [
   {
@@ -35,6 +34,34 @@ const notificationsData = [
 ];
 
 const NotificationsScreen = () => {
+  const [notifications, setNotifications] = useState(notificationsData);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchNotifications = async () => {
+    setLoading(true);
+    // Simulate fetching more notifications
+    const newNotifications = notificationsData.map((item) => ({
+      ...item,
+      id: `${parseInt(item.id) + page * notificationsData.length}`, // Update ID to prevent duplicates
+    }));
+    setNotifications((prev) => [...prev, ...newNotifications]);
+    setLoading(false);
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Simulate refreshing notifications
+    setNotifications(notificationsData);
+    setPage(1);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [page]);
+
   const renderNotification = ({ item }) => (
     <TouchableOpacity style={styles.notificationContainer} activeOpacity={0.7}>
       <View style={styles.userContainer}>
@@ -50,16 +77,23 @@ const NotificationsScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <FlatList
-        data={notificationsData}
+    <View style={styles.container}>
+      <FlashList
+        data={notifications}
         renderItem={renderNotification}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.notificationList}
+        onEndReached={() => {
+          setPage((prev) => prev + 1); // Load more notifications
+        }}
+        onEndReachedThreshold={0.5} // Load more when 50% of the list is visible
+        refreshing={refreshing}
+        onRefresh={handleRefresh} // Pull to refresh
+        estimatedItemSize={100} // Estimate item size for performance
       />
-    </ScrollView>
+    </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -74,10 +108,10 @@ const styles = StyleSheet.create({
   },
   notificationContainer: {
     backgroundColor: '#fff', // Changed to light gray
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 12,
     marginBottom: 15,
-    elevation: 3,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,

@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: 'green',
     fontFamily: FontFamily.poppinsBold,
     marginLeft: 35,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 3,
+    elevation: 2,
   },
   menuItemContent: {
     flexDirection: 'row',
@@ -131,12 +131,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   menuTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: 'bold',
     color: '#333',
   },
   menuDescription: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
   },
   imageContainer: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3
+    elevation: 1
   },
   image: {
     width: '100%',

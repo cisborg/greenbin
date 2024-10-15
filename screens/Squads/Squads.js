@@ -12,7 +12,6 @@ const squadsData = [
     name: 'Nature Diversity',
     handle: '@nature_diversity',
     status: 'moderated',
-    members: 'Joined by Michael Nyagha, Grace and 19 others you know',
     description: 'Promoting nature green',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover1.jpg',
@@ -23,7 +22,6 @@ const squadsData = [
     name: 'Smarty Tech',
     handle: '@smarty_tech',
     status: 'add post',
-    members: 'Joined by Grace, Antony and 250 others you know',
     description: 'Smart Green Homes and Roofs',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover2.jpg',
@@ -34,7 +32,6 @@ const squadsData = [
     name: 'Green Waste Management',
     handle: '@green_waste',
     status: 'moderated',
-    members: 'Joined by Don, Antony and 200 others you know',
     description: 'Recycling, Reducing and Reusing Wastes',
     avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
     cover: 'https://example.com/cover3.jpg',
@@ -88,7 +85,6 @@ const JoinSquads = () => {
           <Text style={styles.squadName}>{item.name}</Text>
           <Text style={styles.description}>{item.description}</Text>
           <Text style={styles.status}>{item.status}</Text>
-          <Text style={styles.members}>{item.members}</Text>
 
           {/* Connections Count Section */}
           <View style={styles.connectionsContainer}>
@@ -153,7 +149,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 15,
     overflow: 'hidden',
-    elevation: 3,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -161,7 +157,7 @@ const styles = StyleSheet.create({
   },
   coverImage: {
     width: '100%',
-    height: width * 0.25, // Responsive height
+    height: width * 0.20, // Responsive height
     borderRadius: 15,
     borderWidth: 1,
     borderColor: 'lightgray'
@@ -186,10 +182,11 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 25,
     position: 'absolute',
+
     top: -30,
     left: 10,
     borderWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: 'green',
     marginBottom: -15
   },
   squadDetails: {
@@ -197,21 +194,19 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   squadName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#333333',
   },
   description: {
     color: '#666666',
+    fontSize: 13,
   },
   status: {
     color: 'green',
-    fontSize: 12
+    fontSize: 11
   },
-  members: {
-    color: '#666666',
-    fontSize: 11,
-  },
+ 
   viewButton: {
     position: 'absolute',
     top: 20,

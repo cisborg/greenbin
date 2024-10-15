@@ -106,7 +106,7 @@ const LeaderboardContent = () => {
 const UserTop = ({ position, name, score, image, crown, squad, award, isCenter }) => (
   <View style={[styles.userTop, isCenter && styles.userTopCenter, position === "1" && styles.userTopFirst]}>
     <Image source={image} style={styles.userTopImage} />
-    {crown && <FontAwesome6 name="crown" size={24} color="yellow" style={styles.crownIcon} />}
+    {crown && <FontAwesome6 name="crown" size={24} color="orange" style={styles.crownIcon} />}
     <Text style={styles.userTopName}>{name}</Text>
     <Text style={styles.userTopScore}>{score}</Text>
     <Text style={styles.userSquad}>{squad}</Text>
@@ -185,8 +185,8 @@ const styles = StyleSheet.create({
   },
   crownIcon: {
     position: "absolute",
-    top: -15,
-    left: 45,
+    top: '-1%',
+    left: '50%',
   },
   userTopName: {
     color: "green",

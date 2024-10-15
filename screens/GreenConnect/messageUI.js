@@ -299,20 +299,19 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     justifyContent: "flex-start",
     width: '100%',
-    marginRight: 40
   },
   userProfile: {
     alignItems: 'center',
     marginRight: 30,
   },
   userProfileImg: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
   },
   userName: {
     marginTop: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
     fontWeight: 'bold',
   },

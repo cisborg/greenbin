@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, View, Text, Platform, StatusBar, TouchableOpacity, TextInput, Dimensions, Animated } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TextInput, Dimensions, Animated, FlatList, TouchableOpacity,Platform,StatusBar } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontFamily, Color, FontSize } from "../../GlobalStyles";
@@ -51,6 +51,24 @@ const SeeAllEvents = () => {
     console.log(`Event clicked: ${event.title}`);
   };
 
+  const renderEventCard = ({ item, index }) => (
+    <Animated.View 
+      style={{
+        opacity: animationRefs.current[index].interpolate({ inputRange: [0, 1], outputRange: [0, 1] }),
+        transform: [{ translateY: animationRefs.current[index].interpolate({ inputRange: [0, 1], outputRange: [50, 0] }) }]
+      }}
+    >
+      <TouchableOpacity onPress={() => handleEventPress(item)}>
+        <EventCard 
+          title={item.title}
+          date={item.date}
+          location={item.location}
+          imageSource={item.image}
+        />
+      </TouchableOpacity>
+    </Animated.View>
+  );
+
   return (
     <SafeAreaView style={styles.seeAllEvents}> 
       <View style={styles.header}>
@@ -66,26 +84,12 @@ const SeeAllEvents = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.groupParent}>
-        {filteredEvents.map((event, index) => (
-          <Animated.View 
-            key={index}
-            style={{
-              opacity: animationRefs.current[index].interpolate({ inputRange: [0, 1], outputRange: [0, 1] }),
-              transform: [{ translateY: animationRefs.current[index].interpolate({ inputRange: [0, 1], outputRange: [50, 0] }) }]
-            }}
-          >
-            <TouchableOpacity onPress={() => handleEventPress(event)}>
-              <EventCard 
-                title={event.title}
-                date={event.date}
-                location={event.location}
-                imageSource={event.image}
-              />
-            </TouchableOpacity>
-          </Animated.View>
-        ))}
-      </View>
+      <FlatList
+        data={filteredEvents}
+        renderItem={renderEventCard}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.groupParent}
+      />
     </SafeAreaView>
   );
 };
@@ -114,6 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: 8,
+    paddingBottom: '10%',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: { 
@@ -150,8 +155,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   rectangleParent: {
-    height: 120,
-    marginBottom: '-3.5%',
+    height: 220,
+    marginBottom: '2%',
     width: '100%', // Responsive width
     alignSelf: 'center',
   },
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
   },
   imGoingToShakeYParent: {
     marginTop: -10,
-    flexDirection: 'row',
+    flexDirection: 'column',
     borderRadius: 20,
     padding: 12,
     backgroundColor: '#fff',
@@ -177,7 +182,7 @@ const styles = StyleSheet.create({
   satMay1: {
     color: 'blue',
     fontSize: width * 0.030, // Dynamic font size
-    marginTop: 6,
+    marginTop: 3,
   },
   min: {
     color: Color.colorTypographySubColor,
@@ -185,9 +190,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   groupInner: {
-    width: '25%', // Responsive width
-    height: 75,
-    borderRadius: 18,
+    width: '100%', // Responsive width
+    height: 120,
+    borderRadius: 16,
     marginRight: 10
   },
   locationIcon: {

@@ -5,6 +5,7 @@ import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { WaveIndicator } from 'react-native-indicators'; // Import WaveIndicator
 
 // ActionButton Component
 const ActionButton = ({ onPress, iconSource, text }) => (
@@ -22,6 +23,7 @@ const VendorsProfilePage = () => {
 
   const screenAnim = React.useRef(new Animated.Value(0)).current;
   const [screenWidth, setScreenWidth] = React.useState(Dimensions.get('window').width);
+  const [loading, setLoading] = React.useState(true); // State for loading
 
   React.useEffect(() => {
     // Animation on screen mount
@@ -31,6 +33,11 @@ const VendorsProfilePage = () => {
       useNativeDriver: true,
     }).start();
 
+    // Simulate loading delay (for demonstration)
+    const timer = setTimeout(() => {
+      setLoading(false); // Hide loading after 3 seconds
+    }, 3000);
+
     // Listener for screen resize
     const onChange = ({ window }) => {
       setScreenWidth(window.width);
@@ -38,6 +45,7 @@ const VendorsProfilePage = () => {
     const subscription = Dimensions.addEventListener('change', onChange);
 
     return () => {
+      clearTimeout(timer); // Cleanup timer
       subscription?.remove(); // Cleanup listener
     };
   }, [screenAnim]);
@@ -79,6 +87,13 @@ const VendorsProfilePage = () => {
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
         <StatusBar barStyle="dark-content" />
+
+        {/* Wave Indicator */}
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <WaveIndicator size={100} color="blue" /> {/* Customize size and color */}
+          </View>
+        )}
 
         {/* Header with Vendor Name */}
         <View style={styles.header}>

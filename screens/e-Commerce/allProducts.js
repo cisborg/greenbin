@@ -1,10 +1,17 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, SectionList, TouchableOpacity, Dimensions } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { WaveIndicator } from 'react-native-indicators'; // Import WaveIndicator
+import { FlashList } from '@shopify/flash-list'; // Import FlashList
 
 const { width } = Dimensions.get('window');
 
 const ItemGridScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(true); // Loading state
+  const [data, setData] = useState([]); // State for data
+  const [page, setPage] = useState(1); // Current page
+  const [loadingMore, setLoadingMore] = useState(false); // Loading more items state
+
   const DATA = [
     {
       title: "Recommended For You",
@@ -36,6 +43,28 @@ const ItemGridScreen = ({ navigation }) => {
       ],
     },
   ];
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after 2 seconds
+      setData(DATA); // Set initial data
+    }, 2000);
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
+
+  useEffect(() => {
+    // Simulate fetching more data when scrolling reaches the end
+    if (loadingMore) {
+      const timer = setTimeout(() => {
+        // Here you would typically fetch more data
+        setPage((prevPage) => prevPage + 1);
+        setLoadingMore(false); // Reset loading more state
+      }, 1500); // Simulate network delay
+
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [loadingMore]);
 
   const handleProductClick = (item) => {
     navigation.navigate('productDetail', { product: item });
@@ -65,21 +94,36 @@ const ItemGridScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
+      <FlashList
         data={section.data}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
         numColumns={3}
         columnWrapperStyle={styles.columnWrapper}
-        scrollEnabled={false}
+        onEndReached={() => {
+          if (!loadingMore) {
+            setLoadingMore(true); // Set loading more state
+          }
+        }}
+        onEndReachedThreshold={0.5} // Trigger when 50% of the list is visible
+        estimatedItemSize={100} // Estimate item size for performance
       />
     </View>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <WaveIndicator size={100} color='green' /> {/* WaveIndicator */}
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <SectionList
-        sections={DATA}
+        sections={data}
         keyExtractor={(item, index) => `${item.title}-${index}`}  
         renderSectionHeader={({ section }) => renderSection({ section })}
         renderItem={() => null} 

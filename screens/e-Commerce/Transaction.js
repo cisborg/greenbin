@@ -37,9 +37,19 @@ const TransactionScreen = ({ navigation }) => {
   const [opacity] = useState(new Animated.Value(0));
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [recentRecipients, setRecentRecipients] = useState([]);
+  const [currentDate, setCurrentDate] = useState('');
 
   const cardTypes = [ 'GreenPoints', 'GreenBank'];
 
+  const formatDate = (date) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+  };
+  useEffect(() => {
+    const date = new Date();
+    setCurrentDate(formatDate(date));
+  }, []);
+  
   useEffect(() => {
     Animated.timing(opacity, {
       toValue: 1,
@@ -52,40 +62,52 @@ const TransactionScreen = ({ navigation }) => {
     setActiveCardIndex(index);
   };
 
+
   const handleSendPoints = () => {
     const currentCard = cardTypes[activeCardIndex];
     const sendAmount = parseInt(amountToSend, 10);
-
+  
     if (!recipientNumber || isNaN(sendAmount) || sendAmount <= 0 || recipientNumber.length < 10 || recipientNumber.length > 11) {
       alert('Invalid input');
       return;
     }
-
+  
     if (sendAmount > generalPoints[currentCard]) {
       alert('Insufficient balance');
       return;
     }
-
+  
     // Update general points
     setGeneralPoints(prevState => ({
       ...prevState,
       [currentCard]: prevState[currentCard] - sendAmount
     }));
-
+  
     // Update total deducted
     setTotalDeducted(prevTotal => prevTotal + sendAmount);
-
-    // Update recent recipients
+  
+    // Update recent recipients with a unique ID
     setRecentRecipients(prevRecipients => {
-      const newRecipient = { id: 1, mobile: recipientNumber, amount: sendAmount };
-      return [newRecipient, ...prevRecipients.slice(0, 1)]; // Keep only the latest 2
-    });
+      const newRecipient = { id: Date.now(), mobile: recipientNumber, amount: sendAmount }; // Use timestamp as unique ID
+      const updatedRecipients = [...prevRecipients, newRecipient];
 
+      // Keep only the latest 2 recipients
+      return updatedRecipients.length > 2 ? updatedRecipients.slice(1) : updatedRecipients;    });
+  
     // Reset input fields
     setAmountToSend('');
     setRecipientNumber('');
     setShowSendInput(false); // Hide send input after sending
   };
+  
+  // When rendering recent recipients, ensure the key is unique
+  {recentRecipients.map((item) => (
+    <View key={item.id} style={styles.recipientContainer}>
+      <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
+      <Text style={{ color: 'green', fontSize: 11 }}>Sent: GCP {item.amount}</Text>
+    </View>
+  ))}
+  
 
   const handleReceivePoints = () => {
     const receiveAmount = parseInt(amountToReceive, 10);
@@ -142,7 +164,7 @@ const TransactionScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={{ flexDirection: 'column' }}> 
               <Text style={styles.headerText}>Hello, Jude!</Text>
-              <Text style={styles.dateText}>Monday, 24 April, 2024</Text>
+              <Text style={styles.dateText}>{currentDate}</Text>
             </View>
           </View>
           

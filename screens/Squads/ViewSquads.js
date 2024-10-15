@@ -76,15 +76,7 @@ const ViewSquadScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         {/* Header Section */}
         <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.back} 
-            onPress={() => navigation.goBack()}
-            accessibilityLabel="Go back"
-          >
-            <Text style={{ color: 'green', fontWeight: '600' }}>goBack</Text>
-          </TouchableOpacity>
-
-          {/* Cover Image */}
+         
           <Image 
             source={{ uri: 'https://example.com/cover.jpg' }} // Add cover image URL here
             style={styles.coverImage}
@@ -179,10 +171,11 @@ const ViewSquadScreen = () => {
 
         {/* Invitation Link Section */}
         <View style={styles.invitationContainer}>
-          <TouchableOpacity style={styles.invitationButton} accessibilityLabel="Invitation link">
-            <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
-            <Text style={styles.invitationText}>Invitation link</Text>
+          <TouchableOpacity  accessibilityLabel="Invitation link" style={styles.invitationIcon}>
+            <Ionicons name="person-add" size={20} color="white"  />
           </TouchableOpacity>
+          <Text style={styles.invitationText}>Invitation link</Text>
+
         </View>
 
         {/* Post Restrictions Section */}
@@ -235,17 +228,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   squadAvatar: {
-    width: 80, // Reduced size for smaller avatar
-    height: 80,
+    width: 40, // Reduced size for smaller avatar
+    height: 40,
     borderRadius: 40,
-    borderWidth: 2,
+    borderColor: 'green',
+    borderWidth: 1,
 
-    borderColor: Color.colorWhite,
-    marginTop: -40, // Slight overlap with cover image
   },
   coverImage: {
     width: '100%',
-    height: height * 0.2, // Cover image takes 20% of the screen height
+    height: 100,
+    borderColor: 'green',
+    borderWidth: 1,
   },
   feature: {
     backgroundColor: 'green',
@@ -255,10 +249,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 13,
   },
-  back: {
-    left: 10,
-    marginLeft: -320,
-  },
+ 
   featuredSquad: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -353,9 +344,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   membersContainer: {
-    margin: 20,
+    marginHorizontal: 10,
+    paddingHorizontal: 20,
     flexDirection: 'row',
+    marginLeft: 30,
+    marginRight: 30,
     justifyContent: 'center',
+
   },
   notification: {
     borderWidth: 1,
@@ -378,35 +373,33 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 8,
     margin: 20,
-    width: width < 400 ? '34%': '35%'
+    width: width < 400 ? '37%': '40%'
 
   },
   memberAvatar: {
     width: 30,
     height: 30,
     borderRadius: 19,
-    marginRight: -12,
+    marginRight: -17,
     borderWidth: 1,
     borderColor: 'lightgray',
   },
   actionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginLeft: 50,
   },
+ 
   invitationContainer: {
-    marginBottom: 20,
-  },
-  invitationButton: {
     backgroundColor: 'green',
     borderRadius: 12,
     padding: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-    left: '35%',
-    width: width < 400 ? 130: 150
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    left: '15%',
+    width: width < 400 ? '40%': '45%'
   },
   invitationIcon: {
     marginRight: 10,
@@ -419,12 +412,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    left: '5%',
+    left: '2%',
     borderRadius: 14,
-    padding: 20,
+    padding: 15,
     borderColor: 'lightgray',
     borderWidth: 1,
-    width: '90%',
+    width: '98%',
   },
   postRestrictionsText: {
     marginLeft: 10,

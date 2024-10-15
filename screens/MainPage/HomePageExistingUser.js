@@ -18,6 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
 import { FlashList } from "@shopify/flash-list";
+import { BallIndicator } from 'react-native-indicators'; // Import BallIndicator
 
 const challenges = [
   { id: "1", title: "EcoBikes", icon: require("../../assets/bikes.png") },
@@ -39,7 +40,8 @@ const banners = [
   { uri: "https://your-image-url.com/connect.png" },
 ];
 
-const { width } = Dimensions.get("window");
+
+const { width,height } = Dimensions.get("window");
 
 export default function HomePageExistingUser() {
   const navigation = useNavigation();
@@ -47,6 +49,7 @@ export default function HomePageExistingUser() {
   const [filteredChallenges, setFilteredChallenges] = React.useState(challenges);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
+  const [loading, setLoading] = React.useState(true); // Loading state
 
   const initialVendorState = challenges.reduce((acc, challenge) => {
     acc[challenge.id] = { connecting: false, connected: false };
@@ -93,6 +96,15 @@ export default function HomePageExistingUser() {
     return () => clearInterval(interval);
   }, []);
 
+  React.useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
+
   const renderDots = () => (
     <View style={styles.dotContainer}>
       {banners.map((_, index) => (
@@ -106,6 +118,15 @@ export default function HomePageExistingUser() {
       ))}
     </View>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <BallIndicator color='green' />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -123,65 +144,63 @@ export default function HomePageExistingUser() {
 
           {/* Vendors Section */}
           <Text style={styles.vendorsYouFollow}>Recommended For You</Text>
-           <FlashList
-              horizontal
-              data={[
-                { id: "1", name: "Leakey Jokes", icon: require("../../assets/vendorimg.png"), profession: "Tree Vendor" },
-                { id: "2", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Techy" },
-                { id: "3", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Health" },
-              ]}
-              renderItem={({ item }) => {
-                const { connecting, connected } = vendorConnectState[item.id] || {};
-                return (
-                  <View style={styles.vendorDetails}>
-                    <Image style={styles.vendorImgIcon} source={item.icon} />
-                    <Text style={styles.vendorName}>{item.name}</Text>
-                    <Text style={styles.vendorProfession}>{item.profession}</Text>
+          <FlashList
+            horizontal
+            data={[
+              // ... your existing vendor data
+            ]}
+            renderItem={({ item }) => {
+              const { connecting, connected } = vendorConnectState[item.id] || {};
+              return (
+                <View style={styles.vendorDetails}>
+                  <Image style={styles.vendorImgIcon} source={item.icon} />
+                  <Text style={styles.vendorName}>{item.name}</Text>
+                  <Text style={styles.vendorProfession}>{item.profession}</Text>
 
-                    <TouchableOpacity
-                      style={[
-                        styles.connectButton,
-                        connected ? styles.approvedButton : styles.connectBlueButton,
-                        { opacity: connected ? 1 : 0.8 },
-                      ]}
-                      onPress={() => {
-                        if (connected) {
-                          navigation.navigate("VendorsProfilePage", {
-                            username: item.name,
-                            usericon: item.icon,
-                            userprofession: item.profession,
-                          });
-                        } else {
-                          handleConnectPress(item.id);
-                        }
-                      }}
-                      disabled={connecting}
-                    >
-                      {connecting ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                      ) : (
-                        <Text style={styles.buttonText}>{connected ? "Approved" : "Connect"}</Text>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-              keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.vendorFrame} // Use contentContainerStyle instead of style
-              estimatedItemSize={8}
-              ListFooterComponent={() => (
-                <TouchableOpacity
-                  style={styles.addVendorButton}
-                  onPress={() => navigation.navigate("VendorList")}
-                >
-                  <AntDesign name="pluscircle" size={35} color="green" />
-                </TouchableOpacity>
-              )}
-            />
+                  <TouchableOpacity
+                    style={[
+                      styles.connectButton,
+                      connected ? styles.approvedButton : styles.connectBlueButton,
+                      { opacity: connected ? 1 : 0.8 },
+                    ]}
+                    onPress={() => {
+                      if (connected) {
+                        navigation.navigate("VendorsProfilePage", {
+                          username: item.name,
+                          usericon: item.icon,
+                          userprofession: item.profession,
+                        });
+                      } else {
+                        handleConnectPress(item.id);
+                      }
+                    }}
+                    disabled={connecting}
+                  >
+                    {connecting ? (
+                      <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                      <Text style={styles.buttonText}>{connected ? "Approved" : "Connect"}</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.vendorFrame}
+            estimatedItemSize={8}
+            ListFooterComponent={() => (
+              <TouchableOpacity
+                style={styles.addVendorButton}
+                onPress={() => navigation.navigate("VendorList")}
+              >
+                <AntDesign name="pluscircle" size={35} color="green" />
+              </TouchableOpacity>
+            )}
+          />
 
           <View style={styles.about}>
-            <Text>GreenBin is an EcoGreen App simulator of  a virtualized realworld green circular economy model</Text>
+            <Text>GreenBin is an EcoGreen App simulator of a virtualized real-world green circular economy model</Text>
           </View>
 
           {/* Search Bar */}
@@ -198,7 +217,7 @@ export default function HomePageExistingUser() {
           {/* Challenges List */}
           <View style={styles.challengeFrame}>
             <FlashList
-              data={filteredChallenges.slice(0, 18)} // Limiting to 18 items
+              data={filteredChallenges.slice(0, 18)}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.challengeBox}
@@ -233,7 +252,7 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     height: 140,
-    width: "100%",
+    width: width * 0.99,
     marginVertical: 10,
     borderRadius: 25,
     overflow: "hidden",
