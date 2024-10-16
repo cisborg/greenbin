@@ -1,4 +1,5 @@
 // src/redux/reducers/squadReducer.js
+import { err } from 'react-native-svg';
 import {
     CREATE_SQUAD_REQUEST,
     CREATE_SQUAD_SUCCESS,
@@ -38,6 +39,22 @@ const initialState = {
 const squadReducer = (state = initialState, action) => {
     switch (action.type) {
         case CREATE_SQUAD_REQUEST:
+            return{...state, loading: true, error: null};
+
+        case CREATE_SQUAD_SUCCESS:
+             return {
+                ...state,
+                loading: false,
+                squads: [...state.squads, action.payload],
+                error: null,
+                };
+        case CREATE_SQUAD_FAILURE:
+            return{
+                ...state,
+                loading: false,
+                error: action.payload,  
+            }
+
         case REQUEST_JOIN_SQUAD_REQUEST:
         case APPROVE_JOIN_REQUEST_REQUEST:
         case REMOVE_MEMBER_REQUEST:
@@ -52,13 +69,7 @@ const squadReducer = (state = initialState, action) => {
                 error: null,
             };
         
-        case CREATE_SQUAD_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                squads: [...state.squads, action.payload],
-            };
-
+        
         case REQUEST_JOIN_SQUAD_SUCCESS:
         case APPROVE_JOIN_REQUEST_SUCCESS:
         case REMOVE_MEMBER_SUCCESS:
@@ -81,7 +92,6 @@ const squadReducer = (state = initialState, action) => {
                 squads: action.payload,
             };
 
-        case CREATE_SQUAD_FAILURE:
         case REQUEST_JOIN_SQUAD_FAILURE:
         case APPROVE_JOIN_REQUEST_FAILURE:
         case REMOVE_MEMBER_FAILURE:

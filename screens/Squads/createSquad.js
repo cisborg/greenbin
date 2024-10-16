@@ -3,11 +3,18 @@ import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollVi
 import * as ImagePicker from 'expo-image-picker';
 import { Color, FontFamily } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
+import { useDispatch } from 'react-redux';
+import { createSquad } from '../../redux/actions/squads';
 
 const CreateSquad = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  // const [squadData,setSquadData]=useState({})
   const [squadName, setSquadName] = useState('');
   const [description, setDescription] = useState('');
+  const [moderators,setModerators]=useState([])
+
   const [postPermission, setPostPermission] = useState('all');
   const [invitePermission, setInvitePermission] = useState('all');
   const [greenPoints, setGreenPoints] = useState(0);
@@ -26,19 +33,36 @@ const CreateSquad = () => {
     }).start();
   }, [fadeAnim]);
 
-  const handleCreateSquad = () => {
+  const handleCreateSquad = async () => {
     if (!squadName || greenPoints < 2500) {
       alert('Please fill in all fields and ensure you have enough Green Points.');
       return;
     }
     
     setLoadingLaunch(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Creating squad:', { squadName, description, postPermission, invitePermission, greenPoints });
-      setLoadingLaunch(false);
-      navigation.navigate('Confirmed'); // Navigate to confirmation screen
-    }, 2000); // Simulated delay for API call
+    const squadData={
+      name:squadName,
+      description:description,
+      moderators:moderators,
+    }
+    // setTimeout(() => {
+    //   console.log('Creating squad:', { squadName, description, postPermission, invitePermission, greenPoints });
+    //   setLoadingLaunch(false);
+    //   navigation.navigate('Confirmed'); // Navigate to confirmation screen
+    // }, 2000); // Simulated delay for API call
+    try {
+      console.log('Creating squad:', squadData);
+      const response= await dispatch(createSquad(squadData))
+      console.log('Response from creating squad:',response)
+
+navigation.navigate('SquadCreated')
+
+
+
+    }catch(error){
+      console.log('Error in creating squad:',err)
+    }
+
   };
 
   const handleJoinSquad = () => {
