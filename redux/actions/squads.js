@@ -1,5 +1,6 @@
 // src/redux/actions/squadActions.js
-import axios from 'axios';
+
+import api from '../../utils/axiosConfig'
 import {
     CREATE_SQUAD_REQUEST,
     CREATE_SQUAD_SUCCESS,
@@ -34,8 +35,12 @@ import {
 export const createSquad = (squadData) => async (dispatch) => {
     dispatch({ type: CREATE_SQUAD_REQUEST });
     try {
-        const response = await axios.post('/api/create-squad', squadData);
-        dispatch({ type: CREATE_SQUAD_SUCCESS, payload: response.data });
+        const response = await api.post('/squad/create', squadData);
+        if (response.data.status === 'success') {
+            dispatch({ type: CREATE_SQUAD_SUCCESS, payload: response.data });
+
+        }
+
     } catch (error) {
         dispatch({ type: CREATE_SQUAD_FAILURE, payload: error.message });
     }
@@ -45,7 +50,7 @@ export const createSquad = (squadData) => async (dispatch) => {
 export const requestJoinSquad = (squadId, userId) => async (dispatch) => {
     dispatch({ type: REQUEST_JOIN_SQUAD_REQUEST });
     try {
-        const response = await axios.post('/api/request-join-squad', { squadId, userId });
+        const response = await api.post('/api/request-join-squad', { squadId, userId });
         dispatch({ type: REQUEST_JOIN_SQUAD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: REQUEST_JOIN_SQUAD_FAILURE, payload: error.message });
