@@ -123,7 +123,6 @@ export default function HomePageExistingUser() {
     return (
       <View style={styles.loadingContainer}>
         <BallIndicator color='green' />
-        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -147,7 +146,9 @@ export default function HomePageExistingUser() {
           <FlashList
             horizontal
             data={[
-              // ... your existing vendor data
+              { id: "1", name: "Leakey Jokes", icon: require("../../assets/vendorimg.png"), profession: "Tree Vendor" },
+              { id: "2", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Techy" },
+              { id: "3", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Health" },
             ]}
             renderItem={({ item }) => {
               const { connecting, connected } = vendorConnectState[item.id] || {};
@@ -249,6 +250,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     paddingHorizontal: 10,
+  },
+  loadingContainer: {
+    top: '50%',
   },
   bannerContainer: {
     height: 140,

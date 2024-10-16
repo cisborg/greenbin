@@ -117,8 +117,6 @@ const Messages = [
 
 const MessagesScreen = ({ navigation }) => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [searchMode, setSearchMode] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const [filteredUsers, setFilteredUsers] = useState(Users);
   const [filteredMessages, setFilteredMessages] = useState(Messages);
@@ -137,27 +135,6 @@ const MessagesScreen = ({ navigation }) => {
     return () => clearTimeout(timeout);
   }, []);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (searchText === '') {
-        setFilteredUsers(Users);
-        setFilteredMessages(Messages);
-      } else {
-        const filteredUsersList = Users.filter(user =>
-          user.userName.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredUsers(filteredUsersList);
-
-        const filteredMessagesList = Messages.filter(message =>
-          message.userName.toLowerCase().includes(searchText.toLowerCase()) ||
-          message.messageText.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredMessages(filteredMessagesList);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [searchText]);
 
   const handleNavigateToChat = (user) => {
     const updatedMessages = filteredMessages.map(msg => {
@@ -170,11 +147,7 @@ const MessagesScreen = ({ navigation }) => {
     navigation.navigate('chatConnect', { userName: user.userName });
   };
 
-  const toggleSearchMode = () => {
-    setSearchMode(!searchMode);
-    setSearchText('');
-  };
-
+ 
   const renderUserItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => setSelectedUser(item)}
@@ -220,26 +193,6 @@ const MessagesScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerIcons}>
-          {searchMode ? (
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search messages..."
-              placeholderTextColor={Color.colorGray_100}
-              value={searchText}
-              onChangeText={setSearchText}
-              autoFocus
-            />
-          ) : (
-            <TouchableOpacity style={{ alignSelf: 'flex-end'}}>
-               <Ionicons name="search" size={24} color="#333" style={{ marginRight: 15 }} onPress={toggleSearchMode} />
-              </TouchableOpacity>
-          )}
-         
-        </View>
-      </View>
-
       <Animated.View style={{ opacity: fadeAnim }}>
         <ScrollView
           horizontal

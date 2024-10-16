@@ -170,13 +170,11 @@ const ViewSquadScreen = () => {
         </View>
 
         {/* Invitation Link Section */}
-        <View style={styles.invitationContainer}>
-          <TouchableOpacity  accessibilityLabel="Invitation link" style={styles.invitationIcon}>
+          <TouchableOpacity style={styles.invitationContainer} onPress={()=> navigation.navigate('PostFeed')}>
+          
             <Ionicons name="person-add" size={20} color="white"  />
+          <Text style={styles.invitationText}>Recent Posts Feeds</Text>
           </TouchableOpacity>
-          <Text style={styles.invitationText}>Invitation link</Text>
-
-        </View>
 
         {/* Post Restrictions Section */}
         <View style={styles.postRestrictionsContainer}>

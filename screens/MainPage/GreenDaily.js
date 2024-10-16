@@ -178,7 +178,6 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
   };
 
   return (
-    <ScrollView>
     <View style={styles.postCard}>
       <View style={styles.header}>
         <Image style={styles.profilePic} source={require('../../assets/anotherWoman.avif')} />
@@ -242,7 +241,6 @@ const Post = ({ title, author, squad, date, likes, comments, moderated, connecti
         </TouchableOpacity>
       </View>
     </View>
-    </ScrollView>
   );
 };
 

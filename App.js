@@ -87,6 +87,7 @@ import VendorRating from './screens/Vendors/RateVendor';
 import Products from "./screens/e-Commerce/Products";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
+import PostFeed from "./screens/Squads/PostFeed";
 
 
 
@@ -306,6 +307,7 @@ const App = () => {
         <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
         <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
         <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
+        <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

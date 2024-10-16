@@ -125,7 +125,7 @@ const ConnectToShops = () => {
   const renderShopCard = ({ item }) => (
     <View style={styles.shopContainer}>
       <Image 
-        source={{ uri: item.logo }} 
+        source={typeof item.logo === 'string' ? { uri: item.logo } : item.logo} 
         style={styles.logo} 
         onError={() => console.error('Image loading error')}
       />
@@ -150,6 +150,7 @@ const ConnectToShops = () => {
       </View>
     </View>
   );
+  
   
   return (
     <View style={styles.container}>
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     padding: '5%', // Responsive padding
   },
   title: {
-    fontSize: width < 400 ? 22 : 25, // Responsive font size
+    fontSize: width < 400 ? 18 : 20, // Responsive font size
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'green',

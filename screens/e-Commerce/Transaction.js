@@ -280,7 +280,7 @@ const TransactionScreen = ({ navigation }) => {
             <View style={styles.recipient}>
               <View style={styles.recentRecipientsContainer}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text style={styles.recentRecipientsTitle}>Recent Recipients</Text>
+                  <Text style={styles.recentRecipientsTitle}>Recents</Text>
                   <FontAwesome name="send" size={18} color="orange" />
                 </View>
 
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   recentRecipientsTitle: { 
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'green',

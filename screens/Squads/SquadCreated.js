@@ -181,12 +181,11 @@ const SquadCreated = () => {
           </View>
         </View>
 
-        <View style={styles.invitationContainer}>
-          <TouchableOpacity style={styles.invitationButton} accessibilityLabel="Invitation link">
+        <TouchableOpacity style={styles.invitationButton} onPress={()=> navigation.navigate('PostFeed')}>
             <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
-            <Text style={styles.invitationText}>Invitation link</Text>
+            <Text style={styles.invitationText}>View Recent Posts</Text>
           </TouchableOpacity>
-        </View>
+        
 
         <View style={styles.postRestrictionsContainer}>
           <Fontisto name="unlocked" size={24} color="green" />
@@ -307,13 +306,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: 'f9f9f9',
-    shadowColor: 'gray',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    bottom: -45,
-    elevation: 1,
+    bottom: '-13%',
+    borderWidth: 1,
+    borderColor: 'green',
     width: width * 0.7,
   },
  
@@ -321,7 +316,7 @@ const styles = StyleSheet.create({
     color: 'green',
     fontSize: 18,
     alignSelf: 'center',
-    fontWeight: '500',
+    fontWeight: '700',
   },
   actionsContainer: {
     flexDirection: 'row',
@@ -331,27 +326,24 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 20,
   },
-  invitationContainer: {
-    marginBottom: 10,
-    left: '24%'
-  },
+ 
   invitationButton: {
     backgroundColor: 'green',
-    borderRadius: 12,
-    padding: 10,
+    borderRadius: 17,
+    padding: 15,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 10,
-    left: '35%',
-    width: width < 400 ? 130: 150
+    left: '12%',
+    width: width < 400 ? '50%': '52%'
   },
   invitationIcon: {
     marginRight: 10,
   },
   invitationText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 15,
   },
   feature: {
     borderColor: 'lightgray',

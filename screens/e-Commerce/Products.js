@@ -394,6 +394,7 @@ const styles = StyleSheet.create({
     color:' #ccc',
     marginTop: 10,
     width: 150,
+    left: '15%',
     height: 38,
     paddingVertical: 10,
   },

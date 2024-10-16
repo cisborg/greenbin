@@ -83,7 +83,7 @@ const ItemGridScreen = ({ navigation }) => {
       </View>
     </TouchableOpacity>
   );
-
+  
   const renderSection = ({ section }) => (
     <View style={styles.sectionContainer}>
       <View style={styles.headerContainer}>
@@ -93,7 +93,7 @@ const ItemGridScreen = ({ navigation }) => {
           <MaterialIcons name="arrow-forward-ios" size={17} color="black" />
         </TouchableOpacity>
       </View>
-
+  
       <FlashList
         data={section.data}
         renderItem={renderItem}
@@ -110,12 +110,12 @@ const ItemGridScreen = ({ navigation }) => {
       />
     </View>
   );
+  
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <WaveIndicator size={100} color='green' /> {/* WaveIndicator */}
-        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
