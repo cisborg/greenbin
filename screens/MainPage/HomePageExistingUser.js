@@ -23,7 +23,7 @@ import { BallIndicator } from 'react-native-indicators'; // Import BallIndicator
 const challenges = [
   { id: "1", title: "EcoBikes", icon: require("../../assets/bikes.png") },
   { id: "2", title: "GreenBins", icon: require("../../assets/greenBin.png") },
-  { id: "3", title: "New Arrivals", icon: require("../../assets/NewArrivals.png") },
+  { id: "3", title: "Explore", icon: require("../../assets/NewArrivals.png") },
   { id: "4", title: "MoleBio", icon: require("../../assets/genetic.png") },
   { id: "5", title: "Beauty & Care", icon: require("../../assets/visa.png") },
   { id: "6", title: "Phones", icon: require("../../assets/mpesa.png") },
@@ -31,6 +31,7 @@ const challenges = [
   { id: "8", title: "Shoes", icon: require("../../assets/Shoes.png") },
   { id: "9", title: "Appliances", icon: require("../../assets/Appliance.png") },
   { id: "10", title: "Trees", icon: require("../../assets/Treee.png") },
+  
 ];
 
 const banners = [
@@ -230,8 +231,8 @@ export default function HomePageExistingUser() {
                 </TouchableOpacity>
               )}
               keyExtractor={(item) => item.id}
-              numColumns={4}
-              estimatedItemSize={20}
+              numColumns={5}
+              estimatedItemSize={70}
             />
           </View>
         </View>
@@ -376,8 +377,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   challengeBox: {
-    width: 80,
-    height: 95,
+    width: '90%',
+    height: 75,
     marginRight: 10,
     marginBottom: 20,
     justifyContent: "center",
@@ -394,14 +395,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1.41,
     elevation: 2,
+    paddingHorizontal: '8%'
   },
   rainIcon: {
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
     marginBottom: 5,
   },
   challengeText: {
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: FontFamily.manropeBold,
     textAlign: "center",
   },

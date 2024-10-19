@@ -322,8 +322,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5
   },
   categoryImage: {
-    width: '90%',
-    height: 60,
+    width: '80%',
+    height: 52,
     borderRadius: 10,
   },
   categoryText: {

@@ -56,7 +56,7 @@ const CartScreen = ({ navigation }) => {
         style={styles.deleteButton}
         onPress={() => setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id))}
       >
-        <MaterialIcons name="delete" size={30} color={Color.colorGray_100} />
+        <MaterialIcons name="delete" size={30} color='white' />
       </TouchableOpacity>
     );
 
@@ -180,12 +180,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   cartTitle: {
-    fontSize: 21,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#333',
   },
   cartItem: {
-    borderRadius: 15,
+    borderRadius: 22,
     padding: 10,
     marginBottom: 10,
     flexDirection: 'row',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sellerName: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#888',
     marginBottom: 5,
   },
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#333',
   },
   itemPrice: {
-    fontSize: 14,
+    fontSize: 12,
     color:'green',
     marginTop: 5,
   },
@@ -269,18 +269,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
     width: 70,
-    height: '100%',
-    borderRadius: 15,
+    height: '90%',
+    marginLeft: '5%',
+    borderRadius: 20,
   },
   footer: {
     backgroundColor: '#f5f5f5',
     borderRadius: 20,
-    padding: 20,
-    elevation: 5,
+    padding: 15,
+    elevation: 2,
     marginTop: 20,
   },
   priceRow: {
@@ -289,20 +290,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   totalPriceLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#888',
   },
   totalPrice: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
   },
   subTotalLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
   subTotal: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   checkoutButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
   },

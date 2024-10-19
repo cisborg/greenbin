@@ -13,15 +13,31 @@ import {
   SafeAreaView,
   Animated,
   ActivityIndicator,
-  StatusBar,
-  ScrollView,
+  ScrollView,StatusBar
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color, FontSize } from "../../GlobalStyles";
+import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install react-native-vector-icons
 
 const { width, height } = Dimensions.get("window");
+
+const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+  <View style={styles.inputContainer}>
+    <Icon name={icon} size={20} color='green' style={styles.icon} />
+    <TextInput
+      value={value}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      placeholderTextColor={Color.colorGray_100}
+      secureTextEntry={secureTextEntry}
+      accessibilityLabel={`${placeholder} Input`}
+      accessibilityHint={`Enter your ${placeholder.toLowerCase()}`}
+    />
+  </View>
+  
+);
 
 const SignInPage = () => {
   const navigation = useNavigation();
@@ -91,39 +107,25 @@ const SignInPage = () => {
               resizeMode="cover"
               source={require("../../assets/connect.webp")}
             />
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.inputField}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter Email"
-                placeholderTextColor={Color.colorGray_100}
-                keyboardType="email-address"
-                accessibilityLabel="Email Input"
-                accessibilityHint="Enter your email address"
+            <CustomInput
+              icon="envelope"
+              placeholder="Enter Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <View style={styles.passwordContainer}>
+              <CustomInput
+                icon="lock"
+                placeholder="Login with password..."
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
               />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.inputField}
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="login with password..."
-                  placeholderTextColor={Color.colorGray_100}
-                  secureTextEntry={!showPassword}
-                  accessibilityLabel="Password Input"
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Text style={styles.togglePasswordText}>
-                    {showPassword ? "Hide" : "Show"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Text style={styles.togglePasswordText}>
+                  {showPassword ? "Hide" : "Show"}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -177,6 +179,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: height * 0.02,
   },
+  icon: {
+    marginRight: height * 0.02,
+  },
   welcomeText: {
     fontSize: width * 0.05,
     color: Color.colorGray_600,
@@ -193,7 +198,17 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     justifyContent: "center",
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.01,
+    flexDirection: 'row',
+    backgroundColor: '#f5f5f5',
+    marginBottom: height * 0.02,
+    marginHorizontal: '4%',
+    borderRadius: 13,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    height: height * 0.051,
+    shadowColor: "#000",
   },
   label: {
     fontSize: width * 0.04,
@@ -204,22 +219,9 @@ const styles = StyleSheet.create({
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
-  inputField: {
-    height: height * 0.05,
-    backgroundColor: Color.colorWhite,
-    paddingHorizontal: 10,
-    fontSize: width * 0.04,
-    borderRadius: 13,
-    elevation: 3,
-    marginBottom: height * 0.02,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    flex: 1,
-  },
+  
   togglePasswordText: {
     color: "green",
     marginLeft: 10,

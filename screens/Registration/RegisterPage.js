@@ -1,12 +1,13 @@
 import * as React from "react";
-import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Animated, Platform } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Animated,Platform, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../../redux/actions/authentication'; 
 import { FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install react-native-vector-icons
 
 const { width, height } = Dimensions.get('window');
 const baseWidth = 375; 
@@ -23,10 +24,27 @@ const countryCodes = [
   { code: '+250', name: 'Rwanda' },
 ];
 
+// Custom Input Component
+const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+  <View style={styles.inputContainer}>
+    <Icon name={icon} size={20} color='green' style={styles.icon} />
+    <TextInput
+      style={styles.input}
+      value={value}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      placeholderTextColor={Color.colorGray_100}
+      secureTextEntry={secureTextEntry}
+      accessibilityLabel={`${placeholder} Input`}
+      accessibilityHint={`Enter your ${placeholder.toLowerCase()}`}
+    />
+  </View>
+);
+
 const RegisterPage = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [name,setName] = React.useState('');
+  const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [contact, setContact] = React.useState('');
@@ -62,7 +80,6 @@ const RegisterPage = () => {
     setErrorMessage('');
     setPromoCodeError('');
     
-    // Validation logic moved to prevent blocking registration
     if (!validateEmail(email)) {
       setErrorMessage('Invalid email address. Please enter a valid email.');
       setLoading(false);
@@ -83,16 +100,12 @@ const RegisterPage = () => {
     }
 
     try {
-      
-      dispatch(registerUser({ name,email, password, contact: selectedCountryCode + contact }));
-
+      dispatch(registerUser({ name, email, password, contact: selectedCountryCode + contact }));
       Alert.alert('Registration Successful!', 'You can now log in to your account.');
       navigation.navigate('SignInPage');
     } catch (error) {
       console.error(error);
-      console.log('error part regitser',error)
       setErrorMessage('Failed to register. Please try again.');
-
     } finally {
       setLoading(false);
     }
@@ -107,51 +120,27 @@ const RegisterPage = () => {
     <SafeAreaView style={styles.registerPage}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Text style={styles.welcomeHeader}>GreenBin</Text>
-       <View style={styles.header}>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            style={styles.input}
+        <View style={styles.header}>
+          <CustomInput
+            icon="user"
+            placeholder="Username"
             value={name}
             onChangeText={setName}
-            placeholder="e.g John Doe"
-            placeholderTextColor={Color.colorGray_100}
-            // keyboardType="email-address"
-            accessibilityLabel="Name Input"
-            accessibilityHint="Enter your full name"
           />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
+          <CustomInput
+            icon="envelope"
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
-            placeholder="Enter Email"
-            placeholderTextColor={Color.colorGray_100}
-            keyboardType="email-address"
-            accessibilityLabel="Email Input"
-            accessibilityHint="Enter your email address"
+            secureTextEntry={false}
           />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
+          <CustomInput
+            icon="lock"
+            placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            placeholder="Enter Password"
-            placeholderTextColor={Color.colorGray_100}
-            secureTextEntry
-            accessibilityLabel="Password Input"
-            accessibilityHint="Enter your password"
+            secureTextEntry={true}
           />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Phone Number</Text>
           <View style={styles.phoneInput}>
             <Picker
               selectedValue={selectedCountryCode}
@@ -163,69 +152,62 @@ const RegisterPage = () => {
               ))}
             </Picker>
             <TextInput
-              style={styles.inputContainer1}
+              style={styles.input}
+              placeholder="Phone Number"
               value={contact}
               onChangeText={setContact}
-              placeholder="Enter Phone Number"
-              placeholderTextColor={Color.colorGray_100}
-              keyboardType="phone-pad"
-              accessibilityLabel="Phone Number Input"
-              accessibilityHint="Enter your phone number"
+              secureTextEntry={false}
             />
+             
           </View>
-        </View>
 
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-        <TouchableOpacity
-          style={styles.promoCodeButton}
-          onPress={() => setShowPromoCodeInput(!showPromoCodeInput)}
-          accessibilityLabel="Promo Code Input"
-          accessibilityHint="Press to enter a promo code"
-        >
-          <Text style={styles.promoCodeText}>Have a referral Code?</Text>
-        </TouchableOpacity>
-
-        {showPromoCodeInput && (
-          <View style={styles.promoCodeContainer}>
-            <TextInput
-              style={styles.promoCodeInput}
-              value={promoCode}
-              onChangeText={setPromoCode}
-              placeholder="Enter referral Code"
-              placeholderTextColor={Color.colorGray_100}
-              accessibilityLabel="Promo Code Text Input"
-              accessibilityHint="Enter your promo code here"
-            />
-            {promoCodeError ? <Text style={styles.errorText}>{promoCodeError}</Text> : null}
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={styles.getStartedBtn}
-          onPress={handleRegister}
-          disabled={loading}
-          accessibilityLabel="Register Button"
-          accessibilityHint="Press to register your account"
-        >
-          {loading ? (
-            <ActivityIndicator 
-              size="small" 
-              color="#fff" 
-              accessibilityLabel="Loading Registration" 
-              accessibilityHint="Please wait while we register your account"
-            />
-          ) : (
-            <Text style={styles.cardText}>Register</Text>
-          )}
-        </TouchableOpacity>
-        
-        <View style={styles.dontHaveAnContainer}>
-          <Text style={{ fontSize: scale(12) }}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
-            <Text style={styles.register}>Login!</Text>
+          <TouchableOpacity
+            onPress={() => setShowPromoCodeInput(!showPromoCodeInput)}
+            accessibilityLabel="Promo Code Input"
+            accessibilityHint="Press to enter a promo code"
+          >
+            <Text style={styles.promoCodeText}>Have a referral Code?</Text>
           </TouchableOpacity>
-        </View>
+
+          {showPromoCodeInput && (
+            <View style={styles.promoCodeContainer}>
+              <CustomInput
+                icon="tag"
+                placeholder="Referral Code"
+                value={promoCode}
+                onChangeText={setPromoCode}
+              />
+              {promoCodeError ? <Text style={styles.errorText}>{promoCodeError}</Text> : null}
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={styles.getStartedBtn}
+            onPress={handleRegister}
+            disabled={loading}
+            accessibilityLabel="Register Button"
+            accessibilityHint="Press to register your account"
+          >
+            {loading ? (
+              <ActivityIndicator 
+                size="small" 
+                color="#fff" 
+                accessibilityLabel="Loading Registration" 
+                accessibilityHint="Please wait while we register your account"
+              />
+            ) : (
+              <Text style={styles.cardText}>Register</Text>
+            )}
+          </TouchableOpacity>
+          
+          <View style={styles.dontHaveAnContainer}>
+            <Text style={{ fontSize: scale(12) }}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
+              <Text style={styles.register}>Login!</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Animated.View>
     </SafeAreaView>
@@ -254,8 +236,17 @@ const styles = StyleSheet.create({
     top: verticalScale(110)
   },
   inputContainer: {
-    width: '100%',
-    marginBottom: verticalScale(10),
+    justifyContent: "center",
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.005,
+    flexDirection: 'row',
+    backgroundColor: '#f5f5f5',
+    marginBottom: height * 0.02,
+    marginHorizontal: '0.5%',
+    borderRadius: 13,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    height: height * 0.052,
   },
   dontHaveAnContainer: {
     flexDirection: 'row',
@@ -266,14 +257,18 @@ const styles = StyleSheet.create({
   phoneInput: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'lightgray',
     borderRadius: Border.br_base,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    height: scale(40)
+  },
+  icon: {
+    marginTop: '2%',
+    marginRight: '2%'
   },
   countryCodePicker: {
     width: scale(109), 
-    height: verticalScale(30),
     fontSize: scale(FontSize.size_base),
     color: 'green',
     borderRadius: 14,
@@ -295,17 +290,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     padding: scale(8),
     fontSize: scale(14),
-    color: Color.colorBlack,
-    backgroundColor: Color.colorWhite,
+    color: 'gray',
   },
-  inputContainer1: {
-    height: verticalScale(30),
-    flex: 1,
-    padding: scale(8),
-    fontSize: scale(14),
-    color: Color.colorBlack,
-    backgroundColor: Color.colorWhite,
-  },
+
   promoCodeContainer: {
     marginTop: verticalScale(5),
   },
@@ -327,8 +314,9 @@ const styles = StyleSheet.create({
   },
   promoCodeText: {
     fontSize: scale(12),
-    color: Color.colorGreen,
+    color: 'green',
     fontWeight: 'bold',
+    marginTop: scale(10)
   },
   getStartedBtn: {
     backgroundColor: 'green',

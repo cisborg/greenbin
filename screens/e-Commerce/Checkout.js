@@ -35,7 +35,7 @@ const Checkout = ({ route }) => {
         return;
       }
     } else if (paymentMethod === 'greenPoints') {
-      const amount = parseInt(amountToUse, 10);
+      const amount = parseInt(amountToUse, 10)
       if (isNaN(amount) || amount > points || amount <= 0) {
         Alert.alert('Invalid Amount', 'Please enter a valid amount of points to use.');
         return;
@@ -182,7 +182,7 @@ const Checkout = ({ route }) => {
           style={[styles.paymentButton, paymentMethod === 'requestFriend' && styles.selectedButton]}
           onPress={() => togglePaymentMethod('requestFriend')}
         >
-          <Text style={styles.paymentButtonText}>Request a Friend to Pay</Text>
+          <Text style={styles.paymentButtonText}>Request a Friend</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.paymentButton, paymentMethod === 'greenPoints' && styles.selectedButton]}
@@ -259,8 +259,9 @@ const styles = StyleSheet.create({
   },
   paymentOptions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 20,
+
   },
   button1: {
     flex: 1,
@@ -287,6 +288,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     alignItems: 'center',
     borderColor: '#ddd',
+    width: '90%',
+    height: 70
   },
   selectedButton: {
     backgroundColor: '#4CAF50',
@@ -298,8 +301,8 @@ const styles = StyleSheet.create({
   },
   inputField: {
     borderRadius: 12,
-    borderColor: 'green',
     paddingHorizontal: 12,
+    backgroundColor: '#f5f5f5',
     paddingVertical: 2,
     fontSize: 16,
     marginBottom: 15,

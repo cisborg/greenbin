@@ -79,10 +79,13 @@ const ItemGridScreen = ({ navigation }) => {
       <View style={styles.productContainer}>
         <Image source={item.image || require('../../assets/Bags.png')} style={styles.productImage} />
         <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
+        <Text style={styles.rating}>
+          {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
+  
   
   const renderSection = ({ section }) => (
     <View style={styles.sectionContainer}>
@@ -110,6 +113,7 @@ const ItemGridScreen = ({ navigation }) => {
       />
     </View>
   );
+  
   
 
   if (loading) {
