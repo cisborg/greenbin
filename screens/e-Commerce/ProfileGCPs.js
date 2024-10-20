@@ -23,7 +23,7 @@ const CardScroll = () => {
     Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration: 3000,
+        duration: 2500,
         useNativeDriver: true,
       })
     ).start();
@@ -77,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <AntDesign name="leftcircle" size={24} color="black" onPress={() => navigation.goBack()} />
+          <AntDesign name="leftcircle" size={23} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Welcome, {name}</Text>
         <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('manageAccount')}>
@@ -85,15 +85,27 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.balanceContainer}>
-        {['Airtime Balance', 'Donation', 'Purchases'].map((type, index) => (
-          <View key={index} style={styles.balanceBox}>
-            <Text style={styles.balanceAmount}>{index === 0 ? '200' : index === 1 ? '120' : '520'}</Text>
-            <Text style={styles.balanceLabel}>{index === 0 ? 'KES' : 'Tiers'}</Text>
-            <Text style={styles.balanceType}>{type}</Text>
-          </View>
-        ))}
+      <View style={styles.statsContainer}>
+        <View style={styles.statBox}>
+          <Text style={styles.statLabel}>Airtime</Text>
+          <Text style={styles.statNumber}>200</Text>
+        </View>
+
+        <View style={styles.separator} />
+
+        <View style={styles.statBox}>
+          <Text style={styles.statLabel}>Mobi Tiers</Text>
+          <Text style={styles.statNumber}>400</Text>
+        </View>
+
+        <View style={styles.separator} />
+
+        <View style={styles.statBox}>
+          <Text style={styles.statLabel}>Donation Tiers</Text>
+          <Text style={styles.statNumber}>1200</Text>
+        </View>
       </View>
+
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuyBundles')}>
@@ -163,7 +175,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffff',
-    padding: 15,
+    padding: 8,
     marginTop: '1%',
   },
   header: {
@@ -173,25 +185,44 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     color:'green'
   },
-  balanceContainer: {
+  statsContainer: {
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  balanceBox: {
-    alignItems: 'center',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: '#f9f9f9',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    elevation: 2,
-    marginRight: 10,
+    backgroundColor: '#f5f5f5',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    elevation: 1,
+    shadowColor: '#000',
   },
+  statBox: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'green', // White text for label
+    marginBottom: 5,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'black', // White text for label
+  },
+  separator: {
+    height: '100%',
+    width: 1,
+    backgroundColor: '#D8D8D8', // Grey divider
+  },
+  
   balanceBox1: {
     alignItems: 'flex-start',
     borderRadius: 15,
@@ -199,8 +230,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    elevation: 3,
-    marginRight: 10,
+    elevation: 1, 
+    marginTop: 10,
     shadowColor: '#000',
   },
   Container: {
@@ -209,13 +240,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   balanceAmount: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
     marginTop: 10
   },
   balanceLabel: {
-    fontSize: 15,
+    fontSize: 14,
     color: 'green',
     marginTop: 5
   },
@@ -223,7 +254,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     borderRadius: 12,
     padding: 8,
-    elevation: 2,
+    elevation: 1,
     maxWidth: 100,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -233,18 +264,20 @@ const styles = StyleSheet.create({
   },
   button1Text: {
     color:'green',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
   },
   balanceType: {
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: '500',
+
     color: 'black',
   },
   actionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginBottom: 15,
-    marginTop: 20,
+    marginTop: 25,
   },
   button: {
     flex: 1,
@@ -255,14 +288,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowColor: '#000',
-    elevation: 3,
-    marginRight: 10,
+    margin: 10,
+    elevation: 1,
 
   },
   buttonText: {
     color: 'black',
-    fontSize: 16,
-    fontWeight: '550',
+    fontSize: 14,
+    fontWeight: '600',
   },
   greenMoney: {
     fontSize: 17,
@@ -271,12 +304,13 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   moneyBalance: {
-    fontSize: 15,
+    fontSize: 14,
     color:'green',
+    fontWeight: '500',
     marginBottom: 5,
   },
   moneyBalance1: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.colorGray_100,
     marginBottom: 10,
   },
@@ -301,21 +335,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 15,
+    
   },
   navButton: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 18,
     backgroundColor: '#f9f9f9',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    elevation: 3,
-    marginRight: 10,
+    elevation: 2,
+    margin: 5,
     shadowColor: '#000',
   },
   navButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: 'black',
     marginTop: 5,

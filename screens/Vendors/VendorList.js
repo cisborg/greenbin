@@ -183,7 +183,7 @@ const VendorList = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: '#f5f5f5',
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
   },
   container: {
@@ -192,14 +192,14 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 20,
-    paddingRight: 10,
+    paddingRight: 5,
   },
   card: {
-    backgroundColor: '#F9F9F9',
-    borderRadius: 15,
+    backgroundColor: '#ffff',
+    borderRadius: 22,
     marginBottom: 15,
     overflow: 'hidden',
-    elevation: 3,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

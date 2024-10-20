@@ -12,13 +12,28 @@ import {
   Animated,
   SafeAreaView,
   StatusBar,
-  Platform,
-  Dimensions,
+  Platform,Dimensions
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily } from "../../GlobalStyles";
+
+const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+  <View style={styles.inputContainer}>
+    <FontAwesome name={icon} size={20} color={Color.colorGray_100} style={styles.icon} />
+    <TextInput
+      style={styles.inputField}
+      value={value}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      placeholderTextColor={Color.colorGray_100}
+      secureTextEntry={secureTextEntry}
+      accessibilityLabel={`${placeholder} Input`}
+      accessibilityHint={`Enter your ${placeholder.toLowerCase()}`}
+    />
+  </View>
+);
 
 const ProfileSettings = () => {
   const navigation = useNavigation();
@@ -26,7 +41,6 @@ const ProfileSettings = () => {
   const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
-  const [coverImage, setCoverImage] = useState(null);
   const [twoStepVerification, setTwoStepVerification] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const fadeAnim = useState(new Animated.Value(0))[0]; // Fade animation state
@@ -93,19 +107,6 @@ const ProfileSettings = () => {
     }
   };
 
-  const pickCoverImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setCoverImage(result.uri);
-    }
-  };
-
   // Screen animation effect on mount
   useEffect(() => {
     const requestPermission = async () => {
@@ -131,47 +132,34 @@ const ProfileSettings = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>Profile Settings</Text>
 
-          <TouchableOpacity onPress={pickCoverImage} style={styles.coverImageContainer}>
-            {coverImage ? (
-              <Image source={{ uri: coverImage }} style={styles.coverImage} />
-            ) : (
-              <View style={styles.imagePlaceholder}>
-                <FontAwesome name="image" size={50} color="#888" />
-                <Text style={styles.imagePlaceholderText}>Tap to select a cover image</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-
           <TouchableOpacity onPress={pickProfileImage} style={styles.imageContainer}>
             {profilePicture ? (
               <Image source={{ uri: profilePicture }} style={styles.profileImage} />
             ) : (
               <View style={styles.imagePlaceholder}>
                 <FontAwesome name="user-circle" size={50} color="#888" />
-                <Text style={styles.imagePlaceholderText}>Tap to select a profile picture</Text>
+                <Text style={styles.imagePlaceholderText}>Add profile</Text>
               </View>
             )}
           </TouchableOpacity>
 
-          <TextInput
-            style={[styles.input, !validateName(username) && { borderColor: 'red' }]}
+          <CustomInput
+            icon="user"
             placeholder="Username"
-            placeholderTextColor={Color.colorGray_100}
             value={username}
             onChangeText={setUsername}
           />
 
-          <TextInput
-            style={[styles.input, !validateEmail(email) && { borderColor: 'red' }]}
+          <CustomInput
+            icon="envelope"
             placeholder="Email"
-            placeholderTextColor={Color.colorGray_100}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
           />
 
           <TextInput
-            style={styles.input}
+            style={styles.inputField}
             placeholder="About"
             placeholderTextColor={Color.colorGray_100}
             value={about}
@@ -180,10 +168,9 @@ const ProfileSettings = () => {
             numberOfLines={3}
           />
 
-          <TextInput
-            style={[styles.input, !validatePhoneNumber(phoneNumber) && { borderColor: 'red' }]}
+          <CustomInput
+            icon="phone"
             placeholder="Phone Number"
-            placeholderTextColor={Color.colorGray_100}
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             keyboardType="phone-pad"
@@ -235,6 +222,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 5
   },
+  inputContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 14,
+    width: "100%",
+    backgroundColor: '#f5f5f5'
+  },
+  inputField: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    fontSize: 14,
+    color: "#333",
+    marginLeft: 5,
+  },
+  
   title: {
     fontSize: screenWidth < 350 ? 22 : 24, // Responsive title font size
     fontWeight: "bold",
@@ -242,40 +247,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-  coverImageContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 30,
-    overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "#fff",
-    width: "100%",
-    height: 130,
-  },
-  coverImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
-    position: "absolute",
-  },
+ 
   imageContainer: {
     alignItems: "center",
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 40,
     overflow: "hidden",
-    elevation: 5,
     backgroundColor: "#f5f5f5",
-    padding: 10,
-    marginTop: -50, // Overlap the profile image
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
   profileImage: {
     width: screenWidth < 350 ? 80 : 100, // Responsive image size
     height: screenWidth < 350 ? 80 : 100,
-    borderRadius: 50,
   },
   imagePlaceholder: {
     alignItems: "center",
@@ -287,20 +271,7 @@ const styles = StyleSheet.create({
     color: "#888",
     marginTop: 5,
   },
-  input: {
-    width: "95%",
-    borderRadius: 14,
-    shadowOffset: { width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowColor: "#000",
-    elevation: 1,
-    marginBottom: 10,
-    padding: 15,
-    marginBottom: 20,
-    fontFamily: FontFamily.sFProDisplayRegular,
-    color: "#333",
-  },
+ 
   notificationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -12,7 +12,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import TagSelection from '../Squads/selectTag';
 import { FlashList } from '@shopify/flash-list';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const Tab = createMaterialTopTabNavigator();
 

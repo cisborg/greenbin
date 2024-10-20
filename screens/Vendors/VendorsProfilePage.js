@@ -1,20 +1,18 @@
 import * as React from "react";
 import { Image, StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar, FlatList } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Color,FontSize,FontFamily } from "../../GlobalStyles";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { WaveIndicator } from 'react-native-indicators'; // Import WaveIndicator
 
 // ActionButton Component
 const ActionButton = ({ onPress, iconSource, text }) => (
   <TouchableOpacity style={styles.buttonContainer} onPress={onPress} accessibilityLabel={text}>
     <Image style={styles.iconStyle} source={iconSource} />
-    <Text style={styles.buttonText}>{text}</Text> {/* This is correct */}
+    <Text style={styles.buttonText}>{text}</Text>
   </TouchableOpacity>
 );
-
 const { width } = Dimensions.get('window');
 
 const VendorsProfilePage = () => {
@@ -24,7 +22,6 @@ const VendorsProfilePage = () => {
 
   const screenAnim = React.useRef(new Animated.Value(0)).current;
   const [screenWidth, setScreenWidth] = React.useState(Dimensions.get('window').width);
-  const [loading, setLoading] = React.useState(true); // State for loading
 
   React.useEffect(() => {
     // Animation on screen mount
@@ -34,11 +31,6 @@ const VendorsProfilePage = () => {
       useNativeDriver: true,
     }).start();
 
-    // Simulate loading delay (for demonstration)
-    const timer = setTimeout(() => {
-      setLoading(false); // Hide loading after 3 seconds
-    }, 3000);
-
     // Listener for screen resize
     const onChange = ({ window }) => {
       setScreenWidth(window.width);
@@ -46,7 +38,6 @@ const VendorsProfilePage = () => {
     const subscription = Dimensions.addEventListener('change', onChange);
 
     return () => {
-      clearTimeout(timer); // Cleanup timer
       subscription?.remove(); // Cleanup listener
     };
   }, [screenAnim]);
@@ -89,19 +80,11 @@ const VendorsProfilePage = () => {
       <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
         <StatusBar barStyle="dark-content" />
 
-        {/* Wave Indicator */}
-        {loading && (
-          <View style={styles.loadingContainer}>
-            <WaveIndicator size={100} color="blue" /> {/* Customize size and color */}
-          </View>
-        )}
-
         {/* Header with Vendor Name */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
           </TouchableOpacity>
-          {/* Ensure text is wrapped in <Text> */}
           <Text style={styles.heading}>{username}'s Profile</Text>
         </View>
 
@@ -124,7 +107,6 @@ const VendorsProfilePage = () => {
         {/* Vendor Profile Container at the bottom */}
         <View style={styles.vendorInfoContainer}>
           <Image source={usericon} style={styles.icon} />
-          {/* Ensure text is wrapped in <Text> */}
           <Text style={styles.vendorName}>{username}</Text>
           <Text style={styles.vendorDescription}>{userprofession}</Text>
           <TouchableOpacity style={styles.removeFromVendorContainer}>
@@ -141,8 +123,6 @@ const VendorsProfilePage = () => {
     </SafeAreaView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   safeArea: {

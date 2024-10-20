@@ -1,77 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, SectionList, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { WaveIndicator } from 'react-native-indicators'; // Import WaveIndicator
-import { FlashList } from '@shopify/flash-list'; // Import FlashList
 
 const { width } = Dimensions.get('window');
 
 const ItemGridScreen = ({ navigation }) => {
-  const [loading, setLoading] = useState(true); // Loading state
-  const [data, setData] = useState([]); // State for data
-  const [page, setPage] = useState(1); // Current page
-  const [loadingMore, setLoadingMore] = useState(false); // Loading more items state
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const DATA = [
-    {
-      title: "Recommended For You",
-      data: [
-        { title: 'Top-Handle Bags', image: require('../../assets/Bags.png'), rating: 4 },
-        { title: 'Crossbody Bags', image: require('../../assets/Bags.png'), rating: 5 },
-        { title: 'Tote Bags', image: require('../../assets/Bags.png'), rating: 3 },
-        { title: 'Shoulder Bags', image: require('../../assets/Bags.png'), rating: 4 },
-        { title: 'Fashion Backpacks', image: require('../../assets/Bags.png'), rating: 5 },
-        { title: 'Wallets & Holders', image: require('../../assets/Bags.png'), rating: 4 },
-      ],
-    },
-    {
-      title: "Latest in Store",
-      data: [
-        { title: 'Fashion Backpacks', image: require('../../assets/beauty.png'), rating: 4 },
-        { title: 'Wallets & Holders', image: require('../../assets/refurbished.png'), rating: 5 },
-        { title: 'Cross-Body Sling Bags', image: require('../../assets/Bags.png'), rating: 3 },
-        { title: 'Shoulder Bags', image: require('../../assets/refurbished.png'), rating: 4 },
-        { title: 'Waist Packs', image: require('../../assets/clothes.png'), rating: 2 },
-      ],
-    },
-    {
-      title: 'Mostly Purchased',
-      data: [
-        { title: 'Travel Bags', image: require('../../assets/Appliance.png'), rating: 5 },
-        { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 4 },
-        { title: 'Gym Bags', image: require('../../assets/earphones.png'), rating: 3 },
-      ],
-    },
-  ];
-  useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after 2 seconds
-      setData(DATA); // Set initial data
-    }, 2000);
-
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-  }, []);
+  const fetchData = () => {
+    setLoading(true);
+    // Simulate fetching data
+    const DATA = [
+      {
+        title: "Recommended",
+        data: [
+          { title: 'Top-Handle Bags', image: require('../../assets/Bags.png'), rating: 4 },
+          { title: 'Crossbody Bags', image: require('../../assets/Bags.png'), rating: 5 },
+          { title: 'Tote Bags', image: require('../../assets/Bags.png'), rating: 3 },
+          { title: 'Shoulder Bags', image: require('../../assets/Bags.png'), rating: 4 },
+          { title: 'Fashion Backpacks', image: require('../../assets/Bags.png'), rating: 5 },
+          { title: 'Wallets & Holders', image: require('../../assets/Bags.png'), rating: 4 },
+        ],
+      },
+      {
+        title: "Latest in Store",
+        data: [
+          { title: 'Fashion Backpacks', image: require('../../assets/beauty.png'), rating: 4 },
+          { title: 'Wallets & Holders', image: require('../../assets/refurbished.png'), rating: 5 },
+          { title: 'Cross-Body Sling Bags', image: require('../../assets/Bags.png'), rating: 3 },
+          { title: 'Shoulder Bags', image: require('../../assets/refurbished.png'), rating: 4 },
+          { title: 'Waist Packs', image: require('../../assets/clothes.png'), rating: 2 },
+        ],
+      },
+      {
+        title: 'Mostly Purchased',
+        data: [
+          { title: 'Travel Bags', image: require('../../assets/Appliance.png'), rating: 5 },
+          { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 4 },
+          { title: 'Gym Bags', image: require('../../assets/earphones.png'), rating: 3 },
+        ],
+      },
+    ];
+    setData(prevData => [...prevData, ...DATA]);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    // Simulate fetching more data when scrolling reaches the end
-    if (loadingMore) {
-      const timer = setTimeout(() => {
-        // Here you would typically fetch more data
-        setPage((prevPage) => prevPage + 1);
-        setLoadingMore(false); // Reset loading more state
-      }, 1500); // Simulate network delay
-
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [loadingMore]);
+    fetchData();
+  }, [page]);
 
   const handleProductClick = (item) => {
     navigation.navigate('productDetail', { product: item });
   };
 
   const handleViewAllClick = (sectionTitle) => {
-    navigation.navigate('VendorProducts', { category: sectionTitle });
+    navigation.navigate('Products', { category: sectionTitle });
   };
 
   const renderItem = ({ item }) => (
@@ -79,50 +64,37 @@ const ItemGridScreen = ({ navigation }) => {
       <View style={styles.productContainer}>
         <Image source={item.image || require('../../assets/Bags.png')} style={styles.productImage} />
         <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.rating}>
-          {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
-        </Text>
+        <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
       </View>
     </TouchableOpacity>
   );
-  
-  
+
   const renderSection = ({ section }) => (
     <View style={styles.sectionContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>{section.title}</Text>
         <TouchableOpacity style={styles.viewAllContainer} onPress={() => handleViewAllClick(section.title)}>
           <Text style={styles.viewAll}>View All</Text>
-          <MaterialIcons name="arrow-forward-ios" size={17} color="black" />
+          <MaterialIcons name="arrow-forward-ios" size={14} color="green" />
         </TouchableOpacity>
       </View>
-  
-      <FlashList
+
+      <FlatList
         data={section.data}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
         numColumns={3}
         columnWrapperStyle={styles.columnWrapper}
-        onEndReached={() => {
-          if (!loadingMore) {
-            setLoadingMore(true); // Set loading more state
-          }
-        }}
-        onEndReachedThreshold={0.5} // Trigger when 50% of the list is visible
-        estimatedItemSize={100} // Estimate item size for performance
+        scrollEnabled={false}  // Ensure this is false to prevent FlatList from interfering with SectionList's scroll
       />
     </View>
   );
-  
-  
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <WaveIndicator size={100} color='green' /> {/* WaveIndicator */}
-      </View>
-    );
-  }
+  const loadMore = () => {
+    if (!loading) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -130,8 +102,11 @@ const ItemGridScreen = ({ navigation }) => {
         sections={data}
         keyExtractor={(item, index) => `${item.title}-${index}`}  
         renderSectionHeader={({ section }) => renderSection({ section })}
-        renderItem={() => null} 
+        renderItem={() => null}
         stickySectionHeadersEnabled={false}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={loading ? <ActivityIndicator size="large" color="blue" /> : null}
       />
     </View>
   );
@@ -140,7 +115,6 @@ const ItemGridScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: '#fff',
   },
   headerContainer: {
@@ -148,17 +122,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    paddingHorizontal: 5,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '700',
+
   },
   viewAllContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   viewAll: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#808080',
     marginRight: 5,
   },
@@ -167,7 +143,7 @@ const styles = StyleSheet.create({
   },
   productContainer: {
     backgroundColor: '#f8f8f8',
-    borderRadius: 10,
+    borderRadius: 15,
     width: width / 3.5 - 20, // Adjusted width to fit 3 items per row
     margin: 5,
     padding: 10,
@@ -175,14 +151,14 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: '100%',
-    height: 80,
-    borderRadius: 10,
-    marginBottom: 5,
+    height: 60,
+    borderRadius: 12,
+    marginBottom: 2,
   },
   productTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '400',
-    marginBottom: 5,
+    marginBottom: 1,
     textAlign: 'center',
   },
   rating: {

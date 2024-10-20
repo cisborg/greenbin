@@ -137,7 +137,6 @@ const TransactionScreen = ({ navigation }) => {
     setIsAddingUser(true);
     setTimeout(() => {
       setIsAddingUser(false);
-      alert('User added successfully!');
     }, 2000);
   };
 
@@ -206,7 +205,7 @@ const TransactionScreen = ({ navigation }) => {
               ) : (
                 <>
                   <Ionicons name="add" size={24} color="green" />
-                  <Text>Add</Text>
+                  <Text>Mobi Airtime</Text>
                 </>
               )}
             </TouchableOpacity>
@@ -280,7 +279,7 @@ const TransactionScreen = ({ navigation }) => {
             <View style={styles.recipient}>
               <View style={styles.recentRecipientsContainer}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text style={styles.recentRecipientsTitle}>Recents</Text>
+                  <Text style={styles.recentRecipientsTitle}>Recents Recipients</Text>
                   <FontAwesome name="send" size={18} color="orange" />
                 </View>
 
@@ -419,13 +418,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
-    paddingHorizontal: 5,
   },
   actionButton: {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     elevation: 3,
     backgroundColor: '#f5f5f5',
@@ -473,8 +471,10 @@ const styles = StyleSheet.create({
   },
   recipient: {
     flexDirection: 'column',
+    justifyContent: 'flex-start',
     marginBottom: 5,
     alignItems: 'center',
+    width: '50%',
   },
   incomeText: { 
     fontSize: 16,
@@ -487,19 +487,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   recentRecipientsContainer: {
-    marginVertical: 20,
+    marginVertical: 10,
     paddingHorizontal: 10,
     backgroundColor: '#f5f5f5',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
     marginBottom: 10,
-    elevation: 3,
+    paddingVertical: 8,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    width: '80%',
     shadowRadius: 3,
-    marginHorizontal: 5
   },
   recentRecipientsTitle: { 
     fontSize: 14,
@@ -513,12 +511,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     borderRadius: 14,
     marginVertical: 5,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
   },
   subscriptionButton: {
     backgroundColor: 'orange',
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 18,
     alignItems: 'center',
     marginRight: 10,
     elevation: 3,

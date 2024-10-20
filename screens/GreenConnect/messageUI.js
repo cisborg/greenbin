@@ -242,17 +242,7 @@ const styles = StyleSheet.create({
   headerIcons: {
     flexDirection: 'row',
   },
-  searchInput: {
-    flex: 1,
-    borderColor: 'green',
-    borderWidth: 2,
-    padding: 10,
-    borderRadius: 14,
-    marginRight: 15,
-    alignSelf: "flex-start",
-    justifyContent: "flex-start",
-    width: '100%',
-  },
+ 
   userProfile: {
     alignItems: 'center',
     marginRight: 30,
@@ -264,12 +254,12 @@ const styles = StyleSheet.create({
   },
   userName: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 12,
     color: '#333',
     fontWeight: 'bold',
   },
   lastSeen: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'green',
   },
   selectedUserProfile: {
@@ -317,11 +307,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   messageTime: {
-    fontSize: 12,
+    fontSize: 10,
     color: Color.colorGray_200,
   },
   messageText: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.colorGray_400,
   },
   unreadCount: {

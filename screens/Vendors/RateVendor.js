@@ -23,7 +23,7 @@ const VendorRating = ({ visible, onClose }) => {
   };
 
   const handleNavigate = () => {
-    navigation.navigate('Settings'); // Navigate back to Settings
+    navigation.goBack(); // Navigate back to Settings
     if (typeof onClose === 'function') {
       onClose(); // Close the modal
     }

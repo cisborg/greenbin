@@ -190,9 +190,9 @@ const CarbonFootprintCalculator = () => {
                 >
                   <Text style={styles.cardTitle}>{card.charAt(0).toUpperCase() + card.slice(1)}</Text>
                   <Text style={styles.cardDescription}>
-                    {card === 'activities' ? 'Tackle Eco-green pilot activities to boost your eco-impact.' :
+                    {card === 'activities' ? 'Tackle  pilot activities to boost your eco-impact.' :
                     card === 'donations' ? `Aid critical causes/havocs with ${donationPercentage.toFixed(2)}% donations.` :
-                    `Track ecogreen purchases with ${purchasePercentage.toFixed(2)}% purchases.`}
+                    `Track  purchases with ${purchasePercentage.toFixed(2)}% purchases.`}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -214,7 +214,7 @@ const CarbonFootprintCalculator = () => {
             <BarChart
               data={barData}
               width={screenWidth - 20}
-              height={200} // Reduced height
+              height={210} // Reduced height
               fromZero={true}
               chartConfig={{
                 backgroundColor: 'yellow',
@@ -223,7 +223,7 @@ const CarbonFootprintCalculator = () => {
                 decimalPlaces: 0,
                 color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                barPercentage: 0.5,
+                barPercentage: 0.4,
                 useShadowColorFromDataset: false,
               }}
               verticalLabelRotation={30}
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   legend: {
-    marginTop: 5, // Reduced margin
+    marginTop: 2, // Reduced margin
   },
   cardContainer: {
     flexDirection: 'row',
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '30%',
-    borderRadius: 15,
+    borderRadius: 28,
     overflow: 'hidden',
     marginVertical: 5, // Reduced margin
   },

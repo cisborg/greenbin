@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Alert, Modal, ActivityIndicator, SafeAreaView, Animated, TouchableOpacity, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'; // Make sure to install expo-image-picker
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 import { Color } from '../../GlobalStyles';
+
+const CustomInput = ({ placeholder, value, onChangeText, keyboardType, secureTextEntry, iconName }) => (
+  <View style={styles.inputContainer}>
+    <Icon name={iconName} size={20} color="#666" style={styles.icon} />
+    <TextInput
+      style={styles.input}
+      placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+      keyboardType={keyboardType}
+      placeholderTextColor={Color.colorGray_100}
+      secureTextEntry={secureTextEntry}
+    />
+  </View>
+);
 
 const VendorRegister = ({ navigation }) => {
   const [vendorName, setVendorName] = useState('');
@@ -68,66 +84,50 @@ const VendorRegister = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={{ opacity: animation }}>
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>EcoGreen Vendor Registration Form</Text>
+          <Text style={styles.title}> Vendor Registration Form</Text>
           <Text style={styles.description}>Join us in promoting sustainable practices in eCommerce!</Text>
-
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'green', borderBottomRadius: 10 }]}
+          <CustomInput
             placeholder="Vendor Name"
             value={vendorName}
             onChangeText={setVendorName}
-            placeholderTextColor={Color.colorGray_100}
-
+            iconName="user"
           />
 
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'blue' }]}
+          <CustomInput
             placeholder="Profession"
             value={profession}
             onChangeText={setProfession}
-            placeholderTextColor={Color.colorGray_100}
-
+            iconName="briefcase"
           />
 
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'orange' }]}
+          <CustomInput
             placeholder="Products Offered"
             value={products}
             onChangeText={setProducts}
-            placeholderTextColor={Color.colorGray_100}
-
+            iconName="tags"
           />
 
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'black' }]}
+          <CustomInput
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-            placeholderTextColor={Color.colorGray_100}
-
+            iconName="envelope"
           />
 
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'green' }]}
+          <CustomInput
             placeholder="Phone Number"
             value={phone}
             onChangeText={setPhone}
             keyboardType="phone-pad"
-            placeholderTextColor={Color.colorGray_100}
-
+            iconName="phone"
           />
 
-          <TextInput
-            style={[styles.input, { borderBottomColor: 'blue' }]}
+          <CustomInput
             placeholder="Address"
             value={address}
             onChangeText={setAddress}
-            placeholderTextColor={Color.colorGray_100}
+            iconName="home"
           />
 
           <View style={styles.photoContainer}>
@@ -173,105 +173,84 @@ const VendorRegister = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
   },
   container: {
-    flexGrow: 1,
-    padding: '3%',
-    marginTop:'10%'
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'orange',
     marginBottom: 10,
-    textAlign: 'center',
-    color: 'green',
+    marginLeft: '4%',
   },
   description: {
-    fontSize: 16,
-    marginBottom: 20,
+    fontSize: 15,
+    marginBottom: 40,
     textAlign: 'center',
-    color: '#555',
   },
-  backButton: {
-    marginBottom: 20,
-    alignItems: 'flex-start',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
-  backButtonText: {
-    color: '#007BFF',
-    fontSize: 16,
+  icon: {
+    marginRight: 10,
   },
   input: {
-    height: 40,
-    borderBottomWidth: 1.5,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-  },
-  buttonContainer: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginTop: 20,
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    flex: 1,
+    height: 45,
+    paddingHorizontal: 10,
   },
   photoContainer: {
-    marginBottom: 20,
+    marginVertical: 20,
   },
   photoButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    paddingVertical: 10,
+    backgroundColor: 'orange',
+    padding: 10,
+    borderRadius: 18,
     alignItems: 'center',
   },
   photoButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#fff',
   },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    marginTop: 10,
-    borderRadius: 10,
+  buttonContainer: {
+    backgroundColor: 'green',
+    padding: 12,
+    borderRadius: 18,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    width: '80%',
+    width: 300,
     padding: 20,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   modalText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   okButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
   },
   okButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#fff',
   },
 });
 

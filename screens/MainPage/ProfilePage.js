@@ -55,7 +55,7 @@ const ProfilePage = () => {
   }, [currentMonth, lastUpdatedMonth]);
 
   const cardData = [
-    { name: "Visit Shop", icon: <Ionicons name="location" size={24} color="white" />, screen: "PostFeed" },
+    { name: "Become Vendor", icon: <FontAwesome name="user" size={24} color="white" />, screen: "VendorRegister" },
     { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
     { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
     { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },
@@ -100,14 +100,37 @@ const ProfilePage = () => {
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           
-          <View style={styles.coverImageContainer}>
-            <Image style={styles.coverImage} source={require("../../assets/profile-img.png")} />
-          </View>
+           <View style={styles.headerContainer}>
+            <View style={styles.leftSection}>
+              <Image style={styles.profileImg} source={require("../../assets/anotherMan.avif")} />
+              <Text style={styles.username}>Brad John</Text>
+            </View>
 
-          <View style={styles.header}>
-            <Image style={styles.profileImg} source={require("../../assets/profile-img.png")} />
-            <Text style={styles.greeting}>Hi, {username}</Text>
-            <Text style={styles.greeting1}>I am an ecogreen patriot and circular economist!</Text>
+            <TouchableOpacity style={styles.settingsIcon} onPress={()=> navigation.navigate('ProfileSettings')}> 
+              <MaterialIcons name="settings" size={24} color="white" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.checkInContainer}>
+              <Text style={styles.checkInText}>Check-in &gt;</Text>
+            </TouchableOpacity>
+
+            {/* Icons Row for Wishlist, Followed Stores, Recently Viewed */}
+            <View style={styles.iconRow}>
+              <TouchableOpacity style={styles.iconItem}>
+                <Ionicons name="heart-outline" size={22} color="white" />
+                <Text style={styles.iconText}>Wishlist</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.iconItem}>
+                <Ionicons name="storefront-outline" size={22} color="white" />
+                <Text style={styles.iconText}>Green Shops</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.iconItem}>
+                <Ionicons name="eye-outline" size={22} color="white" />
+                <Text style={styles.iconText}>My Assets</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.cardContainer}>
@@ -190,72 +213,98 @@ const ProfilePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 2,
     backgroundColor: '#fff',
     paddingTop: '4%',
   },
   scrollContainer: {
     paddingBottom: 20,
-    margin: 15
+    margin: '2%'
   },
-  coverImageContainer: {
-    position: 'relative',
-    alignItems: 'center',
-    marginTop: 10,
-    borderBottomRadius: 10,
-    marginBottom: -25,
+  headerContainer: {
+    backgroundColor: "green", // Adjust background color similar to your image
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 22,
+    height: '23%'
+  
   },
-  coverImage: {
-    width: '90%',
-    height: 90,
-    borderRadius: 30,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 20,
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   profileImg: {
-    width: '23%',
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 3,
-    borderColor: '#fff',
-    marginTop: -10,
+    width: 50,
+    height: 50,
+    borderRadius: 30,
   },
-  greeting: {
-    fontSize: 15, // Adjusted for responsiveness
-    fontWeight: '600',
-    color: 'green',
+  username: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    marginLeft: 10,
   },
-  greeting1: {
+  settingsIcon: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+  },
+  checkInContainer: {
+    marginTop: 10,
+    alignSelf: "flex-end",
+    backgroundColor: 'orange',
+    borderRadius: 14,
+    padding: 5
+  },
+  userdescript: {
     fontSize: 12,
-    color: '#888',
+    color: "#fff",
+    marginTop: 5,
+  },
+  checkInText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  iconRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    paddingHorizontal: 15
+  },
+  iconItem: {
+    alignItems: "center",
+  },
+  iconText: {
+    color: "white",
+    fontSize: 12,
+    marginTop: 3,
   },
   cardContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexWrap: 'wrap',
     width: '100%',
     alignItems: 'center',
     marginBottom: 8
   },
   card: {
-    width: '45%',
+    width: '40%',
     padding: 5,
     marginVertical: 6,
-    marginHorizontal: 3,
-    backgroundColor: '#fff',
+    marginHorizontal: 1,
+    backgroundColor: '#ffff',
     borderRadius: 18,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 10,
-    elevation: 2,
+    elevation: 1,
   },
   cardIcon: {
     width: '24%',
-    height: 35,
+    height: 32,
     marginBottom: 10,
     borderRadius: 14
   },

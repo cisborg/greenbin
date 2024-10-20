@@ -91,14 +91,14 @@ const GreenConnectMain = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // For screen animation
 
   const users = [
-    { id: '1', name: 'Valary Akinyi', description: 'Data Assistant at Dapstrem Entertainment', followers: 100, awards: 5, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '2', name: 'Mercy Njeri', description: 'Environmental Education and Advocacy', followers: 50, awards: 3, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '3', name: 'Geff Kirui', description: 'Web Developer specializing in Web Technologies', followers: 150, awards: 10,  coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Popular' },
-    { id: '4', name: 'Abdijabar Saney', description: 'Humanitarian | Emergency Response', followers: 80, awards: 4, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '5', name: 'Michael Brown', description: 'Software Engineer', followers: 200, awards: 8, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
-    { id: '6', name: 'Jane Smith', description: 'AI Researcher', followers: 250, awards: 6, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
-    { id: '7', name: 'John Doe', description: 'Data Scientist', followers: 300, awards: 12, mutuals: 7, coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
-    { id: '8', name: 'Alice Johnson', description: 'Community Organizer', followers: 90, awards: 2,  coverImage: 'https://via.placeholder.com/150', profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
+    { id: '1', name: 'Valary Akinyi', description: 'Data Assistant at Dapstrem Entertainment', followers: 100, awards: 5,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '2', name: 'Mercy Njeri', description: 'Environmental Education and Advocacy', followers: 50, awards: 3,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '3', name: 'Geff Kirui', description: 'Web Developer specializing in Web Technologies', followers: 150, awards: 10,   profileImage: 'https://via.placeholder.com/50', category: 'Popular' },
+    { id: '4', name: 'Abdijabar Saney', description: 'Humanitarian | Emergency Response', followers: 80, awards: 4,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
+    { id: '5', name: 'Michael Brown', description: 'Software Engineer', followers: 200, awards: 8,  profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
+    { id: '6', name: 'Jane Smith', description: 'AI Researcher', followers: 250, awards: 6, profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
+    { id: '7', name: 'John Doe', description: 'Data Scientist', followers: 300, awards: 12, mutuals: 7,  profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
+    { id: '8', name: 'Alice Johnson', description: 'Community Organizer', followers: 90, awards: 2,  profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
   ];
 
   const filteredUsers = users.filter(user =>
@@ -138,7 +138,6 @@ const GreenConnectMain = ({ navigation }) => {
 
     return (
       <View style={styles.userContainer}>
-        <Image source={{ uri: item.coverImage }} style={styles.coverImage} />
         <View style={styles.profileImageContainer}>
           <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
         </View>
@@ -268,12 +267,12 @@ const styles = StyleSheet.create({
   },
   
   headerTitle: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
     color: 'green',
   },
   subheaderTitle:{
-    fontSize: 16,
+    fontSize: 14,
     color: Color.colorGray_400,
     marginLeft: -5
   },
@@ -299,7 +298,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#eee',
-    borderRadius: 8,
+    borderRadius: 18,
     marginRight: 10,
     backgroundColor: '#f9f9f9',
   },
@@ -310,11 +309,11 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     alignItems: 'center',
-    marginTop: -30,
+    marginTop: 5,
   },
   profileImage: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     borderRadius: 25,
     borderWidth: 2,
     borderColor: 'white',
@@ -338,9 +337,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: Color.colorWhite,
-    elevation: 4,
-    height: 40,
+    height: 50,
+    borderRadius: 16,
   },
   tabButton: {
     alignItems: 'center',

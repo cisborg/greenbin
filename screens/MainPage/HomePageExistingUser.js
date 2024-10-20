@@ -14,6 +14,7 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import FlashSale from "../e-Commerce/FlashSale";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
@@ -51,6 +52,7 @@ export default function HomePageExistingUser() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const [loading, setLoading] = React.useState(true); // Loading state
+
 
   const initialVendorState = challenges.reduce((acc, challenge) => {
     acc[challenge.id] = { connecting: false, connected: false };
@@ -201,10 +203,8 @@ export default function HomePageExistingUser() {
             )}
           />
 
-          <View style={styles.about}>
-            <Text>GreenBin is an EcoGreen App simulator of a virtualized real-world green circular economy model</Text>
-          </View>
-
+          
+          <FlashSale />
           {/* Search Bar */}
           <View style={styles.searchBarContainer}>
             <TextInput
@@ -283,9 +283,10 @@ const styles = StyleSheet.create({
   vendorsYouFollow: {
     fontFamily: FontFamily.manropeBold,
     fontWeight: "600",
-    fontSize: 19,
+    fontSize: 16,
     color: Color.colorGray_400,
     marginVertical: 10,
+    marginTop: -10,
   },
   vendorFrame: {
     paddingHorizontal: 10, // Only padding-related styles
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
   },
   vendorDetails: {
     width: 140,
-    height: 180,
+    height: 164,
     borderRadius: 21,
     backgroundColor: "#fff",
     justifyContent: "center",
@@ -305,7 +306,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
-    marginBottom: 10
   },
   vendorImgIcon: {
     width: 70,
@@ -314,18 +314,18 @@ const styles = StyleSheet.create({
   },
   vendorName: {
     fontFamily: FontFamily.manropeBold,
-    fontSize: 14,
+    fontSize: 12,
     marginBottom: 2,
   },
   vendorProfession: {
     fontFamily: FontFamily.manropeMedium,
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 5,
   },
   connectButton: {
-    borderRadius: 14,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   },
   connectBlueButton: {
     backgroundColor: "green",
@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 12,
+    alignSelf: "center",
   },
   addVendorButton: {
     width: 140,
@@ -344,20 +345,7 @@ const styles = StyleSheet.create({
     height: 180,
     marginLeft: -25,
   },
-  about: {
-    borderRadius: 13,
-    backgroundColor: "#f9f9f9",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1.41,
-    elevation: 2,
-    marginBottom: 15,
-    marginTop: 15,
-  },
-  searchBarContainer: {
+   searchBarContainer: {
     marginTop: 15,
   },
   searchBar: {

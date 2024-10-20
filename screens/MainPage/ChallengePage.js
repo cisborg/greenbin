@@ -44,7 +44,7 @@ const ChallengePage = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 400,
+      duration: 300,
       useNativeDriver: true,
     }).start();
 
@@ -169,16 +169,19 @@ const ChallengePage = () => {
                 contentContainerStyle={styles.categoriesContainer}
                 ListFooterComponent={
                   loading && data.length < categories.length ? (
+                    // Ball loading indicator when more items are being loaded
                     <ActivityIndicator size="large" color="#32CD32" />
                   ) : (
-                    <Text style={styles.loadingText}>Loaded Successfully</Text>
+                    // Instead of "Loaded Successfully", leave an empty space
+                    <View style={{ paddingVertical: 20 }} />
                   )
                 }
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 estimatedItemSize={40} // FlashList-specific prop for optimization
                 onEndReached={loadMoreItems}
-                onEndReachedThreshold={0.5}
-              />
+                onEndReachedThreshold={0.5} // Trigger the load when the user is halfway through the content
+                />
+                
             )}
           </View>
         </View>
