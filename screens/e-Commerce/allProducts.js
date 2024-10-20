@@ -9,6 +9,9 @@ const ItemGridScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  // Use a flag to track if more items are loading
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const fetchData = () => {
     setLoading(true);
     // Simulate fetching data
@@ -47,18 +50,22 @@ const ItemGridScreen = ({ navigation }) => {
     setLoading(false);
   };
 
+  // Fetch data when the component mounts
   useEffect(() => {
     fetchData();
   }, [page]);
 
+  // Handle item click to navigate to product details
   const handleProductClick = (item) => {
     navigation.navigate('productDetail', { product: item });
   };
 
+  // Handle "View All" button click for each section
   const handleViewAllClick = (sectionTitle) => {
     navigation.navigate('Products', { category: sectionTitle });
   };
 
+  // Render each product item in the grid
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleProductClick(item)}>
       <View style={styles.productContainer}>
@@ -69,6 +76,7 @@ const ItemGridScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  // Render a section with products
   const renderSection = ({ section }) => (
     <View style={styles.sectionContainer}>
       <View style={styles.headerContainer}>
@@ -78,21 +86,23 @@ const ItemGridScreen = ({ navigation }) => {
           <MaterialIcons name="arrow-forward-ios" size={14} color="green" />
         </TouchableOpacity>
       </View>
-
       <FlatList
         data={section.data}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
         numColumns={3}
         columnWrapperStyle={styles.columnWrapper}
-        scrollEnabled={false}  // Ensure this is false to prevent FlatList from interfering with SectionList's scroll
+        scrollEnabled={false} // Prevent FlatList from taking over scroll
       />
     </View>
   );
 
+  // Load more items when user scrolls to the end
   const loadMore = () => {
-    if (!loading) {
+    if (!loadingMore) {
+      setLoadingMore(true);
       setPage(prevPage => prevPage + 1);
+      setLoadingMore(false); // Reset flag
     }
   };
 
@@ -102,11 +112,11 @@ const ItemGridScreen = ({ navigation }) => {
         sections={data}
         keyExtractor={(item, index) => `${item.title}-${index}`}  
         renderSectionHeader={({ section }) => renderSection({ section })}
-        renderItem={() => null}
+        renderItem={() => null} // To avoid duplicate rendering in SectionList
         stickySectionHeadersEnabled={false}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={loading ? <ActivityIndicator size="large" color="blue" /> : null}
+        onEndReached={loadMore} // Trigger when user reaches end
+        onEndReachedThreshold={0.5} // Load more items when halfway through
+        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="blue" /> : null}
       />
     </View>
   );

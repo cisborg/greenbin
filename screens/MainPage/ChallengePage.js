@@ -3,18 +3,15 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
   Animated,
   RefreshControl,
-  Platform,
-  Dimensions,
-  StatusBar,
-  ActivityIndicator,
-  ScrollView,
+  ScrollView,Platform,StatusBar,
+  ActivityIndicator,Dimensions
 } from 'react-native';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color } from '../../GlobalStyles';
@@ -86,7 +83,11 @@ const ChallengePage = () => {
 
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('Products')}>
-      <Image source={item.image} style={styles.categoryImage} />
+      <FastImage
+        source={item.image}
+        style={styles.categoryImage}
+        resizeMode={FastImage.resizeMode.cover} // Use FastImage resize modes
+      />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -106,10 +107,10 @@ const ChallengePage = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.banner}>
-        <Image
+        <FastImage
           source={bannerImages[currentImageIndex]}
           style={styles.bannerImage}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
         <View style={styles.dotsContainer}>
           {bannerImages.map((_, index) => (
@@ -132,7 +133,7 @@ const ChallengePage = () => {
         <View style={styles.container}>
           <View style={styles.sidebar}>
             <TouchableOpacity style={styles.homeContainer} onPress={handleHomePress}>
-              <Image source={require('../../assets/menu.jpg')} style={styles.homeImage} />
+              <FastImage source={require('../../assets/menu.jpg')} style={styles.homeImage} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -180,8 +181,7 @@ const ChallengePage = () => {
                 estimatedItemSize={40} // FlashList-specific prop for optimization
                 onEndReached={loadMoreItems}
                 onEndReachedThreshold={0.5} // Trigger the load when the user is halfway through the content
-                />
-                
+              />
             )}
           </View>
         </View>
@@ -189,7 +189,6 @@ const ChallengePage = () => {
     </SafeAreaView>
   );
 };
-
 const sidebarCategories = [
   { name: 'Appliances', icon: 'fridge' },
   { name: 'Television', icon: 'television-classic' },
@@ -217,6 +216,7 @@ const categories = [
   { name: 'Beauty & Personal Care', image: require('../../assets/beauty.png') },
   { name: 'Clothes', image: require('../../assets/clothes.png') },
 ];
+
 
 const styles = StyleSheet.create({
   safeArea: {

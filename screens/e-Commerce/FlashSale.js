@@ -67,6 +67,7 @@ const FlashSale = () => {
       <View style={styles.header}>
         <Text style={styles.flashSaleText}>⚡ Flash Sale Granary</Text>
         <CountdownTimer />
+        
       </View>
 
       {/* Horizontal Scrollable List */}
