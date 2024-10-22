@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
     color: Color.colorGray_400,
-    marginVertical: 10,
+    marginVertical: 16,
     marginTop: -10,
   },
   vendorFrame: {
@@ -339,11 +339,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   addVendorButton: {
-    width: 140,
+    width: 60,
     justifyContent: "center",
+    top: 50,
     alignItems: "center",
-    height: 180,
-    marginLeft: -25,
+    height: 60,
   },
    searchBarContainer: {
     marginTop: 15,

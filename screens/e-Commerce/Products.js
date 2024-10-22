@@ -295,11 +295,11 @@ const Products = () => {
                 <Text style={styles.filterLabel}>EcoBrand</Text>
 
                 <View styles={styles.bounce}>
-                <BouncyCheckbox
-                  value={brandFilters.ReGreen}
-                  onValueChange={(value) => setBrandFilters({ ...brandFilters, ReGreen: value })}
-                />
-                <Text style={styles.filterLabel}>ReGreen</Text>
+                  <BouncyCheckbox style={{ marginRight: 10}}
+                    value={brandFilters.ReGreen}
+                    onValueChange={(value) => setBrandFilters({ ...brandFilters, ReGreen: value })}
+                  />
+                 <Text style={styles.filterLabel}>ReGreen</Text>
                 </View>
 
                 {/* Price Range Checkboxes */}
@@ -399,9 +399,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   bounce: {
-    marginHorizontal: 10,
+    marginHorizontal: 15,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between'
 
   },
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     padding: 10,
-    width: '40%', // Width of the modal
+    width: '100%', // Width of the modal
     maxHeight: '100%', // Maximum height of the modal
 
 

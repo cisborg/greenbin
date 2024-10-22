@@ -128,7 +128,7 @@ const JoinSquads = () => {
         <TouchableOpacity 
           style={styles.addButton} 
           onPress={() => navigation.navigate('createSquad')}>
-          <AntDesign name="pluscircle" size={45} color="#61dafb" />
+          <AntDesign name="pluscircle" size={45} color="green" />
         </TouchableOpacity>
       </Animated.View>
     </SafeAreaView>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 1, height: 3},
-    elevation: 1
+    elevation: 4
   },
   viewButtonText: {
     color: 'green',
@@ -226,11 +226,11 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: '20%',
-    right: 30,
+    bottom: '19%',
+    alignSelf: 'flex-end',
     backgroundColor: 'white',
     borderRadius: 30,
-    elevation: 5,
+    elevation: 3,
     alignItems: 'center',
     justifyContent: 'center',
     width: 50,

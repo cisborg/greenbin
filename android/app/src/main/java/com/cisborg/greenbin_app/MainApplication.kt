@@ -26,6 +26,8 @@ class MainApplication : Application(), ReactApplication {
           override fun getPackages(): List<ReactPackage> {
             // Get default packages from the PackageList
             val packages = PackageList(this).packages
+            packages.add(RNCWebViewPackage())
+
             return packages
           }
 

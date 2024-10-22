@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 8, // Reduced margin
   },
   cardTitle: {
-    fontSize: 17, // Decreased font size
+    fontSize: 15, // Decreased font size
     fontWeight: 'bold',
     color: '#27ae60',
   },

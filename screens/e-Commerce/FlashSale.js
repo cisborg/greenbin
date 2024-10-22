@@ -1,6 +1,9 @@
 // components/FlashSaleSection.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 
 // Sample data for products
 const products = [
@@ -61,14 +64,15 @@ const ProductItem = ({ item }) => (
 
 // Main flash sale component
 const FlashSale = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       {/* Flash Sale Header */}
-      <View style={styles.header}>
-        <Text style={styles.flashSaleText}>⚡ Flash Sale Granary</Text>
+      <TouchableOpacity style={styles.header} onPress={()=> navigation.navigate('SalesList')}>
+        <Text style={styles.flashSaleText}> Fl⚡sh Sale Granary</Text>
         <CountdownTimer />
-        
-      </View>
+        <AntDesign name="right" size={24} color="green" />
+      </TouchableOpacity>
 
       {/* Horizontal Scrollable List */}
       <FlatList
@@ -94,14 +98,16 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     marginBottom: 10,
+    paddingHorizontal: 5
   },
   flashSaleText: {
     fontSize: 14,
     fontWeight: '500',
     color: 'green',
+    marginRight: '39%'
   },
   timerText: {
     fontSize: 15,

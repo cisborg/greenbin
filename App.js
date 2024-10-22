@@ -89,6 +89,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Color } from "./GlobalStyles";
 import PostFeed from "./screens/Squads/PostFeed";
 import FlashSale from "./screens/e-Commerce/FlashSale";
+import SalesList from "./screens/e-Commerce/SalesList";
 
 
 
@@ -310,6 +311,7 @@ const App = () => {
         <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
         <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
         <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
+        <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

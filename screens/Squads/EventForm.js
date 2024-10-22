@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+  ActivityIndicator,
+  Modal,
+  Animated,
+  Platform,
+  StatusBar
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -9,12 +24,9 @@ const EventForm = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [eventLocation, setEventLocation] = useState('');
   const [eventPhoto, setEventPhoto] = useState(null);
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || eventDate;
-    setShowDatePicker(false);
-    setEventDate(currentDate);
-  };
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -30,64 +42,97 @@ const EventForm = () => {
   };
 
   const handleSubmit = () => {
-    const formattedDate = eventDate.toLocaleString('en-US', {
-      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'
-    });
-    const eventData = {
-      name: eventName,
-      date: formattedDate,
-      location: eventLocation,
-      photo: eventPhoto,
-    };
-    console.log('Event Data:', eventData);
-    // Here you would typically send the eventData to your server or state management
+    if (!eventName || !eventLocation) {
+      Alert.alert('Validation Error', 'Please fill in all required fields.');
+      return;
+    }
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setModalVisible(true);
+    }, 2000); // Simulate network request
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Text style={styles.label}>Event Name:</Text>
-      <TextInput
-        style={styles.input}
-        value={eventName}
-        onChangeText={setEventName}
-      />
+    <SafeAreaView style={styles.container}>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text style={styles.label}>Event Name:</Text>
+          <TextInput
+            style={styles.input}
+            value={eventName}
+            onChangeText={setEventName}
+            placeholder="Enter event name"
+          />
 
-      <Text style={styles.label}>Event Date:</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.dateText}>{eventDate.toLocaleString()}</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={eventDate}
-          mode="datetime"
-          display={Platform.OS === 'ios' ? 'default' : 'spinner'}
-          onChange={handleDateChange}
-        />
-      )}
+          <Text style={styles.label}>Event Date:</Text>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <Text style={styles.dateText}>{eventDate.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={eventDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) {
+                  setEventDate(selectedDate);
+                }
+              }}
+            />
+          )}
 
-      <Text style={styles.label}>Location:</Text>
-      <TextInput
-        style={styles.input}
-        value={eventLocation}
-        onChangeText={setEventLocation}
-      />
+          <Text style={styles.label}>Location:</Text>
+          <TextInput
+            style={styles.input}
+            value={eventLocation}
+            onChangeText={setEventLocation}
+            placeholder="Enter location"
+          />
 
-      <Text style={styles.label}>Event Photo:</Text>
-      <TouchableOpacity onPress={handleImagePick} style={styles.photoButton}>
-        <Text style={styles.photoButtonText}>Pick an image</Text>
-      </TouchableOpacity>
-      {eventPhoto && <Image source={{ uri: eventPhoto }} style={styles.image} />}
+          <Text style={styles.label}>Event Photo:</Text>
+          <TouchableOpacity onPress={handleImagePick}>
+            <Text style={styles.photoButton}>Pick an image</Text>
+          </TouchableOpacity>
+          {eventPhoto && <Image source={{ uri: eventPhoto }} style={styles.image} />}
 
-      <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit Event</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
+            <Text style={{ color: 'white' }}>Submit Event</Text>
+          </TouchableOpacity>
+
+          {loading && (
+            <ActivityIndicator size="large" color={'green'} style={styles.loader} />
+          )}
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(!modalVisible)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>Event Submitted Successfully</Text>
+                <TouchableOpacity
+                  style={styles.okButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.okButtonText}>OK</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </ScrollView>
+      </Animated.View>
+    </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 10,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   label: {
@@ -118,7 +163,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   photoButtonText: {
-    color: 'white',
+    color: 'green',
     textAlign: 'center',
   },
   image: {

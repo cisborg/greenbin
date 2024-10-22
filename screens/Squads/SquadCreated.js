@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   invitationButton: {
     backgroundColor: 'green',
     borderRadius: 17,
-    padding: 15,
+    padding: 10,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -392,12 +392,13 @@ const styles = StyleSheet.create({
   postRestrictionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    left: '2%',
     borderRadius: 14,
-    padding: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    justifyContent: 'center',
     borderColor: 'lightgray',
     borderWidth: 1,
-    width: '90%',
+    width: '100%',
   },
   postRestrictionsText: {
     marginLeft: 10,
