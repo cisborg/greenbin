@@ -121,6 +121,12 @@ android {
     }
 }
 
+configurations {
+    all {
+        exclude group: 'com.github.bumptech.glide', module: 'glide'
+    }
+}
+
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
 // Accepts values in comma delimited lists, example:
 // android.packagingOptions.pickFirsts=/LICENSE,**/picasa.ini
