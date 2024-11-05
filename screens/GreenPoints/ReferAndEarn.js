@@ -1,36 +1,24 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   FlatList,
-  Alert,
-  Modal,
-  ActivityIndicator,
   Platform,
-  Animated,
+  Alert,
   SafeAreaView,
-  Share,
 } from "react-native";
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 import { Color } from "../../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
 import * as Clipboard from 'expo-clipboard';
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const ReferAndEarn = () => {
-  const [processing, setProcessing] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [processing, setProcessing] = useState(true); // Start with loading state
   const navigation = useNavigation();
   const promoCode = "PROMO2024";
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 700,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   const rewards = [
     { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 20 friends!' },
@@ -38,6 +26,15 @@ const ReferAndEarn = () => {
     { id: '3', title: 'KES 500 Cash', description: 'Earn KES 500 cash after referring 15 friends!' },
     { id: '4', title: 'Green Bank Deposit', description: 'Earn KES 400 cash deposited in your Green Bank plus add-ons!' },
   ];
+
+  // Simulate loading completion
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProcessing(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    return () => clearTimeout(timer); // Clean up the timer
+  }, []);
 
   const handleRefer = useCallback(async () => {
     try {
@@ -71,7 +68,7 @@ const ReferAndEarn = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Color.colorWhite , paddingTop: 33}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Color.colorWhite, paddingTop: 33 }}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
@@ -79,52 +76,53 @@ const ReferAndEarn = () => {
         <Text style={styles.title}>Refer & Earn</Text>
       </View>
 
-      <Modal visible={processing} transparent={true} animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <ActivityIndicator size="large" color={Color.colorLimegreen_200} />
-            <Text style={styles.modalText}>Processing...</Text>
+      {/* Show Lottie animation only when processing is true */}
+      {processing ? (
+        <Lottie 
+          source={require('../../assets/lottie/gift.json')} // Adjust to your Lottie file
+          autoPlay 
+          loop 
+          style={styles.lottie} 
+        />
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.subtitle}>Invite your friends to GreenBin and earn rewards!</Text>
+          
+          <View style={styles.rewardsContainer}>
+            <Text style={styles.rewardsTitle}>Unlock Rewards! 🎉</Text>
+            <FlatList
+              data={rewards}
+              keyExtractor={item => item.id}
+              renderItem={renderRewardCard}
+              initialNumToRender={2}
+              windowSize={5}
+            />
           </View>
-        </View>
-      </Modal>
 
-      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-        <Text style={styles.subtitle}>Invite your friends to GreenBin and earn rewards!</Text>
-        
-        <View style={styles.rewardsContainer}>
-          <Text style={styles.rewardsTitle}>Unlock Rewards! 🎉</Text>
-          <FlatList
-            data={rewards}
-            keyExtractor={item => item.id}
-            renderItem={renderRewardCard}
-            initialNumToRender={2}
-            windowSize={5}
-          />
-        </View>
+          <View style={styles.referralInfo}>
+            <Text style={styles.referralText}>Your Friend Earns:</Text>
+            <Text style={styles.friendReward}>200 MB Data Bundles</Text>
+            <Text style={styles.friendDescription}>When they install the app and register!</Text>
+          </View>
 
-        <View style={styles.referralInfo}>
-          <Text style={styles.referralText}>Your Friend Earns:</Text>
-          <Text style={styles.friendReward}>200 MB Data Bundles</Text>
-          <Text style={styles.friendDescription}>When they install the app and register!</Text>
-        </View>
+          <View style={styles.promoCodeContainer}>
+            <Text style={styles.promoCodeTitle}>Your Promo Code:</Text>
+            <Text style={styles.promoCode}>{promoCode}</Text>
+            <TouchableOpacity style={styles.copyButton} onPress={copyPromoCode} activeOpacity={0.7}>
+              <Text style={styles.copyButtonText}>Copy Promo Code</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.promoCodeContainer}>
-          <Text style={styles.promoCodeTitle}>Your Promo Code:</Text>
-          <Text style={styles.promoCode}>{promoCode}</Text>
-          <TouchableOpacity style={styles.copyButton} onPress={copyPromoCode} activeOpacity={0.7}>
-            <Text style={styles.copyButtonText}>Copy Promo Code</Text>
+          <TouchableOpacity style={styles.referButton} onPress={handleRefer} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>Refer & Earn</Text>
+            <Entypo name="share" size={24} color="black" />
           </TouchableOpacity>
+
+          <Text style={styles.termsText}>
+            By clicking Refer & Earn you agree to accept the Terms & Conditions
+          </Text>
         </View>
-
-        <TouchableOpacity style={styles.referButton} onPress={handleRefer} activeOpacity={0.7}>
-          <Text style={styles.buttonText}>Refer & Earn</Text>
-          <Entypo name="share" size={24} color="black" />
-        </TouchableOpacity>
-
-        <Text style={styles.termsText}>
-          By clicking Refer & Earn you agree to accept the Terms & Conditions
-        </Text>
-      </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
@@ -134,6 +132,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#F5F5F5',
+  },
+  lottie: {
+    width: '100%',
+    height: 200, // Adjust as needed
+    marginBottom: 20, // Spacing below the animation
   },
   header: {
     flexDirection: 'row',

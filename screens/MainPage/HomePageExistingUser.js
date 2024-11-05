@@ -19,7 +19,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
 import { FlashList } from "@shopify/flash-list";
-import { BallIndicator } from 'react-native-indicators'; // Import BallIndicator
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const challenges = [
   { id: "1", title: "EcoBikes", icon: require("../../assets/bikes.png") },
@@ -43,7 +43,7 @@ const banners = [
 ];
 
 
-const { width,height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function HomePageExistingUser() {
   const navigation = useNavigation();
@@ -52,7 +52,6 @@ export default function HomePageExistingUser() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const [loading, setLoading] = React.useState(true); // Loading state
-
 
   const initialVendorState = challenges.reduce((acc, challenge) => {
     acc[challenge.id] = { connecting: false, connected: false };
@@ -103,7 +102,7 @@ export default function HomePageExistingUser() {
     // Simulate loading time
     const timer = setTimeout(() => {
       setLoading(false); // Set loading to false after 2 seconds
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
@@ -125,7 +124,12 @@ export default function HomePageExistingUser() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <BallIndicator color='green' />
+        <Lottie 
+          source={require('../../assets/lottie/homy.json')} // Adjust path to your Lottie file
+          autoPlay 
+          loop 
+          style={styles.lottie} // Optional: add styles if needed
+        />
       </View>
     );
   }
@@ -203,7 +207,6 @@ export default function HomePageExistingUser() {
             )}
           />
 
-          
           <FlashSale />
           {/* Search Bar */}
           <View style={styles.searchBarContainer}>
@@ -253,7 +256,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   loadingContainer: {
-    top: '50%',
+    flex: 1,
+    alignItems: 'center',
+    top: '20%'
+  },
+  lottie: {
+    width: '80%', // Adjust size as needed
+    height: 300,
   },
   bannerContainer: {
     height: 140,
@@ -285,22 +294,22 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
     color: Color.colorGray_400,
-    marginVertical: 16,
-    marginTop: -10,
+    marginVertical: 17,
+    marginTop: -5,
   },
   vendorFrame: {
-    paddingHorizontal: 10, // Only padding-related styles
+    paddingHorizontal: 11, // Only padding-related styles
     backgroundColor: "transparent", 
   },
   vendorDetails: {
     width: 140,
-    height: 164,
+    height: 153,
     borderRadius: 21,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
-    padding: 10,
+    padding: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
@@ -311,6 +320,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     marginBottom: 5,
+    marginTop: 5
   },
   vendorName: {
     fontFamily: FontFamily.manropeBold,
@@ -325,7 +335,8 @@ const styles = StyleSheet.create({
   connectButton: {
     borderRadius: 12,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
+    marginBottom: 10
   },
   connectBlueButton: {
     backgroundColor: "green",
@@ -362,7 +373,7 @@ const styles = StyleSheet.create({
   },
   challengeFrame: {
     flex: 1,
-    marginTop: 15,
+    marginTop: 18,
   },
   challengeBox: {
     width: '90%',

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   header: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
 
     marginVertical: 5,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     
   },
   tagText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
   },
 });

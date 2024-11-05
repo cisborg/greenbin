@@ -250,16 +250,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 13,
     backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    margin:10
   },
   backButton: {
     marginRight: 16,
@@ -281,7 +278,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   tabText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#4CAF50',
   },
   faqContainer: {
@@ -300,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   question: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
   answer: {

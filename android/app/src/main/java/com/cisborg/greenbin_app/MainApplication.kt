@@ -3,6 +3,7 @@ package com.cisborg.greenbin_app
 import com.reactnativecommunity.webview.RNCWebViewPackage // Import WebView Package
 import android.app.Application
 import android.content.res.Configuration
+import com.reactnativecommunity.permissions.PermissionsPackage
 import androidx.annotation.NonNull
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -27,6 +28,7 @@ class MainApplication : Application(), ReactApplication {
             // Get default packages from the PackageList
             val packages = PackageList(this).packages
             packages.add(RNCWebViewPackage())
+            packages.add(PermissionsPackage()) 
 
             return packages
           }

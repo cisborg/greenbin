@@ -8,19 +8,19 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Animated,
-  RefreshControl,
   Platform,
-  Dimensions,
   StatusBar,
+  RefreshControl,
+  Dimensions,
   ActivityIndicator,
-  ScrollView,
+  FlatList, // Use FlatList instead of ScrollView
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Color } from '../../GlobalStyles';
 import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list'; // FlashList import
+import { FlashList } from '@shopify/flash-list';
 
 const { width, height } = Dimensions.get('window');
 
@@ -65,7 +65,6 @@ const ChallengePage = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Simulate a network request
     await new Promise(resolve => setTimeout(resolve, 2000));
     setRefreshing(false);
   };
@@ -73,9 +72,8 @@ const ChallengePage = () => {
   const loadMoreItems = async () => {
     if (!loading && data.length < categories.length) {
       setLoading(true);
-      // Simulate loading more items
       await new Promise(resolve => setTimeout(resolve, 2000));
-      setData(prevData => [...prevData, ...categories]); // Load more categories
+      setData(prevData => [...prevData, ...categories]);
       setLoading(false);
     }
   };
@@ -135,18 +133,19 @@ const ChallengePage = () => {
               <Image source={require('../../assets/menu.jpg')} style={styles.homeImage} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {sidebarCategories.map((category, index) => (
+            <FlatList // Use FlatList for sidebar items
+              data={sidebarCategories}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
                 <TouchableOpacity
-                  key={index}
                   style={styles.sidebarItem}
-                  onPress={() => handleSidebarItemPress(category.name)}
+                  onPress={() => handleSidebarItemPress(item.name)}
                 >
-                  <MaterialCommunityIcons name={category.icon} size={20} color="#333" />
-                  <Text style={styles.sidebarText}>{category.name}</Text>
+                  <MaterialCommunityIcons name={item.icon} size={20} color="#333" />
+                  <Text style={styles.sidebarText}>{item.name}</Text>
                 </TouchableOpacity>
-              ))}
-            </ScrollView>
+              )}
+            />
           </View>
 
           <View style={styles.mainContent}>
@@ -158,6 +157,7 @@ const ChallengePage = () => {
                 onRefresh={onRefresh}
                 loadMoreItems={loadMoreItems}
                 navigation={navigation}
+                onEndReached={() => handleSidebarItemPress(selectedCategory)} // Auto select category on scroll end
               />
             ) : (
               <FlashList
@@ -169,19 +169,16 @@ const ChallengePage = () => {
                 contentContainerStyle={styles.categoriesContainer}
                 ListFooterComponent={
                   loading && data.length < categories.length ? (
-                    // Ball loading indicator when more items are being loaded
-                    <ActivityIndicator size="large" color="#32CD32" />
+                    <ActivityIndicator size="small" color="green" />
                   ) : (
-                    // Instead of "Loaded Successfully", leave an empty space
                     <View style={{ paddingVertical: 20 }} />
                   )
                 }
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                estimatedItemSize={40} // FlashList-specific prop for optimization
+                estimatedItemSize={40}
                 onEndReached={loadMoreItems}
-                onEndReachedThreshold={0.5} // Trigger the load when the user is halfway through the content
-                />
-                
+                onEndReachedThreshold={0.5}
+              />
             )}
           </View>
         </View>
@@ -189,11 +186,12 @@ const ChallengePage = () => {
     </SafeAreaView>
   );
 };
+
 const sidebarCategories = [
   { name: 'Appliances', icon: 'fridge' },
   { name: 'Television', icon: 'television-classic' },
   { name: 'Kids Products', icon: 'baby-face-outline' },
-  { name: 'Sneakers', icon: 'shoe-sneaker' },
+  { name: 'Sneaker', icon: 'shoe-sneaker' },
   { name: 'Smart', icon: 'cellphone' },
   { name: 'Health', icon: 'heart' },
   { name: 'Bags', icon: 'bag-suitcase' },
@@ -217,7 +215,6 @@ const categories = [
   { name: 'Clothes', image: require('../../assets/clothes.png') },
 ];
 
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -226,7 +223,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 5,
+    padding: 6,
     flexDirection: 'row',
     minHeight: height * 0.98,
     marginTop: -35

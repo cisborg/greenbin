@@ -109,7 +109,7 @@ const BuyGoods = () => {
                             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                                 <AntDesign name="leftcircleo" size={24} color="black" />
                             </TouchableOpacity>
-                            <Text style={styles.title}>Buy Ecogreen Goods Today</Text>
+                            <Text style={styles.title}>Buy Goods Go Green Today</Text>
                         </View>
 
                         {/* User Information */}
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     },
     amountButton: {
         padding: 10,
-        borderRadius: 12,
+        borderRadius: 23,
         backgroundColor: 'white',
         flex: 1,
         alignItems: 'center',
@@ -365,13 +365,14 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 2,
+        elevation: 4,
+        justifyContent: 'center'
     },
     selectedAmountButton: {
         backgroundColor: 'green',
     },
     amountText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     paymentSection: {
@@ -381,7 +382,7 @@ const styles = StyleSheet.create({
     },
     paymentButton: {
         padding: 10,
-        borderRadius: 12,
+        borderRadius: 23,
         backgroundColor: 'white',
         flex: 1,
         alignItems: 'center',
@@ -390,14 +391,16 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 2,
+        elevation: 4,
+        justifyContent: 'center'
     },
     selectedPaymentButton: {
         backgroundColor: 'green',
     },
     paymentText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
+        alignSelf: 'center',
     },
     availablePointsText: {
         marginBottom: 16,
@@ -416,13 +419,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         backgroundColor: 'green',
         padding: 15,
-        borderRadius: 12,
+        borderRadius: 20,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 2,
+        elevation: 4,
     },
     confirmButtonText: {
         color: 'white',

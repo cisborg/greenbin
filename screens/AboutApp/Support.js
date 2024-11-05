@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: '1%',
-    margin: 10,
     paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
 
   },
@@ -114,11 +113,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 4,
+    elevation: 3,
     marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 23,
     color: '#fff',
     marginLeft: 10,
     fontWeight: 'bold',

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'green',
-    width: '86%',
+    width: '98%',
     paddingHorizontal: '5%', // Responsive padding
     paddingVertical: '3%', // Responsive padding
     borderRadius: 16,
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
   padButton: {
     width: '25%',
     height: 60,
+    backgroundColor: '#F5F5F5',
     marginBottom: '3%', // Responsive margin
     marginRight: '2%', // Responsive margin
     justifyContent: 'center',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 1,
+    elevation: 4,
   },
   padText: {
     fontSize: width < 400 ? 20 : 24, // Responsive font size

@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 2,
   },
   subHeader: {
     fontSize: width * 0.045, // Responsive font size based on screen width

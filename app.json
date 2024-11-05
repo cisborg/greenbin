@@ -19,7 +19,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.cisborg.greenbinapp"
+      "bundleIdentifier": "com.cisborg.greenbinapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes.",
+        "NSLocationWhenInUseUsageDescription": "This app requires access to your location.",
+        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,6 +40,27 @@
       "eas": {
         "projectId": "b497faf5-533b-484f-9fa4-ac655f5d6503"
       }
-    }
+    },
+    "plugins": [
+      [
+        "react-native-permissions",
+        {
+          "ios": {
+            "permissions": [
+              "Camera",
+              "Location"
+            ]
+          },
+          "android": {
+            "permissions": [
+              "CAMERA",
+              "ACCESS_FINE_LOCATION",
+              "READ_EXTERNAL_STORAGE",
+              "WRITE_EXTERNAL_STORAGE"
+            ]
+          }
+        }
+      ]
+    ]
   }
 }

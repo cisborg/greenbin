@@ -16,10 +16,9 @@ import {
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const { width, height } = Dimensions.get('window');
-
 
 const TransactionScreen = ({ navigation }) => {
   const [generalPoints, setGeneralPoints] = useState({
@@ -30,6 +29,8 @@ const TransactionScreen = ({ navigation }) => {
   const [recipientNumber, setRecipientNumber] = useState('');
   const [amountToSend, setAmountToSend] = useState('');
   const [amountToReceive, setAmountToReceive] = useState('');
+  const [airtimeAmount, setAirtimeAmount] = useState('');
+  const [showAirtimeInput, setShowAirtimeInput] = useState(false);
   const [totalDeducted, setTotalDeducted] = useState(0);
   const [showSendInput, setShowSendInput] = useState(false);
   const [showReceiveInput, setShowReceiveInput] = useState(false);
@@ -38,18 +39,25 @@ const TransactionScreen = ({ navigation }) => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [recentRecipients, setRecentRecipients] = useState([]);
   const [currentDate, setCurrentDate] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
-  const cardTypes = [ 'GreenPoints', 'GreenBank'];
+  const cardTypes = ['GreenPoints', 'GreenBank'];
 
   const formatDate = (date) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString(undefined, options);
   };
+
   useEffect(() => {
     const date = new Date();
     setCurrentDate(formatDate(date));
+
+    // Simulate loading delay
+    setTimeout(() => {
+      setIsLoading(false); // Set loading to false after a delay
+    }, 2000); // Adjust the delay as needed
   }, []);
-  
+
   useEffect(() => {
     Animated.timing(opacity, {
       toValue: 1,
@@ -61,7 +69,6 @@ const TransactionScreen = ({ navigation }) => {
   const handleCardSelection = (index) => {
     setActiveCardIndex(index);
   };
-
 
   const handleSendPoints = () => {
     const currentCard = cardTypes[activeCardIndex];
@@ -88,26 +95,17 @@ const TransactionScreen = ({ navigation }) => {
   
     // Update recent recipients with a unique ID
     setRecentRecipients(prevRecipients => {
-      const newRecipient = { id: Date.now(), mobile: recipientNumber, amount: sendAmount }; // Use timestamp as unique ID
+      const newRecipient = { id: Date.now(), mobile: recipientNumber, amount: sendAmount };
       const updatedRecipients = [...prevRecipients, newRecipient];
 
-      // Keep only the latest 2 recipients
-      return updatedRecipients.length > 2 ? updatedRecipients.slice(1) : updatedRecipients;    });
+      return updatedRecipients.length > 2 ? updatedRecipients.slice(1) : updatedRecipients;
+    });
   
     // Reset input fields
     setAmountToSend('');
     setRecipientNumber('');
-    setShowSendInput(false); // Hide send input after sending
+    setShowSendInput(false);
   };
-  
-  // When rendering recent recipients, ensure the key is unique
-  {recentRecipients.map((item) => (
-    <View key={item.id} style={styles.recipientContainer}>
-      <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
-      <Text style={{ color: 'green', fontSize: 11 }}>Sent: GCP {item.amount}</Text>
-    </View>
-  ))}
-  
 
   const handleReceivePoints = () => {
     const receiveAmount = parseInt(amountToReceive, 10);
@@ -130,14 +128,37 @@ const TransactionScreen = ({ navigation }) => {
 
     setTotalDeducted(prevTotal => prevTotal + receiveAmount);
     setAmountToReceive('');
-    setShowReceiveInput(false); // Hide receive input after receiving
+    setShowReceiveInput(false);
   };
 
   const handleAddUser = () => {
     setIsAddingUser(true);
+    setShowAirtimeInput(true);
     setTimeout(() => {
       setIsAddingUser(false);
     }, 2000);
+  };
+
+  const handleAirtimePurchase = () => {
+    const amount = parseInt(airtimeAmount, 10);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Invalid airtime amount');
+      return;
+    }
+
+    const currentCard = cardTypes[activeCardIndex];
+    if (amount > generalPoints[currentCard]) {
+      alert('Insufficient balance');
+      return;
+    }
+
+    setGeneralPoints(prevState => ({
+      ...prevState,
+      [currentCard]: prevState[currentCard] - amount
+    }));
+
+    setAirtimeAmount('');
+    setShowAirtimeInput(false);
   };
 
   const handleSubscriptionClick = () => {
@@ -149,8 +170,21 @@ const TransactionScreen = ({ navigation }) => {
   };
 
   const calculateProgress = () => {
-    return (totalDeducted / 1000000) * 100; // Assume 1,000,000 is the max value
+    return (totalDeducted / 1000000) * 100;
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Lottie 
+          source={require('../../assets/lottie/rotateLoad.json')} // Specify the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.loadingAnimation}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -189,17 +223,17 @@ const TransactionScreen = ({ navigation }) => {
 
           {/* Send/Receive Buttons */}
           <View style={styles.actionButtons}>
-            <TouchableOpacity onPress={() => { setShowSendInput(true); setShowReceiveInput(false); }} style={styles.actionButton}>
+            <TouchableOpacity onPress={() => { setShowSendInput(true); setShowReceiveInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
               <FontAwesome name="send" size={26} color="green" />
               <Text>Send Cash</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => { setShowReceiveInput(true); setShowSendInput(false); }} style={styles.actionButton}>
+            <TouchableOpacity onPress={() => { setShowReceiveInput(true); setShowSendInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
               <Ionicons name="download" size={24} color="green" />
               <Text>Receive Cash</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleAddUser} style={styles.actionButton}>
+            <TouchableOpacity onPress={() => { setShowReceiveInput(false); setShowSendInput(false); setShowAirtimeInput(true); }} style={styles.actionButton}>
               {isAddingUser ? (
                 <ActivityIndicator size="small" color="#0000ff" />
               ) : (
@@ -227,7 +261,6 @@ const TransactionScreen = ({ navigation }) => {
                 keyboardType="numeric" 
                 value={amountToSend} 
                 onChangeText={(text) => {
-                  // Validate input to prevent symbols
                   const sanitizedText = text.replace(/[^0-9]/g, '');
                   setAmountToSend(sanitizedText);
                 }} 
@@ -248,7 +281,6 @@ const TransactionScreen = ({ navigation }) => {
                 keyboardType="numeric" 
                 value={amountToReceive} 
                 onChangeText={(text) => {
-                  // Validate input to prevent symbols
                   const sanitizedText = text.replace(/[^0-9]/g, '');
                   setAmountToReceive(sanitizedText);
                 }} 
@@ -257,6 +289,26 @@ const TransactionScreen = ({ navigation }) => {
               />
               <TouchableOpacity onPress={handleReceivePoints} style={styles.confirmButton}>
                 <Text style={styles.confirmButtonText}>Receive Now</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          
+          {/* Airtime Input Section */}
+          {showAirtimeInput && (
+            <View style={styles.inputContainer}>
+              <TextInput 
+                placeholder="Amount of Airtime" 
+                keyboardType="numeric" 
+                value={airtimeAmount} 
+                onChangeText={(text) => {
+                  const sanitizedText = text.replace(/[^0-9]/g, '');
+                  setAirtimeAmount(sanitizedText);
+                }} 
+                placeholderTextColor='gray'
+                style={styles.input} 
+              />
+              <TouchableOpacity onPress={handleAirtimePurchase} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Buy Airtime</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -283,7 +335,6 @@ const TransactionScreen = ({ navigation }) => {
                   <FontAwesome name="send" size={18} color="orange" />
                 </View>
 
-                {/* Show only the latest 2 recipients */}
                 {recentRecipients.map((item) => (
                   <View key={item.id} style={styles.recipientContainer}>
                     <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
@@ -291,7 +342,6 @@ const TransactionScreen = ({ navigation }) => {
                   </View>
                 ))}
               </View>
-              {/* Subscription Button */}
               <TouchableOpacity onPress={handleSubscriptionClick} style={styles.subscriptionButton}>
                 {isLoadingSubscription ? (
                   <ActivityIndicator size="small" color="#ffff" />
@@ -317,6 +367,16 @@ const styles = StyleSheet.create({
   },
   keyboardAvoiding: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  loadingAnimation: {
+    width: 150,
+    height: 150,
   },
   header: {
     flexDirection: 'row',

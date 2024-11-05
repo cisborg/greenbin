@@ -55,7 +55,7 @@ const CreateSquad = () => {
       const response= await dispatch(createSquad(squadData))
       console.log('Response from creating squad:',response)
 
-navigation.navigate('SquadCreated')
+navigation.navigate('Confirmed')
 
 
 

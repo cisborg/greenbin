@@ -172,7 +172,7 @@ const ViewSquadScreen = () => {
         {/* Invitation Link Section */}
           <TouchableOpacity style={styles.invitationContainer} onPress={()=> navigation.navigate('PostFeed')}>
           
-            <Ionicons name="person-add" size={20} color="white"  />
+          <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
           <Text style={styles.invitationText}>Recent Posts Feeds</Text>
           </TouchableOpacity>
 
@@ -285,13 +285,13 @@ const styles = StyleSheet.create({
   headerHandle: {
     fontSize: 14,
     color: '#666666',
-    marginBottom: 10,
+    marginBottom: 9,
   },
   description: {
     color: '#555555',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
-    marginBottom: 14,
+    marginBottom: 10,
   },
   moderatedByContainer: {
     flexDirection: 'row',
@@ -342,11 +342,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   membersContainer: {
-    marginHorizontal: 10,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    marginLeft: 30,
-    marginRight: 30,
+    marginHorizontal: 30,
     justifyContent: 'center',
 
   },
@@ -394,13 +392,13 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     marginBottom: 20,
-    left: '15%',
-    width: width < 400 ? '40%': '45%'
+    left: '8%',
+    width: width < 400 ? '60%': '65%'
   },
   invitationIcon: {
-    marginRight: 10,
+    marginRight: 15,
   },
   invitationText: {
     color: 'white',

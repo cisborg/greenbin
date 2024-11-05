@@ -7,19 +7,20 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Alert,
   Dimensions,
   Platform,
   SafeAreaView,
+  StatusBar,
   Animated,
   ActivityIndicator,
-  ScrollView,StatusBar
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
-import { FontFamily, Color, FontSize } from "../../GlobalStyles";
-import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install react-native-vector-icons
+import { FontFamily, Color } from "../../GlobalStyles";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Toast from 'react-native-toast-message'; // Import Toast
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +37,6 @@ const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }
       accessibilityHint={`Enter your ${placeholder.toLowerCase()}`}
     />
   </View>
-  
 );
 
 const SignInPage = () => {
@@ -59,29 +59,39 @@ const SignInPage = () => {
 
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
-      setIsLoading(false);
-      Alert.alert("Error", "Please enter both email and password.");
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: 'Please enter both email and password.',
+      });
       return;
     }
-    
-    setIsLoading(true); // Start loading when login is initiated
+
+    setIsLoading(true);
 
     try {
       console.log("Login credentials", { email, password });
-      const response = await dispatch(loginUser({ email, password })); // Dispatch login action
-      console.log("Login response from dispatcher", response);
-      
+      const response = await dispatch(loginUser({ email, password }));
+
       if (response?.token) {
-        Alert.alert("Login Successful!", "You can now log in to your account.");
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successful',
+          text2: 'Welcome back! Enjoy GreenBin App',
+        });
         navigation.navigate("Main");
       } else {
         throw new Error('Login failed');
       }
     } catch (error) {
       console.log("Login error", error);
-      Alert.alert("Error", "Failed to log in. Please try again.");
+      Toast.show({
+        type: 'error',
+        text1: 'Login failed',
+        text2: 'Failed to log in. Please try again.',
+      });
     } finally {
-      setIsLoading(false); // End loading regardless of success or failure
+      setIsLoading(false);
     }
   };
 
@@ -139,6 +149,13 @@ const SignInPage = () => {
                 ) : (
                   <Text style={styles.cardText}>Login</Text>
                 )}
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.dontHaveAnContainer}>
+              <Text style={{ fontSize: 12 }}>Don't Have an account?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("RegisterPage")}>
+                <Text style={styles.register}>Register</Text>
               </TouchableOpacity>
             </View>
 
@@ -222,6 +239,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   
+  dontHaveAnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    alignSelf: 'center',
+  },
   togglePasswordText: {
     color: "green",
     marginLeft: 10,
@@ -256,13 +279,18 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045,
     fontFamily: FontFamily.manropeBold,
   },
+  register: {
+    color: 'green',
+    fontWeight: '500',
+    marginLeft: 7,
+  },
   forgotPasswordContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: height * 0.02,
+    marginTop: height * 0.01,
   },
   forgotPasswordText: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.033,
   },
 });
 

@@ -101,8 +101,8 @@ const PrepaidRechargeScreen = () => {
 
             {/* Paystack Payment Integration */}
             <Paystack
-              paystackKey="your-public-key-here"  // Replace the  Paystack public key
-              billingEmail="paystackuser@example.com"  // Optional email
+              paystackKey=""  // Replace the  Paystack public key
+              billingEmail="orachadongo@gmail.com"  // Optional email
               amount={amount * 100}  // Paystack requires amount in kobo (for KES, multiply by 100)
               onCancel={handlePaystackCancel}  // Handle cancellations
               onSuccess={handlePaystackSuccess}  // Handle successful transactions
@@ -112,7 +112,7 @@ const PrepaidRechargeScreen = () => {
             {/* Pay button to initiate the transaction */}
             <TouchableOpacity onPress={() => paystackWebViewRef.current.startTransaction()}>
               <View style={styles.proceedButton}>
-                <Text style={styles.proceedButtonText}>Pay with Paystack</Text>
+                <Text style={styles.proceedButtonText}>Pay Green</Text>
               </View>
             </TouchableOpacity>
           </View>

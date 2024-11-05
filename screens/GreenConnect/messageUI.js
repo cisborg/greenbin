@@ -7,186 +7,118 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  TextInput,
   Animated,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Color } from '../../GlobalStyles';
 
 const Users = [
-  {
-    id: '1',
-    userName: 'Pushkin',
-    userImg: require('../../assets/Appliance.png'),
-    isOnline: true,
-  },
-  {
-    id: '2',
-    userName: 'Silvance',
-    userImg: require('../../assets/anotherWoman.avif'),
-    isOnline: false,
-  },
-  {
-    id: '3',
-    userName: 'Brevo',
-    userImg: require('../../assets/anotherMan.avif'),
-    isOnline: true,
-  },
-  {
-    id: '4',
-    userName: 'Tyson',
-    userImg: require('../../assets/woofer.png'),
-    isOnline: false,
-  },
-  {
-    id: '5',
-    userName: 'Mwalimu',
-    userImg: require('../../assets/check.png'),
-    isOnline: true,
-  },
-  {
-    id: '6',
-    userName: 'Felix Adem',
-    userImg: require('../../assets/Appliance.png'),
-    isOnline: true,
-  },
+  { id: '1', userName: 'Pushkin', userImg: require('../../assets/Appliance.png'), isOnline: true },
+  { id: '2', userName: 'Bonke', userImg: require('../../assets/anotherWoman.avif'), isOnline: false },
+  { id: '3', userName: 'Vicky', userImg: require('../../assets/anotherMan.avif'), isOnline: true },
+  { id: '4', userName: 'Sally', userImg: require('../../assets/anotherWoman.avif'), isOnline: false },
 ];
 
+// Function to format message time
+const formatMessageTime = (timestamp) => {
+  const messageDate = new Date(timestamp);
+  const now = new Date();
+  const diffTime = Math.abs(now - messageDate);
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (diffHours >= 24) {
+    return messageDate.toLocaleDateString(); // Display date for messages older than 24 hours
+  } else if (diffHours > 1) {
+    return `${diffHours} hours ago`;
+  } else if (diffMinutes < 1) {
+    return 'Just now';
+  } else {
+    return `${diffMinutes} minutes ago`;
+  }
+};
+
+// Create some sample messages with varied timestamps for testing
 const Messages = [
   {
     id: '1',
     userName: 'Pushkin',
     userImg: require('../../assets/Appliance.png'),
-    messageTime: '4 mins ago',
-    messageText: 'Na ile group ulicreat fb inajiita aje 😅😅',
-    isOnline: true,
+    messageTime: formatMessageTime(new Date(Date.now() - 60000)), // 1 minute ago
     hasUnreadMessages: true,
     unreadCount: 2,
+    messageText: 'New message from Pushkin',
   },
   {
     id: '2',
     userName: 'Silvance',
     userImg: require('../../assets/anotherWoman.avif'),
-    messageTime: '2 hours ago',
-    messageText: 'Oh to namba ne',
-    isOnline: false,
+    messageTime: formatMessageTime(new Date(Date.now() - 3600000)), // 1 hour ago
     hasUnreadMessages: false,
     unreadCount: 0,
+    messageText: 'Oh to namba ne',
   },
   {
     id: '3',
-    userName: 'Brevo',
-    userImg: require('../../assets/anotherMan.avif'),
-    messageTime: '5 mins ago',
-    messageText: 'What’s up?',
-    isOnline: true,
+    userName: 'Vicky',
+    userImg: require('../../assets/anotherWoman.avif'),
+    messageTime: formatMessageTime(new Date(Date.now() - 86400000)), // 1 day ago
     hasUnreadMessages: false,
     unreadCount: 0,
-  },
-  {
-    id: '4',
-    userName: 'Tyson',
-    userImg: require('../../assets/woofer.png'),
-    messageTime: '1 day ago',
-    messageText: 'Can we meet tomorrow?',
-    isOnline: false,
-    hasUnreadMessages: false,
-    unreadCount: 0,
-  },
-  {
-    id: '5',
-    userName: 'Mwalimu',
-    userImg: require('../../assets/check.png'),
-    messageTime: 'Online',
-    messageText: 'I am here!',
-    isOnline: true,
-    hasUnreadMessages: false,
-    unreadCount: 0,
-  },
-  {
-    id: '6',
-    userName: 'Felix Adem',
-    userImg: require('../../assets/Appliance.png'),
-    messageTime: '15 mins ago',
-    messageText: 'Let’s catch up!',
-    isOnline: true,
-    hasUnreadMessages: false,
-    unreadCount: 0,
+    messageText: 'Hello!',
   },
 ];
 
 const MessagesScreen = ({ navigation }) => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState(Users);
-  const [filteredMessages, setFilteredMessages] = useState(Messages);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }, 1000);
-
-    return () => clearTimeout(timeout);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
-
   const handleNavigateToChat = (user) => {
-    const updatedMessages = filteredMessages.map(msg => {
-      if (msg.userName === user.userName) {
-        return { ...msg, hasUnreadMessages: false, unreadCount: 0 };
-      }
-      return msg;
-    });
-    setFilteredMessages(updatedMessages);
-    navigation.navigate('chatConnect', { userName: user.userName });
+    try {
+      navigation.navigate('chatConnect', { userName: user.userName });
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   };
 
- 
-  const renderUserItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => setSelectedUser(item)}
-      style={selectedUser?.id === item.id ? styles.selectedUserProfile : null}
-    >
-      <View style={styles.userProfile}>
+  const renderActiveUser = ({ item }) => (
+    item.isOnline && (
+      <TouchableOpacity onPress={() => setSelectedUser(item)} style={styles.activeUser}>
         <Image source={item.userImg} style={styles.userProfileImg} />
         <Text style={styles.userName}>{item.userName}</Text>
-        <Text style={styles.lastSeen}>
-          {item.isOnline ? 'Online' : item.messageTime}
-        </Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    )
   );
 
   const renderMessageItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleNavigateToChat(item)}>
       <View style={styles.userInfo}>
-        <View style={styles.userImgWrapper}>
-          <Image source={item.userImg} style={styles.userImg} />
-        </View>
+        <Image source={item.userImg} style={styles.userImg} />
         <View style={styles.textSection}>
           <View style={styles.row}>
             <Text style={styles.userName}>{item.userName}</Text>
             <Text style={styles.messageTime}>{item.messageTime}</Text>
           </View>
-          <Text style={styles.messageText}>{item.messageText}</Text>
-          <Text style={styles.lastSeen}>
-            {item.isOnline ? 'Online' : item.messageTime}
+          <Text
+            style={[
+              styles.messageText,
+              item.hasUnreadMessages ? styles.boldText : null,
+            ]}
+          >
+            {item.messageText}
           </Text>
           {item.hasUnreadMessages && (
-            <Text style={styles.unreadCount}>
-              {item.unreadCount} new messages
-            </Text>
+            <View style={styles.unreadBubble}>
+              <Text style={styles.unreadText}>{item.unreadCount}</Text>
+            </View>
           )}
         </View>
-        {!item.hasUnreadMessages && (
-          <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.unreadIndicator} />
-        )}
       </View>
     </TouchableOpacity>
   );
@@ -194,33 +126,24 @@ const MessagesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
+        <Text style={styles.activeNowText}>Active Now</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.userScrollView}
         >
-          {filteredUsers.map(user => (
-            <TouchableOpacity key={user.id} onPress={() => setSelectedUser(user)}>
-              <View style={styles.userProfile}>
-                <Image source={user.userImg} style={styles.userProfileImg} />
-                <Text style={styles.userName}>{user.userName}</Text>
-                <Text style={styles.lastSeen}>
-                  {user.isOnline ? 'Online' : ' ' + Messages.find(msg => msg.userName === user.userName)?.messageTime}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {Users.map((user) => renderActiveUser({ item: user }))}
         </ScrollView>
       </Animated.View>
 
-      <View style={styles.messageListContainer}>
-        <FlatList
-          data={filteredMessages}
-          keyExtractor={item => item.id}
-          renderItem={renderMessageItem}
-          contentContainerStyle={styles.flatList}
-        />
-      </View>
+      <FlatList
+        data={Messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderMessageItem}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        contentContainerStyle={styles.flatList}
+      />
     </View>
   );
 };
@@ -230,75 +153,52 @@ export default MessagesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    padding: 5,
-    overflow: 'hidden',
+    backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    paddingVertical: 3,
-    justifyContent: 'flex-start',
+  activeNowText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    marginVertical: 10,
   },
-  headerIcons: {
-    flexDirection: 'row',
+  userScrollView: {
+    paddingHorizontal: 10,
   },
- 
-  userProfile: {
+  activeUser: {
     alignItems: 'center',
-    marginRight: 30,
+    marginRight: 15,
   },
   userProfileImg: {
     width: 50,
     height: 50,
-    borderRadius: 30,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'green',
   },
   userName: {
-    marginTop: 5,
     fontSize: 12,
-    color: '#333',
-    fontWeight: 'bold',
+    marginTop: 5,
   },
-  lastSeen: {
-    fontSize: 10,
-    color: 'green',
-  },
-  selectedUserProfile: {
-    borderColor: 'green',
-    borderWidth: 2,
-    borderRadius: 30,
+  flatList: {
+    paddingHorizontal: 10,
   },
   card: {
-    width: '100%',
-    marginBottom: 10,
-    padding: 15,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 17,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 1,
+    flexDirection: 'row',
+    paddingVertical: 15,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc',
   },
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  userImgWrapper: {
-    paddingRight: 15,
-  },
   userImg: {
     width: 50,
     height: 50,
     borderRadius: 25,
-  },
-  unreadIndicator: {
-    position: 'absolute',
-    right: 10,
-    bottom: 10,
+    marginRight: 15,
   },
   textSection: {
-    flexDirection: 'column',
-    justifyContent: 'center',
     flex: 1,
   },
   row: {
@@ -306,26 +206,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  messageTime: {
-    fontSize: 10,
-    color: Color.colorGray_200,
-  },
   messageText: {
+    color: '#333',
+    fontSize: 14,
+    marginTop: 5,
+  },
+  messageTime: {
     fontSize: 12,
-    color: Color.colorGray_400,
+    color: '#666',
   },
-  unreadCount: {
-    color: 'red',
+  boldText: {
+    fontWeight: 'bold',
+  },
+  unreadBubble: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    backgroundColor: 'red',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  unreadText: {
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 12,
-  },
-  messageListContainer: {
-    flex: 1,
-    paddingTop: 10,
-  },
-  flatList: {
-    paddingBottom: 20,
-  },
-  userScrollView: {
-    paddingBottom: 10,
   },
 });

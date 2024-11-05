@@ -160,7 +160,7 @@ const ProfileSettings = () => {
 
           <TextInput
             style={styles.inputField}
-            placeholder="About"
+            placeholder="Your Environmental Slogan"
             placeholderTextColor={Color.colorGray_100}
             value={about}
             onChangeText={setAbout}

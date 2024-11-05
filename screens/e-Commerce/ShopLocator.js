@@ -182,13 +182,13 @@ const styles = StyleSheet.create({
     padding: '5%', // Responsive padding
   },
   title: {
-    fontSize: width < 400 ? 18 : 20, // Responsive font size
+    fontSize: width < 400 ? 16 : 17, // Responsive font size
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'green',
   },
   subtitle: {
-    fontSize: width < 400 ? 14 : 16, // Responsive font size
+    fontSize: width < 400 ? 12 : 14, // Responsive font size
     marginBottom: 20,
   },
   returnButton: {
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     padding: '5%', // Responsive padding
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 14,
+    borderRadius: 18,
     marginBottom: 10,
     backgroundColor: '#f9f9f9',
   },
@@ -230,11 +230,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   shopName: {
-    fontSize: width < 400 ? 18 : 20, // Responsive font size
+    fontSize: width < 400 ? 16 : 17, // Responsive font size
     fontWeight: 'bold',
   },
   shopDescription: {
-    fontSize: width < 400 ? 14 : 16, // Responsive font size
+    fontSize: width < 400 ? 14 : 15, // Responsive font size
     color: '#666',
   },
   shopHours: {
@@ -253,20 +253,20 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 4,
-    fontSize: width < 400 ? 14 : 16, // Responsive font size
+    fontSize: width < 400 ? 14 : 14, // Responsive font size
     color: '#333',
   },
   vendorsHeader: {
-    fontSize: width < 400 ? 14 : 16, // Responsive font size
+    fontSize: width < 400 ? 14 : 15, // Responsive font size
     fontWeight: 'bold',
     marginTop: 10,
   },
   vendorItem: {
-    fontSize: width < 400 ? 12 : 14, // Responsive font size
+    fontSize: width < 400 ? 12 : 13, // Responsive font size
     color: '#333',
   },
   connectButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'green',
     padding: 10,
     borderRadius: 14,
     marginTop: 10,
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   noShopsText: {
-    fontSize: width < 400 ? 16 : 18, // Responsive font size
+    fontSize: width < 400 ? 16 : 17, // Responsive font size
     color: '#888',
     textAlign: 'center',
     marginTop: 20,

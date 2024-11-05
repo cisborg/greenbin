@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { FontFamily, Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/core';
@@ -10,6 +10,7 @@ const { width, height } = Dimensions.get('window');
 const WifiPlans = () => {
     const navigation = useNavigation();
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [loadingStates, setLoadingStates] = useState({}); // State to manage loading for each plan
 
     const plans = [
         {
@@ -67,15 +68,34 @@ const WifiPlans = () => {
     const renderPlansByType = (type) => {
         return plans
             .filter(plan => plan.type === type)
-            .map((plan) => (
+            .map((plan, index) => (
                 <View key={plan.title} style={styles.card}>
                     <Text style={styles.planTitle}>{plan.title}</Text>
                     <Text style={styles.benefits}>{plan.benefits}</Text>
                     <Text style={styles.validity}>Validity: {plan.validity}</Text>
                     <Text style={styles.price}>{plan.price}</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('BuyWifiSuccessful', { packaged: plan.benefits, valid: plan.validity, price: plan.price })}>
+                    <TouchableOpacity 
+                        onPress={() => {
+                            // Set loading state for this specific plan
+                            setLoadingStates(prev => ({ ...prev, [plan.title]: true }));
+                            setTimeout(() => {
+                                navigation.navigate('BuyWifiSuccessful', { 
+                                    packaged: plan.benefits, 
+                                    valid: plan.validity, 
+                                    price: plan.price 
+                                });
+                                // Reset loading state after navigation
+                                setLoadingStates(prev => ({ ...prev, [plan.title]: false }));
+                            }, 300);
+                        }}
+                        disabled={loadingStates[plan.title]} // Disable button when loading for this plan
+                    >
                         <View style={styles.proceed}>
-                            <Text style={styles.cardText}>Confirm</Text>
+                            {loadingStates[plan.title] ? (
+                                <ActivityIndicator size="small" color="#fff" /> // Show spinner when loading for this plan
+                            ) : (
+                                <Text style={styles.cardText}>Confirm</Text>
+                            )}
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -108,89 +128,87 @@ const WifiPlans = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Color.colorWhite,
+        backgroundColor: '#f5f5f5',
     },
     animatedView: {
         flex: 1,
     },
     scrollView: {
-        padding: 20,
+        padding: 10,
         paddingBottom: 10,
     },
     heading: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 10,
     },
     header: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
         color: 'green',
         marginLeft: 10,
     },
     subHeader: {
-        fontSize: 16,
+        fontSize: 15,
         color: Color.colorDarkturquoise,
-        marginBottom: 20,
+        marginBottom: 5,
         textAlign: 'center',
     },
     proceed: {
-        backgroundColor: 'white',
+        backgroundColor: 'green',
         shadowColor: '#000',
         marginTop: 10,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-        elevation: 1,
         alignItems: 'center',
         paddingVertical: 8,
         borderRadius: 14,
         justifyContent: 'center',
         width: '100%', // Make it responsive
-        maxWidth: 150, // Limit the width
     },
     cardText: {
-        color: 'green',
+        color: 'white',
         fontWeight: 'bold',
+        fontSize: 12,
     },
     categoryHeader: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginVertical: 4,
         fontFamily: FontFamily.poppinsRegular,
-        color: Color.colorCrimson,
+        color: 'orange',
     },
     card: {
-        backgroundColor: '#f9f9f9',
-        borderRadius: 15,
+        backgroundColor: '#fff',
+        borderRadius: 20,
         padding: 15,
         marginBottom: 12,
-        elevation: 3,
+        elevation: 1,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
     },
     planTitle: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: '600',
         fontFamily: FontFamily.manropeBold,
     },
     benefits: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#555',
         marginBottom: 4,
     },
     validity: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#777',
         marginBottom: 4,
     },
     price: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: 'green',
-        marginTop: 8,
     },
 });
 

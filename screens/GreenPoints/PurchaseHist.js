@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  Animated,
+  ActivityIndicator,
+} from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const notificationsData = [
-  { id: '1', date: '20 SEP 2024', message: 'Congratulations! You have purchased order bundle RD234563 of GCPs 40000 successfully! You earn  a sprout tier of 1000 points' },
-  { id: '2', date: '17 SEP 2024', message: 'Congratulations! You have purchased order bundle SA234534 of GCPs 100000 successfully! You earn  a blossom tier of 1200 points' },
-  { id: '3', date: '14 SEP 2024', message: 'Congratulations! You have purchased order bundle RE237589 of GCPs 500000 successfully! You earn  a canopy tier of 2000 points' },
-  { id: '4', date: '12 SEP 2024', message: 'Congratulations! You have purchased order bundle FR565731 of GCPs 700000 successfully! You earn  a champion tier of 3600 points' },
+  { id: '1', date: '20 SEP 2024', message: 'Congratulations! You have purchased order bundle RD234563 of GCPs 40000 successfully! You earn a sprout tier of 1000 points' },
+  { id: '2', date: '17 SEP 2024', message: 'Congratulations! You have purchased order bundle SA234534 of GCPs 100000 successfully! You earn a blossom tier of 1200 points' },
+  { id: '3', date: '14 SEP 2024', message: 'Congratulations! You have purchased order bundle RE237589 of GCPs 500000 successfully! You earn a canopy tier of 2000 points' },
+  { id: '4', date: '12 SEP 2024', message: 'Congratulations! You have purchased order bundle FR565731 of GCPs 700000 successfully! You earn a champion tier of 3600 points' },
 ];
 
 const NotifScreen = ({ navigation }) => {
-  const [notifications, setNotifications] = useState(notificationsData);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    const fetchNotifications = async () => {
+      // Simulate a network request
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate loading time
+      setNotifications(notificationsData); // Set notifications after loading
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      setLoading(false); // End loading
+    };
+
+    fetchNotifications();
   }, [fadeAnim]);
 
   const clearAllNotifications = () => {
@@ -58,17 +78,32 @@ const NotifScreen = ({ navigation }) => {
           <Text style={styles.clearAllText}>Clear All</Text>
         </TouchableOpacity>
       </View>
-      <Animated.View style={{ ...styles.listContainer, opacity: fadeAnim }}>
-        <FlatList
-          data={notifications}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContent}
-        />
-      </Animated.View>
+      
+      {loading ? ( // Conditional rendering for loading
+        <View style={styles.loadingContainer}>
+          <Lottie 
+            source={require('../../assets/lottie/burst.json')} // Replace with your loading animation
+            autoPlay 
+            loop 
+            style={styles.lottie} 
+          />
+          <Text style={styles.loadingText}>Loading notifications...</Text>
+        </View>
+      ) : (
+        <Animated.View style={{ ...styles.listContainer, opacity: fadeAnim }}>
+          <FlatList
+            data={notifications}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContent}
+          />
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -88,6 +123,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'orange'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#333',
   },
   clearAllText: {
     color: '#007BFF',

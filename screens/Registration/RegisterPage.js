@@ -202,12 +202,6 @@ const RegisterPage = () => {
             )}
           </TouchableOpacity>
           
-          <View style={styles.dontHaveAnContainer}>
-            <Text style={{ fontSize: scale(12) }}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("SignInPage")}>
-              <Text style={styles.register}>Login!</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </Animated.View>
     </SafeAreaView>

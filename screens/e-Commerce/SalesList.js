@@ -1,256 +1,295 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity,Platform,StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, StatusBar, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from "expo-linear-gradient";
+import LottieView from 'lottie-react-native';
 
 const categories = [
     { id: '1', name: 'All' },
-    { id: '2', name: 'Electronics' },
-    { id: '3', name: 'Green Renewables' },
+    { id: '2', name: 'Computers & Accessories' },
+    { id: '3', name: 'Phones & Accessories' },
 ];
 
 const productsData = [
     {
         id: '1',
-        title: "Valentine's Day Gift 9 PIECES! Grab it",
+        title: "Valentine's Day Gift 9 PIECES! Earrings Women's",
         price: 9,
         originalPrice: 1200,
+        quantity: 0,
         soldOut: true,
         category: 'All',
-        imageUrl: 'https://example.com/image1.jpg', // Update with actual image URL
+        imageUrl: 'https://example.com/image1.jpg',
     },
     {
         id: '2',
-        title: 'IPCONE 2L Energy Efficient Kettle gr',
+        title: 'IPCONE 2L Energy Efficient Electric Water Kettle',
         price: 599,
         originalPrice: 1499,
+        quantity: 5,
         soldOut: false,
-        category: 'Green Renewables',
-        imageUrl: 'https://example.com/image2.jpg', // Update with actual image URL
+        category: 'Computers & Accessories',
+        imageUrl: 'https://example.com/image2.jpg',
     },
     {
         id: '3',
-        title: 'Samsung Galaxy A05 Grab it now !',
+        title: '[Super Brand] Brand New Samsung Galaxy A05',
         price: 11199,
-        originalPrice: 19999,
+        originalPrice: 19995,
+        quantity: 4,
         soldOut: false,
-        category: 'Electronics',
-        imageUrl: 'https://example.com/image3.jpg', // Update with actual image URL
+        category: 'Phones & Accessories',
+        imageUrl: 'https://example.com/image3.jpg',
+    },
+    {
+        id: '4',
+        title: 'Volsmart 138L Fridge Freezer VL-BCD138',
+        price: 2499,
+        originalPrice: 3999,
+        quantity: 100,
+        soldOut: false,
+        category: 'Computers & Accessories',
+        imageUrl: 'https://example.com/image4.jpg',
+    },
+    {
+        id: '5',
+        title: 'Hair straightener The New Wireless Curling Irons',
+        price: 599,
+        originalPrice: 999,
+        quantity: 1000,
+        soldOut: false,
+        category: 'Computers & Accessories',
+        imageUrl: 'https://example.com/image5.jpg',
     },
 ];
-
 const SalesList = () => {
-    const [countdown, setCountdown] = useState(75 * 60); // 75 minutes in seconds
+    const [countdown, setCountdown] = useState(75 * 60);
+    const [fadeAnim] = useState(new Animated.Value(0));
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [loadingId, setLoadingId] = useState(null);
+    const [loading, setLoading] = useState(true);  // Add loading state
     const navigation = useNavigation();
 
     useEffect(() => {
+        const now = new Date();
+        const sixAM = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0);
+
+        if (now > sixAM) {
+            sixAM.setDate(sixAM.getDate() + 1);
+        }
+
+        const timeDifference = Math.floor((sixAM - now) / 1000);
+        setCountdown(timeDifference);
+
         const timer = setInterval(() => {
             setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
         }, 1000);
 
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+
+        // Simulate loading delay
+        setTimeout(() => {
+            setLoading(false);  // Set loading to false after a delay
+        }, 2000);  // Adjust delay as needed
+
         return () => clearInterval(timer);
     }, []);
 
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    };
-
-    const handleGrabIt = (product) => {
-        if (!product.soldOut) {
-            alert(`You grabbed ${product.title} for GP ${product.price}!`);
-        } else {
-            alert(`${product.title} is sold out!`);
-        }
+    const formatEndTime = () => {
+        const now = new Date();
+        const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+        const options = { weekday: 'long' };
+        const day = midnight.toLocaleDateString('en-US', options);
+        return `Ends on: ${day} at 12:00 midnight`;
     };
 
     const filteredData = productsData.filter(
         (product) => selectedCategory === 'All' || product.category === selectedCategory
     );
 
+    const handleGrabIt = (item) => {
+        if (item.soldOut) return;
+        setLoadingId(item.id);
+
+        setTimeout(() => {
+            if (item.quantity > 0) {
+                item.quantity -= 1;
+            }
+
+            if (item.quantity <= 0) {
+                item.soldOut = true;
+            }
+
+            setLoadingId(null);
+            navigation.navigate('Checkout');
+        }, 300);
+    };
+
+    // Show Lottie loading animation if loading is true
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <LottieView
+                    source={require('../../assets/lottie/flashed.json')}  // Update with your Lottie file path
+                    autoPlay
+                    loop
+                    style={styles.loadingAnimation}
+                />
+            </View>
+        );
+    }
+
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <AntDesign name="left" size={24} color="green" />
+                    <AntDesign name="left" size={24} color="white" />
                 </TouchableOpacity>
                 <Text style={styles.heading}>Flash Sales</Text>
             </View>
-            <Text style={styles.timer}>Ends in: {formatTime(countdown)}</Text>
-
-            {/* Horizontal Category List */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                {categories.map((category) => (
-                    <TouchableOpacity
-                        key={category.id}
-                        style={[
-                            styles.categoryButton,
-                            selectedCategory === category.name && styles.selectedCategory,
-                        ]}
-                        onPress={() => setSelectedCategory(category.name)}
-                    >
-                        <Text
+            {countdown > 0 ? (
+                <Text style={styles.timer}>{formatEndTime()}</Text>
+            ) : (
+                <LottieView
+                    source={require('../../assets/lottie/lego.json')}
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+            )}
+            <View style={styles.categoryContainer}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
+                    {categories.map((category) => (
+                        <TouchableOpacity
+                            key={category.id}
                             style={[
-                                styles.categoryText,
-                                selectedCategory === category.name && styles.selectedCategoryText,
+                                styles.categoryButton,
+                                selectedCategory === category.name && styles.selectedCategory,
                             ]}
+                            onPress={() => setSelectedCategory(category.name)}
                         >
-                            {category.name}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+                            <Text
+                                style={[
+                                    styles.categoryText,
+                                    selectedCategory === category.name && styles.selectedCategoryText,
+                                ]}
+                            >
+                                {category.name}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
 
-            {/* FlashList for Products */}
             <FlashList
                 data={filteredData}
                 keyExtractor={(item) => item.id}
                 estimatedItemSize={200}
-                renderItem={({ item }) => (
-                    <View style={styles.productContainer}>
-                        <Image source={{ uri: item.imageUrl }} style={styles.image} />
-                        <View style={styles.productDetails}>
-                            <Text style={styles.productTitle}>{item.title}</Text>
-                            <Text style={styles.price}>
-                                GPs {item.price} <Text style={styles.originalPrice}>GPs {item.originalPrice}</Text>
-                            </Text>
-                            {item.soldOut ? (
-                                <TouchableOpacity style={styles.button1}>
-                                    <Text style={styles.soldOut}>Sold Out</Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity style={styles.button}>
-                                    <Text style={styles.grabIt}>Grab Now</Text>
-                                </TouchableOpacity>
-                            )}
+                contentContainerStyle={styles.flashListContainer}
+                renderItem={({ item }) => {
+                    const totalQuantity = item.quantity + (item.soldOut ? 0 : 1);
+                    const soldPercentage = item.soldOut ? 100 : ((totalQuantity - item.quantity) / totalQuantity) * 100;
+
+                    return (
+                        <View style={styles.productContainer}>
+                            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                            <View style={styles.productDetails}>
+                                <Text style={styles.productTitle} numberOfLines={3}>{item.title}</Text>
+                                <Text style={styles.price}>
+                                    KSh {item.price} <Text style={styles.originalPrice}>KSh {item.originalPrice}</Text>
+                                </Text>
+                                <View style={styles.quantityContainer}>
+                                    <View style={styles.productProgressBarContainer}>
+                                        <LinearGradient
+                                            colors={['#FF6347', '#FF4500']}
+                                            style={[styles.productProgressBar, { width: `${soldPercentage}%` }]}
+                                        >
+                                            <Text style={styles.productProgressText}>{item.soldOut ? '100% Sold Out' : `${Math.round(soldPercentage)}% Left`}</Text>
+                                        </LinearGradient>
+                                    </View>
+
+                                    {item.soldOut ? (
+                                        <TouchableOpacity style={styles.buttonSoldOut} disabled>
+                                            <Text style={styles.soldOut}>Sold Out</Text>
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity style={styles.button} onPress={() => handleGrabIt(item)}>
+                                            {loadingId === item.id ? (
+                                                <ActivityIndicator color="white" />
+                                            ) : (
+                                                <Text style={styles.grabIt}>Grab It</Text>
+                                            )}
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                )}
+                    );
+                }}
             />
-        </View>
+        </Animated.View>
     );
 };
 
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#f8f8f8',
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    },
-    header: {
-        flexDirection: 'row',
-        marginTop: 10,
-        justifyContent:'flex-start',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    heading: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        marginLeft: '28%',
-        color: '#333',
-        alignSelf: 'center',
-    },
-    timer: {
-        fontSize: 16,
-        marginBottom: 20,
-        color: 'orange', // Highlight the timer color
-        alignSelf: 'flex-end'
-    },
+    container: { flex: 1,  backgroundColor: '#f9f9f9' },
+    header: { flexDirection: 'row', alignItems: 'center',justifyContent: 'flex-start', padding: 16, backgroundColor: 'green' },
+    heading: { fontSize: 24, fontWeight: 'bold', color: 'white', marginLeft: 100 },
+    timeSlots: { flexDirection: 'row' },
+    timeSlot: { color: 'white', marginHorizontal: 6 },
+    timer: { fontSize: 16, color: 'orange', textAlign: 'center', marginVertical: 10 },
     categoryContainer: { 
-        flexDirection: 'row',
-        marginVertical: 10 
+        height: '9%', // Set height to 10% of the screen
+        justifyContent: 'center',
     },
-    categoryButton: {
-         paddingHorizontal: 16,
-         paddingVertical: 8,
-         backgroundColor: '#f0f0f0', 
-         borderRadius: 20,
-         marginRight: 8 
+    categoryScroll: {
+        alignItems: 'center', // Center the category buttons
     },
-    selectedCategory: {
-         backgroundColor: '#FF5733'
-    },
-    categoryText: {
-         fontSize: 16,
-          color: '#555'
-     },
-    selectedCategoryText: {
-         color: '#fff'
-     },    
-
-    productContainer: {
-        flexDirection: 'row',
-        borderRadius: 20,
-        padding: 15,
-        marginBottom: 8,
-        alignItems: 'center',
-        backgroundColor: '#fff', // White background for product cards
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 1, // For Android shadow
-    },
-    prodict: {
-        flexDirection: 'column',
-    },
-    image: {
-        width: 80,
+    loadingContainer: {
         flex: 1,
-        height: 80,
-        borderRadius: 10, // Rounded corners for images
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFF',
     },
-    productTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        textAlign: 'flex-start',
-        marginBottom: 5,
+    loadingAnimation: {
+        width: 150,
+        height: 150,
     },
-    price: {
-        fontSize: 13,
-        color: 'green',
-        marginBottom: 5,
-    },
-    originalPrice: {
-        textDecorationLine: 'line-through',
-        color: '#888',
-    },
-    button: {
-        backgroundColor: 'green',
-        borderRadius: 11,
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        alignSelf: 'flex-end'
-    },
-    button1: {
-        backgroundColor: 'orange',
-        borderRadius: 11,
-        paddingVertical: 8,
-        paddingHorizontal: 10,
-        alignSelf: 'flex-end',
+    
+    categoryButton: { 
+        paddingHorizontal: 12, 
+        paddingVertical: 5, 
+        borderRadius: 10,
+        marginHorizontal: 5, 
+        backgroundColor: '#e0e0e0', 
+        justifyContent: 'center',
         alignItems: 'center',
     },
-    grabIt: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    soldOut: {
-        color: 'white',
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        fontSize: 12,
-
-    },
+    selectedCategory: { backgroundColor: 'green' },
+    categoryText: { fontSize: 14 }, 
+    selectedCategoryText: { color: 'white' },
+    flashListContainer: { paddingBottom: 5 },
+    productContainer: { margin: 10, padding: 10, backgroundColor: '#fff', borderRadius: 18, elevation: 1, flexDirection: 'row', justifyContent: 'center' },
+    image: { width: '30%', height: 100, borderRadius: 13 },
+    productDetails: { marginTop: 9 },
+    quantityContainer: {flexDirection: 'row', alignItems: 'center' },
+    productTitle: { fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-start', width: '92%'},
+    price: { fontSize: 12, color: '#333' },
+    originalPrice: { textDecorationLine: 'line-through', color: '#888' },
+    productProgressBarContainer: { height: 12, borderRadius: 5, backgroundColor: '#ddd', marginVertical: 10, width: '55%', marginRight: '7%' },
+    productProgressBar: { height: '100%', borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
+    productProgressText: { fontSize: 10, color: '#fff', marginTop: '-1.5%' },
+    buttonSoldOut: { backgroundColor: '#888', padding: 8, borderRadius: 14, marginTop: 5 },
+    button: { backgroundColor: 'green', padding: 8, borderRadius: 14, marginTop: 5, width: '25%', alignItems: 'center'},
+    soldOut: { color: 'white', fontSize: 14 , fontWeight: 'bold'},
+    grabIt: { color: 'white', fontSize: 14, fontWeight: 'bold' },
 });
 
 export default SalesList;

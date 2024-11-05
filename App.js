@@ -51,7 +51,7 @@ import GreenBankAccount from "./screens/e-Commerce/GreenBank";
 import JoinUsScreen from "./screens/AboutApp/JoinUs";
 import DonatePoints from "./screens/GreenPoints/DonatePoints";
 import NotifScreen from "./screens/GreenPoints/PurchaseHist";
-import BuyAirtimeScreen from "./screens/QuickActions/BuyAirtime";
+import GreenBin from "./screens/QuickActions/greenBin";
 import AboutScreen from "./screens/AboutApp/AboutUs";
 import ReportVendorScreen from "./screens/Vendors/ReportVendor";
 import ProductScreen from "./screens/Vendors/VendorProducts";
@@ -90,6 +90,8 @@ import { Color } from "./GlobalStyles";
 import PostFeed from "./screens/Squads/PostFeed";
 import FlashSale from "./screens/e-Commerce/FlashSale";
 import SalesList from "./screens/e-Commerce/SalesList";
+import CoinRewards from "./screens/GreenPoints/GreenCoins";
+
 
 
 
@@ -274,7 +276,7 @@ const App = () => {
         <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
         <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyAirtime" component={BuyAirtimeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="greenBin" component={GreenBin} options={{ headerShown: false }} />
         <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
@@ -312,6 +314,7 @@ const App = () => {
         <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
         <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
         <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
+        <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
 
 
       </Stack.Navigator>

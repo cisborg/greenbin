@@ -115,7 +115,7 @@ const StartPage = () => {
 
       <TouchableOpacity
         style={styles.getStartedBtn}
-        onPress={() => navigation.navigate("RegisterPage")}
+        onPress={() => navigation.navigate("SignInPage")}
       >
         <Text style={styles.cardText}>Get Started</Text>
       </TouchableOpacity>

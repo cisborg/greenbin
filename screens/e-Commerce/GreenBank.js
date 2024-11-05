@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
+import { View, Text, TextInput, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For Dropdown
 import { useNavigation } from '@react-navigation/native'; // For Back Navigation
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Lottie from 'lottie-react-native'; // Import Lottie
 import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
 
-const TOKEN_RATE = 0.25; // Token rate for converting green points to dollars
+const TOKEN_RATE = 1.0042; // Token rate for paying green tax 
 const GreenBankAccount = () => {
   const navigation = useNavigation();
   const [balance, setBalance] = useState(1000); // Initial bank balance
   const [tokenBalance, setTokenBalance] = useState(500); // Token balance (green points)
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState({ deposit: false, withdraw: false, transfer: false });
+  const [loading, setLoading] = useState({ deposit: false, withdraw: false, transfer: false, screen: true }); // Add screen loading state
   const [amount, setAmount] = useState('');
   const [accountNumber, setAccountNumber] = useState(''); // For Transfer
   const [showTransferInputs, setShowTransferInputs] = useState(false); // Toggle transfer inputs
@@ -24,6 +25,16 @@ const GreenBankAccount = () => {
     setShowTransferInputs(!showTransferInputs);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      // Simulate a network request
+      setLoading((prev) => ({ ...prev, screen: true }));
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay
+      setLoading((prev) => ({ ...prev, screen: false }));
+    };
+
+    fetchData();
+  }, []);
   // 2. Calculate total points (Balance + Green Points)
   const calculateTotalPoints = () => {
     return balance + tokenBalance * TOKEN_RATE;
@@ -160,7 +171,11 @@ const GreenBankAccount = () => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-        {/* Animated Screen Mount */}
+        {loading.screen ? (
+          <View style={styles.loadingContainer}>
+            <Lottie source={require('../../assets/lottie/bouncing_check.json')} autoPlay loop style={styles.lottie} />
+          </View>
+        ) : (
         <Animated.View style={[styles.animatedContainer, screenStyle]}>
           {/* Header with Back Navigation */}
           <View style={styles.header}>
@@ -263,6 +278,7 @@ const GreenBankAccount = () => {
           {/* Footer */}
           <Text style={styles.footnote}>🌍 GreenBank - The Future of Eco-friendly Banking</Text>
         </Animated.View>
+         )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -276,6 +292,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
+  lottie: {
+    width: '100%', // Reduced width
+    height: 200, // Reduced height
+  },
+  loadingContainer: {
+    flex: 1,
+    top: 40
+  },
+ 
   animatedContainer: {
     flex: 1,
     padding: 5, // Reduced padding

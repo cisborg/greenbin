@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 14,
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 10,
     justifyContent: 'center',
     borderColor: 'lightgray',
     borderWidth: 1,
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -542,27 +542,27 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 4,
+    elevation: 1,
   },
   modalTitle: {
     marginBottom: 15,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'green'
   },
   activityText: {
-    marginVertical: 5,
+    marginVertical: 3,
     fontSize: 16,
   },
   submitButton: {
     backgroundColor: 'green',
-    borderRadius: 10,
-    margin: 10
+    borderRadius: 16,
+    margin: 12
   },
   submitButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     padding: 10,
   },

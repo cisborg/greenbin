@@ -1,24 +1,24 @@
-import React, { useEffect, useRef } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, Platform, Dimensions, Animated, SafeAreaView, StatusBar } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, Text, View, Image, ScrollView,Dimensions, Animated, SafeAreaView, Platform,StatusBar } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import JoinUsScreen from "../AboutApp/JoinUs";  // Assuming you have this file for the "Join Us" screen
-import LeaderboardScreen from "../Squads/SquadsAward";  // Assuming you have this file for the Squads Award screen (if needed)
+import LottieView from 'lottie-react-native';
+import JoinUsScreen from "../AboutApp/JoinUs";
+import LeaderboardScreen from "../Squads/SquadsAward";
 import { FontFamily, Color } from "../../GlobalStyles";
 
 const Tab = createMaterialTopTabNavigator();
 const { width, height } = Dimensions.get('window');
 
-// Main component rendering the top tab navigation
 const LeaderBoard = () => {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: { fontSize: 12, fontFamily: FontFamily.poppinsMedium, fontWeight: '700' },
-        tabBarIndicatorStyle: { backgroundColor: 'green' }, // Custom tab indicator color
-        tabBarStyle: { backgroundColor: '#f5f5f5', textTransform: 'none' }, // Custom tab bar background
-        tabBarActiveTintColor: 'green',  // Active tab color
-        tabBarInactiveTintColor: 'gray', // Inactive tab color
+        tabBarIndicatorStyle: { backgroundColor: 'green' },
+        tabBarStyle: { backgroundColor: '#f5f5f5', textTransform: 'none' },
+        tabBarActiveTintColor: 'green',
+        tabBarInactiveTintColor: 'gray',
       }}
     >
       <Tab.Screen name="Leaderboard" component={LeaderboardContent} />
@@ -28,18 +28,34 @@ const LeaderBoard = () => {
   );
 };
 
-// Top-level content with fade-in animation
 const LeaderboardContent = () => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity is 0
+  const [loading, setLoading] = useState(true);  // Add loading state
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Fade in effect on screen mount
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500, // Duration of the animation
-      useNativeDriver: true, // Better performance with native driver
+      duration: 500,
+      useNativeDriver: true,
     }).start();
+
+    // Simulate a delay for loading (e.g., fetching data)
+    setTimeout(() => setLoading(false), 2000);  // Set loading to false after 2 seconds
   }, [fadeAnim]);
+
+  // Show Lottie loading animation if loading is true
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/burst.json')}  // Update path to your Lottie animation
+          autoPlay
+          loop
+          style={styles.loadingAnimation}
+        />
+      </View>
+    );
+  }
 
   return (
     <Animated.ScrollView style={[styles.leaderboardContent, { opacity: fadeAnim }]}>
@@ -64,7 +80,7 @@ const LeaderboardContent = () => {
           crown
           squad="Nature Kenya"
           award="Scholarship Award"
-          isCenter={true}  // Center this top user
+          isCenter={true}
         />
         <UserTop
           key={`top-3`}
@@ -92,7 +108,7 @@ const LeaderboardContent = () => {
             position={user.position}
             name={user.name}
             score={user.score}
-            image={user.image}  // Unique profile image for each user
+            image={user.image}
             squad={user.squad}
             award={user.award}
           />
@@ -102,7 +118,7 @@ const LeaderboardContent = () => {
   );
 };
 
-// Component to display the top users
+// Top Users Component
 const UserTop = ({ position, name, score, image, crown, squad, award, isCenter }) => (
   <View style={[styles.userTop, isCenter && styles.userTopCenter, position === "1" && styles.userTopFirst]}>
     <Image source={image} style={styles.userTopImage} />
@@ -114,7 +130,7 @@ const UserTop = ({ position, name, score, image, crown, squad, award, isCenter }
   </View>
 );
 
-// Component to display the other users
+// Other Users Component
 const UserRow = ({ position, name, score, image, squad, award }) => (
   <View style={styles.userRow}>
     <Text style={styles.userPosition}>{position}</Text>
@@ -140,6 +156,16 @@ const styles = StyleSheet.create({
   leaderboardContent: {
     padding: 14,
     backgroundColor: '#fff'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+  },
+  loadingAnimation: {
+    width: 150,
+    height: 150,
   },
   topUsersContainer: {
     flexDirection: "row",

@@ -6,6 +6,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from "../../GlobalStyles";
 import { useRoute } from '@react-navigation/native';
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const CardScroll = () => {
   const cards = [
@@ -72,6 +73,29 @@ const CardScroll = () => {
 const HomeScreen = ({ navigation }) => {
   const route = useRoute();
   const { name, bal } = route.params;
+  const [loading, setLoading] = useState(true); // Loading state
+
+  useEffect(() => {
+    // Simulate a loading delay, replace with actual data fetching if needed
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Lottie 
+          source={require('../../assets/lottie/modernised.json')} // Adjust path to your Lottie file
+          autoPlay 
+          loop 
+          style={styles.lottie} // Optional: add styles if needed
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -106,7 +130,6 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </View>
 
-
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuyBundles')}>
           <Text style={styles.buttonText}>Bundles Spots</Text>
@@ -138,13 +161,13 @@ const HomeScreen = ({ navigation }) => {
             <FontAwesome name="wifi" size={24} color='green' />
             <Text style={styles.navButtonText}>StarLink</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyAirtime')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('greenBin')}>
             <AntDesign name="creditcard" size={24} color='green' />
-            <Text style={styles.navButtonText}>Buy Airtime</Text>
+            <Text style={styles.navButtonText}>GreenBin</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Crypto')}>
             <FontAwesome name="bitcoin" size={24} color='green' />
-            <Text style={styles.navButtonText}>Trading</Text>
+            <Text style={styles.navButtonText}>Insurance</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods')}>
             <FontAwesome name="shopping-cart" size={24} color='green' />
@@ -178,6 +201,16 @@ const styles = StyleSheet.create({
     padding: 8,
     marginTop: '1%',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Optional: set background color
+  },
+  lottie: {
+    width: 100, // Adjust size as needed
+    height: 100,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -195,10 +228,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    elevation: 1,
+    elevation: 5,
     shadowColor: '#000',
   },
   statBox: {

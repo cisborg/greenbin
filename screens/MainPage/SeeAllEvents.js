@@ -130,9 +130,10 @@ const styles = StyleSheet.create({
   searchInput: {
     height: 40,
     borderRadius: 12,
+    backgroundColor: '#fff',
     paddingHorizontal: 10,
     marginBottom: 20,
-    elevation: 1,
+    elevation: 3,
     marginTop: 12,
    shadowColor: "#000",
     shadowOffset: {
@@ -148,8 +149,9 @@ const styles = StyleSheet.create({
     width: 40,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
     right: 20,
+    marginLeft: 50,
+    marginTop: -10
   },
   groupParent: {
     marginTop: 10,

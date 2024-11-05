@@ -69,16 +69,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 13,
     backgroundColor: '#4CAF50',
     borderBottomRadius: 3,
-    borderRadius: 12,
-    margin: 10
   },
   backButton: {
     marginRight: 16,
@@ -104,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tipTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
   tipDescription: {

@@ -225,17 +225,18 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 5,
   },
   post: {
     borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
     shadowOpacity: 0.1,
+    borderColor: 'green',
+    borderWidth: 1,
     shadowRadius: 4,
-    elevation: 3,
+    marginBottom: 10,
     shadowOffset: { width: 1, height: 2 },
-    bottom: -40,
     alignSelf: 'center',
     shadowColor: '#000',
     width: width * 0.9, // 90% of screen width
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
   },
   squadAvatar: {
     width: '100%',
-    height: height * 0.25, // 25% of screen height
+    height: height * 0.17, // 25% of screen height
     borderRadius: 26,
     borderWidth: 1,
     borderColor: 'lightgray',
@@ -368,9 +369,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    marginLeft: 30,
-    marginRight: 30,
     justifyContent: 'center',
+    marginLeft: '10%',
+    marginRight: '10%',
+    marginVertical: 10,
+    
   },
   totalMembers: {
     fontSize: 15,
@@ -384,9 +387,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     borderRadius: 12,
-    padding: 8,
-    margin: 20,
-    width: width < 400 ? '37%': '40%'
+    paddingHorizontal: 15,
+    marginLeft: 20,
+    width: width < 400 ? '37%': '49%'
 
   },
   memberAvatar: {
@@ -412,7 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
     left: '15%',
-    width: width < 400 ? '40%': '45%'
+    width: width < 400 ? '40%': '44%'
   
   },
   invitationIcon: {
@@ -426,16 +429,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    left: '2%',
     borderRadius: 14,
-    padding: 15,
+    padding: 10,
     borderColor: 'lightgray',
     borderWidth: 1,
-    width: '98%',
+    width: '99%',
   },
   postRestrictionsText: {
     marginLeft: 10,
     color: '#555',
+    fontSize: 13
   },
   modalContainer: {
     flex: 1,

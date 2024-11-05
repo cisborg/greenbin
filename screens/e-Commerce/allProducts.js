@@ -41,7 +41,7 @@ const ItemGridScreen = ({ navigation }) => {
         title: 'Mostly Purchased',
         data: [
           { title: 'Travel Bags', image: require('../../assets/Appliance.png'), rating: 5 },
-          { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 4 },
+          { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 2 },
           { title: 'Gym Bags', image: require('../../assets/earphones.png'), rating: 3 },
         ],
       },

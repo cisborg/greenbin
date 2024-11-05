@@ -246,13 +246,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   totalPrice: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#4CAF50',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 8,
     color: '#555',
     fontWeight: '500',
@@ -266,11 +266,11 @@ const styles = StyleSheet.create({
   button1: {
     flex: 1,
     backgroundColor: '#ffffff',
-    borderRadius: 14,
+    borderRadius: 15,
     padding: 10,
     marginVertical: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
@@ -284,32 +284,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f0f0',
     padding: 15,
-    borderRadius: 15,
+    borderRadius: 20,
     marginHorizontal: 5,
     alignItems: 'center',
     borderColor: '#ddd',
     width: '90%',
-    height: 70
+    elevation: 4,
+    height: 70,
+    justifyContent: 'center',
   },
   selectedButton: {
     backgroundColor: '#4CAF50',
-    borderRadius: 15,
+    borderRadius: 20,
   },
   paymentButtonText: {
     color: '#333',
     fontWeight: 'bold',
+    fontSize: 13
   },
   inputField: {
     borderRadius: 12,
     paddingHorizontal: 12,
     backgroundColor: '#f5f5f5',
     paddingVertical: 2,
-    fontSize: 16,
-    marginBottom: 15,
-    shadowOffset: { width: 1, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 1,
+    fontSize: 13,
+    marginBottom: 5,
     height: 40,
     marginTop: 7,
   },
@@ -323,10 +322,11 @@ const styles = StyleSheet.create({
   },
   payButton: {
     backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 14,
+    padding: 10,
+    borderRadius: 20,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 15,
+    elevation: 4
   },
   payButtonText: {
     color: '#fff',
@@ -335,8 +335,8 @@ const styles = StyleSheet.create({
   },
   shareContainer: {
     backgroundColor: '#f9f9f9',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 14,
     marginTop: 20,
     alignItems: 'center',
     shadowColor: '#000',
@@ -345,9 +345,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   shareTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   shareDescription: {
     textAlign: 'center',
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   shareButton: {
     backgroundColor: '#4CAF50',
     padding: 12,
-    borderRadius: 14,
+    borderRadius: 18,
     alignItems: 'center',
     width: '80%',
   },
@@ -367,8 +367,9 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 15,
     color: '#888',
+    fontSize: 13,
   },
 });
 

@@ -35,12 +35,22 @@ const products = [
 
 // Countdown timer function
 const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState(3600); // Example: 1 hour countdown
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+      const difference = Math.floor((midnight - now) / 1000); // Difference in seconds
+      setTimeLeft(difference > 0 ? difference : 0);
+    };
+
+    calculateTimeLeft(); // Initial calculation
+
     const interval = setInterval(() => {
-      setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
+      calculateTimeLeft(); // Update every second
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -53,8 +63,6 @@ const CountdownTimer = () => {
 
   return <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>;
 };
-
-// Product item component
 const ProductItem = ({ item }) => (
   <View style={styles.productItem}>
     <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
@@ -89,7 +97,7 @@ const FlashSale = () => {
 const styles = StyleSheet.create({
   container: {
     height: '16%',
-    marginTop: '-2%',
+    marginTop: '5%',
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 4,
     borderRadius: 20,

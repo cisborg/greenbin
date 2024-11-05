@@ -156,7 +156,7 @@ const VendorRegister = ({ navigation }) => {
                   style={styles.okButton}
                   onPress={() => {
                     setModalVisible(false);
-                    navigation.navigate('Settings'); // Navigate back to Settings
+                    navigation.goBack(); // Navigate back to Settings
                   }}
                 >
                   <Text style={styles.okButtonText}>Okay</Text>

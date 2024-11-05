@@ -19,7 +19,7 @@ const GoodHome = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar />
+      <Header />
       <HomeTabs />
     </SafeAreaView>
   );
@@ -135,10 +135,11 @@ const ForYouScreen = () => {
     },
   ]);
 
+
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
-  const [loadingMore, setLoadingMore] = useState(false); // Track loading more posts
-  const [allLoaded, setAllLoaded] = useState(false); // 
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [allLoaded, setAllLoaded] = useState(false);
 
   const fetchMorePosts = useCallback(() => {
     if (loadingMore || allLoaded) return;
@@ -148,16 +149,16 @@ const ForYouScreen = () => {
     // Simulate API request to fetch more posts
     setTimeout(() => {
       const newPosts = [
-        // New set of posts, e.g., from API
+        // Additional post data here
       ];
-      
+
       if (newPosts.length === 0) {
-        setAllLoaded(true); // Stop loading if no more posts
+        setAllLoaded(true);
       } else {
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       }
       setLoadingMore(false);
-    }, 1500); // Simulate API latency
+    }, 1500);
   }, [loadingMore, allLoaded]);
 
   const handleLike = useCallback((postId) => {
@@ -176,7 +177,6 @@ const ForYouScreen = () => {
         post.id === currentPostId ? { ...post, comments: post.comments + 1 } : post
       )
     );
-    // You can also store the comment in a comments array if needed
   };
 
   const openCommentSheet = (postId) => {
@@ -189,21 +189,21 @@ const ForYouScreen = () => {
       <FlashList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
-        estimatedItemSize={200} // Add a reasonable estimated item size to optimize performance
+        estimatedItemSize={200}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => { /* Navigate to post details */ }}>
             <Post 
               post={item}
               onLike={() => handleLike(item.id)} 
-              onCommentPress={() => openCommentSheet(item.id)} // Open the bottom sheet for comments
+              onCommentPress={() => openCommentSheet(item.id)}
             />
           </TouchableOpacity>
         )}
-        onEndReached={fetchMorePosts} // Trigger fetchMorePosts when end is reached
-        onEndReachedThreshold={0.5} // Load more when user scrolls to within 50% of the end
-        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="green" /> : null} // Show loading spinner
-
+        onEndReached={fetchMorePosts}
+        onEndReachedThreshold={0.7}
+        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="green" /> : null}
       />
+
       <CommentBottomSheet
         isVisible={isBottomSheetVisible}
         onClose={() => setBottomSheetVisible(false)}
@@ -225,9 +225,14 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
   };
 
   const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-    setConnections((prevConnections) => prevConnections + (isBookmarked ? 0 : 1));  };
-
+    // Toggle the bookmarked state
+    setIsBookmarked((prev) => {
+      // If already bookmarked, decrement connections; otherwise, increment
+      const newBookmarkStatus = !prev;
+      setConnections((current) => current + (newBookmarkStatus ? 1 : -1));
+      return newBookmarkStatus;
+    });
+  };
   const handleOptionsPress = () => {
     setOptionsVisible(!optionsVisible);
   };
@@ -274,10 +279,10 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
       <Text style={styles.postTitle}>{title}</Text>
       {imageUri && (
         <Image
-          source={{ uri: imageUri }}
-          style={styles.postImage}
-          onError={() => setImageUri(require('../../assets/profilePlaceholder.png'))}
-        />
+        source={imageUri ? { uri: imageUri } : require('../../assets/profilePlaceholder.png')}
+        style={styles.postImage}
+      />
+     
       )}
       <View style={styles.postStats}>
         <TouchableOpacity style={styles.statButton} onPress={handleLike}>
@@ -287,18 +292,21 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statButton} onPress={onCommentPress}> 
-          <Ionicons name="chatbubble-outline" size={17} color="black" />
+          <Ionicons name="chatbubble-outline" size={17} color="green" />
           <Text style={styles.statText}>
             {comments >= 1000 ? `${(comments / 1000).toFixed(1)}k` : comments} comments
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statButton} onPress={handleBookmark}>
-          <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={17} color={isBookmarked ? "green" : "black"} />
+          <Ionicons
+            name={isBookmarked ? "bookmark" : "bookmark-outline"}
+            size={17}
+            color={isBookmarked ? "green" : "black"}
+          />
           <Text style={styles.statText}>
-            {connections + (isBookmarked ? 1 : 0) >= 1000 
-              ? Math.floor((connections + (isBookmarked ? 1 : 0)) / 1000) + 'k' 
-              : connections + (isBookmarked ? 1 : 0)}
-            
+            {connections >= 1000 
+              ? Math.floor(connections / 1000) + 'k' 
+              : connections}
           </Text>
         </TouchableOpacity>
       </View>
@@ -306,13 +314,13 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
   );
 });
 
-const SearchBar = () => {
+const Header = () => {
   const navigation = useNavigation();
   return (
-    <View style={styles.searchBarContainer}>
+    <View style={styles.headerContainer}>
       <View style={{ flexDirection: 'column'}}> 
         <Text style={styles.greenTxt}>Green Squads Daily</Text>
-        <Text style={styles.blackText}>"Your Daily Hubspot Platfor"</Text>
+        <Text style={styles.blackText}>"Your Daily Hubspot Platform"</Text>
       </View>
       <TouchableOpacity style={{ left: 20 }}>
         <Ionicons name="color-filter-outline" size={30} color="black" />
@@ -337,9 +345,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   postCard: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 10,
+    backgroundColor: '#ffff',
+    borderRadius: 19,
+    padding: 9,
     marginVertical: 4,
     elevation: 2,
   },
@@ -432,7 +440,7 @@ const styles = StyleSheet.create({
     fontSize: 12
 
   },
-  searchBarContainer: {
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

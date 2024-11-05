@@ -110,7 +110,7 @@ const ProfilePage = () => {
               <MaterialIcons name="settings" size={24} color="white" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.checkInContainer}>
+            <TouchableOpacity style={styles.checkInContainer} onPress={()=> navigation.navigate('GreenCoins')}>
               <Text style={styles.checkInText}>Check-in &gt;</Text>
             </TouchableOpacity>
 
@@ -118,10 +118,10 @@ const ProfilePage = () => {
             <View style={styles.iconRow}>
               <TouchableOpacity style={styles.iconItem}>
                 <Ionicons name="heart-outline" size={22} color="white" />
-                <Text style={styles.iconText}>Wishlist</Text>
+                <Text style={styles.iconText}>Milestones</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconItem}>
+              <TouchableOpacity style={styles.iconItem} onPress={()=> navigation.navigate('ShopLocator')}>
                 <Ionicons name="storefront-outline" size={22} color="white" />
                 <Text style={styles.iconText}>Green Shops</Text>
               </TouchableOpacity>
@@ -253,8 +253,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: "flex-end",
     backgroundColor: 'orange',
-    borderRadius: 14,
-    padding: 5
+    padding: 5,
+    left: 11,
+    borderBottomLeftRadius: 18,
+    borderTopLeftRadius: 18,
   },
   userdescript: {
     fontSize: 12,

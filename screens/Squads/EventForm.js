@@ -55,7 +55,7 @@ const EventForm = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.label}>Event Name:</Text>
@@ -126,7 +126,7 @@ const EventForm = () => {
           </Modal>
         </ScrollView>
       </Animated.View>
-    </SafeAreaView>
+    </View>
   );
 };
 
