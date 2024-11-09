@@ -6,17 +6,17 @@ import {
   REGISTER_USER,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
-//   UPDATE_USER,
+  //   UPDATE_USER,
   //   UPDATE_USER_SUCCESS,
   //   UPDATE_USER_FAILURE,
-//   SEND_RESET_PASSWORD,
-//   GET_ALL_USERS,
-//   CONNECTION_REQUEST,
-//   LOGIN_USER,
-//   GET_REFERRAL_CODE,
-//   DELETE_USER,
-//   SEND_POINTS,
-//   UPDATE_PASSWORD,
+  //   SEND_RESET_PASSWORD,
+  //   GET_ALL_USERS,
+  //   CONNECTION_REQUEST,
+  //   LOGIN_USER,
+  //   GET_REFERRAL_CODE,
+  //   DELETE_USER,
+  //   SEND_POINTS,
+  //   UPDATE_PASSWORD,
   // CREATE_USER_SUCCESS,
   // CREATE_USER_FAILURE,
   //   UPDATE_USER_SUCCESS,
@@ -42,16 +42,15 @@ export const registerUser = (userData) => async (dispatch) => {
 
     const response = await api.post("/user/signup", userData);
 
-    console.log('response part',response.data)
+    console.log("response part", response.data);
 
-    if (response.data.status === 'success'){
-        const token = response.data.token;
-        await AsyncStorage.setItem("token", token);
-        Alert.alert('Token stored successfully');
+    if (response.data.status === "success") {
+      const token = response.data.token;
+      await AsyncStorage.setItem("token", token);
+      Alert.alert("Token stored successfully");
 
-    dispatch({ type: REGISTER_SUCCESS, payload: response.data });
-    }
-    else{
+      dispatch({ type: REGISTER_SUCCESS, payload: response.data });
+    } else {
       dispatch({ type: REGISTER_FAILURE, payload: response.data.message });
     }
   } catch (error) {
@@ -64,28 +63,35 @@ export const registerUser = (userData) => async (dispatch) => {
 
 // Login User action
 export const loginUser = (credentials) => async (dispatch) => {
-    dispatch({ type: LOGIN_USER });
-    try {
-      const response = await api.post("/user/login", credentials);
+  dispatch({ type: LOGIN_USER });
+  try {
+    const response = await api.post("/user/login", credentials);
 
-      const { token, ...user } = response.data.data; 
-      // console.log('response part',response.data)
-      if (response.data.status === 'success'){
-        await AsyncStorage.setItem("token", token);
-        dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
-      }
-      // dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
-
-      return {"token": token};
-    } catch (error) {
-      dispatch({
-        type: LOGIN_FAILURE,
-        payload: error.response?.data?.message || error.message,
-      });
-
-      throw new Error(error.response?.data?.message || "Login failed");
+    const { token, name, email, ...user } = response.data.data;
+    if (response.data.status === "success") {
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: user.userId,
+          name: name,
+          email: email,
+        })
+      );
+      dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
     }
-  };
+    // dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
+
+    return { token: token };
+  } catch (error) {
+    dispatch({
+      type: LOGIN_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+
+    throw new Error(error.response?.data?.message || "Login failed");
+  }
+};
 
 // Update User action
 // export const updateUser = (userId, userData) => async (dispatch) => {
@@ -130,8 +136,6 @@ export const loginUser = (credentials) => async (dispatch) => {
 //     dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
 //   }
 // };
-
-
 
 // // Get Referral Code action
 // export const getReferralCode = (userId) => async (dispatch) => {
