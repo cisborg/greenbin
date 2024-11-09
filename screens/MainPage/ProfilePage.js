@@ -1,17 +1,42 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+} from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
   const username = "Josh";
   const cash = 1400;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchStoredUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error("Error fetching stored user:", error);
+      }
+    };
+
+    fetchStoredUser();
+    return () => {};
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -24,13 +49,13 @@ const ProfilePage = () => {
   const targetData = {
     "Tree Planting": 1000,
     "Waste Recycle": 500,
-    "Green Bins": 200
+    "Green Bins": 200,
   };
 
   const [completedData, setCompletedData] = useState({
     "Tree Planting": 800,
     "Waste Recycle": 350,
-    "Green Bins": 50
+    "Green Bins": 50,
   });
 
   const currentDate = new Date();
@@ -48,18 +73,38 @@ const ProfilePage = () => {
       setCompletedData({
         "Tree Planting": 0,
         "Waste Recycle": 0,
-        "Green Bins": 0
+        "Green Bins": 0,
       });
       setLastUpdatedMonth(currentMonth);
     }
   }, [currentMonth, lastUpdatedMonth]);
 
   const cardData = [
-    { name: "Become Vendor", icon: <FontAwesome name="user" size={24} color="white" />, screen: "VendorRegister" },
-    { name: "Refer & Earn", icon: <FontAwesome name="gift" size={24} color="white" />, screen: "ReferAndEarn" },
-    { name: "Help & Support", icon: <FontAwesome name="question-circle" size={24} color="orange" />, screen: "Support" },
-    { name: "Profile Settings", icon: <MaterialIcons name="settings" size={24} color="white" />, screen: "ProfileSettings" },
-    { name: "Logout", icon: <MaterialIcons name="logout" size={24} color="white" />, screen: "SignInPage" },
+    {
+      name: "Become Vendor",
+      icon: <FontAwesome name="user" size={24} color="white" />,
+      screen: "VendorRegister",
+    },
+    {
+      name: "Refer & Earn",
+      icon: <FontAwesome name="gift" size={24} color="white" />,
+      screen: "ReferAndEarn",
+    },
+    {
+      name: "Help & Support",
+      icon: <FontAwesome name="question-circle" size={24} color="orange" />,
+      screen: "Support",
+    },
+    {
+      name: "Profile Settings",
+      icon: <MaterialIcons name="settings" size={24} color="white" />,
+      screen: "ProfileSettings",
+    },
+    {
+      name: "Logout",
+      icon: <MaterialIcons name="logout" size={24} color="white" />,
+      screen: "SignInPage",
+    },
   ];
 
   const CARDS_PER_VIEW = 3;
@@ -77,7 +122,7 @@ const ProfilePage = () => {
             onPress={() => navigation.navigate(card.screen)}
           >
             <LinearGradient
-              colors={['#228B22', '#90EE90']}
+              colors={["#228B22", "#90EE90"]}
               style={styles.cardGradient}
             >
               {card.icon}
@@ -99,18 +144,26 @@ const ProfilePage = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          
-           <View style={styles.headerContainer}>
+          <View style={styles.headerContainer}>
             <View style={styles.leftSection}>
-              <Image style={styles.profileImg} source={require("../../assets/anotherMan.avif")} />
-              <Text style={styles.username}>Brad John</Text>
+              <Image
+                style={styles.profileImg}
+                source={require("../../assets/anotherMan.avif")}
+              />
+              <Text style={styles.username}>{user.name}</Text>
             </View>
 
-            <TouchableOpacity style={styles.settingsIcon} onPress={()=> navigation.navigate('ProfileSettings')}> 
+            <TouchableOpacity
+              style={styles.settingsIcon}
+              onPress={() => navigation.navigate("ProfileSettings")}
+            >
               <MaterialIcons name="settings" size={24} color="white" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.checkInContainer} onPress={()=> navigation.navigate('GreenCoins')}>
+            <TouchableOpacity
+              style={styles.checkInContainer}
+              onPress={() => navigation.navigate("GreenCoins")}
+            >
               <Text style={styles.checkInText}>Check-in &gt;</Text>
             </TouchableOpacity>
 
@@ -121,7 +174,10 @@ const ProfilePage = () => {
                 <Text style={styles.iconText}>Milestones</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconItem} onPress={()=> navigation.navigate('ShopLocator')}>
+              <TouchableOpacity
+                style={styles.iconItem}
+                onPress={() => navigation.navigate("ShopLocator")}
+              >
                 <Ionicons name="storefront-outline" size={22} color="white" />
                 <Text style={styles.iconText}>Green Shops</Text>
               </TouchableOpacity>
@@ -134,23 +190,52 @@ const ProfilePage = () => {
           </View>
 
           <View style={styles.cardContainer}>
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs", { name: username, bal: cash })}>
-              <Image style={styles.cardIcon} source={require("../../assets/checked.png")} />
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate("ProfileGCPs", {
+                  name: username,
+                  bal: cash,
+                })
+              }
+            >
+              <Image
+                style={styles.cardIcon}
+                source={require("../../assets/checked.png")}
+              />
               <Text style={styles.cardValue}>GCP {cash}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Happy")}>
-              <Image style={styles.cardIcon} source={require("../../assets/stats_2500115.png")} />
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate("Happy")}
+            >
+              <Image
+                style={styles.cardIcon}
+                source={require("../../assets/stats_2500115.png")}
+              />
               <Text style={styles.cardValue}>#333</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator")}>
-              <Image style={styles.cardIcon} source={require("../../assets/menu.jpg")} />
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate("CarbonCalculator")}
+            >
+              <Image
+                style={styles.cardIcon}
+                source={require("../../assets/menu.jpg")}
+              />
               <Text style={styles.cardTitle}>GCPs Calculator 🔐</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("GreenConnect")}>
-              <Image style={styles.cardIcon} source={require("../../assets/electric.png")} />
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate("GreenConnect")}
+            >
+              <Image
+                style={styles.cardIcon}
+                source={require("../../assets/electric.png")}
+              />
               <Text style={styles.cardTitle}>Connect Green</Text>
             </TouchableOpacity>
           </View>
@@ -169,15 +254,34 @@ const ProfilePage = () => {
                         style={[
                           styles.progress,
                           {
-                            width: `${calculateProgress(completedData[topic], targetData[topic])}%`,
-                            backgroundColor: calculateProgress(completedData[topic], targetData[topic]) >= 60 ? 'green' : '#ffbf1a',
+                            width: `${calculateProgress(
+                              completedData[topic],
+                              targetData[topic]
+                            )}%`,
+                            backgroundColor:
+                              calculateProgress(
+                                completedData[topic],
+                                targetData[topic]
+                              ) >= 60
+                                ? "green"
+                                : "#ffbf1a",
                           },
                         ]}
-                        colors={calculateProgress(completedData[topic], targetData[topic]) >= 60 ? ["#0f0", "#0a0"] : ["#ffbf1a", "#ff4080"]}
+                        colors={
+                          calculateProgress(
+                            completedData[topic],
+                            targetData[topic]
+                          ) >= 60
+                            ? ["#0f0", "#0a0"]
+                            : ["#ffbf1a", "#ff4080"]
+                        }
                       />
                     </View>
                     <Text style={styles.achievementText}>
-                      {`${calculateProgress(completedData[topic], targetData[topic])}% Achieved!`}
+                      {`${calculateProgress(
+                        completedData[topic],
+                        targetData[topic]
+                      )}% Achieved!`}
                     </Text>
                   </View>
                 </View>
@@ -198,12 +302,13 @@ const ProfilePage = () => {
                   onPress={() => setActiveCardIndex(index)}
                   style={[
                     styles.dot,
-                    activeCardIndex === index ? styles.activeDot : styles.inactiveDot
+                    activeCardIndex === index
+                      ? styles.activeDot
+                      : styles.inactiveDot,
                   ]}
                 />
               ))}
           </View>
-
         </ScrollView>
       </Animated.View>
     </SafeAreaView>
@@ -214,20 +319,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 2,
-    backgroundColor: '#fff',
-    paddingTop: '4%',
+    backgroundColor: "#fff",
+    paddingTop: "4%",
   },
   scrollContainer: {
     paddingBottom: 20,
-    margin: '2%'
+    margin: "2%",
   },
   headerContainer: {
     backgroundColor: "green", // Adjust background color similar to your image
     padding: 10,
     marginBottom: 15,
     borderRadius: 22,
-    height: '23%'
-  
+    height: "23%",
   },
   leftSection: {
     flexDirection: "row",
@@ -252,7 +356,7 @@ const styles = StyleSheet.create({
   checkInContainer: {
     marginTop: 10,
     alignSelf: "flex-end",
-    backgroundColor: 'orange',
+    backgroundColor: "orange",
     padding: 5,
     left: 11,
     borderBottomLeftRadius: 18,
@@ -272,7 +376,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   iconItem: {
     alignItems: "center",
@@ -283,54 +387,54 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   cardContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 8
+    flexDirection: "row",
+    justifyContent: "space-around",
+    flexWrap: "wrap",
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 8,
   },
   card: {
-    width: '40%',
+    width: "40%",
     padding: 5,
     marginVertical: 6,
     marginHorizontal: 1,
-    backgroundColor: '#ffff',
+    backgroundColor: "#ffff",
     borderRadius: 18,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 10,
     elevation: 1,
   },
   cardIcon: {
-    width: '24%',
+    width: "24%",
     height: 32,
     marginBottom: 10,
-    borderRadius: 14
+    borderRadius: 14,
   },
   cardTitle: {
     fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
+    color: "#888",
+    textAlign: "center",
   },
   sectionTitle: {
     fontSize: 16, // Adjusted for responsiveness
-    fontWeight: 'bold',
-    color: 'green',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "green",
+    textAlign: "center",
     marginVertical: 7,
   },
   progressBarContainer: {
-    marginBottom: -20
+    marginBottom: -20,
   },
   topicContainer: {
     marginBottom: 20,
   },
   topicContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   topicIcon: {
     width: 35,
@@ -342,49 +446,49 @@ const styles = StyleSheet.create({
   },
   topicName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#555',
+    fontWeight: "600",
+    color: "#555",
     marginBottom: 5,
   },
   progressBar: {
     height: 10,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: "#e0e0e0",
     borderRadius: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   progress: {
-    height: '100%',
+    height: "100%",
     borderRadius: 5,
   },
   achievementText: {
     marginTop: 5,
     fontSize: 11,
-    color: '#888',
+    color: "#888",
   },
   gradientCardsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   gradientCard: {
-    width: '30%',
-    height: '70%',
+    width: "30%",
+    height: "70%",
     marginHorizontal: 5,
-    marginBottom: -5
+    marginBottom: -5,
   },
   cardGradient: {
     borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 15,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cardText: {
-    color: 'white',
+    color: "white",
     fontSize: 10,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   dotsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginVertical: 10,
   },
   dot: {
@@ -394,10 +498,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
   },
   inactiveDot: {
-    backgroundColor: '#bbb',
+    backgroundColor: "#bbb",
   },
 });
 

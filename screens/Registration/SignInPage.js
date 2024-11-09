@@ -19,14 +19,20 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color } from "../../GlobalStyles";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Toast from 'react-native-toast-message'; // Import Toast
+import Icon from "react-native-vector-icons/FontAwesome";
+import Toast from "react-native-toast-message"; // Import Toast
 
 const { width, height } = Dimensions.get("window");
 
-const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+const CustomInput = ({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+}) => (
   <View style={styles.inputContainer}>
-    <Icon name={icon} size={20} color='green' style={styles.icon} />
+    <Icon name={icon} size={20} color="green" style={styles.icon} />
     <TextInput
       value={value}
       onChangeText={onChangeText}
@@ -60,9 +66,9 @@ const SignInPage = () => {
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
       Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: 'Please enter both email and password.',
+        type: "error",
+        text1: "Login Failed",
+        text2: "Please enter both email and password.",
       });
       return;
     }
@@ -75,20 +81,20 @@ const SignInPage = () => {
 
       if (response?.token) {
         Toast.show({
-          type: 'success',
-          text1: 'Login Successful',
-          text2: 'Welcome back! Enjoy GreenBin App',
+          type: "success",
+          text1: "Login Successful",
+          text2: "Welcome back! Enjoy GreenBin App",
         });
         navigation.navigate("Main");
       } else {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
     } catch (error) {
       console.log("Login error", error);
       Toast.show({
-        type: 'error',
-        text1: 'Login failed',
-        text2: 'Failed to log in. Please try again.',
+        type: "error",
+        text1: "Login failed",
+        text2: "Failed to log in. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -151,10 +157,12 @@ const SignInPage = () => {
                 )}
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.dontHaveAnContainer}>
               <Text style={{ fontSize: 12 }}>Don't Have an account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("RegisterPage")}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("RegisterPage")}
+              >
                 <Text style={styles.register}>Register</Text>
               </TouchableOpacity>
             </View>
@@ -217,13 +225,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: width * 0.03,
     paddingVertical: height * 0.01,
-    flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
+    flexDirection: "row",
+    backgroundColor: "#f5f5f5",
     marginBottom: height * 0.02,
-    marginHorizontal: '4%',
+    marginHorizontal: "4%",
     borderRadius: 13,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     height: height * 0.051,
     shadowColor: "#000",
   },
@@ -238,12 +246,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  
+
   dontHaveAnContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   togglePasswordText: {
     color: "green",
@@ -280,8 +288,8 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.manropeBold,
   },
   register: {
-    color: 'green',
-    fontWeight: '500',
+    color: "green",
+    fontWeight: "500",
     marginLeft: 7,
   },
   forgotPasswordContainer: {
