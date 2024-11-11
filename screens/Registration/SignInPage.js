@@ -24,9 +24,15 @@ import Toast from '../../helpers/Toast'; // Import your custom Toast component
 
 const { width, height } = Dimensions.get("window");
 
-const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+const CustomInput = ({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+}) => (
   <View style={styles.inputContainer}>
-    <Icon name={icon} size={20} color='green' style={styles.icon} />
+    <Icon name={icon} size={20} color="green" style={styles.icon} />
     <TextInput
       style={styles.textInput} // Added style for TextInput
       value={value}
@@ -63,7 +69,9 @@ const SignInPage = () => {
 
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
+
       showToast('error', 'Login Failed', 'Please enter both email and password.');
+
       return;
     }
 
@@ -74,14 +82,18 @@ const SignInPage = () => {
       const response = await dispatch(loginUser({ email, password }));
 
       if (response?.token) {
+
         showToast('success', 'Login Successful', 'Welcome back! Enjoy GreenBin App');
+
         navigation.navigate("Main");
       } else {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
     } catch (error) {
       console.log("Login error", error);
+
       showToast('error', 'Login failed', 'Failed to log in. Please try again.');
+
     } finally {
       setIsLoading(false);
     }
@@ -154,10 +166,12 @@ const SignInPage = () => {
                 )}
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.dontHaveAnContainer}>
               <Text style={{ fontSize: 12 }}>Don't Have an account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("RegisterPage")}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("RegisterPage")}
+              >
                 <Text style={styles.register}>Register</Text>
               </TouchableOpacity>
             </View>
@@ -235,13 +249,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: width * 0.03,
     paddingVertical: height * 0.01,
-    flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
+    flexDirection: "row",
+    backgroundColor: "#f5f5f5",
     marginBottom: height * 0.02,
-    marginHorizontal: '4%',
+    marginHorizontal: "4%",
     borderRadius: 13,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     height: height * 0.051,
     shadowColor: "#000",
   },
@@ -256,12 +270,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  
+
   dontHaveAnContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   togglePasswordText: {
     color: "green",
@@ -298,8 +312,8 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.manropeBold,
   },
   register: {
-    color: 'green',
-    fontWeight: '500',
+    color: "green",
+    fontWeight: "500",
     marginLeft: 7,
   },
   forgotPasswordContainer: {
