@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, Animated, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Animated, Dimensions } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FastImage from 'react-native-fast-image';
 
 const PaymentConfirmed = () => {
     const navigation = useNavigation();
@@ -34,9 +35,10 @@ const PaymentConfirmed = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-                <Image
+                <FastImage
                     source={require('../../assets/trase.png')} // Replace with your image path
                     style={styles.image}
+                    resizeMode={FastImage.resizeMode.cover}
                 />
                 <Text style={styles.title}>Payment Success, Yayy!</Text>
                 <Text style={styles.message}>

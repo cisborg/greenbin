@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { Text, TouchableOpacity, StyleSheet,Platform, Image, Dimensions, Animated, StatusBar } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet,Platform, Dimensions, Animated, StatusBar } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window'); // Get screen dimensions
 
@@ -27,9 +28,10 @@ const SquadConfirmation = () => {
     return (
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
             {/* Eco-friendly themed image */}
-            <Image 
+            <FastImage
                 source={require('../../assets/greenBin.png')} // Replace with eco-friendly squad image
                 style={styles.image} 
+                resizeMode={FastImage.resizeMode.cover}
             />
             <Text style={styles.title}> Squad Created Successfully!</Text>
             <Text style={styles.message}>

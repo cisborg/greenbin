@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View, Text, Image, TouchableOpacity, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window');
 
@@ -89,13 +90,15 @@ const SquadCreated = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         {/* Cover Profile */}
         <View style={styles.coverContainer}>
-          <Image 
+          <FastImage 
             source={{ uri: 'https://example.com/cover.jpg' }} 
+            resizeMode={FastImage.resizeMode.cover}
             style={styles.coverImage} 
           />
-          <Image 
+          <FastImage
             source={{ uri: squadData.moderator.avatar }} 
             style={styles.squadAvatar} 
+            resizeMode={FastImage.resizeMode.cover}
             accessibilityLabel={`${squadData.moderator.name}'s avatar`}
           />
         </View>
@@ -135,9 +138,10 @@ const SquadCreated = () => {
         <Text style={styles.moderatedByText}>Created By</Text>
         <View style={styles.moderatedByContainer}>
           <View style={styles.moderatorInfo}>
-            <Image 
+            <FastImage 
               source={{ uri: squadData.moderator.avatar }} 
               style={styles.moderatorAvatar} 
+              resizeMode={FastImage.resizeMode.cover}
               accessibilityLabel={`${squadData.moderator.name}'s avatar`}
             />
             <View style={styles.moderatorDetails}>
@@ -156,7 +160,9 @@ const SquadCreated = () => {
         <View style={styles.membersContainer}>
           <View style={styles.membersList}>
             {squadData.members.map((member, index) => (
-              <Image key={index} source={{ uri: member.avatar }} style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
+              <FastImage key={index} source={{ uri: member.avatar }}
+              resizeMode={FastImage.resizeMode.cover}
+               style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
             ))}
             <Text style={styles.totalMembers}>
               {connects >= 1000 ? `${(connects / 1000).toFixed(1)}k` : connects}

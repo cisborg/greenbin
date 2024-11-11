@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
-import CheckBox from '@react-native-community/checkbox';
-import { Button } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image'; // Ensure you have this import at the top
 import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox'; // Import BouncyCheckbox
 
@@ -88,8 +87,11 @@ const StoreHeader = () => {
 
   return (
     <View style={styles.storeHeaderContainer}>
-      <Image source={require('../../assets/tree.avif')} style={styles.storeImage} />
-      <View style={styles.storeInfoContainer}>
+      <FastImage
+        source={require('../../assets/tree.avif')}
+        style={styles.storeImage}
+        resizeMode={FastImage.resizeMode.cover} // Set the desired resize mode
+      />      <View style={styles.storeInfoContainer}>
         <Text style={styles.storeName}>Sysnex Electronics</Text>
         <Text style={styles.storeDetails}>Total 707 products | {followers} followers</Text>
         <View style={styles.ratingContainer}>
@@ -132,8 +134,8 @@ const ProductCard = ({ item, addToFavorites, addToCart }) => {
       )}
     >
       <TouchableOpacity style={styles.card} >
-        <Image source={item.image} style={styles.productImage} />
-        <View style={styles.infoContainer}>
+      <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
+      <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
           {item.originalPrice && (
             <View style={styles.priceContainer}>

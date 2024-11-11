@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, Switch, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { Color } from '../../GlobalStyles';
+import Lottie from 'lottie-react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { createDonation } from '../../redux/actions/donations';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,17 +17,24 @@ const donationCategories = [
 
 const DonatePoints = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { userPoints, totalAmountDonated, currentDonation, currentTier, loading } = useSelector(state => state.donation);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [donationAmount, setDonationAmount] = useState(100); // Minimum donation set to 100
+  const [donationAmount, setDonationAmount] = useState(100);
   const [isRecurring, setIsRecurring] = useState(false);
-  const [loading, setLoading] = useState(false); // Activity Indicator state
+  const [donateLoading, setDonateLoading] = useState(false);
 
-  // Calculate total required points for selected categories
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const getTotalPointsRequired = () => {
     return selectedCategories.reduce((total, category) => total + category.pointsRequired, 0);
   };
 
-  // Enhanced donation handling: ensure donation matches or exceeds total required points
   const handleDonation = () => {
     const totalPointsRequired = getTotalPointsRequired();
 
@@ -39,15 +48,19 @@ const DonatePoints = () => {
       return;
     }
 
-    // Show loading spinner for 2 seconds before navigating to donation confirmation screen
-    setLoading(true);
+    setDonateLoading(true);
+    const donationData = {
+      amount: donationAmount,
+      categories: selectedCategories,
+    };
+
+    dispatch(createDonation(donationData));
     setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('donationConfirmed');  // Navigate to the confirmed screen
-    }, 2000); // 2 second delay for spinner
+      setDonateLoading(false);
+      navigation.navigate('donationConfirmed');
+    }, 2000);
   };
 
-  // Share donation details with spinner
   const shareDonation = () => {
     const totalPointsRequired = getTotalPointsRequired();
     if (donationAmount < totalPointsRequired) {
@@ -55,7 +68,6 @@ const DonatePoints = () => {
       return;
     }
 
-    // Show loading spinner for 2 seconds before sharing
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -63,10 +75,9 @@ const DonatePoints = () => {
       Share.share({
         message: `I just donated ${donationAmount} points for ${categories}! Join me in making a difference!`,
       });
-    }, 2000); // 2 second delay for spinner
+    }, 2000);
   };
 
-  // Handle category selection, limit to 3 categories
   const handleSelectCategory = (category) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter(cat => cat.id !== category.id));
@@ -94,40 +105,46 @@ const DonatePoints = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={22} color="#FFF" />
-        </TouchableOpacity>
-        <Text style={styles.header}>Donate Points</Text>
-      </View>
-
-      <Text style={styles.description}>
-        Choose a category to donate your points and see the impact of your generosity.
-      </Text>
-
-      <FlatList
-        data={donationCategories}
-        renderItem={renderCategoryItem}
-        keyExtractor={item => item.id}
-        style={styles.categoryList}
-      />
-
-      <Text style={styles.sliderLabel}>Donation Amount: {donationAmount} points</Text>
-      <Slider
-        minimumValue={100}  // Minimum 100 points to donate
-        maximumValue={1000000}
-        step={250}
-        value={donationAmount}
-        onValueChange={setDonationAmount}
-        style={styles.slider}
-      />
-
       {loading ? (
-        <ActivityIndicator size="large" color="#2196F3" style={styles.activityIndicator} />
+        <View style={styles.loadingContainer}>
+          <Lottie source={require('../../assets/lottie/rotatingBalls.json')} autoPlay loop style={styles.loadingAnimation} />
+        </View>
       ) : (
         <>
-          <TouchableOpacity style={styles.donateButton} onPress={handleDonation}>
-            <Text style={styles.buttonText}>Donate Now</Text>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon name="arrow-back" size={22} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.header}>Donate Points</Text>
+          </View>
+
+          <Text style={styles.description}>
+            Choose a category to donate your points and see the impact of your generosity.
+          </Text>
+
+          <FlatList
+            data={donationCategories}
+            renderItem={renderCategoryItem}
+            keyExtractor={item => item.id}
+            style={styles.categoryList}
+          />
+
+          <Text style={styles.sliderLabel}>Donation Amount: {donationAmount} points</Text>
+          <Slider
+            minimumValue={100}
+            maximumValue={1000000}
+            step={250}
+            value={donationAmount}
+            onValueChange={setDonationAmount}
+            style={styles.slider}
+          />
+
+          <TouchableOpacity style={styles.donateButton} onPress={handleDonation} disabled={donateLoading}>
+            {donateLoading ? (
+              <ActivityIndicator size="small" color="#FFF" />
+            ) : (
+              <Text style={styles.buttonText}>Donate Now</Text>
+            )}
           </TouchableOpacity>
 
           {selectedCategories.length > 0 && (
@@ -138,34 +155,12 @@ const DonatePoints = () => {
               <Text style={styles.impactText}>
                 Total points required: {getTotalPointsRequired()}.
               </Text>
-              {donationAmount >= 1000 && donationAmount < 5000 && (
+              <Text style={styles.impactText}>
+                Total amount donated so far: {totalAmountDonated}.
+              </Text>
+              {currentTier && (
                 <Text style={styles.impactText1}>
-                  And you have been awarded Bronze Tier!
-                </Text>
-              )}
-              {donationAmount >= 5000 && donationAmount < 10000 && (
-                <Text style={styles.impactText1}>
-                  And you have been awarded Silver Tier!
-                </Text>
-              )}
-              {donationAmount >= 10000 && donationAmount < 50000 && (
-                <Text style={styles.impactText1}>
-                  And you have been awarded Titanium Tier!
-                </Text>
-              )}
-              {donationAmount >= 50000 && donationAmount < 100000 && (
-                <Text style={styles.impactText1}>
-                  And you have been awarded Gold Tier!
-                </Text>
-              )}
-              {donationAmount >= 100000 && donationAmount <700000 && (
-                <Text style={styles.impactText1}>
-                  And you have been awarded Platinum Tier!
-                </Text>
-              )}
-              {donationAmount > 700000 &&  (
-                <Text style={styles.impactText1}>
-                  And you have been awarded Diamond Tier!
+                  And you have been awarded {currentTier} Tier!
                 </Text>
               )}
             </View>
@@ -174,25 +169,23 @@ const DonatePoints = () => {
           <TouchableOpacity style={styles.shareButton} onPress={shareDonation}>
             <Text style={styles.buttonText}>Share My Donation</Text>
           </TouchableOpacity>
+
+          <View style={styles.recurringContainer}>
+            <Text style={styles.recurringText}>Enable Recurring Donations</Text>
+            <Switch
+              value={isRecurring}
+              onValueChange={() => setIsRecurring(!isRecurring)}
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isRecurring ? "#f5dd4b" : "#f4f3f4"}
+            />
+          </View>
+
+          {isRecurring && (
+            <View style={styles.recurringInfo}>
+              <Text style={styles.recurringText}>Recurring donations will be processed monthly.</Text>
+            </View>
+          )}
         </>
-      )}
-
-      <View style={styles.recurringContainer}>
-        <Text style={styles.recurringText}>Enable Recurring Donations</Text>
-        <Switch
-          value={isRecurring}
-          onValueChange={() => setIsRecurring(!isRecurring)}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isRecurring ? "#f5dd4b" : "#f4f3f4"}
-        />
-      </View>
-
-      {isRecurring && (
-        <View style={styles.recurringInfo}>
-          <Text style={styles.recurringText}>
-            Recurring donations of {donationAmount} points for {selectedCategories.map(cat => cat.name).join(', ')} enabled!
-          </Text>
-        </View>
       )}
     </View>
   );
@@ -212,6 +205,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: height * 0.015, // Reduced padding
     borderRadius: 10, // Reduced border radius
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingAnimation: {
+    width: 100, // Adjust width as needed
+    height: 100, // Adjust height as needed
   },
   header: {
     fontSize: width * 0.045, // Reduced font size

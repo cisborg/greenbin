@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList} from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'; // Import for icons
+import FastImage from 'react-native-fast-image';
 const CoinRewards = () => {
   const [checkedIn, setCheckedIn] = useState(false);
   const [selectedDay, setSelectedDay] = useState(3); // Assume today is "DAY-3" for testing
@@ -108,7 +109,7 @@ const CoinRewards = () => {
             data={products}
             renderItem={({ item }) => (
               <View style={styles.productCard}>
-                <Image source={{ uri: item.image }} style={styles.productImage} />
+                <FastImage source={{ uri: item.image }} style={styles.productImage} resizeMode={FastImage.resizeMode.cover}/>
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productDescription}>{item.description}</Text>
                 <Text style={styles.productPrice}>{item.price}</Text>

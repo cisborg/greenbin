@@ -1,18 +1,21 @@
 import * as React from "react";
-import { Image, StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar, FlatList } from "react-native";
+import { StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar, FlatList } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import LottieView from 'lottie-react-native'; // Import LottieView
+import FastImage from "react-native-fast-image";
 
 // ActionButton Component
 const ActionButton = ({ onPress, iconSource, text }) => (
   <TouchableOpacity style={styles.buttonContainer} onPress={onPress} accessibilityLabel={text}>
-    <Image style={styles.iconStyle} source={iconSource} />
+    <FastImage style={styles.iconStyle} source={iconSource} resizeMode={FastImage.resizeMode.cover} />
     <Text style={styles.buttonText}>{text}</Text>
   </TouchableOpacity>
 );
+
 const { width } = Dimensions.get('window');
 
 const VendorsProfilePage = () => {
@@ -21,32 +24,21 @@ const VendorsProfilePage = () => {
   const { username, usericon, userprofession } = route.params;
 
   const screenAnim = React.useRef(new Animated.Value(0)).current;
-  const [screenWidth, setScreenWidth] = React.useState(Dimensions.get('window').width);
+  const [isLoading, setIsLoading] = React.useState(true); // Loading state
 
   React.useEffect(() => {
-    // Animation on screen mount
+    // Animate the screen opacity and set loading to false after animation completes
     Animated.timing(screenAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
-    }).start();
-
-    // Listener for screen resize
-    const onChange = ({ window }) => {
-      setScreenWidth(window.width);
-    };
-    const subscription = Dimensions.addEventListener('change', onChange);
-
-    return () => {
-      subscription?.remove(); // Cleanup listener
-    };
+    }).start(() => setIsLoading(false)); // Set loading to false when animation finishes
   }, [screenAnim]);
 
   const handleNavigation = (screen, params = {}) => {
     navigation.navigate(screen, params);
   };
 
-  // List of action buttons
   const actionButtons = [
     {
       onPress: () => handleNavigation("callPage"),
@@ -75,6 +67,20 @@ const VendorsProfilePage = () => {
     },
   ];
 
+  if (isLoading) {
+    // Show Lottie animation while loading
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require("../../assets/lottie/bouncing_check.json")} // Path to your Lottie JSON file
+          autoPlay
+          loop
+          style={styles.loadingAnimation}
+        />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
@@ -88,7 +94,6 @@ const VendorsProfilePage = () => {
           <Text style={styles.heading}>{username}'s Profile</Text>
         </View>
 
-        {/* Buttons and navigation options */}
         <View style={styles.container}>
           <FlatList
             data={actionButtons}
@@ -99,14 +104,13 @@ const VendorsProfilePage = () => {
                 text={item.text}
               />
             )}
-            keyExtractor={(item, index) => index.toString()} // Use index as key
-            contentContainerStyle={styles.buttonList} // Added to center the content
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.buttonList}
           />
         </View>
 
-        {/* Vendor Profile Container at the bottom */}
         <View style={styles.vendorInfoContainer}>
-          <Image source={usericon} style={styles.icon} />
+          <FastImage source={usericon} style={styles.icon} resizeMode={FastImage.resizeMode.cover}/>
           <Text style={styles.vendorName}>{username}</Text>
           <Text style={styles.vendorDescription}>{userprofession}</Text>
           <TouchableOpacity style={styles.removeFromVendorContainer}>
@@ -123,7 +127,6 @@ const VendorsProfilePage = () => {
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -136,6 +139,15 @@ const styles = StyleSheet.create({
     padding: 5,
     overflow: 'hidden',
   },
+  loadingContainer: {
+     flex: 1,
+     justifyContent: 'center',
+     alignItems: 'center' 
+  },
+  loadingAnimation: {
+     width: 150,
+     height: 150 
+  }, 
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

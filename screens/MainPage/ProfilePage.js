@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from "react-native";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -102,8 +102,11 @@ const ProfilePage = () => {
           
            <View style={styles.headerContainer}>
             <View style={styles.leftSection}>
-              <Image style={styles.profileImg} source={require("../../assets/anotherMan.avif")} />
-              <Text style={styles.username}>Brad John</Text>
+            <FastImage style={styles.profileImg}
+             source={require("../../assets/anotherMan.avif")}
+             resizeMode={FastImage.resizeMode.contain}
+             />   
+             <Text style={styles.username}>Brad John</Text>
             </View>
 
             <TouchableOpacity style={styles.settingsIcon} onPress={()=> navigation.navigate('ProfileSettings')}> 
@@ -135,22 +138,27 @@ const ProfilePage = () => {
 
           <View style={styles.cardContainer}>
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs", { name: username, bal: cash })}>
-              <Image style={styles.cardIcon} source={require("../../assets/checked.png")} />
-              <Text style={styles.cardValue}>GCP {cash}</Text>
+            <FastImage style={styles.cardIcon} source={require("../../assets/checked.png")}
+             resizeMode={FastImage.resizeMode.contain}/>   
+             <Text style={styles.cardValue}>GCP {cash}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Happy")}>
-              <Image style={styles.cardIcon} source={require("../../assets/stats_2500115.png")} />
-              <Text style={styles.cardValue}>#333</Text>
+              <FastImage style={styles.cardIcon} source={require("../../assets/stats_2500115.png")} 
+              resizeMode={FastImage.resizeMode.contain} />  
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator")}>
-              <Image style={styles.cardIcon} source={require("../../assets/menu.jpg")} />
+              <FastImage style={styles.cardIcon} source={require("../../assets/checked.png")}
+              resizeMode={FastImage.resizeMode.contain}/>   
               <Text style={styles.cardTitle}>GCPs Calculator 🔐</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("GreenConnect")}>
-              <Image style={styles.cardIcon} source={require("../../assets/electric.png")} />
+              <FastImage style={styles.cardIcon} 
+              source={require("../../assets/electric.png")} 
+              resizeMode={FastImage.resizeMode.contain}
+              /> 
               <Text style={styles.cardTitle}>Connect Green</Text>
             </TouchableOpacity>
           </View>
@@ -161,8 +169,9 @@ const ProfilePage = () => {
             {Object.keys(targetData).map((topic, index) => (
               <View key={index} style={styles.topicContainer}>
                 <View style={styles.topicContent}>
-                  <Image source={topicIcons[topic]} style={styles.topicIcon} />
-                  <View style={styles.topicInfo}>
+                <FastImage source={topicIcons[topic]} style={styles.topicIcon}
+                resizeMode={FastImage.resizeMode.contain} />  
+                <View style={styles.topicInfo}>
                     <Text style={styles.topicName}>{topic}</Text>
                     <View style={styles.progressBar}>
                       <LinearGradient

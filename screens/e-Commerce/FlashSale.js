@@ -1,9 +1,10 @@
 // components/FlashSaleSection.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 // Sample data for products
 const products = [
@@ -65,7 +66,7 @@ const CountdownTimer = () => {
 };
 const ProductItem = ({ item }) => (
   <View style={styles.productItem}>
-    <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+    <FastImage source={{ uri: item.imageUrl }} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
     <Text style={styles.productPrice}>{item.price}</Text>
   </View>
 );

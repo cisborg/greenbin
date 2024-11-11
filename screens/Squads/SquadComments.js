@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-const CommentBottomSheet = ({ isVisible, onClose, onCommentAdd }) => {
+const CommentBottomSheet = ({ isVisible, onClose, onCommentAdd, comments = [] }) => {
   const [comment, setComment] = useState('');
   const bottomSheetRef = useRef(null);
   const [loading, setLoading] = useState(false); // State for loading
@@ -11,8 +11,7 @@ const CommentBottomSheet = ({ isVisible, onClose, onCommentAdd }) => {
     if (comment.trim()) {
       setLoading(true);
       try {
-        // Simulating a backend submission; replace with your actual submission logic
-        await onCommentAdd(comment); 
+        await onCommentAdd(comment); // Add the comment via the parent function
         setComment(''); // Clear the input
         bottomSheetRef.current?.close(); // Close the bottom sheet
       } catch (error) {
@@ -21,12 +20,19 @@ const CommentBottomSheet = ({ isVisible, onClose, onCommentAdd }) => {
         setLoading(false); // Reset loading state
       }
     } else {
-      Alert.alert("Validation Error", "Comment cannot be empty."); // Validate input
+      Alert.alert("Wrong Entry", "Comment cannot be empty."); // Validate input
     }
   };
 
   // Snap points for the bottom sheet
-  const snapPoints = [250];
+  const snapPoints = [450];
+
+  // Render each comment in the list
+  const renderItem = ({ item }) => (
+    <View style={styles.commentContainer}>
+      <Text style={styles.commentText}>{item}</Text>
+    </View>
+  );
 
   return (
     <BottomSheet
@@ -37,6 +43,16 @@ const CommentBottomSheet = ({ isVisible, onClose, onCommentAdd }) => {
       index={isVisible ? 0 : -1} // Control visibility with index
     >
       <View style={styles.container}>
+        {/* Comments List */}
+        <FlatList
+          data={comments} // Array of comments passed via props
+          renderItem={renderItem} // Render each comment
+          keyExtractor={(item, index) => index.toString()} // Key for each item
+          contentContainerStyle={styles.commentList}
+          ListEmptyComponent={<Text>No comments yet.</Text>} // Message when no comments exist
+        />
+
+        {/* Input for new comment */}
         <TextInput
           placeholder="Type your comment..."
           value={comment}
@@ -58,8 +74,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 450,
   },
+  commentList: {
+    flexGrow: 1, // Allow list to take available space and scroll
+    marginBottom: 20,
+  },
+  commentContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  commentText: {
+    fontSize: 16,
+    color: '#333',
+  },
   input: {
-    height: 200,
+    height: 100,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,

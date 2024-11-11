@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, Image, ScrollView, SafeAreaView, Animated, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, ScrollView, SafeAreaView, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -59,15 +60,17 @@ const JoinSquads = () => {
   const renderSquadItem = ({ item }) => {
     return (
       <View style={styles.squadCard}>
-        <Image 
+        <FastImage
           source={{ uri: item.cover }} 
           style={styles.coverImage} 
+          resizeMode={FastImage.resizeMode.cover}
           onError={() => console.error('Cover image failed to load')} 
         />
         <View style={styles.squadDetails}>
-          <Image 
+          <FastImage
             source={{ uri: item.avatar }} 
             style={styles.avatar} 
+            resizeMode={FastImage.resizeMode.cover}
             onError={() => console.error('Avatar image failed to load')} 
           />
           <TouchableOpacity 
@@ -89,9 +92,10 @@ const JoinSquads = () => {
           {/* Connections Count Section */}
           <View style={styles.connectionsContainer}>
             {Array.from({ length: 3 }).map((_, index) => (
-              <Image 
+              <FastImage
                 key={index}
                 source={{ uri: item.avatar }} 
+                resizeMode={FastImage.resizeMode.cover}
                 style={[styles.connectorImage, { zIndex: 3 - index }]} 
                 onError={() => console.error('Connector image failed to load')} 
               />

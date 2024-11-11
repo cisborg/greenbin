@@ -1,5 +1,6 @@
 // src/redux/actions/productActions.js
-import axios from 'axios';
+import api from "../../utils/axiosConfig";
+
 import {
     FETCH_PRODUCTS_REQUEST,
     FETCH_PRODUCTS_SUCCESS,
@@ -16,8 +17,6 @@ import {
     PURCHASE_PRODUCT_REQUEST,
     PURCHASE_PRODUCT_SUCCESS,
     PURCHASE_PRODUCT_FAILURE,
-    ADD_TO_CART,
-    REMOVE_FROM_CART,
     SUBSCRIBE_PRODUCT_REQUEST,
     SUBSCRIBE_PRODUCT_SUCCESS,
     SUBSCRIBE_PRODUCT_FAILURE,
@@ -30,7 +29,7 @@ import {
 export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_REQUEST });
     try {
-        const response = await axios.get('/api/products');
+        const response = await api.get('/api/products');
         dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
@@ -41,7 +40,7 @@ export const fetchProducts = () => async (dispatch) => {
 export const createProduct = (productData) => async (dispatch) => {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
     try {
-        const response = await axios.post('/api/products', productData);
+        const response = await api.post('/api/products', productData);
         dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
@@ -52,7 +51,7 @@ export const createProduct = (productData) => async (dispatch) => {
 export const updateProduct = (productId, productData) => async (dispatch) => {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
     try {
-        const response = await axios.put(`/api/products/${productId}`, productData);
+        const response = await api.put(`/api/products/${productId}`, productData);
         dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
@@ -63,7 +62,7 @@ export const updateProduct = (productId, productData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
     try {
-        await axios.delete(`/api/products/${productId}`);
+        await api.delete(`/api/products/${productId}`);
         dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
     } catch (error) {
         dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
@@ -74,30 +73,19 @@ export const deleteProduct = (productId) => async (dispatch) => {
 export const purchaseProduct = (productId, quantity) => async (dispatch) => {
     dispatch({ type: PURCHASE_PRODUCT_REQUEST });
     try {
-        const response = await axios.post(`/api/purchase`, { productId, quantity });
+        const response = await api.post(`/api/purchase`, { productId, quantity });
         dispatch({ type: PURCHASE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: PURCHASE_PRODUCT_FAILURE, payload: error.message });
     }
 };
 
-// Add to cart action
-export const addToCart = (product, quantity) => ({
-    type: ADD_TO_CART,
-    payload: { product, quantity },
-});
-
-// Remove from cart action
-export const removeFromCart = (productId) => ({
-    type: REMOVE_FROM_CART,
-    payload: productId,
-});
 
 // Subscribe to product action
 export const subscribeProduct = (productId) => async (dispatch) => {
     dispatch({ type: SUBSCRIBE_PRODUCT_REQUEST });
     try {
-        const response = await axios.post(`/api/subscribe`, { productId });
+        const response = await api.post(`/api/subscribe`, { productId });
         dispatch({ type: SUBSCRIBE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: SUBSCRIBE_PRODUCT_FAILURE, payload: error.message });
@@ -108,10 +96,9 @@ export const subscribeProduct = (productId) => async (dispatch) => {
 export const cancelSubscription = (productId) => async (dispatch) => {
     dispatch({ type: CANCEL_SUBSCRIPTION_REQUEST });
     try {
-        await axios.delete(`/api/subscribe/${productId}`);
+        await api.delete(`/api/subscribe/${productId}`);
         dispatch({ type: CANCEL_SUBSCRIPTION_SUCCESS, payload: productId });
     } catch (error) {
         dispatch({ type: CANCEL_SUBSCRIPTION_FAILURE, payload: error.message });
     }
 };
-

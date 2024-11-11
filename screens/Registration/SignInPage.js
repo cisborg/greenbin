@@ -20,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color } from "../../GlobalStyles";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Toast from 'react-native-toast-message'; // Import Toast
+import Toast from '../../helpers/Toast'; // Import your custom Toast component
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,6 +28,7 @@ const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }
   <View style={styles.inputContainer}>
     <Icon name={icon} size={20} color='green' style={styles.icon} />
     <TextInput
+      style={styles.textInput} // Added style for TextInput
       value={value}
       onChangeText={onChangeText}
       placeholder={placeholder}
@@ -48,6 +49,9 @@ const SignInPage = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -59,11 +63,7 @@ const SignInPage = () => {
 
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: 'Please enter both email and password.',
-      });
+      showToast('error', 'Login Failed', 'Please enter both email and password.');
       return;
     }
 
@@ -74,25 +74,28 @@ const SignInPage = () => {
       const response = await dispatch(loginUser({ email, password }));
 
       if (response?.token) {
-        Toast.show({
-          type: 'success',
-          text1: 'Login Successful',
-          text2: 'Welcome back! Enjoy GreenBin App',
-        });
+        showToast('success', 'Login Successful', 'Welcome back! Enjoy GreenBin App');
         navigation.navigate("Main");
       } else {
         throw new Error('Login failed');
       }
     } catch (error) {
       console.log("Login error", error);
-      Toast.show({
-        type: 'error',
-        text1: 'Login failed',
-        text2: 'Failed to log in. Please try again.',
-      });
+      showToast('error', 'Login failed', 'Failed to log in. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const showToast = (type, title, message) => {
+    setToastType(type);
+    setToastMessage(message);
+    setToastVisible(true);
+
+    // Hide toast after duration
+    setTimeout(() => {
+      setToastVisible(false);
+    }, 3000);
   };
 
   return (
@@ -168,6 +171,15 @@ const SignInPage = () => {
                 Forgot Password?
               </Text>
             </TouchableOpacity>
+
+            {/* Display Toast */}
+            {toastVisible && (
+              <Toast 
+                message={toastMessage} 
+                type={toastType} 
+                onClose={() => setToastVisible(false)} 
+              />
+            )}
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -199,6 +211,12 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: height * 0.02,
   },
+  textInput: {
+    flex: 1, // Allow TextInput to take the remaining space
+    height: 40, // Set a height to ensure consistency
+    fontSize: 16, // Font size for the text
+  },
+
   welcomeText: {
     fontSize: width * 0.05,
     color: Color.colorGray_600,

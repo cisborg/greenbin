@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Modal, Button } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, Button } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from '../../GlobalStyles';
+import FastImage from 'react-native-fast-image';
 
 const notificationsData = [
   { id: '1', type: 'message', content: 'John Doe and 5 others sent you a message.', time: '5 min ago', images: ['john.jpg', 'michael.jpg', 'jane.jpg'] },
@@ -40,13 +41,13 @@ const NotificationScreen = () => {
       <View style={styles.cascadedImagesContainer}>
         {images.length === 1 ? (
           <>
-            <Image source={{ uri: images[0] }} style={[styles.cascadedImage, { left: 0 }]} />
+            <FastImage source={{ uri: images[0] }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: 0 }]} />
             {/* Placeholder image for second position */}
-            <Image source={{ uri: 'placeholder_image_url' }} style={[styles.cascadedImage, { left: 15 }]} />
+            <FastImage source={{ uri: 'placeholder_image_url' }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: 15 }]} />
           </>
         ) : (
           images.map((image, index) => (
-            <Image key={index} source={{ uri: image }} style={[styles.cascadedImage, { left: index * 15 }]} />
+            <FastImage key={index} source={{ uri: image }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: index * 15 }]} />
           ))
         )}
       </View>

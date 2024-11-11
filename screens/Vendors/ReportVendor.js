@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   StyleSheet,
   ScrollView,
   Alert,
@@ -14,12 +13,16 @@ import {
   Animated,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Color, FontFamily } from "../../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { createReport } from '../redux/actions/reportActions';
 
 const ReportVendorScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  
   const [vendorName, setVendorName] = useState('');
   const [reason, setReason] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
@@ -32,6 +35,10 @@ const ReportVendorScreen = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
+
+  // Redux state
+  const reportState = useSelector(state => state.report);
+  const { loading: reportLoading, error } = reportState;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -48,12 +55,33 @@ const ReportVendorScreen = () => {
       return;
     }
 
+    const reportData = {
+      vendorName,
+      vendorPhone,
+      reason,
+      additionalDetails,
+      incidentDate,
+      incidentLocation,
+      severity,
+      followUp,
+    };
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setModalVisible(true);
-    }, 2000); // Simulate network request
+    dispatch(createReport(reportData)); // Dispatch createReport action
   };
+
+  useEffect(() => {
+    if (reportLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+      if (error) {
+        Alert.alert('Error', error);
+      } else if (!reportLoading) {
+        setModalVisible(true); // Show modal on successful report creation
+      }
+    }
+  }, [reportLoading, error]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,6 +94,7 @@ const ReportVendorScreen = () => {
             <Text style={styles.header}>Report Vendor Ticket</Text>
           </View>
 
+          {/* Form Inputs */}
           <View style={styles.vendorInfo}>
             <Text style={styles.label}>Vendor Name:</Text>
             <TextInput
@@ -153,7 +182,7 @@ const ReportVendorScreen = () => {
           </View>
 
           <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
-            <Text style={{ color:'white' }}>Submit Report</Text>
+            <Text style={{ color: 'white' }}>Submit Report</Text>
           </TouchableOpacity>
 
           <Text style={styles.footer}>

@@ -1,22 +1,29 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Animated, SafeAreaView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
-import { Color, FontFamily } from "../../GlobalStyles";
+import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/core';
 
 const ManageAccountScreen = () => {
   const navigation = useNavigation();
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Start fade-in animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
+
+    // Simulate loading for 2 seconds
+    const timer = setTimeout(() => setIsLoading(false), 2000);
+
+    return () => clearTimeout(timer);
   }, [fadeAnim]);
 
   const menuItems = [
@@ -46,6 +53,19 @@ const ManageAccountScreen = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView 
+          source={require('../../assets/lottie/rotatingBalls.json')} // Replace with the path to your Lottie JSON file
+          autoPlay 
+          loop 
+          style={styles.lottieAnimation}
+        />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ ...styles.headerContainer, opacity: fadeAnim }}>
@@ -70,11 +90,11 @@ const ManageAccountScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
-
+        
         {/* Image Container */}
         <View style={styles.imageContainer}>
           <Image
-            source={require("../../assets/again.jpg")} // Ensure this path is correct
+            source={require("../../assets/again.jpg")}
             style={styles.image}
             resizeMode="cover"
           />
@@ -96,6 +116,16 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 10,
     paddingLeft: 17
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  lottieAnimation: {
+    width: 150,
+    height: 150,
   },
   headerText: {
     fontSize: 24,

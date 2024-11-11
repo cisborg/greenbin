@@ -4,6 +4,7 @@ import { PieChart, BarChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -100,15 +101,22 @@ const getBarColor = (value) => {
 
 const CarbonFootprintCalculator = () => {
   const [activeCard, setActiveCard] = useState('activities');
+  const [loading, setLoading] = useState(true); // Loading state
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1, 
-      duration: 1000, 
-      useNativeDriver: true,
-    }).start();
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after delay
+      Animated.timing(fadeAnim, {
+        toValue: 1, 
+        duration: 1000, 
+        useNativeDriver: true,
+      }).start();
+    }, 2000); // Adjust the delay as needed
+
+    return () => clearTimeout(timer); // Clean up the timer
   }, [fadeAnim]);
 
   const handleToggleCard = (card) => {
@@ -140,97 +148,103 @@ const CarbonFootprintCalculator = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color="#4CAF50" />
-            </TouchableOpacity>
-            <Text style={styles.header}>Green Carbon Calculator</Text>
-          </View>
+      {loading ? ( // Show Lottie animation while loading
+        <View style={styles.loadingContainer}>
+          <Lottie source={require('../../assets/lottie/rotatingBalls.json')} autoPlay loop style={styles.loadingAnimation} />
+        </View>
+      ) : (
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={24} color="#4CAF50" />
+              </TouchableOpacity>
+              <Text style={styles.header}>Green Carbon Calculator</Text>
+            </View>
 
-          <View style={styles.pieChartContainer}>
-            <PieChart
-              data={currentData}
-              width={screenWidth - 40}
-              height={150} // Reduced height
-              chartConfig={{
-                backgroundColor: 'transparent',
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              }}
-              accessor="population"
-              backgroundColor="transparent"
-              paddingLeft="15"
-              absolute
-            />
-            <View style={styles.legend}>
-              {currentData.map((item, index) => (
-                <Text key={index} style={{ color: item.color, fontSize: 10 }}> {/* Reduced font size */}
-                  {item.name}: {item.population}%
-                </Text>
+            <View style={styles.pieChartContainer}>
+              <PieChart
+                data={currentData}
+                width={screenWidth - 40}
+                height={150} // Reduced height
+                chartConfig={{
+                  backgroundColor: 'transparent',
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                }}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                absolute
+              />
+              <View style={styles.legend}>
+                {currentData.map((item, index) => (
+                  <Text key={index} style={{ color: item.color, fontSize: 10 }}> {/* Reduced font size */}
+                    {item.name}: {item.population}%
+                  </Text>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.cardContainer}>
+              {['activities', 'donations', 'purchases'].map((card) => (
+                <TouchableOpacity
+                  key={card}
+                  style={styles.card}
+                  onPress={() => handleToggleCard(card)}
+                >
+                  <LinearGradient
+                    colors={
+                      card === 'activities' ? ['#4CAF50', '#81C784'] :
+                      card === 'donations' ? ['#FF9800', '#FFB74D'] :
+                      ['#9C27B0', '#CE93D8']
+                    }
+                    style={styles.cardGradient}
+                  >
+                    <Text style={styles.cardTitle}>{card.charAt(0).toUpperCase() + card.slice(1)}</Text>
+                    <Text style={styles.cardDescription}>
+                      {card === 'activities' ? 'Tackle pilot activities to boost your eco-impact.' :
+                      card === 'donations' ? `Aid critical causes/havocs with ${donationPercentage.toFixed(2)}% donations.` :
+                      `Track purchases with ${purchasePercentage.toFixed(2)}% purchases.`}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
               ))}
             </View>
-          </View>
 
-          <View style={styles.cardContainer}>
-            {['activities', 'donations', 'purchases'].map((card) => (
-              <TouchableOpacity
-                key={card}
-                style={styles.card}
-                onPress={() => handleToggleCard(card)}
-              >
-                <LinearGradient
-                  colors={
-                    card === 'activities' ? ['#4CAF50', '#81C784'] :
-                    card === 'donations' ? ['#FF9800', '#FFB74D'] :
-                    ['#9C27B0', '#CE93D8']
-                  }
-                  style={styles.cardGradient}
-                >
-                  <Text style={styles.cardTitle}>{card.charAt(0).toUpperCase() + card.slice(1)}</Text>
-                  <Text style={styles.cardDescription}>
-                    {card === 'activities' ? 'Tackle  pilot activities to boost your eco-impact.' :
-                    card === 'donations' ? `Aid critical causes/havocs with ${donationPercentage.toFixed(2)}% donations.` :
-                    `Track  purchases with ${purchasePercentage.toFixed(2)}% purchases.`}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            ))}
-          </View>
+            <View style={styles.toggleDots}>
+              {['activities', 'donations', 'purchases'].map((card) => (
+                <TouchableOpacity
+                  key={card}
+                  style={activeCard === card ? styles.activeDot : styles.dot}
+                  onPress={() => handleToggleCard(card)}
+                />
+              ))}
+            </View>
 
-          <View style={styles.toggleDots}>
-            {['activities', 'donations', 'purchases'].map((card) => (
-              <TouchableOpacity
-                key={card}
-                style={activeCard === card ? styles.activeDot : styles.dot}
-                onPress={() => handleToggleCard(card)}
+            <View style={styles.barChartContainer}>
+              <Text style={styles.barChartTitle}>Monthly Eco Threshold</Text>
+              <BarChart
+                data={barData}
+                width={screenWidth - 20}
+                height={210} // Reduced height
+                fromZero={true}
+                chartConfig={{
+                  backgroundColor: 'yellow',
+                  backgroundGradientFrom: '#fff',
+                  backgroundGradientTo: '#f5f5f5',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  barPercentage: 0.4,
+                  useShadowColorFromDataset: false,
+                }}
+                verticalLabelRotation={30}
               />
-            ))}
-          </View>
-
-          <View style={styles.barChartContainer}>
-            <Text style={styles.barChartTitle}>Monthly Eco Threshold</Text>
-            <BarChart
-              data={barData}
-              width={screenWidth - 20}
-              height={210} // Reduced height
-              fromZero={true}
-              chartConfig={{
-                backgroundColor: 'yellow',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#f5f5f5',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                barPercentage: 0.4,
-                useShadowColorFromDataset: false,
-              }}
-              verticalLabelRotation={30}
-            />
-          </View>
-        </ScrollView>
-      </Animated.View>
+            </View>
+          </ScrollView>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
@@ -253,6 +267,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingAnimation: {
+    width: 100, // Adjust width as needed
+    height: 100, // Adjust height as needed
   },
   scrollView: {
     paddingBottom: 10,

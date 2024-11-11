@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Modal, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Modal, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
+import FastImage from 'react-native-fast-image';
 
 const NewPostScreen = () => {
   const navigation = useNavigation();
@@ -105,7 +106,7 @@ const NewPostScreen = () => {
         {thumbnails.length > 0 ? (
           <View style={styles.thumbnailContainer}>
             {thumbnails.map((uri, index) => (
-              <Image key={index} source={{ uri }} style={styles.thumbnailImage} />
+              <FastImage key={index} source={{ uri }} style={styles.thumbnailImage} resizeMode={FastImage.resizeMode.cover} />
             ))}
           </View>
         ) : (

@@ -9,9 +9,6 @@ import {
   Dimensions,
   ActivityIndicator,
   SafeAreaView,
-  Platform,
-  StatusBar,
-  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FlashSale from "../e-Commerce/FlashSale";
@@ -20,6 +17,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
 import { FlashList } from "@shopify/flash-list";
 import Lottie from 'lottie-react-native'; // Import Lottie
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const challenges = [
   { id: "1", title: "EcoBikes", icon: require("../../assets/bikes.png") },
@@ -32,7 +30,6 @@ const challenges = [
   { id: "8", title: "Shoes", icon: require("../../assets/Shoes.png") },
   { id: "9", title: "Appliances", icon: require("../../assets/Appliance.png") },
   { id: "10", title: "Trees", icon: require("../../assets/Treee.png") },
-  
 ];
 
 const banners = [
@@ -41,7 +38,6 @@ const banners = [
   { uri: "https://your-image-url.com/Bags.png" },
   { uri: "https://your-image-url.com/connect.png" },
 ];
-
 
 const { width, height } = Dimensions.get("window");
 
@@ -101,7 +97,7 @@ export default function HomePageExistingUser() {
   React.useEffect(() => {
     // Simulate loading time
     const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after 2 seconds
+      setLoading(false); // Set loading to false after 3 seconds
     }, 3000);
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
@@ -141,7 +137,7 @@ export default function HomePageExistingUser() {
           {/* Banner Container */}
           <View style={styles.bannerContainer}>
             <Animated.Image
-              source={banners[currentIndex]}
+              source={{ uri: banners[currentIndex].uri }} // Use uri for FastImage
               style={[styles.bannerImage, { opacity: fadeAnim }]}
               resizeMode="cover"
             />
@@ -161,7 +157,7 @@ export default function HomePageExistingUser() {
               const { connecting, connected } = vendorConnectState[item.id] || {};
               return (
                 <View style={styles.vendorDetails}>
-                  <Image style={styles.vendorImgIcon} source={item.icon} />
+                  <FastImage style={styles.vendorImgIcon} source={item.icon} />
                   <Text style={styles.vendorName}>{item.name}</Text>
                   <Text style={styles.vendorProfession}>{item.profession}</Text>
 
@@ -229,7 +225,7 @@ export default function HomePageExistingUser() {
                   onPress={() => navigation.navigate("Products")}
                 >
                   <View style={styles.challengeBoxChild} />
-                  <Image style={styles.rainIcon} source={item.icon} />
+                  <FastImage style={styles.rainIcon} source={item.icon} />
                   <Text style={styles.challengeText}>{item.title}</Text>
                 </TouchableOpacity>
               )}
@@ -242,7 +238,7 @@ export default function HomePageExistingUser() {
       </GestureHandlerRootView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   safeArea: {

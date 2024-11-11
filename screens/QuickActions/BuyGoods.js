@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image,
-    Animated, KeyboardAvoidingView, Platform, SafeAreaView, Modal, ActivityIndicator, Alert
+    View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Animated,
+    KeyboardAvoidingView, Platform, SafeAreaView, Modal, ActivityIndicator, Alert
 } from 'react-native';
+import LottieView from 'lottie-react-native'; // Import LottieView
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const paymentMethods = ['Green Bank', 'Request a Friend', 'GCPs Wallet'];
 const presetAmounts = [2000, 5000, 8000, 12000];
 
 const BuyGoods = () => {
     const navigation = useNavigation();
+    const [loading, setLoading] = useState(true); // New loading state
     const [phoneNumber, setPhoneNumber] = useState('');
     const [customAmount, setCustomAmount] = useState('');
     const [selectedAmount, setSelectedAmount] = useState(null);
@@ -27,6 +30,38 @@ const BuyGoods = () => {
 
     const fadeAnim = useState(new Animated.Value(0))[0];
 
+    useEffect(() => {
+        // Simulate a delay for loading (e.g., fetching resources)
+        const timer = setTimeout(() => {
+            setLoading(false); // Set loading to false after delay
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (!loading) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [loading, fadeAnim]);
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <LottieView
+                    source={require('../../assets/lottie/rotatingBalls.json')} // Replace with the path to your Lottie JSON file
+                    autoPlay
+                    loop
+                    style={{ width: 150, height: 150 }}
+                />
+            </View>
+        );
+    }
+
     const validateInputs = () => {
         const amount = parseFloat(customAmount) || selectedAmount;
         const isValidPhoneNumber = phoneNumber.length === 6 && /^\d+$/.test(phoneNumber);
@@ -34,7 +69,7 @@ const BuyGoods = () => {
         const isValidFriendPhone = friendPhoneNumber.length === 10 && /^\d+$/.test(friendPhoneNumber);
 
         if (!isValidPhoneNumber) {
-            Alert.alert("Invalid Account Number", "Please enter a valid  account number.");
+            Alert.alert("Invalid Account Number", "Please enter a valid account number.");
             return false;
         }
 
@@ -91,14 +126,6 @@ const BuyGoods = () => {
         calculateTotal(selectedAmount || parseFloat(customAmount));
     };
 
-    useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-        }).start();
-    }, [fadeAnim]);
-
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -114,7 +141,11 @@ const BuyGoods = () => {
 
                         {/* User Information */}
                         <View style={styles.userInfo}>
-                            <Image source={{ uri: 'https://example.com/profile.jpg' }} style={styles.profilePicture} />
+                            <FastImage
+                                source={{ uri: 'https://example.com/profile.jpg' }} // Replace with your profile image URL
+                                style={styles.profilePicture}
+                                resizeMode={FastImage.resizeMode.cover} // Use FastImage resizeMode
+                            />
                             <TextInput
                                 style={styles.input1}
                                 placeholder="Enter Paybill/Pochi/Account"
@@ -273,6 +304,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 10,
         marginTop: '-20%'
+    },
+     loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
     },
     header: {
         flexDirection: 'row',

@@ -29,6 +29,8 @@ import {
 const initialState = {
     admins: [],
     users: [],
+    products: [],
+    squads: [],
     loading: false,
     error: null,
 };

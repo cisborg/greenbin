@@ -3,12 +3,11 @@ import {
   View,
   Text,
   FlatList,
-  ScrollView,
   TouchableOpacity,
-  Image,
   StyleSheet,
   Animated,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const Users = [
   { id: '1', userName: 'Pushkin', userImg: require('../../assets/Appliance.png'), isOnline: true },
@@ -17,7 +16,6 @@ const Users = [
   { id: '4', userName: 'Sally', userImg: require('../../assets/anotherWoman.avif'), isOnline: false },
 ];
 
-// Function to format message time
 const formatMessageTime = (timestamp) => {
   const messageDate = new Date(timestamp);
   const now = new Date();
@@ -26,7 +24,7 @@ const formatMessageTime = (timestamp) => {
   const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
 
   if (diffHours >= 24) {
-    return messageDate.toLocaleDateString(); // Display date for messages older than 24 hours
+    return messageDate.toLocaleDateString();
   } else if (diffHours > 1) {
     return `${diffHours} hours ago`;
   } else if (diffMinutes < 1) {
@@ -36,13 +34,12 @@ const formatMessageTime = (timestamp) => {
   }
 };
 
-// Create some sample messages with varied timestamps for testing
 const Messages = [
   {
     id: '1',
     userName: 'Pushkin',
     userImg: require('../../assets/Appliance.png'),
-    messageTime: formatMessageTime(new Date(Date.now() - 60000)), // 1 minute ago
+    messageTime: formatMessageTime(new Date(Date.now() - 60000)),
     hasUnreadMessages: true,
     unreadCount: 2,
     messageText: 'New message from Pushkin',
@@ -51,7 +48,7 @@ const Messages = [
     id: '2',
     userName: 'Silvance',
     userImg: require('../../assets/anotherWoman.avif'),
-    messageTime: formatMessageTime(new Date(Date.now() - 3600000)), // 1 hour ago
+    messageTime: formatMessageTime(new Date(Date.now() - 3600000)),
     hasUnreadMessages: false,
     unreadCount: 0,
     messageText: 'Oh to namba ne',
@@ -60,7 +57,7 @@ const Messages = [
     id: '3',
     userName: 'Vicky',
     userImg: require('../../assets/anotherWoman.avif'),
-    messageTime: formatMessageTime(new Date(Date.now() - 86400000)), // 1 day ago
+    messageTime: formatMessageTime(new Date(Date.now() - 86400000)),
     hasUnreadMessages: false,
     unreadCount: 0,
     messageText: 'Hello!',
@@ -84,22 +81,38 @@ const MessagesScreen = ({ navigation }) => {
       navigation.navigate('chatConnect', { userName: user.userName });
     } catch (error) {
       console.error("Navigation error:", error);
+      alert("Navigation failed. Please try again.");
     }
   };
 
   const renderActiveUser = ({ item }) => (
-    item.isOnline && (
-      <TouchableOpacity onPress={() => setSelectedUser(item)} style={styles.activeUser}>
-        <Image source={item.userImg} style={styles.userProfileImg} />
-        <Text style={styles.userName}>{item.userName}</Text>
-      </TouchableOpacity>
-    )
+    <TouchableOpacity onPress={() => setSelectedUser(item)} style={styles.activeUser}>
+      <FastImage source={item.userImg} style={styles.userProfileImg} resizeMode={FastImage.resizeMode.cover} />
+      <Text style={styles.userName}>{item.userName}</Text>
+    </TouchableOpacity>
   );
+
+  const renderActiveUsers = () => {
+    const onlineUsers = Users.filter(user => user.isOnline);
+    if (onlineUsers.length === 0) {
+      return <Text style={styles.noActiveUsers}>No users online</Text>;
+    }
+    return (
+      <FlatList
+        data={onlineUsers}
+        horizontal
+        keyExtractor={(item) => item.id}
+        renderItem={renderActiveUser}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.userScrollView}
+      />
+    );
+  };
 
   const renderMessageItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleNavigateToChat(item)}>
       <View style={styles.userInfo}>
-        <Image source={item.userImg} style={styles.userImg} />
+        <FastImage source={item.userImg} style={styles.userImg} resizeMode={FastImage.resizeMode.cover} />
         <View style={styles.textSection}>
           <View style={styles.row}>
             <Text style={styles.userName}>{item.userName}</Text>
@@ -127,13 +140,7 @@ const MessagesScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Text style={styles.activeNowText}>Active Now</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.userScrollView}
-        >
-          {Users.map((user) => renderActiveUser({ item: user }))}
-        </ScrollView>
+        {renderActiveUsers()}
       </Animated.View>
 
       <FlatList
@@ -143,12 +150,11 @@ const MessagesScreen = ({ navigation }) => {
         initialNumToRender={10}
         maxToRenderPerBatch={5}
         contentContainerStyle={styles.flatList}
+        removeClippedSubviews={true} // Added for performance
       />
     </View>
   );
 };
-
-export default MessagesScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -234,4 +240,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
+  noActiveUsers: {
+    fontSize: 14,
+    color: 'gray',
+    padding: 10,
+  },
 });
+
+export default MessagesScreen;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   View, 
-  Text, 
-  Image, 
+  Text,  
   TouchableOpacity, 
   ScrollView, 
   Animated, 
@@ -16,6 +15,7 @@ import { useNavigation } from '@react-navigation/core';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { FlashList } from '@shopify/flash-list'; // Import FlashList
+import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window');
 
@@ -114,10 +114,10 @@ const CartDetail = () => {
             <TouchableOpacity onPress={handlePrevImage}>
               <AntDesign name="leftcircle" size={27} color="#4CAF50" />
             </TouchableOpacity>
-            <Image 
+            <FastImage 
               source={images[currentImage]} 
               style={styles.productImage} 
-              resizeMode="contain"
+              resizeMode={FastImage.resizeMode.cover}
             />
             <TouchableOpacity onPress={handleNextImage}>
               <AntDesign name="rightcircle" size={27} color="#4CAF50" />

@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Platform,StatusBar,TouchableOpacity, Image, Animated, SafeAreaView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const gamesData = [
   {
@@ -90,7 +92,7 @@ const gamesData = [
 const GameCard = ({ game }) => {
   return (
     <View style={styles.card}>
-      <Image source={game.image} style={styles.cardImage} />
+      <FastImage source={game.image} style={styles.cardImage} resizeMode={FastImage.resizeMode.cover} /> {/* Use FastImage */}
       <Text style={styles.cardTitle}>{game.title}</Text>
       <Text style={styles.cardDescription}>{game.description}</Text>
       <Text style={styles.cardFormat}>
@@ -103,35 +105,54 @@ const GameCard = ({ game }) => {
   );
 };
 
-
 const GamesScreen = () => {
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    // Start the fade-in animation after loading is complete
+    setTimeout(() => {
+      setIsLoading(false);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }, 2000); // Simulate a 2-second loading delay
   }, [fadeAnim]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Go back">
-          <Ionicons name="arrow-back-circle-outline" size={30} color="green" />
-        </TouchableOpacity>
-        <Text style={styles.header}>Discover New Games for Your Green Life!</Text>
-      </View>
-      <Animated.View style={{ ...styles.cardList, opacity: fadeAnim }}>
-        <FlatList
-          data={gamesData}
-          renderItem={({ item }) => <GameCard game={item} />}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.cardListContent}
-        />
-      </Animated.View>
+      {isLoading ? (
+        // Lottie animation displayed while loading
+        <View style={styles.loadingContainer}>
+          <LottieView
+            source={require('../../assets/lottie/rotatingBalls.json')} // Path to your Lottie JSON file
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        </View>
+      ) : (
+        // Main content rendered after loading is complete
+        <>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Go back">
+              <Ionicons name="arrow-back-circle-outline" size={30} color="green" />
+            </TouchableOpacity>
+            <Text style={styles.header}>Discover New Games for Your Green Life!</Text>
+          </View>
+          <Animated.View style={{ ...styles.cardList, opacity: fadeAnim }}>
+            <FlatList
+              data={gamesData}
+              renderItem={({ item }) => <GameCard game={item} />}
+              keyExtractor={item => item.id}
+              contentContainerStyle={styles.cardListContainer}
+            />
+          </Animated.View>
+        </>
+      )}
     </SafeAreaView>
   );
 };

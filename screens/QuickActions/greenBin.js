@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Camera } from 'expo-camera';
+import { Camera, useCodeScanner } from 'react-native-vision-camera';
+import LottieView from 'lottie-react-native';
+import FastImage from 'react-native-fast-image'; // Import FastImage
+import Carousel from 'react-native-reanimated-carousel'; // Import the reanimated carousel
 
 // Sample bin images (replace with your images)
 const binImages = {
@@ -14,6 +17,7 @@ const binImages = {
 };
 
 const GreenBin = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [binType, setBinType] = useState('basic');
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedSubscription, setSelectedSubscription] = useState(null);
@@ -21,6 +25,9 @@ const GreenBin = () => {
   const [qrData, setQrData] = useState(null); // For storing scanned QR data
   const [isPurchase, setIsPurchase] = useState(true); // Toggle for Purchase vs Lease/Rent
   const [cameraPermission, setCameraPermission] = useState(null);
+
+  const devices = useCameraDevices();
+  const device = devices.back; // or devices.front for front camera
 
   const binOptions = [
     { type: 'basic', price: 2000, gcpReward: 100, downPayment: 500 },
@@ -34,12 +41,20 @@ const GreenBin = () => {
     { type: 'Quarterly', price: 5000 },
   ];
 
+  useEffect(() => {
+    // Simulate a loading delay for demonstration
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Adjust the time as needed
+  }, []);
+
   // Camera permission request function
   const requestCameraPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setCameraPermission(status === 'granted');
-    return status === 'granted';
+    const status = await Camera.requestCameraPermission();
+    setCameraPermission(status === 'authorized');
+    return status === 'authorized';
   };
+  
 
   // Function to open QR scanner with permission check
   const openQRScanner = async () => {
@@ -86,28 +101,65 @@ const GreenBin = () => {
     const [binID, userID, amount] = data.split(':');
     setQrData({ binID, userID, amount });
     setScanVisible(false);
-
+  
     Toast.show({
       type: 'success',
       text1: 'Payment Success',
       text2: `Payment of $${amount} for bin ${binID} completed successfully.`,
     });
   };
+  
+  // Display the QR Data
+  {qrData && (
+    <View style={styles.qrDataContainer}>
+      <Text>Bin ID: {qrData.binID}</Text>
+      <Text>User ID: {qrData.userID}</Text>
+      <Text>Amount: ${qrData.amount}</Text>
+    </View>
+  )}
+  
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13'],
+    onCodeScanned: (codes) => {
+      if (codes.length) {
+        console.log(`Scanned ${codes.length} codes:`, codes);
+        setScanVisible(false);
+        onScanSuccess(codes[0].data); // Pass scanned code data
+      }
+    },
+  });
+ 
+  
+  const renderBinItem = ({ item }) => (
+    <TouchableOpacity onPress={() => setBinType(item.type)} style={[styles.binOption, binType === item.type && styles.selectedOption]}>
+     <FastImage source={binImages[item.type]} style={styles.binImage} resizeMode={FastImage.resizeMode.cover} /> 
+   <Text style={styles.binText}>{item.type.toUpperCase()}</Text>
+    </TouchableOpacity>
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView source={require('../../assets/lottie/rotatingBalls.json')} autoPlay loop />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Your Bin for Sustainability</Text>
 
-      <View style={styles.binSection}>
-        {binOptions.map((option) => (
-          <TouchableOpacity key={option.type} onPress={() => setBinType(option.type)} style={[styles.binOption, binType === option.type && styles.selectedOption]}>
-            <Image source={binImages[option.type]} style={styles.binImage} />
-            <Text style={styles.binText}>{option.type.toUpperCase()}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Carousel
+        loop
+        width={300}
+        height={200}
+        data={binOptions}
+        renderItem={renderBinItem}
+        scrollAnimationDuration={1000}
+      />
+
       <Text style={styles.binDetails}>
-        {`Selected Bin: ${binType.toUpperCase()} - Price: $${binOptions.find(b => b.type === binType).price}, Rewards: ${binOptions.find(b => b.type === binType).gcpReward} GCPs`}
+      {`Selected Bin: ${binType.toUpperCase()} - Price: $${binOptions.find(b => b.type === binType)?.price ?? ''}, Rewards: ${binOptions.find(b => b.type === binType)?.gcpReward ?? ''} GCPs`}
       </Text>
 
       <View style={styles.toggleSection}>
@@ -176,20 +228,25 @@ const GreenBin = () => {
         <Text style={styles.buttonText}>Scan QR Code</Text>
       </TouchableOpacity>
 
-      <Modal visible={scanVisible} animationType="slide">
+      <Modal visible={scanVisible} 
+        animationType="slide"
+        onRequestClose={() => setScanVisible(false)}>
         {cameraPermission ? (
-          <Camera
-            style={{ flex: 1 }}
-            onBarCodeScanned={({ data }) => onScanSuccess(data)}
-            flashMode={Camera.FlashMode.off} // Correctly set flash mode
-          >
-            <View style={styles.scanOverlay}>
-              <Text style={styles.scanText}>Scan bin's QR code to initiate collection payment</Text>
-              <TouchableOpacity onPress={() => setScanVisible(false)}>
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </Camera>
+         <Camera
+         style={{ flex: 1 }}
+         device={device} // Make sure you’ve selected a camera device
+         isActive={scanVisible} // Only active if scan modal is visible
+         codeScanner={codeScanner} // Attach the scanner here
+       >
+         <View style={styles.scanOverlay}>
+           <Text style={styles.scanText}>Scan QR code to initiate collection payment</Text>
+           <TouchableOpacity onPress={() => setScanVisible(false)}>
+             <Text>Cancel</Text>
+           </TouchableOpacity>
+         </View>
+       </Camera>
+       
+        
         ) : (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 18 }}>Camera permission is required.</Text>
@@ -246,8 +303,22 @@ const styles = StyleSheet.create({
   },
   scanText: { fontSize: 16, color: 'white', textAlign: 'center', padding: 10 },
   cancelButton: { backgroundColor: 'red', margin: 10, alignItems: 'center', borderRadius: 15 },
-  scanOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  leasingHeader: { color: 'green', fontSize: 14, marginBottom: 5 }
+  leasingHeader: { color: 'green', fontSize: 14, marginBottom: 5 },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanOverlay: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    borderRadius: 8,
+  },
+ 
 });
 
 export default GreenBin;

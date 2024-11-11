@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Animated, SafeAreaView, ActivityIndicator, StatusBar, Platform, Dimensions, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, StatusBar, Dimensions, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import LottieView from 'lottie-react-native'; // Import LottieView
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -30,7 +32,14 @@ const FollowedVendorsScreen = ({ navigation }) => {
   ]);
 
   const [loadingStates, setLoadingStates] = useState({});
+  const [isScreenLoading, setIsScreenLoading] = useState(true); // Screen loading state
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    // Simulate loading before displaying content
+    const timer = setTimeout(() => setIsScreenLoading(false), 1000); // Adjust time as needed
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleUnfollow = (vendorId) => {
     setLoadingStates((prev) => ({ ...prev, [vendorId]: true }));
@@ -45,6 +54,19 @@ const FollowedVendorsScreen = ({ navigation }) => {
     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     vendor.profession.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (isScreenLoading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotatingBalls.json')} // Path to your Lottie animation file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -67,7 +89,7 @@ const FollowedVendorsScreen = ({ navigation }) => {
           filteredVendors.map((vendor) => (
             <Animated.View key={vendor.id} style={styles.card}>
               <TouchableOpacity style={styles.vendorInfo}>
-                <Image source={{ uri: vendor.profilePic }} style={styles.profilePic} />
+                <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
                 <View style={styles.details}>
                   <Text style={styles.vendorName}>{vendor.name}</Text>
                   <Text style={styles.vendorProfession}>{vendor.profession}</Text>
@@ -79,7 +101,12 @@ const FollowedVendorsScreen = ({ navigation }) => {
                 style={[styles.unfollowButton, loadingStates[vendor.id] ? styles.loadingButton : null]}
               >
                 {loadingStates[vendor.id] ? (
-                  <ActivityIndicator size="small" color="#fff" />
+                  <LottieView
+                    source={require('../../assets/lottie/rotateLoad.json')} // Reuse the animation for the unfollow button if desired
+                    autoPlay
+                    loop
+                    style={styles.buttonLottie}
+                  />
                 ) : (
                   <Text style={styles.buttonText}>Unfollow</Text>
                 )}
@@ -105,6 +132,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10
 
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  lottie: {
+    width: 150,
+    height: 150,
+  },
+  buttonLottie: {
+    width: 20,
+    height: 20,
   },
   searchInput: {
     flex: 1,

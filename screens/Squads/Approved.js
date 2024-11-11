@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Animated, SafeAreaView, ActivityIndicator, StatusBar, Platform, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, ActivityIndicator, StatusBar, Platform, Dimensions, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -67,7 +68,7 @@ const Approved = ({ navigation }) => {
           filteredVendors.map((vendor) => (
             <Animated.View key={vendor.id} style={styles.card}>
               <TouchableOpacity style={styles.vendorInfo}>
-                <Image source={{ uri: vendor.profilePic }} style={styles.profilePic} />
+                <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover}/>
                 <View style={styles.details}>
                   <Text style={styles.vendorName}>{vendor.name}</Text>
                   <Text style={styles.vendorProfession}>{vendor.profession}</Text>

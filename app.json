@@ -60,6 +60,12 @@
             ]
           }
         }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "enableCodeScanner": true
+        }
       ]
     ]
   }

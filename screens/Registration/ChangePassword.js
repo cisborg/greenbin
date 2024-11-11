@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, Platform, Alert, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
+import Toast from '../../helpers/Toast'; // Adjust the import path as necessary
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,6 +12,9 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
 
   const validateUserId = (id) => {
     const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirements
@@ -19,34 +23,44 @@ const ChangePassword = () => {
 
   const handleChangePassword = async () => {
     if (!validateUserId(userId)) {
-      Alert.alert('Error', 'Invalid phone number. Please enter a valid phone number.');
+      showToast('Invalid phone number. Please enter a valid phone number.', 'error');
       return;
     }
 
     if (newPassword === '') {
-      Alert.alert('Error', 'New password cannot be empty.');
+      showToast('New password cannot be empty.', 'error');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      showToast('Passwords do not match.', 'error');
       return;
     }
 
     setIsLoading(true);
     try {
       // Implement password change logic here
-      Alert.alert('Success', 'Password changed successfully!');
+      // Simulating successful password change
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+      showToast('Password changed successfully!', 'success');
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Failed to change password. Please try again.');
+      showToast('Failed to change password. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000); // Hide toast after 3 seconds
+  };
+
   return (
     <View style={styles.container}>
+      {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
       <Image 
         source={require('../../assets/seated.webp')} 
         style={styles.image} 

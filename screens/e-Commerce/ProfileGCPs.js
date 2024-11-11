@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -7,6 +7,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from "../../GlobalStyles";
 import { useRoute } from '@react-navigation/native';
 import Lottie from 'lottie-react-native'; // Import Lottie
+import FastImage from 'react-native-fast-image';
 
 const CardScroll = () => {
   const cards = [
@@ -62,7 +63,7 @@ const CardScroll = () => {
       {randomCards.map(card => (
         <TouchableOpacity key={card.id} onPress={() => console.log(`Card ${card.id} pressed`)}>
           <Animated.View style={[styles.cardContainer, animatedStyle]}>
-            <Image source={card.image} style={styles.cardImage} />
+            <FastImage source={card.image} style={styles.cardImage} resizeMode={FastImage.resizeMode.cover} />
           </Animated.View>
         </TouchableOpacity>
       ))}
@@ -165,7 +166,7 @@ const HomeScreen = ({ navigation }) => {
             <AntDesign name="creditcard" size={24} color='green' />
             <Text style={styles.navButtonText}>GreenBin</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Crypto')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Insurance')}>
             <FontAwesome name="bitcoin" size={24} color='green' />
             <Text style={styles.navButtonText}>Insurance</Text>
           </TouchableOpacity>

@@ -118,12 +118,17 @@ const ChatScreen = () => {
             <Text style={styles.messageSender}>{item.sender}</Text>
             
             {item.quotedMessage && (
-              <View style={styles.quotedMessage}>
-                <Text style={styles.quotedMessageText}>
-                  {item.quotedMessage.sender}: {item.quotedMessage.text}
-                </Text>
-              </View>
-            )}
+                <View
+                  style={[
+                    styles.quotedMessage,
+                    { backgroundColor: item.sender === currentUser ? '#f0f0f0' : '#d5f5d2' }, // Adjust colors as needed
+                  ]}
+                >
+                  <Text style={styles.quotedMessageText}>
+                    {item.quotedMessage.sender}: {item.quotedMessage.text}
+                  </Text>
+                </View>
+              )}
             
             {item.voiceNoteUri ? (
               <TouchableOpacity onPress={() => playVoiceNote(item.voiceNoteUri)}>
@@ -135,12 +140,13 @@ const ChatScreen = () => {
             
             <Text style={styles.messageTimestamp}>
               {item.timestamp.toLocaleTimeString()}
-              {item.sender !== currentUser && (
+              {item.sender === currentUser && (
                 <View style={styles.receiptContainer}>
-                  <Text style={styles.receiptText}>{item.read ? '✓✓' : '✓'}</Text>
+                  <Text style={styles.receiptText}>{item.read ? '✓✓' : '✓'}</Text> {/* ✓✓ for read, ✓ for delivered */}
                 </View>
               )}
             </Text>
+
           </View>
         </Swipeable>
       </View>
@@ -282,6 +288,15 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: 10,
+  },
+  quotedMessage: {
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 5,
+  },
+  quotedMessageText: {
+    color: '#555', // Adjust text color as needed
+    fontStyle: 'italic',
   },
   headerInfo: {
     flexDirection: 'column',

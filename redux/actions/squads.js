@@ -1,6 +1,4 @@
-// src/redux/actions/squadActions.js
-
-import api from '../../utils/axiosConfig'
+import api from '../../utils/axiosConfig';
 import {
     CREATE_SQUAD_REQUEST,
     CREATE_SQUAD_SUCCESS,
@@ -38,9 +36,7 @@ export const createSquad = (squadData) => async (dispatch) => {
         const response = await api.post('/squad/create', squadData);
         if (response.data.status === 'success') {
             dispatch({ type: CREATE_SQUAD_SUCCESS, payload: response.data });
-
         }
-
     } catch (error) {
         dispatch({ type: CREATE_SQUAD_FAILURE, payload: error.message });
     }
@@ -61,7 +57,7 @@ export const requestJoinSquad = (squadId, userId) => async (dispatch) => {
 export const approveJoinRequest = (squadId, userId) => async (dispatch) => {
     dispatch({ type: APPROVE_JOIN_REQUEST_REQUEST });
     try {
-        const response = await axios.post('/api/approve-join-request', { squadId, userId });
+        const response = await api.post('/api/approve-join-request', { squadId, userId });
         dispatch({ type: APPROVE_JOIN_REQUEST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: APPROVE_JOIN_REQUEST_FAILURE, payload: error.message });
@@ -72,7 +68,7 @@ export const approveJoinRequest = (squadId, userId) => async (dispatch) => {
 export const removeMember = (squadId, userId) => async (dispatch) => {
     dispatch({ type: REMOVE_MEMBER_REQUEST });
     try {
-        const response = await axios.post('/api/remove-member', { squadId, userId });
+        const response = await api.post('/api/remove-member', { squadId, userId });
         dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: REMOVE_MEMBER_FAILURE, payload: error.message });
@@ -83,7 +79,7 @@ export const removeMember = (squadId, userId) => async (dispatch) => {
 export const addMembers = (squadId, members) => async (dispatch) => {
     dispatch({ type: ADD_MEMBER_REQUEST });
     try {
-        const response = await axios.post('/api/add-members', { squadId, members });
+        const response = await api.post('/api/add-members', { squadId, members });
         dispatch({ type: ADD_MEMBER_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: ADD_MEMBER_FAILURE, payload: error.message });
@@ -94,7 +90,7 @@ export const addMembers = (squadId, members) => async (dispatch) => {
 export const leaveSquad = (squadId, userId) => async (dispatch) => {
     dispatch({ type: LEAVE_SQUAD_REQUEST });
     try {
-        const response = await axios.post('/api/leave-squad', { squadId, userId });
+        const response = await api.post('/api/leave-squad', { squadId, userId });
         dispatch({ type: LEAVE_SQUAD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: LEAVE_SQUAD_FAILURE, payload: error.message });
@@ -105,7 +101,7 @@ export const leaveSquad = (squadId, userId) => async (dispatch) => {
 export const deleteSquad = (squadId) => async (dispatch) => {
     dispatch({ type: DELETE_SQUAD_REQUEST });
     try {
-        const response = await axios.delete(`/api/delete-squad/${squadId}`);
+        const response = await api.delete(`/api/delete-squad/${squadId}`);
         dispatch({ type: DELETE_SQUAD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: DELETE_SQUAD_FAILURE, payload: error.message });
@@ -116,7 +112,7 @@ export const deleteSquad = (squadId) => async (dispatch) => {
 export const getAllSquads = () => async (dispatch) => {
     dispatch({ type: GET_ALL_SQUADS_REQUEST });
     try {
-        const response = await axios.get('/api/get-all-squads');
+        const response = await api.get('/api/get-all-squads');
         dispatch({ type: GET_ALL_SQUADS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_SQUADS_FAILURE, payload: error.message });
@@ -127,7 +123,7 @@ export const getAllSquads = () => async (dispatch) => {
 export const updateSquad = (squadId, squadData) => async (dispatch) => {
     dispatch({ type: UPDATE_SQUAD_REQUEST });
     try {
-        const response = await axios.put(`/api/update-squad/${squadId}`, squadData);
+        const response = await api.put(`/api/update-squad/${squadId}`, squadData);
         dispatch({ type: UPDATE_SQUAD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_SQUAD_FAILURE, payload: error.message });

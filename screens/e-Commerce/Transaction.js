@@ -9,18 +9,21 @@ import {
   SafeAreaView, 
   KeyboardAvoidingView,
   StyleSheet,
-  Platform, 
-  StatusBar,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { ScrollView } from 'react-native-gesture-handler';
 import Lottie from 'lottie-react-native'; // Import Lottie
+import { useDispatch, useSelector } from 'react-redux';
+import { withdraw, sendPoints } from '../redux/actions/paymentActions';
 
 const { width, height } = Dimensions.get('window');
 
 const TransactionScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { totalBalance, loading, error } = useSelector(state => state.payment);
+  
   const [generalPoints, setGeneralPoints] = useState({
     GreenPoints: 340000,
     GreenBank: 150000
@@ -31,9 +34,9 @@ const TransactionScreen = ({ navigation }) => {
   const [amountToReceive, setAmountToReceive] = useState('');
   const [airtimeAmount, setAirtimeAmount] = useState('');
   const [showAirtimeInput, setShowAirtimeInput] = useState(false);
-  const [totalDeducted, setTotalDeducted] = useState(0);
   const [showSendInput, setShowSendInput] = useState(false);
   const [showReceiveInput, setShowReceiveInput] = useState(false);
+  const [totalDeducted, setTotalDeducted] = useState(0);
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [opacity] = useState(new Animated.Value(0));
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
@@ -84,6 +87,9 @@ const TransactionScreen = ({ navigation }) => {
       return;
     }
   
+    // Dispatch sendPoints action
+    dispatch(sendPoints(recipientNumber, sendAmount));
+  
     // Update general points
     setGeneralPoints(prevState => ({
       ...prevState,
@@ -121,11 +127,16 @@ const TransactionScreen = ({ navigation }) => {
       return;
     }
 
+    // Dispatch withdraw action
+    dispatch(withdraw(receiveAmount));
+
+    // Update general points for withdrawal
     setGeneralPoints(prevState => ({
       ...prevState,
       [currentCard]: prevState[currentCard] - receiveAmount
     }));
 
+    // Update total deducted
     setTotalDeducted(prevTotal => prevTotal + receiveAmount);
     setAmountToReceive('');
     setShowReceiveInput(false);
@@ -189,170 +200,170 @@ const TransactionScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
-      <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoiding}>
-        <Animated.View style={{ opacity }}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back-circle-sharp" size={28} color="green" />
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'column' }}> 
-              <Text style={styles.headerText}>Hello, Jude!</Text>
-              <Text style={styles.dateText}>{currentDate}</Text>
-            </View>
-          </View>
-          
-          {/* Card Section */}
-          <View style={styles.cardContainer}>
-            <Text style={styles.cardTitle}>My Green Pay Cards</Text>
-            <View style={styles.cardRow}>
-              {cardTypes.map((card, index) => (
-                <TouchableOpacity key={index} onPress={() => handleCardSelection(index)}>
-                  <View style={[styles.card, index === activeCardIndex ? styles.activeCard : styles.inactiveCard]}>
-                    <Text style={styles.cardType}>{card}</Text>
-                    <Text style={styles.cardBalance}>GCP {Math.max(generalPoints[card], 0).toFixed(2)}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.dotContainer}>
-              {cardTypes.map((_, index) => (
-                <View key={index} style={[styles.dot, index === activeCardIndex ? styles.activeDot : styles.inactiveDot]} />
-              ))}
-            </View>
-          </View>
-
-          {/* Send/Receive Buttons */}
-          <View style={styles.actionButtons}>
-            <TouchableOpacity onPress={() => { setShowSendInput(true); setShowReceiveInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
-              <FontAwesome name="send" size={26} color="green" />
-              <Text>Send Cash</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => { setShowReceiveInput(true); setShowSendInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
-              <Ionicons name="download" size={24} color="green" />
-              <Text>Receive Cash</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => { setShowReceiveInput(false); setShowSendInput(false); setShowAirtimeInput(true); }} style={styles.actionButton}>
-              {isAddingUser ? (
-                <ActivityIndicator size="small" color="#0000ff" />
-              ) : (
-                <>
-                  <Ionicons name="add" size={24} color="green" />
-                  <Text>Mobi Airtime</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-
-          {/* Send Input Section */}
-          {showSendInput && (
-            <View style={styles.inputContainer}>
-              <TextInput 
-                placeholder="Recipient Mobile/Account Number" 
-                keyboardType="number-pad" 
-                value={recipientNumber} 
-                onChangeText={setRecipientNumber} 
-                style={styles.input} 
-                placeholderTextColor='gray'
-              />
-              <TextInput 
-                placeholder="Amount to Send" 
-                keyboardType="numeric" 
-                value={amountToSend} 
-                onChangeText={(text) => {
-                  const sanitizedText = text.replace(/[^0-9]/g, '');
-                  setAmountToSend(sanitizedText);
-                }} 
-                placeholderTextColor='gray'
-                style={styles.input} 
-              />
-              <TouchableOpacity onPress={handleSendPoints} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Send Now</Text>
+        <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoiding}>
+          <Animated.View style={{ opacity }}>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back-circle-sharp" size={28} color="green" />
               </TouchableOpacity>
+              <View style={{ flexDirection: 'column' }}> 
+                <Text style={styles.headerText}>Hello, Jude!</Text>
+                <Text style={styles.dateText}>{currentDate}</Text>
+              </View>
             </View>
-          )}
-
-          {/* Receive Input Section */}
-          {showReceiveInput && (
-            <View style={styles.inputContainer}>
-              <TextInput 
-                placeholder="Amount to Receive" 
-                keyboardType="numeric" 
-                value={amountToReceive} 
-                onChangeText={(text) => {
-                  const sanitizedText = text.replace(/[^0-9]/g, '');
-                  setAmountToReceive(sanitizedText);
-                }} 
-                placeholderTextColor='gray'
-                style={styles.input} 
-              />
-              <TouchableOpacity onPress={handleReceivePoints} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Receive Now</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          
-          {/* Airtime Input Section */}
-          {showAirtimeInput && (
-            <View style={styles.inputContainer}>
-              <TextInput 
-                placeholder="Amount of Airtime" 
-                keyboardType="numeric" 
-                value={airtimeAmount} 
-                onChangeText={(text) => {
-                  const sanitizedText = text.replace(/[^0-9]/g, '');
-                  setAirtimeAmount(sanitizedText);
-                }} 
-                placeholderTextColor='gray'
-                style={styles.input} 
-              />
-              <TouchableOpacity onPress={handleAirtimePurchase} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Buy Airtime</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* Income Section with Circular Progress */}
-          <View style={styles.progressContainer}>
-            <View style={styles.blueContainer}>
-              <Text style={styles.incomeText}>Daily Expenses</Text>
-              <CircularProgress
-                value={calculateProgress()}
-                maxValue={100}
-                radius={60}
-                activeStrokeColor="green"
-                inActiveStrokeColor="#e0e0e0"
-              />
-              <Text style={styles.incomeValue}>GP{totalDeducted.toFixed(2)}</Text>
-            </View>
-
-            {/* Recent Recipients */}
-            <View style={styles.recipient}>
-              <View style={styles.recentRecipientsContainer}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text style={styles.recentRecipientsTitle}>Recents Recipients</Text>
-                  <FontAwesome name="send" size={18} color="orange" />
-                </View>
-
-                {recentRecipients.map((item) => (
-                  <View key={item.id} style={styles.recipientContainer}>
-                    <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
-                    <Text style={{ color: 'green', fontSize: 11 }}>Sent: GCP {item.amount}</Text>
-                  </View>
+            
+            {/* Card Section */}
+            <View style={styles.cardContainer}>
+              <Text style={styles.cardTitle}>My Green Pay Cards</Text>
+              <View style={styles.cardRow}>
+                {cardTypes.map((card, index) => (
+                  <TouchableOpacity key={index} onPress={() => handleCardSelection(index)}>
+                    <View style={[styles.card, index === activeCardIndex ? styles.activeCard : styles.inactiveCard]}>
+                      <Text style={styles.cardType}>{card}</Text>
+                      <Text style={styles.cardBalance}>GCP {Math.max(generalPoints[card], 0).toFixed(2)}</Text>
+                    </View>
+                  </TouchableOpacity>
                 ))}
               </View>
-              <TouchableOpacity onPress={handleSubscriptionClick} style={styles.subscriptionButton}>
-                {isLoadingSubscription ? (
-                  <ActivityIndicator size="small" color="#ffff" />
+              <View style={styles.dotContainer}>
+                {cardTypes.map((_, index) => (
+                  <View key={index} style={[styles.dot, index === activeCardIndex ? styles.activeDot : styles.inactiveDot]} />
+                ))}
+              </View>
+            </View>
+
+            {/* Send/Receive Buttons */}
+            <View style={styles.actionButtons}>
+              <TouchableOpacity onPress={() => { setShowSendInput(true); setShowReceiveInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
+                <FontAwesome name="send" size={26} color="green" />
+                <Text>Send Cash</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => { setShowReceiveInput(true); setShowSendInput(false); setShowAirtimeInput(false); }} style={styles.actionButton}>
+                <Ionicons name="download" size={24} color="green" />
+                <Text>Withdraw Cash</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => { setShowReceiveInput(false); setShowSendInput(false); setShowAirtimeInput(true); }} style={styles.actionButton}>
+                {isAddingUser ? (
+                  <ActivityIndicator size="small" color="#0000ff" />
                 ) : (
-                  <Text style={styles.subscriptionButtonText}>Subscription</Text>
+                  <>
+                    <Ionicons name="add" size={24} color="green" />
+                    <Text>Mobi Airtime</Text>
+                  </>
                 )}
               </TouchableOpacity>
             </View>
-          </View>
-        </Animated.View>
-      </KeyboardAvoidingView>
+
+            {/* Send Input Section */}
+            {showSendInput && (
+              <View style={styles.inputContainer}>
+                <TextInput 
+                  placeholder="Recipient Mobile/Account Number" 
+                  keyboardType="number-pad" 
+                  value={recipientNumber} 
+                  onChangeText={setRecipientNumber} 
+                  style={styles.input} 
+                  placeholderTextColor='gray'
+                />
+                <TextInput 
+                  placeholder="Amount to Send" 
+                  keyboardType="numeric" 
+                  value={amountToSend} 
+                  onChangeText={(text) => {
+                    const sanitizedText = text.replace(/[^0-9]/g, '');
+                    setAmountToSend(sanitizedText);
+                  }} 
+                  placeholderTextColor='gray'
+                  style={styles.input} 
+                />
+                <TouchableOpacity onPress={handleSendPoints} style={styles.confirmButton}>
+                  <Text style={styles.confirmButtonText}>Send Now</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Receive Input Section (Withdrawal) */}
+            {showReceiveInput && (
+              <View style={styles.inputContainer}>
+                <TextInput 
+                  placeholder="Amount to Withdraw" 
+                  keyboardType="numeric" 
+                  value={amountToReceive} 
+                  onChangeText={(text) => {
+                    const sanitizedText = text.replace(/[^0-9]/g, '');
+                    setAmountToReceive(sanitizedText);
+                  }} 
+                  placeholderTextColor='gray'
+                  style={styles.input} 
+                />
+                <TouchableOpacity onPress={handleReceivePoints} style={styles.confirmButton}>
+                  <Text style={styles.confirmButtonText}>Withdraw Now</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Airtime Input Section */}
+            {showAirtimeInput && (
+              <View style={styles.inputContainer}>
+                <TextInput 
+                  placeholder="Amount of Airtime" 
+                  keyboardType="numeric" 
+                  value={airtimeAmount} 
+                  onChangeText={(text) => {
+                    const sanitizedText = text.replace(/[^0-9]/g, '');
+                    setAirtimeAmount(sanitizedText);
+                  }} 
+                  placeholderTextColor='gray'
+                  style={styles.input} 
+                />
+                <TouchableOpacity onPress={handleAirtimePurchase} style={styles.confirmButton}>
+                  <Text style={styles.confirmButtonText}>Buy Airtime</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Income Section with Circular Progress */}
+            <View style={styles.progressContainer}>
+              <View style={styles.blueContainer}>
+                <Text style={styles.incomeText}>Daily Expenses</Text>
+                <CircularProgress
+                  value={calculateProgress()}
+                  maxValue={100}
+                  radius={60}
+                  activeStrokeColor="green"
+                  inActiveStrokeColor="#e0e0e0"
+                />
+                <Text style={styles.incomeValue}>GP{totalDeducted.toFixed(2)}</Text>
+              </View>
+
+              {/* Recent Recipients */}
+              <View style={styles.recipient}>
+                <View style={styles.recentRecipientsContainer}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Text style={styles.recentRecipientsTitle}>Recent Recipients</Text>
+                    <FontAwesome name="send" size={18} color="orange" />
+                  </View>
+
+                  {recentRecipients.map((item) => (
+                    <View key={item.id} style={styles.recipientContainer}>
+                      <Text style={{ color: 'blue', fontSize: 12 }}>{item.mobile}</Text>
+                      <Text style={{ color: 'green', fontSize: 11 }}>Sent: GCP {item.amount}</Text>
+                    </View>
+                  ))}
+                </View>
+                <TouchableOpacity onPress={handleSubscriptionClick} style={styles.subscriptionButton}>
+                  {isLoadingSubscription ? (
+                    <ActivityIndicator size="small" color="#ffff" />
+                  ) : (
+                    <Text style={styles.subscriptionButtonText}>Subscription</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Animated.View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );

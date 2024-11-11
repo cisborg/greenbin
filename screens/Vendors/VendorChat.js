@@ -1,40 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, FlatList, SafeAreaView, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import EmojiSelector from 'react-native-emoji-selector';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import * as Audio from 'expo-av'; // For recording voice notes
+import * as Audio from 'expo-av';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Ensures gestures work properly
+import { FlashList } from '@shopify/flash-list';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const ChatScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name } = route.params;
+  const { userName } = route.params;
   const [messages, setMessages] = useState([
     {
       id: 1,
       text: 'Hello! How are you?',
       timestamp: new Date(),
-      sender: name,
-      read: false, // Add read status
+      sender: userName,
+      read: false,
     },
     {
       id: 2,
       text: 'I am doing great, thank you!',
       timestamp: new Date(),
       sender: 'You',
-      read: true, // Assume this message is read
+      read: true,
     },
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [quotedMessage, setQuotedMessage] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [recording, setRecording] = useState(null);
+  const [isOnline, setIsOnline] = useState(true);
 
-  const currentUser = 'You'; // Identifier for the current user
-  const isOnline = true; // Change this based on actual online status
+  const currentUser = 'You';
 
   const sendMessage = () => {
     if (inputMessage.trim() !== '') {
@@ -42,13 +43,13 @@ const ChatScreen = () => {
         id: Date.now(),
         text: inputMessage,
         timestamp: new Date(),
-        sender: currentUser, // Indicates that the current user sent this message
-        read: false, // Newly sent messages are unread
-        quotedMessage
+        sender: currentUser,
+        read: false,
+        dateSignature: new Date().toLocaleDateString(),
       };
-      setMessages([...messages, newMessage]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage('');
-      setQuotedMessage(null); // Clear the quoted message after sending
+      setQuotedMessage(null);
     }
   };
 
@@ -61,7 +62,6 @@ const ChatScreen = () => {
       const result = await DocumentPicker.getDocumentAsync({});
       if (result.type === 'success') {
         alert(`File Selected: ${result.name}`);
-        // Add file sending functionality as needed
       }
     } catch (err) {
       console.log('Error picking file:', err);
@@ -69,7 +69,7 @@ const ChatScreen = () => {
   };
 
   const deleteMessage = (messageId) => {
-    setMessages(messages.filter((message) => message.id !== messageId));
+    setMessages((prevMessages) => prevMessages.filter((message) => message.id !== messageId));
   };
 
   const forwardMessage = (message) => {
@@ -95,37 +95,72 @@ const ChatScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderMessageItem = ({ item }) => (
-    <Swipeable
-      renderRightActions={() => renderRightActions(item)}
-      renderLeftActions={() => renderLeftActions(item)}
-      onSwipeableLeftOpen={() => quoteMessage(item)}
-    >
-      <View
-        style={[
-          styles.messageContainer,
-          item.sender === currentUser ? styles.myMessage : styles.otherMessage,
-        ]}
-      >
-        <Text style={styles.messageSender}>{item.sender}</Text>
-        
-        {item.quotedMessage && (
-          <View style={styles.quotedMessage}>
-            <Text style={styles.quotedMessageText}>
-              {item.quotedMessage.sender}: {item.quotedMessage.text}
+  const renderMessageItem = ({ item, index }) => {
+    const showDateSignature = index === 0 || 
+      new Date(item.timestamp).toLocaleDateString() !== new Date(messages[index - 1].timestamp).toLocaleDateString();
+  
+    return (
+      <View>
+        {showDateSignature && (
+          <Text style={styles.dateSignature}>{item.dateSignature || new Date(item.timestamp).toLocaleDateString()}</Text>
+        )}
+        <Swipeable
+          renderRightActions={() => renderRightActions(item)}
+          renderLeftActions={() => renderLeftActions(item)}
+          onSwipeableLeftOpen={() => quoteMessage(item)}
+        >
+          <View
+            style={[
+              styles.messageContainer,
+              item.sender === currentUser ? styles.myMessage : styles.otherMessage,
+            ]}
+          >
+            <Text style={styles.messageSender}>{item.sender}</Text>
+            
+            {item.quotedMessage && (
+                <View
+                  style={[
+                    styles.quotedMessage,
+                    { backgroundColor: item.sender === currentUser ? '#f0f0f0' : '#d5f5d2' }, // Adjust colors as needed
+                  ]}
+                >
+                  <Text style={styles.quotedMessageText}>
+                    {item.quotedMessage.sender}: {item.quotedMessage.text}
+                  </Text>
+                </View>
+              )}
+            
+            {item.voiceNoteUri ? (
+              <TouchableOpacity onPress={() => playVoiceNote(item.voiceNoteUri)}>
+                <Text style={styles.voiceNoteText}>🎤 Voice Note</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.messageText}>{item.text}</Text>
+            )}
+            
+            <Text style={styles.messageTimestamp}>
+              {item.timestamp.toLocaleTimeString()}
+              {item.sender === currentUser && (
+                <View style={styles.receiptContainer}>
+                  <Text style={styles.receiptText}>{item.read ? '✓✓' : '✓'}</Text> {/* ✓✓ for read, ✓ for delivered */}
+                </View>
+              )}
             </Text>
-          </View>
-        )}
-        
-        <Text style={styles.messageText}>{item.text}</Text>
-        <Text style={styles.messageTimestamp}>{item.timestamp.toLocaleTimeString()}</Text>
 
-        {item.sender !== currentUser && item.read && (
-          <Ionicons name="checkmark-done" size={14} color="blue" style={styles.readIndicator} />
-        )}
+          </View>
+        </Swipeable>
       </View>
-    </Swipeable>
-  );
+    );
+  };
+
+  const playVoiceNote = async (uri) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync({ uri });
+      await sound.playAsync();
+    } catch (error) {
+      console.error("Error playing voice note:", error);
+    }
+  };
 
   const startRecording = async () => {
     try {
@@ -143,23 +178,34 @@ const ChatScreen = () => {
       console.error('Failed to start recording', err);
     }
   };
-
+  
   const stopRecording = async () => {
-    setRecording(undefined);
-    await recording.stopAndUnloadAsync();
-    const uri = recording.getURI();
-    alert('Voice note recorded: ' + uri);
-    // Add the recorded voice note to the messages array here
+    if (recording) {
+      await recording.stopAndUnloadAsync();
+      const uri = recording.getURI();
+      const newMessage = {
+        id: Date.now(),
+        text: '',
+        timestamp: new Date(),
+        sender: currentUser,
+        read: false,
+        voiceNoteUri: uri,
+        dateSignature: new Date().toLocaleDateString(),
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      alert('Voice note recorded: ' + uri);
+      setRecording(null);
+    }
   };
 
   return (
     <GestureHandlerRootView style={styles.safeAreaView}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={()=> navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>{name}</Text>
+          <Text style={styles.headerTitle}>{userName}</Text>
           <Text style={styles.headerSubtitle}>
             {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
           </Text>
@@ -172,7 +218,6 @@ const ChatScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Display Quoted Message Above Messages */}
       {quotedMessage && (
         <View style={styles.quotedMessageAboveInput}>
           <Text style={styles.quotedMessageText}>
@@ -181,10 +226,12 @@ const ChatScreen = () => {
         </View>
       )}
 
-      <FlatList
+      <FlashList
         data={messages}
         renderItem={renderMessageItem}
         keyExtractor={(item) => item.id.toString()}
+        estimatedItemSize={50}
+        onEndReachedThreshold={0.5}
         style={styles.messagesList}
       />
 
@@ -226,9 +273,7 @@ const ChatScreen = () => {
         )}
       </View>
     </GestureHandlerRootView>
-  );
-};
-
+)}
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
@@ -244,10 +289,35 @@ const styles = StyleSheet.create({
   backButton: {
     marginLeft: 10,
   },
+  quotedMessage: {
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 5,
+  },
+  quotedMessageText: {
+    color: '#555', // Adjust text color as needed
+    fontStyle: 'italic',
+  },
   headerInfo: {
     flexDirection: 'column',
     flex: 1,
     marginLeft: 10,
+  },
+  voiceNoteText: {
+    color: '#007AFF',
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  receiptText: {
+    fontSize: 12,
+    color: 'gray',
+    marginLeft: 5,
+  },
+  dateSignature: {
+    fontSize: 10,
+    color: '#999',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   headerTitle: {
     fontSize: 18,
@@ -303,10 +373,27 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#999',
   },
-  readIndicator: {
-    position: 'absolute',
-    bottom: 5,
-    right: 10,
+  receiptContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  greyDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'grey',
+    marginLeft: 5,
+  },
+  greenDotsContainer: {
+    flexDirection: 'row',
+    marginLeft: 5,
+  },
+  greenDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'green',
+    marginLeft: 2,
   },
   inputContainer: {
     flexDirection: 'row',

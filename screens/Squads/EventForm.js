@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   ScrollView,
   Alert,
-  SafeAreaView,
   ActivityIndicator,
   Modal,
-  Animated,
-  Platform,
-  StatusBar
+  Animated
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
+import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSquadActivity } from './path/to/actions';
+import LottieView from 'lottie-react-native'; // Import Lottie component
 
 const EventForm = () => {
   const [eventName, setEventName] = useState('');
@@ -24,9 +24,27 @@ const EventForm = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [eventLocation, setEventLocation] = useState('');
   const [eventPhoto, setEventPhoto] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [isLoading, setIsLoading] = useState(true); // State for controlling the loading screen
+
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.squadActivities.loading);
+  const error = useSelector(state => state.squadActivities.error);
+
+  useEffect(() => {
+    // Simulate an async loading (you can replace this with actual data fetching or other loading logic)
+    setTimeout(() => {
+      setIsLoading(false); // Turn off loading after 3 seconds
+    }, 3000);
+
+    const requestPermissions = async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission required', 'You need to grant permission to access the camera roll.');
+      }
+    };
+    requestPermissions();
+  }, []);
 
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -36,23 +54,49 @@ const EventForm = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setEventPhoto(result.assets[0].uri);
     }
   };
 
   const handleSubmit = () => {
     if (!eventName || !eventLocation) {
-      Alert.alert('Validation Error', 'Please fill in all required fields.');
+      Alert.alert('Entry Error', 'Please fill in all required fields.');
       return;
     }
 
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setModalVisible(true);
-    }, 2000); // Simulate network request
+    const activity = {
+      name: eventName,
+      date: eventDate.toISOString(),
+      location: eventLocation,
+      image: eventPhoto,
+    };
+
+    // Dispatch addSquadActivity action
+    dispatch(addSquadActivity(activity));
   };
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  if (isLoading) {
+    // Show Lottie animation while loading
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Path to your Lottie JSON file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -96,7 +140,7 @@ const EventForm = () => {
           <TouchableOpacity onPress={handleImagePick}>
             <Text style={styles.photoButton}>Pick an image</Text>
           </TouchableOpacity>
-          {eventPhoto && <Image source={{ uri: eventPhoto }} style={styles.image} />}
+          {eventPhoto && <FastImage source={{ uri: eventPhoto }} style={styles.image} resizeMode={FastImage.resizeMode.cover} />}
 
           <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
             <Text style={{ color: 'white' }}>Submit Event</Text>
@@ -106,24 +150,10 @@ const EventForm = () => {
             <ActivityIndicator size="large" color={'green'} style={styles.loader} />
           )}
 
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalText}>Event Submitted Successfully</Text>
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.okButtonText}>OK</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
+          {error && (
+            <Text style={styles.errorText}>Error: {error}</Text>
+          )}
+
         </ScrollView>
       </Animated.View>
     </View>
@@ -138,6 +168,15 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: 5,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: 150,
+    height: 150,
   },
   input: {
     height: 40,
@@ -162,10 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 15,
   },
-  photoButtonText: {
-    color: 'green',
-    textAlign: 'center',
-  },
   image: {
     width: 100,
     height: 100,
@@ -179,6 +214,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 14,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  okButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
+  },
+  okButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 

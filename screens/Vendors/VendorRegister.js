@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Alert, Modal, ActivityIndicator, SafeAreaView, Animated, TouchableOpacity, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker'; // Make sure to install expo-image-picker
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import { View, Text, TextInput, StyleSheet, ScrollView, Alert, Modal, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Lottie from 'lottie-react-native'; // Import Lottie
 import { Color } from '../../GlobalStyles';
 
 const CustomInput = ({ placeholder, value, onChangeText, keyboardType, secureTextEntry, iconName }) => (
@@ -82,93 +83,94 @@ const VendorRegister = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Animated.View style={{ opacity: animation }}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}> Vendor Registration Form</Text>
-          <Text style={styles.description}>Join us in promoting sustainable practices in eCommerce!</Text>
-          <CustomInput
-            placeholder="Vendor Name"
-            value={vendorName}
-            onChangeText={setVendorName}
-            iconName="user"
-          />
-
-          <CustomInput
-            placeholder="Profession"
-            value={profession}
-            onChangeText={setProfession}
-            iconName="briefcase"
-          />
-
-          <CustomInput
-            placeholder="Products Offered"
-            value={products}
-            onChangeText={setProducts}
-            iconName="tags"
-          />
-
-          <CustomInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            iconName="envelope"
-          />
-
-          <CustomInput
-            placeholder="Phone Number"
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            iconName="phone"
-          />
-
-          <CustomInput
-            placeholder="Address"
-            value={address}
-            onChangeText={setAddress}
-            iconName="home"
-          />
-
-          <View style={styles.photoContainer}>
-            <TouchableOpacity onPress={() => pickImage('id')} style={styles.photoButton}>
-              <Text style={styles.photoButtonText}>Upload ID Photo (Optional)</Text>
-            </TouchableOpacity>
-            {idPhoto && <Image source={{ uri: idPhoto }} style={styles.imagePreview} />}
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText} onPress={handleRegister}>
-              {loading ? <ActivityIndicator color="#FFFFFF" /> : 'Apply'}
-            </Text>
-          </View>
-
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalText}>Application submitted successfully. Wait for approval.</Text>
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={() => {
-                    setModalVisible(false);
-                    navigation.goBack(); // Navigate back to Settings
-                  }}
-                >
-                  <Text style={styles.okButtonText}>Okay</Text>
-                </TouchableOpacity>
-              </View>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <Lottie source={require('../../assets/lottie/rotateLoad.json')} autoPlay loop /> {/* Adjust the path */}
+        </View>
+      ) : (
+        <Animated.View style={{ opacity: animation }}>
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}> Vendor Registration Form</Text>
+            <Text style={styles.description}>Join us in promoting sustainable practices in eCommerce!</Text>
+            <CustomInput
+              placeholder="Vendor Name"
+              value={vendorName}
+              onChangeText={setVendorName}
+              iconName="user"
+            />
+            <CustomInput
+              placeholder="Profession"
+              value={profession}
+              onChangeText={setProfession}
+              iconName="briefcase"
+            />
+            <CustomInput
+              placeholder="Products Offered"
+              value={products}
+              onChangeText={setProducts}
+              iconName="tags"
+            />
+            <CustomInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              iconName="envelope"
+            />
+            <CustomInput
+              placeholder="Phone Number"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              iconName="phone"
+            />
+            <CustomInput
+              placeholder="Address"
+              value={address}
+              onChangeText={setAddress}
+              iconName="home"
+            />
+            <View style={styles.photoContainer}>
+              <TouchableOpacity onPress={() => pickImage('id')} style={styles.photoButton}>
+                <Text style={styles.photoButtonText}>Upload ID Photo (Optional)</Text>
+              </TouchableOpacity>
+              {idPhoto &&<FastImage source={{ uri: idPhoto }} style={styles.imagePreview} resizeMode={FastImage.resizeMode.cover} />
+            }
             </View>
-          </Modal>
-        </ScrollView>
-      </Animated.View>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.buttonText} onPress={handleRegister}>
+                Apply
+              </Text>
+            </View>
+            <Modal
+              transparent={true}
+              animationType="slide"
+              visible={modalVisible}
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.modalText}>Application submitted successfully. Wait for approval.</Text>
+                  <TouchableOpacity
+                    style={styles.okButton}
+                    onPress={() => {
+                      setModalVisible(false);
+                      navigation.goBack();
+                    }}
+                  >
+                    <Text style={styles.okButtonText}>Okay</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </ScrollView>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -177,6 +179,11 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
 import CheckBox from '@react-native-community/checkbox';
 import { Button } from 'react-native-elements';
@@ -9,6 +9,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox'; // Import BouncyCheckbox
+import FastImage from 'react-native-fast-image';
 
 
 const initialProducts = [
@@ -88,7 +89,7 @@ const StoreHeader = () => {
 
   return (
     <View style={styles.storeHeaderContainer}>
-      <Image source={require('../../assets/tree.avif')} style={styles.storeImage} />
+      <FastImage source={require('../../assets/tree.avif')} resizeMode={FastImage.resizeMode.cover} style={styles.storeImage} />
       <View style={styles.storeInfoContainer}>
         <Text style={styles.storeName}>Sysnex Electronics</Text>
         <Text style={styles.storeDetails}>Total 707 products | {followers} followers</Text>
@@ -132,7 +133,7 @@ const ProductCard = ({ item, addToFavorites, addToCart }) => {
       )}
     >
       <TouchableOpacity style={styles.card} >
-        <Image source={item.image} style={styles.productImage} />
+        <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
         <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
           {item.originalPrice && (

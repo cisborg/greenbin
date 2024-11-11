@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const squadsData = [
   {
@@ -71,7 +72,7 @@ const LeaderboardScreen = () => {
   const renderSquadItem = ({ item, index }) => (
     <View style={styles.squadCard}>
       <Text style={styles.rank}>{index + 1}</Text>
-      <Image source={item.logo} style={styles.logo} />
+      <FastImage source={item.logo} style={styles.logo} resizeMode={FastImage.resizeMode.cover} />
       <View style={styles.squadInfo}>
         <Text style={styles.squadName}>{item.name}</Text>
         <Text style={styles.points}>Total Tiers: {item.points}</Text>
@@ -106,9 +107,10 @@ const LeaderboardScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       </Animated.View>
-      <Image
+      <FastImage
         style={[styles.shapesIcon1, styles.vectorIconLayout]}
         source={require("../../assets/shapes.png")}
+        resizeMode={FastImage.resizeMode.cover}
       />
     </SafeAreaView>
   );

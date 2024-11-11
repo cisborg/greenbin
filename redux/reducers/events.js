@@ -1,37 +1,81 @@
-// squadLeaderboardReducer.js
+// reducers/squadActivitiesReducer.js
 import {
-    FETCH_SQUAD_LEADERBOARD,
-    UPDATE_SQUAD_LEADERBOARD,
-    RESET_SQUAD_LEADERBOARD
+    CREATE_SQUAD_ACTIVITY,
+    DELETE_SQUAD_ACTIVITY,
+    UPDATE_SQUAD_ACTIVITY,
+    FETCH_SQUAD_ACTIVITIES,
+    SQUAD_ACTIVITY_LOADING,
+    SQUAD_ACTIVITY_ERROR,
 } from '../actions/actionTypes';
 
 const initialState = {
-    totalTiers: 0,         // Total number of tiers from all members in the squad
-    squadCapacity: 0,      // Maximum capacity of the squad
-    percentageReached: 0,   // Percentage of capacity reached
-    awardType: '',         // Type of award earned by the squad
+    activities: [],
+    loading: false,
+    error: null,
+    successMessage: '', // For success confirmation messages
 };
 
-const squadLeaderboardReducer = (state = initialState, action) => {
+const squadActivitiesReducer = (state = initialState, action) => {
     switch (action.type) {
-        case FETCH_SQUAD_LEADERBOARD:
-            return { 
-                ...state, 
-                ...action.payload 
-            }; // Expecting payload to contain the new state
-
-        case UPDATE_SQUAD_LEADERBOARD:
+        case SQUAD_ACTIVITY_LOADING:
             return {
                 ...state,
-                ...action.payload // Update state with new values
+                loading: true,
+                error: null,
+                successMessage: '',
             };
 
-        case RESET_SQUAD_LEADERBOARD:
-            return initialState; // Reset to initial state
+        case CREATE_SQUAD_ACTIVITY:
+            return {
+                ...state,
+                loading: false,
+                activities: [...state.activities, {
+                    ...action.payload,
+                    image: action.payload.image || null, // Handle image data
+                }],
+                successMessage: 'Activity created successfully!',
+            };
+
+        case DELETE_SQUAD_ACTIVITY:
+            return {
+                ...state,
+                loading: false,
+                activities: state.activities.filter(activity => activity.id !== action.payload),
+                successMessage: 'Activity deleted successfully!',
+            };
+
+        case UPDATE_SQUAD_ACTIVITY:
+            return {
+                ...state,
+                loading: false,
+                activities: state.activities.map(activity =>
+                    activity.id === action.payload.id 
+                        ? { ...activity, ...action.payload, image: action.payload.image || activity.image }
+                        : activity
+                ),
+                successMessage: 'Activity updated successfully!',
+            };
+
+        case FETCH_SQUAD_ACTIVITIES:
+            return {
+                ...state,
+                loading: false,
+                activities: action.payload.map(activity => ({
+                    ...activity,
+                    image: activity.image || null, // Ensure each activity has an image field
+                })),
+            };
+
+        case SQUAD_ACTIVITY_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
 
         default:
             return state;
     }
 };
 
-export default squadLeaderboardReducer;
+export default squadActivitiesReducer;

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
-import  Paystack from 'react-native-paystack-webview';
+import Paystack from 'react-native-paystack-webview';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { FontFamily , Color} from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { depositRequest, depositSuccess, depositFailure } from '../../redux/actions/paymentActions'; // Import your action creators
 
 const PrepaidRechargeScreen = () => {
   const [amount, setAmount] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [gatewayMessage, setGatewayMessage] = useState('');
 
@@ -18,6 +18,10 @@ const PrepaidRechargeScreen = () => {
 
   const animation = useRef(new Animated.Value(0)).current;
 
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.payment.loading); // Get loading state from Redux
+  const error = useSelector((state) => state.payment.error); // Get error state from Redux
+
   useEffect(() => {
     setAmount(routeAmount);
     Animated.timing(animation, {
@@ -27,38 +31,29 @@ const PrepaidRechargeScreen = () => {
     }).start();
   }, [routeAmount]);
 
-  const initiatePayment = (method) => {
-    setModalVisible(true);
-    setLoading(true);
-    
-    // Simulate API call with a timeout to represent the payment process
-    setTimeout(() => {
-      console.log(`Initiating deposit of KES ${amount} using ${method}`);
-      setLoading(false);
-      setModalVisible(false);
-    }, 500);
-  };
-
-  const handleGatewayClick = (gateway) => {
-    setGatewayMessage(`Initiating payment via ${gateway}...`);
-    setLoading(true);
-    
-    // Simulate API call with a timeout for the payment gateway
-    setTimeout(() => {
-      setLoading(false);
-      setGatewayMessage(`Payment via ${gateway} initiated successfully`);
-    }, 400);
-  };
-
   const handlePaystackSuccess = (res) => {
     console.log("Payment successful", res);
     setGatewayMessage("Payment successful!");
-    setLoading(false);
+    dispatch(depositRequest()); // Dispatch deposit request
+
+    // Simulate API call to update balance
+    const pointsDeposited = amount; // Amount deposited in points
+    dispatch(depositSuccess({ points: pointsDeposited })); // Update the balance in Redux
+
+    setModalVisible(false);
+    navigation.navigate('SuccessScreen'); // Navigate to a success screen or show a message
   };
 
   const handlePaystackCancel = (e) => {
     console.log("Payment canceled", e);
     setGatewayMessage("Payment canceled!");
+    setModalVisible(false);
+  };
+
+  const handlePaystackError = (error) => {
+    console.log("Payment failed", error);
+    setGatewayMessage("Payment failed! Please try again.");
+    dispatch(depositFailure(error)); // Dispatch failure action
     setLoading(false);
   };
 
@@ -101,11 +96,12 @@ const PrepaidRechargeScreen = () => {
 
             {/* Paystack Payment Integration */}
             <Paystack
-              paystackKey=""  // Replace the  Paystack public key
+              paystackKey=""  // Replace with your Paystack public key
               billingEmail="orachadongo@gmail.com"  // Optional email
               amount={amount * 100}  // Paystack requires amount in kobo (for KES, multiply by 100)
               onCancel={handlePaystackCancel}  // Handle cancellations
               onSuccess={handlePaystackSuccess}  // Handle successful transactions
+              onError={handlePaystackError}  // Handle failed transactions
               ref={paystackWebViewRef}  // Ref for initiating payment
             />
             
@@ -115,6 +111,21 @@ const PrepaidRechargeScreen = () => {
                 <Text style={styles.proceedButtonText}>Pay Green</Text>
               </View>
             </TouchableOpacity>
+
+            {loading && (
+              <Modal transparent={true} animationType="fade">
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                    <ActivityIndicator size="small" color="green" />
+                    <Text style={styles.modalText}>Processing payment...</Text>
+                  </View>
+                </View>
+              </Modal>
+            )}
+
+            {error && (
+              <Text style={styles.errorText}>{error}</Text>
+            )}
           </View>
 
           <View style={styles.bottom}>

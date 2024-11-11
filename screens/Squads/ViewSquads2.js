@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View, Text, Modal, Alert, Image, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions ,Platform,StatusBar} from 'react-native';
+import { StyleSheet, View, Text, Modal, Alert, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions ,Platform,StatusBar} from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window');
 
@@ -79,9 +80,10 @@ const ViewSquad2Screen = () => {
         {/* Header Section */}
         <View style={styles.header}>
          
-          <Image 
+          <FastImage
             source={{ uri: squadData.moderator.avatar }} 
             style={styles.squadAvatar} 
+            resizeMode={FastImage.resizeMode.cover}
             accessibilityLabel={`${squadData.moderator.name}'s avatar`}
           />
           <Text style={styles.headerTitle}>{squadData.name}</Text>
@@ -117,9 +119,10 @@ const ViewSquad2Screen = () => {
         <Text style={styles.moderatedByText}>Created By</Text>
         <View style={styles.moderatedByContainer}>
           <View style={styles.moderatorInfo}>
-            <Image 
+            <FastImage 
               source={{ uri: squadData.moderator.avatar }} 
-              style={styles.moderatorAvatar} 
+              style={styles.moderatorAvatar}
+              resizeMode={FastImage.resizeMode.cover} 
               accessibilityLabel={`${squadData.moderator.name}'s avatar`}
             />
             <View style={styles.moderatorDetails}>
@@ -138,7 +141,9 @@ const ViewSquad2Screen = () => {
         <View style={styles.membersContainer}>
           <View style={styles.membersList}>
             {squadData.members.map((member, index) => (
-              <Image key={index} source={{ uri: member.avatar }} style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
+              <FastImage key={index} source={{ uri: member.avatar }}
+              resizeMode={FastImage.resizeMode.cover}
+              style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
             ))}
           <Text style={styles.totalMembers}>
             {squadData.members.length >= 1000 ? `${(squadData.members.length / 1000).toFixed(1)}k` : squadData.members.length}

@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image ,Alert} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView,Alert} from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
+import FastImage from 'react-native-fast-image';
 
 const JoinUsScreen = () => {
   const navigation = useNavigation();
@@ -17,11 +18,15 @@ const JoinUsScreen = () => {
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Join Our Eco-Friendly Movements!</Text>
-        <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.logo} />
+        <FastImage source={{ uri: 'https://via.placeholder.com/100' }}
+        resizeMode={FastImage.resizeMode.cover}
+        style={styles.logo} />
       </View>
 
       <View style={styles.profileContainer}>
-        <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.profileIcon} />
+        <FastImage source={{ uri: 'https://via.placeholder.com/40' }}
+        resizeMode={FastImage.resizeMode.cover}
+        style={styles.profileIcon} />
         <Text style={styles.profileId}>User ID: {userId}</Text>
       </View>
 

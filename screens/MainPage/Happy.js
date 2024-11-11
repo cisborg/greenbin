@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View, Image, ScrollView,Dimensions, Animated, SafeAreaView, Platform,StatusBar } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LottieView from 'lottie-react-native';
 import JoinUsScreen from "../AboutApp/JoinUs";
 import LeaderboardScreen from "../Squads/SquadsAward";
 import { FontFamily, Color } from "../../GlobalStyles";
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const Tab = createMaterialTopTabNavigator();
 const { width, height } = Dimensions.get('window');
@@ -121,7 +122,7 @@ const LeaderboardContent = () => {
 // Top Users Component
 const UserTop = ({ position, name, score, image, crown, squad, award, isCenter }) => (
   <View style={[styles.userTop, isCenter && styles.userTopCenter, position === "1" && styles.userTopFirst]}>
-    <Image source={image} style={styles.userTopImage} />
+    <FastImage source={image} style={styles.userTopImage} />
     {crown && <FontAwesome6 name="crown" size={24} color="orange" style={styles.crownIcon} />}
     <Text style={styles.userTopName}>{name}</Text>
     <Text style={styles.userTopScore}>{score}</Text>
@@ -134,7 +135,7 @@ const UserTop = ({ position, name, score, image, crown, squad, award, isCenter }
 const UserRow = ({ position, name, score, image, squad, award }) => (
   <View style={styles.userRow}>
     <Text style={styles.userPosition}>{position}</Text>
-    <Image source={image} style={styles.userImage} />
+    <FastImage source={image} style={styles.userImage} />
     <View style={styles.userDetails}>
       <Text style={styles.userName}>{name}</Text>
       <Text style={styles.userSquad}>{squad}</Text>

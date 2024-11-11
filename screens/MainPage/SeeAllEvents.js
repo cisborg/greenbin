@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, View, Text, TextInput, Dimensions, Animated, FlatList, TouchableOpacity,Platform,StatusBar } from "react-native";
-import { Image } from "expo-image";
+import { SafeAreaView, StyleSheet, View, Text, TextInput, Dimensions, Animated, FlatList, TouchableOpacity, Platform, StatusBar } from "react-native";
+import FastImage from "react-native-fast-image";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { FontFamily, Color, FontSize } from "../../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 
 const { width } = Dimensions.get('window');
 
@@ -99,12 +99,12 @@ const EventCard = ({ title, date, location, imageSource }) => {
     <View style={styles.rectangleParent}>
       <View style={styles.groupChildShadowBox} />
       <View style={styles.imGoingToShakeYParent}>
-        <Image style={styles.groupInner} contentFit="cover" source={imageSource} />
+        <FastImage style={styles.groupInner} resizeMode={FastImage.resizeMode.cover} source={imageSource} />
         <View style={styles.groupInnerShadowBox}>
           <Text style={styles.imGoingTo}>{title}</Text>
           <Text style={styles.satMay1}>{date}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image style={styles.locationIcon} contentFit="cover" source={require('../../assets/location.jpg')} />
+            <FastImage style={styles.locationIcon} resizeMode={FastImage.resizeMode.cover} source={require('../../assets/location.jpg')} />
             <Text style={styles.min}>{location}</Text>
           </View>
         </View>

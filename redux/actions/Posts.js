@@ -1,5 +1,6 @@
 // src/redux/actions/postActions.js
-import axios from 'axios';
+import api from "../../utils/axiosConfig";
+
 import {
     CREATE_POST_REQUEST,
     CREATE_POST_SUCCESS,
@@ -49,7 +50,7 @@ import {
 export const createPost = (postData) => async (dispatch) => {
     dispatch({ type: CREATE_POST_REQUEST });
     try {
-        const response = await axios.post('/api/create-post', postData);
+        const response = await api.post('/api/create-post', postData);
         dispatch({ type: CREATE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_POST_FAILURE, payload: error.message });
@@ -60,7 +61,7 @@ export const createPost = (postData) => async (dispatch) => {
 export const deletePost = (postId) => async (dispatch) => {
     dispatch({ type: DELETE_POST_REQUEST });
     try {
-        await axios.delete(`/api/delete-post/${postId}`);
+        await api.delete(`/api/delete-post/${postId}`);
         dispatch({ type: DELETE_POST_SUCCESS, payload: postId });
     } catch (error) {
         dispatch({ type: DELETE_POST_FAILURE, payload: error.message });
@@ -71,7 +72,7 @@ export const deletePost = (postId) => async (dispatch) => {
 export const sharePost = (postId) => async (dispatch) => {
     dispatch({ type: SHARE_POST_REQUEST });
     try {
-        const response = await axios.post(`/api/share-post`, { postId });
+        const response = await api.post(`/api/share-post`, { postId });
         dispatch({ type: SHARE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: SHARE_POST_FAILURE, payload: error.message });
@@ -82,7 +83,7 @@ export const sharePost = (postId) => async (dispatch) => {
 export const getAllPosts = () => async (dispatch) => {
     dispatch({ type: GET_ALL_POSTS_REQUEST });
     try {
-        const response = await axios.get('/api/get-all-posts');
+        const response = await api.get('/api/get-all-posts');
         dispatch({ type: GET_ALL_POSTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_POSTS_FAILURE, payload: error.message });
@@ -93,7 +94,7 @@ export const getAllPosts = () => async (dispatch) => {
 export const getPostById = (postId) => async (dispatch) => {
     dispatch({ type: GET_POST_BY_ID_REQUEST });
     try {
-        const response = await axios.get(`/api/get-post/${postId}`);
+        const response = await api.get(`/api/get-post/${postId}`);
         dispatch({ type: GET_POST_BY_ID_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_POST_BY_ID_FAILURE, payload: error.message });
@@ -104,7 +105,7 @@ export const getPostById = (postId) => async (dispatch) => {
 export const viewSharedPost = (postId) => async (dispatch) => {
     dispatch({ type: VIEW_SHARED_POST_REQUEST });
     try {
-        const response = await axios.get(`/api/view-shared-post/${postId}`);
+        const response = await api.get(`/api/view-shared-post/${postId}`);
         dispatch({ type: VIEW_SHARED_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: VIEW_SHARED_POST_FAILURE, payload: error.message });
@@ -115,7 +116,7 @@ export const viewSharedPost = (postId) => async (dispatch) => {
 export const updatePost = (postId, postData) => async (dispatch) => {
     dispatch({ type: UPDATE_POST_REQUEST });
     try {
-        const response = await axios.put(`/api/update-post/${postId}`, postData);
+        const response = await api.put(`/api/update-post/${postId}`, postData);
         dispatch({ type: UPDATE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_POST_FAILURE, payload: error.message });
@@ -126,7 +127,7 @@ export const updatePost = (postId, postData) => async (dispatch) => {
 export const likePost = (postId) => async (dispatch) => {
     dispatch({ type: LIKE_POST_REQUEST });
     try {
-        const response = await axios.post(`/api/like-post`, { postId });
+        const response = await api.post(`/api/like-post`, { postId });
         dispatch({ type: LIKE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
@@ -137,7 +138,7 @@ export const likePost = (postId) => async (dispatch) => {
 export const unlikePost = (postId) => async (dispatch) => {
     dispatch({ type: UNLIKE_POST_REQUEST });
     try {
-        const response = await axios.post(`/api/unlike-post`, { postId });
+        const response = await api.post(`/api/unlike-post`, { postId });
         dispatch({ type: UNLIKE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UNLIKE_POST_FAILURE, payload: error.message });
@@ -148,7 +149,7 @@ export const unlikePost = (postId) => async (dispatch) => {
 export const postComment = (postId, commentData) => async (dispatch) => {
     dispatch({ type: POST_COMMENT_REQUEST });
     try {
-        const response = await axios.post(`/api/post-comment`, { postId, commentData });
+        const response = await api.post(`/api/post-comment`, { postId, commentData });
         dispatch({ type: POST_COMMENT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: POST_COMMENT_FAILURE, payload: error.message });
@@ -159,7 +160,7 @@ export const postComment = (postId, commentData) => async (dispatch) => {
 export const deleteComment = (postId, commentId) => async (dispatch) => {
     dispatch({ type: DELETE_COMMENT_REQUEST });
     try {
-        await axios.delete(`/api/delete-comment/${postId}/${commentId}`);
+        await api.delete(`/api/delete-comment/${postId}/${commentId}`);
         dispatch({ type: DELETE_COMMENT_SUCCESS, payload: commentId });
     } catch (error) {
         dispatch({ type: DELETE_COMMENT_FAILURE, payload: error.message });
@@ -170,7 +171,7 @@ export const deleteComment = (postId, commentId) => async (dispatch) => {
 export const getAllComments = (postId) => async (dispatch) => {
     dispatch({ type: GET_ALL_COMMENTS_REQUEST });
     try {
-        const response = await axios.get(`/api/get-all-comments/${postId}`);
+        const response = await api.get(`/api/get-all-comments/${postId}`);
         dispatch({ type: GET_ALL_COMMENTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_COMMENTS_FAILURE, payload: error.message });
@@ -181,7 +182,7 @@ export const getAllComments = (postId) => async (dispatch) => {
 export const savePost = (postId) => async (dispatch) => {
     dispatch({ type: SAVE_POST_REQUEST });
     try {
-        const response = await axios.post(`/api/save-post`, { postId });
+        const response = await api.post(`/api/save-post`, { postId });
         dispatch({ type: SAVE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: SAVE_POST_FAILURE, payload: error.message });
@@ -192,7 +193,7 @@ export const savePost = (postId) => async (dispatch) => {
 export const unsavePost = (postId) => async (dispatch) => {
     dispatch({ type: UNSAVE_POST_REQUEST });
     try {
-        const response = await axios.post(`/api/unsave-post`, { postId });
+        const response = await api.post(`/api/unsave-post`, { postId });
         dispatch({ type: UNSAVE_POST_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UNSAVE_POST_FAILURE, payload: error.message });

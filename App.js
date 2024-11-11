@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VendorsProfilePage from "./screens/Vendors/VendorsProfilePage";
 import HomePageExistingUser from "./screens/MainPage/HomePageExistingUser";
 import EventForm from "./screens/Squads/EventForm";
+import Insurance from "./screens/e-Commerce/Insurance";
 import ChallengePage from "./screens/MainPage/ChallengePage";
 import SeeAllEvents from "./screens/MainPage/SeeAllEvents";
 import SignInPage from "./screens/Registration/SignInPage";
@@ -91,6 +92,7 @@ import PostFeed from "./screens/Squads/PostFeed";
 import FlashSale from "./screens/e-Commerce/FlashSale";
 import SalesList from "./screens/e-Commerce/SalesList";
 import CoinRewards from "./screens/GreenPoints/GreenCoins";
+import Tailored from "./screens/e-Commerce/Tailored";
 
 
 
@@ -315,6 +317,10 @@ const App = () => {
         <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
         <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
         <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
+        <Stack.Screen name="Insurance" component={Insurance} options={{ headerShown: false }} />
+        <Stack.Screen name="Tailored" component={Tailored} options={{ headerShown: false }} />
+
+
 
 
       </Stack.Navigator>

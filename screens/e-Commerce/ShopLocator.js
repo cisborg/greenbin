@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
+import FastImage from 'react-native-fast-image';
 
 const shops = [
   {
@@ -124,9 +125,10 @@ const ConnectToShops = () => {
 
   const renderShopCard = ({ item }) => (
     <View style={styles.shopContainer}>
-      <Image 
+      <FastImage
         source={typeof item.logo === 'string' ? { uri: item.logo } : item.logo} 
         style={styles.logo} 
+        resizeMode={FastImage.resizeMode.cover}
         onError={() => console.error('Image loading error')}
       />
       <View style={styles.shopDetails}>

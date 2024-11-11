@@ -6,10 +6,10 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   Animated,Platform, StatusBar
 } from 'react-native';
+import FastImage from 'react-native-fast-image'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import NotificationScreen from '../GreenConnect/ConnectNotification';
@@ -31,8 +31,12 @@ const CustomHeader = ({ profileImage }) => {
       <Text style={styles.subheaderTitle}> Connect and Go green with GreenBin! </Text>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
-        <Image source={{ uri: profileImage }} style={styles.profileImageHeader} />
-      </TouchableOpacity>
+        <FastImage
+            style={styles.profileImageHeader}
+            source={{ uri: profileImage , priority: FastImage.priority.normal,}}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+     </TouchableOpacity>
     </View>
   );
 };
@@ -139,7 +143,11 @@ const GreenConnectMain = ({ navigation }) => {
     return (
       <View style={styles.userContainer}>
         <View style={styles.profileImageContainer}>
-          <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
+          <FastImage
+              style={styles.profileImage}
+              source={{ uri: item.profileImage }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
         </View>
         <Text style={styles.userName}>{item.name}</Text>
         <Text>{item.description}</Text>

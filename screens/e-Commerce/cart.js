@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions, Platform,StatusBar } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Color } from '../../GlobalStyles';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
+import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cartActions';
 
 const { width } = Dimensions.get('window'); // Get device width
 
 const CartScreen = ({ navigation }) => {
-  const [cartItems, setCartItems] = useState([
-    { id: '1', seller: 'John Bike', name: 'Ecobikes', price: 4704, quantity: 1, image: require('../../assets/bikes.png') },
-    { id: '2', seller: 'Pinya Electronics', name: 'Smart Security', price: 12225, quantity: 1, image: require('../../assets/Appliance.png') },
-    { id: '3', seller: 'Jack', name: 'Smart Homes', price: 699, quantity: 1, image: require('../../assets/Bags.png') },
-    { id: '4', seller: 'Jilian', name: 'Tree Vendors', price: 599, quantity: 1, image: require('../../assets/clothes.png') },
-    { id: '5', seller: 'Johanna', name: 'Smart Devices', price: 599, quantity: 1, image: require('../../assets/binance.png') },
-  ]);
-
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
   const [loading, setLoading] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -27,19 +24,15 @@ const CartScreen = ({ navigation }) => {
   }, [fadeAnim]);
 
   const increaseQuantity = (id) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    dispatch(addQuantity(id));
   };
 
   const decreaseQuantity = (id) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-      )
-    );
+    dispatch(decreaseQuantity(id));
+  };
+
+  const removeItemFromCart = (id) => {
+    dispatch(removeFromCart(id));
   };
 
   const getTotalPrice = () => {
@@ -54,7 +47,7 @@ const CartScreen = ({ navigation }) => {
     const renderRightActions = () => (
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id))}
+        onPress={() => removeItemFromCart(item.id)}
       >
         <MaterialIcons name="delete" size={30} color='white' />
       </TouchableOpacity>
@@ -69,7 +62,7 @@ const CartScreen = ({ navigation }) => {
                 <Text style={styles.sellerName}>{item.seller}</Text>
               </TouchableOpacity>
               <View style={styles.itemDetails}>
-                <Image source={item.image} style={styles.itemImage} />
+                <FastImage source={item.image} style={styles.itemImage} resizeMode={FastImage.resizeMode.cover} />
                 <View style={styles.itemContent}>
                   <Text style={styles.itemName}>{item.name}</Text>
                   <Text style={styles.itemPrice}>GCPs {item.price}</Text>
@@ -91,7 +84,6 @@ const CartScreen = ({ navigation }) => {
     );
   };
 
-  
   const renderEmptyCart = () => (
     <View style={styles.emptyCartContainer}>
       <Text style={styles.emptyCartText}>No products in cart</Text>

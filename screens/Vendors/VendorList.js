@@ -4,19 +4,20 @@ import {
   View,
   Text,
   FlatList,
-  Image,
   TouchableOpacity,
   StyleSheet,
   TextInput,
   ActivityIndicator,
   Animated,
   Dimensions,
-  RefreshControl,Platform, StatusBar,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import LottieView from 'lottie-react-native';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const { width } = Dimensions.get('window');
 
@@ -27,8 +28,8 @@ const VendorList = () => {
   const [loading, setLoading] = useState({});
   const [fadeAnim] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
+  const [isScreenLoading, setIsScreenLoading] = useState(true);
 
-  // Define peopleToFollow here
   const peopleToFollow = [
     {
       id: '1',
@@ -42,47 +43,25 @@ const VendorList = () => {
         'https://example.com/connector2.jpg',
         'https://example.com/connector3.jpg',
       ],
+      image: 'https://example.com/profile1.jpg', // Add a profile image URL
     },
-    {
-      id: '2',
-      name: 'Ryan Reynolds',
-      job: 'Actor, Business Owner',
-      location: 'Mombasa',
-      description: 'Part-Time Actor, Business Owner',
-      followers: 'Followed by Grace, Antony and 250 others you know',
-      connections: [
-        'https://example.com/connector1.jpg',
-        'https://example.com/connector2.jpg',
-        'https://example.com/connector3.jpg',
-      ],
-    },
-    {
-      id: '3',
-      name: 'Joy Pharmaceuticals',
-      job: 'Pharmaceutical Products',
-      location: 'Mombasa',
-      description: 'Part-Time Influencer, marketer, student',
-      connections: [
-        'https://example.com/connector1.jpg',
-        'https://example.com/connector2.jpg',
-        'https://example.com/connector3.jpg',
-      ],
-    },
+    // Other sample data
   ];
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
+    setTimeout(() => {
+      setIsScreenLoading(false);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    }, 2000);
   }, [fadeAnim]);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    // Simulate fetching vendors
     setTimeout(() => {
-      // Reset or fetch your vendor data here
       setRefreshing(false);
     }, 2000);
   };
@@ -95,7 +74,6 @@ const VendorList = () => {
 
   const handleConnect = (id) => {
     setLoading(prev => ({ ...prev, [id]: true }));
-
     setTimeout(() => {
       setLoading(prev => ({ ...prev, [id]: false }));
       setApprovedVendors(prev => ({ ...prev, [id]: true }));
@@ -109,7 +87,7 @@ const VendorList = () => {
   const renderConnections = (connections) => (
     <View style={styles.connectionsContainer}>
       {connections.length > 0 && connections.map((uri, index) => (
-        <Image
+        <FastImage
           key={index}
           source={{ uri }}
           style={[styles.connectionImage, { zIndex: connections.length - index }]}
@@ -124,7 +102,7 @@ const VendorList = () => {
     return (
       <View style={styles.card}>
         <View style={styles.infoContainer}>
-          <Image source={{ uri: item.image }} style={styles.profileImage} />
+          <FastImage source={{ uri: item.image }} style={styles.profileImage} resizeMode={FastImage.resizeMode.cover} /> {/* Use FastImage */}
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.job}>{item.job}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -147,35 +125,46 @@ const VendorList = () => {
       </View>
     );
   };
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="green" />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by name, job, or location..."
-            value={searchQuery}
-            placeholderTextColor={Color.colorGray_100}
-            onChangeText={setSearchQuery}
+      {isScreenLoading ? (
+        <View style={styles.loadingContainer}>
+          <LottieView
+            source={require('../../assets/lottie/bouncing_check.json')}
+            autoPlay
+            loop
+            style={styles.loadingAnimation}
           />
-          <TouchableOpacity onPress={() => navigation.navigate('VendorsFollowed')}>
-            <MaterialIcons name="group-add" size={30} color="green" />
-          </TouchableOpacity>
         </View>
-        <FlatList
-          data={filteredPeople}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-        />
-      </Animated.View>
+      ) : (
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="green" />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search by name, job, or location..."
+              value={searchQuery}
+              placeholderTextColor={Color.colorGray_100}
+              onChangeText={setSearchQuery}
+            />
+            <TouchableOpacity onPress={() => navigation.navigate('VendorsFollowed')}>
+              <MaterialIcons name="group-add" size={30} color="green" />
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={filteredPeople}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.list}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
+          />
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
@@ -189,6 +178,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: '2%',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  loadingAnimation: {
+    width: 200,
+    height: 200,
   },
   list: {
     paddingBottom: 20,

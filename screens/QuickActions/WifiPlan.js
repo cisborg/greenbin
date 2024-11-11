@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Animated, SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { FontFamily, Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/core';
 import { Dimensions } from 'react-native';
+import Lottie from 'lottie-react-native'; // Import Lottie
 
 const { width, height } = Dimensions.get('window');
 
@@ -92,7 +93,7 @@ const WifiPlans = () => {
                     >
                         <View style={styles.proceed}>
                             {loadingStates[plan.title] ? (
-                                <ActivityIndicator size="small" color="#fff" /> // Show spinner when loading for this plan
+                                <Lottie source={require('../../assets/lottie/bouncing_check.json')} autoPlay loop style={styles.loadingAnimation} /> // Show Lottie animation when loading
                             ) : (
                                 <Text style={styles.cardText}>Confirm</Text>
                             )}
@@ -124,7 +125,6 @@ const WifiPlans = () => {
         </SafeAreaView>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -132,6 +132,10 @@ const styles = StyleSheet.create({
     },
     animatedView: {
         flex: 1,
+    },
+    loadingAnimation: {
+        width: 30, // Adjust width as needed
+        height: 30, // Adjust height as needed
     },
     scrollView: {
         padding: 10,

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated, StatusBar, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated, StatusBar } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Color, FontFamily } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { createSquad } from '../../redux/actions/squads';
+import FastImage from 'react-native-fast-image';
 
 const CreateSquad = () => {
   const navigation = useNavigation();
@@ -128,12 +129,12 @@ navigation.navigate('Confirmed')
 
           <TouchableOpacity style={styles.photoPicker} onPress={() => pickImage(setCoverPhoto)}>
             <Text style={styles.photoText}>Add Cover Photo</Text>
-            {coverPhoto && <Image source={{ uri: coverPhoto }} style={styles.photoPreview} />}
+            {coverPhoto && <FastImage source={{ uri: coverPhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.photoPicker} onPress={() => pickImage(setProfilePhoto)}>
             <Text style={styles.photoText}>Add Profile Photo</Text>
-            {profilePhoto && <Image source={{ uri: profilePhoto }} style={styles.photoPreview} />}
+            {profilePhoto &&<FastImage source={{ uri: profilePhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
           </TouchableOpacity>
 
           <Text style={styles.permissionTitle}>Post permissions</Text>

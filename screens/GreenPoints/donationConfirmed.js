@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window'); // Get screen dimensions
 
@@ -30,8 +31,9 @@ const DonationConfirmed = () => {
 
     return (
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-            <Image 
+            <FastImage 
                 source={require('../../assets/trase.png')} 
+                resizeMode={FastImage.resizeMode.cover}
                 style={styles.image} 
             />
             <Text style={styles.title}>Donation Successful, Yayy!</Text>

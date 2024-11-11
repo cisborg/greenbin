@@ -1,5 +1,4 @@
 // src/redux/actions/donationActions.js
-import axios from 'axios';
 import {
     CREATE_DONATION_REQUEST,
     CREATE_DONATION_SUCCESS,
@@ -14,12 +13,14 @@ import {
     DELETE_DONATION_SUCCESS,
     DELETE_DONATION_FAILURE,
 } from './actionTypes';
+import api from "../../utils/axiosConfig";
+
 
 // Create Donation action
 export const createDonation = (donationData) => async (dispatch) => {
     dispatch({ type: CREATE_DONATION_REQUEST });
     try {
-        const response = await axios.post('/api/create-donation', donationData);
+        const response = await api.post('/api/create-donation', donationData);
         dispatch({ type: CREATE_DONATION_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_DONATION_FAILURE, payload: error.message });
@@ -30,7 +31,7 @@ export const createDonation = (donationData) => async (dispatch) => {
 export const getAllDonations = () => async (dispatch) => {
     dispatch({ type: GET_ALL_DONATIONS_REQUEST });
     try {
-        const response = await axios.get('/api/get-all-donations');
+        const response = await api.get('/api/get-all-donations');
         dispatch({ type: GET_ALL_DONATIONS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_DONATIONS_FAILURE, payload: error.message });
@@ -41,7 +42,7 @@ export const getAllDonations = () => async (dispatch) => {
 export const updateDonation = (donationId, donationData) => async (dispatch) => {
     dispatch({ type: UPDATE_DONATION_REQUEST });
     try {
-        const response = await axios.put(`/api/update-donation/${donationId}`, donationData);
+        const response = await api.put(`/api/update-donation/${donationId}`, donationData);
         dispatch({ type: UPDATE_DONATION_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_DONATION_FAILURE, payload: error.message });
@@ -52,7 +53,7 @@ export const updateDonation = (donationId, donationData) => async (dispatch) => 
 export const deleteDonation = (donationId) => async (dispatch) => {
     dispatch({ type: DELETE_DONATION_REQUEST });
     try {
-        await axios.delete(`/api/delete-donation/${donationId}`);
+        await api.delete(`/api/delete-donation/${donationId}`);
         dispatch({ type: DELETE_DONATION_SUCCESS, payload: donationId });
     } catch (error) {
         dispatch({ type: DELETE_DONATION_FAILURE, payload: error.message });

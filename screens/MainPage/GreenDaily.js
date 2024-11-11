@@ -1,17 +1,17 @@
-import React, { useState, memo, useCallback } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity,ActivityIndicator, StatusBar, Platform, SafeAreaView } from 'react-native';
+import React, { useState, memo, useCallback, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/core';
 import TagList from '../Squads/Tags';
 import YourSquads from '../Squads/Squads';
 import NotificationsScreen from '../Squads/Updates';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import LottieView from 'lottie-react-native';
 import TagSelection from '../Squads/selectTag';
 import { FlashList } from '@shopify/flash-list';
 import CommentBottomSheet from '../Squads/SquadComments';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -135,11 +135,19 @@ const ForYouScreen = () => {
     },
   ]);
 
-
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching posts
+    setTimeout(() => {
+      setPosts(initialPosts); // Replace with your actual fetching logic
+      setLoading(false);
+    }, 2000); // Adjust the timeout as necessary
+  }, []);
 
   const fetchMorePosts = useCallback(() => {
     if (loadingMore || allLoaded) return;
@@ -186,23 +194,32 @@ const ForYouScreen = () => {
 
   return (
     <View style={styles.content}>
-      <FlashList
-        data={posts}
-        keyExtractor={(item) => item.id.toString()}
-        estimatedItemSize={200}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => { /* Navigate to post details */ }}>
-            <Post 
-              post={item}
-              onLike={() => handleLike(item.id)} 
-              onCommentPress={() => openCommentSheet(item.id)}
-            />
-          </TouchableOpacity>
-        )}
-        onEndReached={fetchMorePosts}
-        onEndReachedThreshold={0.7}
-        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="green" /> : null}
-      />
+      {loading ? (
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={{ width: 100, height: 100 }} // Adjust size as needed
+        />
+      ) : (
+        <FlashList
+          data={posts}
+          keyExtractor={(item) => item.id.toString()}
+          estimatedItemSize={200}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => { /* Navigate to post details */ }}>
+              <Post 
+                post={item}
+                onLike={() => handleLike(item.id)} 
+                onCommentPress={() => openCommentSheet(item.id)}
+              />
+            </TouchableOpacity>
+          )}
+          onEndReached={fetchMorePosts}
+          onEndReachedThreshold={0.7}
+          ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="green" /> : null}
+        />
+      )}
 
       <CommentBottomSheet
         isVisible={isBottomSheetVisible}
@@ -214,8 +231,7 @@ const ForYouScreen = () => {
 };
 
 const Post = memo(({ post, onLike, onCommentPress }) => {
-  const { title, author, squad, date, likes, comments, moderated, connections:initialConnections, imageUri: initialImageUri, isLiked } = post;
-  const [optionsVisible, setOptionsVisible] = useState(false);
+  const { title, author, squad, date, likes, comments, moderated, connections: initialConnections, imageUri: initialImageUri, isLiked } = post;
   const [connections, setConnections] = useState(initialConnections); // State for connections
   const [imageUri, setImageUri] = useState(initialImageUri); // Declare state for imageUri
   const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark
@@ -225,22 +241,17 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
   };
 
   const handleBookmark = () => {
-    // Toggle the bookmarked state
     setIsBookmarked((prev) => {
-      // If already bookmarked, decrement connections; otherwise, increment
       const newBookmarkStatus = !prev;
       setConnections((current) => current + (newBookmarkStatus ? 1 : -1));
       return newBookmarkStatus;
     });
   };
-  const handleOptionsPress = () => {
-    setOptionsVisible(!optionsVisible);
-  };
 
   return (
     <View style={styles.postCard}>
       <View style={styles.header}>
-        <Image
+        <FastImage
           source={require('../../assets/anotherWoman.avif')}
           style={styles.profilePic}
           onError={() => setImageUri(require('../../assets/profilePlaceholder.png'))}
@@ -254,35 +265,14 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
           <Text style={styles.postDate}>{date}</Text>
           {moderated && <Text style={styles.moderatedIndicator}>Moderated</Text>}
         </View>
-        <TouchableOpacity style={styles.optionsButton} onPress={handleOptionsPress}>
-          <Ionicons name="ellipsis-vertical" size={20} color="gray" />
-        </TouchableOpacity>
       </View>
-
-      {optionsVisible && (
-        <View style={styles.optionsMenu}>
-          <TouchableOpacity style={styles.optionToggle}>
-            <FontAwesome name="frown-o" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Not interested in this post</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionToggle}>
-            <AntDesign name="adduser" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Follow @{squad}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionToggle}>
-            <MaterialIcons name="report" size={17} color="green" />
-            <Text style={{ marginLeft: 6 }}>Report post</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       <Text style={styles.postTitle}>{title}</Text>
       {imageUri && (
-        <Image
-        source={imageUri ? { uri: imageUri } : require('../../assets/profilePlaceholder.png')}
-        style={styles.postImage}
-      />
-     
+        <FastImage
+          source={{ uri: imageUri }}
+          style={styles.postImage}
+        />
       )}
       <View style={styles.postStats}>
         <TouchableOpacity style={styles.statButton} onPress={handleLike}>
@@ -326,7 +316,7 @@ const Header = () => {
         <Ionicons name="color-filter-outline" size={30} color="black" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.profilePic1} onPress={() => navigation.navigate('SquadCreated')}>
-        <Image source={require('../../assets/anotherWoman.avif')} />
+        <FastImage source={require('../../assets/anotherWoman.avif')} />
       </TouchableOpacity>
     </View>
   );

@@ -1,23 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { Color } from '../../GlobalStyles';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 
-const WifiSuccess = ({route}) => {
+const WifiSuccess = ({ route }) => {
     const navigation = useNavigation();
-    const { packaged, valid ,price} = route.params;
+    const { packaged, valid, price } = route.params;
 
     return (
         <View style={styles.container}>
             <View style={styles.modal}>
-                <Image style={styles.imageView} source={require('../../assets/wifi.png')}  />
-                <Text style={styles.title}>Package Purchased Successfuly!</Text>
+                <FastImage 
+                    style={styles.imageView} 
+                    source={require('../../assets/wifi.png')} // Use FastImage for better performance
+                    resizeMode={FastImage.resizeMode.contain} // Set the resize mode
+                />
+                <Text style={styles.title}>Package Purchased Successfully!</Text>
                 <Text style={styles.message}>
-                    You have successfully Purchased {packaged} for {valid} !
-                    <Text style={styles.colorText}> Green Points {price}</Text> has been deducted..
-                    Enjoy our Pizza Gift coming Your Way! 🎁
+                    You have successfully purchased {packaged} for {valid}!
+                    <Text style={styles.colorText}> Green Points {price}</Text> has been deducted.
+                    Enjoy our Pizza Gift coming your way! 🎁
                 </Text>
-                <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate('WifiPlan') }>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('WifiPlan')}>
                     <Text style={styles.buttonText}>OK</Text>
                 </TouchableOpacity>
             </View>

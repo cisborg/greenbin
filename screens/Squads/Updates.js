@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { FlashList } from '@shopify/flash-list'; // Import FlashList
+import FastImage from 'react-native-fast-image';
 
 const notificationsData = [
   {
@@ -65,14 +65,18 @@ const NotificationsScreen = () => {
   const renderNotification = ({ item }) => (
     <TouchableOpacity style={styles.notificationContainer} activeOpacity={0.7}>
       <View style={styles.userContainer}>
-        <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
+        <FastImage source={{ uri: 'https://via.placeholder.com/40' }}
+        resizeMode={FastImage.resizeMode.cover}
+        style={styles.avatar} />
         <View>
           <Text style={styles.userName}>{item.user}</Text>
           <Text style={styles.message}>{item.message}</Text>
         </View>
       </View>
       <Text style={styles.postTitle}>{item.postTitle}</Text>
-      <Image source={{ uri: item.imageUrl }} style={styles.postImage} />
+      <FastImage source={{ uri: item.imageUrl }}
+      resizeMode={FastImage.resizeMode.cover}
+       style={styles.postImage} />
     </TouchableOpacity>
   );
 

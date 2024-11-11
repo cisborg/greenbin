@@ -19,6 +19,7 @@ import {
 
 const initialState = {
     shops: [],
+    shopDetails: null,
     loading: false,
     error: null,
 };
@@ -71,6 +72,7 @@ const shopReducer = (state = initialState, action) => {
                 shopDetails: action.payload,
             };
 
+        // Grouped failure cases
         case CREATE_SHOP_FAILURE:
         case UPDATE_SHOP_FAILURE:
         case DELETE_SHOP_FAILURE:
@@ -83,7 +85,7 @@ const shopReducer = (state = initialState, action) => {
             };
 
         default:
-            return state;
+            return state; // Always include a default case
     }
 };
 

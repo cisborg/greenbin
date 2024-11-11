@@ -3,20 +3,18 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
   Animated,
-  Platform,
-  StatusBar,
+  ActivityIndicator,
+  FlatList,
   RefreshControl,
   Dimensions,
-  ActivityIndicator,
-  FlatList, // Use FlatList instead of ScrollView
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import FastImage from 'react-native-fast-image'; // Import FastImage
 import { Color } from '../../GlobalStyles';
 import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
@@ -57,6 +55,7 @@ const ChallengePage = () => {
 
   const handleSidebarItemPress = (categoryName) => {
     setSelectedCategory(categoryName);
+    onRefresh();
   };
 
   const handleHomePress = () => {
@@ -65,7 +64,7 @@ const ChallengePage = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setRefreshing(false);
   };
 
@@ -84,7 +83,7 @@ const ChallengePage = () => {
 
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('Products')}>
-      <Image source={item.image} style={styles.categoryImage} />
+      <FastImage source={item.image} style={styles.categoryImage} resizeMode={FastImage.resizeMode.cover} />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -104,10 +103,10 @@ const ChallengePage = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.banner}>
-        <Image
+        <FastImage
           source={bannerImages[currentImageIndex]}
           style={styles.bannerImage}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
         <View style={styles.dotsContainer}>
           {bannerImages.map((_, index) => (
@@ -130,7 +129,7 @@ const ChallengePage = () => {
         <View style={styles.container}>
           <View style={styles.sidebar}>
             <TouchableOpacity style={styles.homeContainer} onPress={handleHomePress}>
-              <Image source={require('../../assets/menu.jpg')} style={styles.homeImage} />
+              <FastImage source={require('../../assets/menu.jpg')} style={styles.homeImage} resizeMode={FastImage.resizeMode.contain} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
             <FlatList // Use FlatList for sidebar items

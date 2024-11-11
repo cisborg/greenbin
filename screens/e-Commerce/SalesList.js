@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, StatusBar, Platform, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, StatusBar, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from 'lottie-react-native';
+import FastImage from 'react-native-fast-image';
 
 const categories = [
     { id: '1', name: 'All' },
@@ -198,7 +199,7 @@ const SalesList = () => {
 
                     return (
                         <View style={styles.productContainer}>
-                            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                            <FastImage source={{ uri: item.imageUrl }} resizeMode={FastImage.resizeMode.cover} style={styles.image} />
                             <View style={styles.productDetails}>
                                 <Text style={styles.productTitle} numberOfLines={3}>{item.title}</Text>
                                 <Text style={styles.price}>

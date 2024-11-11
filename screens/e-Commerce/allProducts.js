@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -69,7 +70,7 @@ const ItemGridScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleProductClick(item)}>
       <View style={styles.productContainer}>
-        <Image source={item.image || require('../../assets/Bags.png')} style={styles.productImage} />
+        <FastImage source={item.image || require('../../assets/Bags.png')}  resizeMode={FastImage.resizeMode.cover} style={styles.productImage} />
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
       </View>

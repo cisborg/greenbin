@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Animated, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, StatusBar } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Color } from '../../GlobalStyles';
+import FastImage from 'react-native-fast-image';
 
 const AboutScreen = ({ navigation }) => {
   const fadeAnim = new Animated.Value(0); // Initial opacity of 0
@@ -27,9 +28,10 @@ const AboutScreen = ({ navigation }) => {
         </View>
 
         <Animated.View style={{ ...styles.fadeContainer, opacity: fadeAnim }}>
-          <Image
+          <FastImage
             source={require('../../assets/greenBin.png')} // Replace with a valid image URL
             style={styles.image}
+            resizeMode={FastImage.resizeMode.cover}
           />
           <Text style={styles.subtitle}>Empowering the Green Circular Economy</Text>
 
