@@ -12,16 +12,28 @@ import {
   Animated,
   SafeAreaView,
   StatusBar,
-  Platform,Dimensions
+  Platform,
+  Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily } from "../../GlobalStyles";
 
-const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
+const CustomInput = ({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+}) => (
   <View style={styles.inputContainer}>
-    <FontAwesome name={icon} size={20} color={Color.colorGray_100} style={styles.icon} />
+    <FontAwesome
+      name={icon}
+      size={20}
+      color={Color.colorGray_100}
+      style={styles.icon}
+    />
     <TextInput
       style={styles.inputField}
       value={value}
@@ -63,7 +75,10 @@ const ProfileSettings = () => {
 
   const handleSaveProfile = () => {
     if (!validateName(username)) {
-      Alert.alert("Invalid Username", "Username should only contain letters and numbers.");
+      Alert.alert(
+        "Invalid Username",
+        "Username should only contain letters and numbers."
+      );
       return;
     }
 
@@ -73,7 +88,10 @@ const ProfileSettings = () => {
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
+      Alert.alert(
+        "Invalid Phone Number",
+        "Please enter a valid 10-digit phone number."
+      );
       return;
     }
 
@@ -82,16 +100,20 @@ const ProfileSettings = () => {
   };
 
   const handleDeleteAccount = () => {
-    Alert.alert("Delete Account", "Are you sure you want to delete your account?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        onPress: () => {
-          Alert.alert("Account Deleted", "Your account has been deleted.");
-          navigation.navigate("Start"); // Navigate to start page after deletion
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => {
+            Alert.alert("Account Deleted", "Your account has been deleted.");
+            navigation.navigate("Start"); // Navigate to start page after deletion
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const pickProfileImage = async () => {
@@ -103,6 +125,7 @@ const ProfileSettings = () => {
     });
 
     if (!result.cancelled) {
+      console.log("Selected image:", result.uri);
       setProfilePicture(result.uri);
     }
   };
@@ -110,9 +133,13 @@ const ProfileSettings = () => {
   // Screen animation effect on mount
   useEffect(() => {
     const requestPermission = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission required", "You need to grant camera roll permissions to use this feature.");
+        Alert.alert(
+          "Permission required",
+          "You need to grant camera roll permissions to use this feature."
+        );
       }
     };
 
@@ -127,14 +154,22 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"} />
+      <StatusBar
+        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
+      />
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>Profile Settings</Text>
 
-          <TouchableOpacity onPress={pickProfileImage} style={styles.imageContainer}>
+          <TouchableOpacity
+            onPress={pickProfileImage}
+            style={styles.imageContainer}
+          >
             {profilePicture ? (
-              <Image source={{ uri: profilePicture }} style={styles.profileImage} />
+              <Image
+                source={{ uri: profilePicture }}
+                style={styles.profileImage}
+              />
             ) : (
               <View style={styles.imagePlaceholder}>
                 <FontAwesome name="user-circle" size={50} color="#888" />
@@ -177,7 +212,9 @@ const ProfileSettings = () => {
           />
 
           <View style={styles.notificationContainer}>
-            <Text style={styles.notificationText}>Enable Two-Step Verification</Text>
+            <Text style={styles.notificationText}>
+              Enable Two-Step Verification
+            </Text>
             <Switch
               value={twoStepVerification}
               onValueChange={setTwoStepVerification}
@@ -189,12 +226,19 @@ const ProfileSettings = () => {
           <TouchableOpacity
             style={styles.saveButton}
             onPress={handleSaveProfile}
-            disabled={!validateName(username) || !validateEmail(email) || !validatePhoneNumber(phoneNumber)}
+            disabled={
+              !validateName(username) ||
+              !validateEmail(email) ||
+              !validatePhoneNumber(phoneNumber)
+            }
           >
             <Text style={styles.buttonText}>Save Profile</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={handleDeleteAccount}
+          >
             <Text style={styles.buttonText}>Delete Account</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -213,14 +257,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: '2%',
+    padding: "2%",
     backgroundColor: Color.colorWhite,
   },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 5
+    margin: 5,
   },
   inputContainer: {
     flexDirection: "row",
@@ -230,7 +274,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 14,
     width: "100%",
-    backgroundColor: '#f5f5f5'
+    backgroundColor: "#f5f5f5",
   },
   inputField: {
     paddingHorizontal: 10,
@@ -239,7 +283,7 @@ const styles = StyleSheet.create({
     color: "#333",
     marginLeft: 5,
   },
-  
+
   title: {
     fontSize: screenWidth < 350 ? 22 : 24, // Responsive title font size
     fontWeight: "bold",
@@ -247,7 +291,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
- 
+
   imageContainer: {
     alignItems: "center",
     marginBottom: 20,
@@ -271,7 +315,7 @@ const styles = StyleSheet.create({
     color: "#888",
     marginTop: 5,
   },
- 
+
   notificationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -284,11 +328,11 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   saveButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 15,
     borderRadius: 14,
     alignItems: "center",
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3,
     shadowColor: "#000",
@@ -297,11 +341,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: "red",
     padding: 15,
     borderRadius: 14,
     alignItems: "center",
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3,
     shadowColor: "#000",
