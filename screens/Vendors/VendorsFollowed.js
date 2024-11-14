@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, StatusBar, Dimensions, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import LottieView from 'lottie-react-native'; // Import LottieView
-import FastImage from 'react-native-fast-image';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Animated,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
+  TextInput,
+  Platform,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import LottieView from "lottie-react-native"; // Import LottieView
+import FastImage from "react-native-fast-image";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const FollowedVendorsScreen = ({ navigation }) => {
   const [vendors, setVendors] = useState([
@@ -45,21 +56,22 @@ const FollowedVendorsScreen = ({ navigation }) => {
     setLoadingStates((prev) => ({ ...prev, [vendorId]: true }));
 
     setTimeout(() => {
-      setVendors((prev) => prev.filter(vendor => vendor.id !== vendorId));
+      setVendors((prev) => prev.filter((vendor) => vendor.id !== vendorId));
       setLoadingStates((prev) => ({ ...prev, [vendorId]: false }));
     }, 400);
   };
 
-  const filteredVendors = vendors.filter(vendor => 
-    vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    vendor.profession.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredVendors = vendors.filter(
+    (vendor) =>
+      vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      vendor.profession.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isScreenLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotatingBalls.json')} // Path to your Lottie animation file
+          source={require("../../assets/lottie/rotatingBalls.json")} // Path to your Lottie animation file
           autoPlay
           loop
           style={styles.lottie}
@@ -74,35 +86,48 @@ const FollowedVendorsScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back-sharp" size={24} color="green" />
         </TouchableOpacity>
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search vendors by name or profession" 
-          value={searchTerm} 
-          onChangeText={setSearchTerm} 
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search vendors by name or profession"
+          value={searchTerm}
+          onChangeText={setSearchTerm}
           placeholderTextColor="#888"
         />
       </View>
       <View style={styles.content}>
         {filteredVendors.length === 0 ? (
-          <Text style={styles.emptyMessage}>No vendors found. Please follow some vendors!</Text>
+          <Text style={styles.emptyMessage}>
+            No vendors found. Please follow some vendors!
+          </Text>
         ) : (
           filteredVendors.map((vendor) => (
             <Animated.View key={vendor.id} style={styles.card}>
               <TouchableOpacity style={styles.vendorInfo}>
-                <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
+                <FastImage
+                  source={{ uri: vendor.profilePic }}
+                  style={styles.profilePic}
+                  resizeMode={FastImage.resizeMode.cover}
+                />
                 <View style={styles.details}>
                   <Text style={styles.vendorName}>{vendor.name}</Text>
-                  <Text style={styles.vendorProfession}>{vendor.profession}</Text>
-                  <Text style={styles.vendorDescription}>{vendor.description}</Text>
+                  <Text style={styles.vendorProfession}>
+                    {vendor.profession}
+                  </Text>
+                  <Text style={styles.vendorDescription}>
+                    {vendor.description}
+                  </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleUnfollow(vendor.id)} 
-                style={[styles.unfollowButton, loadingStates[vendor.id] ? styles.loadingButton : null]}
+              <TouchableOpacity
+                onPress={() => handleUnfollow(vendor.id)}
+                style={[
+                  styles.unfollowButton,
+                  loadingStates[vendor.id] ? styles.loadingButton : null,
+                ]}
               >
                 {loadingStates[vendor.id] ? (
                   <LottieView
-                    source={require('../../assets/lottie/rotateLoad.json')} // Reuse the animation for the unfollow button if desired
+                    source={require("../../assets/lottie/rotateLoad.json")} // Reuse the animation for the unfollow button if desired
                     autoPlay
                     loop
                     style={styles.buttonLottie}
@@ -122,16 +147,15 @@ const FollowedVendorsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: '1%',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: '#ffff',
+    padding: "1%",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: "#ffff",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
-    marginTop: 10
-
+    marginTop: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -152,36 +176,36 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 16,
     padding: 10,
-    backgroundColor: '#f5f5f5',
-    shadowColor: '#000',
+    backgroundColor: "#f5f5f5",
+    shadowColor: "#000",
     fontSize: 14,
-    color: '#333',
-    marginRight: '4%',
+    color: "#333",
+    marginRight: "4%",
   },
   content: {
-    margin: 5
+    margin: 5,
   },
   emptyMessage: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
-    color: 'darkgrey',
-    marginTop: '20%',
+    color: "darkgrey",
+    marginTop: "20%",
   },
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     borderRadius: 14,
     padding: 15,
     marginBottom: 15,
     elevation: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     maxWidth: width * 0.98,
   },
   vendorInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   profilePic: {
@@ -191,35 +215,35 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   details: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   vendorName: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   vendorProfession: {
     fontSize: 13,
-    color: 'gray',
+    color: "gray",
   },
   vendorDescription: {
     fontSize: 11,
-    color: 'darkgray',
+    color: "darkgray",
   },
   unfollowButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 15,
     paddingVertical: 8,
     paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '-4%'
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "-4%",
   },
   loadingButton: {
-    backgroundColor: 'orange',
+    backgroundColor: "orange",
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 12,
   },
 });

@@ -19,8 +19,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color } from "../../GlobalStyles";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Toast from '../../helpers/Toast'; // Import your custom Toast component
+import Icon from "react-native-vector-icons/FontAwesome";
+import Toast from "../../helpers/Toast"; // Import your custom Toast component
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,8 +56,8 @@ const SignInPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('info');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -69,8 +69,11 @@ const SignInPage = () => {
 
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
-
-      showToast('error', 'Login Failed', 'Please enter both email and password.');
+      showToast(
+        "error",
+        "Login Failed",
+        "Please enter both email and password."
+      );
 
       return;
     }
@@ -82,8 +85,11 @@ const SignInPage = () => {
       const response = await dispatch(loginUser({ email, password }));
 
       if (response?.token) {
-
-        showToast('success', 'Login Successful', 'Welcome back! Enjoy GreenBin App');
+        showToast(
+          "success",
+          "Login Successful",
+          "Welcome back! Enjoy GreenBin App"
+        );
 
         navigation.navigate("Main");
       } else {
@@ -92,8 +98,7 @@ const SignInPage = () => {
     } catch (error) {
       console.log("Login error", error);
 
-      showToast('error', 'Login failed', 'Failed to log in. Please try again.');
-
+      showToast("error", "Login failed", "Failed to log in. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -188,10 +193,10 @@ const SignInPage = () => {
 
             {/* Display Toast */}
             {toastVisible && (
-              <Toast 
-                message={toastMessage} 
-                type={toastType} 
-                onClose={() => setToastVisible(false)} 
+              <Toast
+                message={toastMessage}
+                type={toastType}
+                onClose={() => setToastVisible(false)}
               />
             )}
           </Animated.View>

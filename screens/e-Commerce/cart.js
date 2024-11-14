@@ -1,13 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
-import { Color } from '../../GlobalStyles';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FastImage from 'react-native-fast-image';
-import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cartActions';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  Animated,
+  ActivityIndicator,
+  Dimensions,
+  Platform,
+  StatusBar,
+} from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
+import { Color } from "../../GlobalStyles";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FastImage from "react-native-fast-image";
+import {
+  addQuantity,
+  decreaseQuantity,
+  removeFromCart,
+} from "../../redux/actions/cart";
 
-const { width } = Dimensions.get('window'); // Get device width
+const { width } = Dimensions.get("window"); // Get device width
 
 const CartScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -49,7 +65,7 @@ const CartScreen = ({ navigation }) => {
         style={styles.deleteButton}
         onPress={() => removeItemFromCart(item.id)}
       >
-        <MaterialIcons name="delete" size={30} color='white' />
+        <MaterialIcons name="delete" size={30} color="white" />
       </TouchableOpacity>
     );
 
@@ -62,16 +78,26 @@ const CartScreen = ({ navigation }) => {
                 <Text style={styles.sellerName}>{item.seller}</Text>
               </TouchableOpacity>
               <View style={styles.itemDetails}>
-                <FastImage source={item.image} style={styles.itemImage} resizeMode={FastImage.resizeMode.cover} />
+                <FastImage
+                  source={item.image}
+                  style={styles.itemImage}
+                  resizeMode={FastImage.resizeMode.cover}
+                />
                 <View style={styles.itemContent}>
                   <Text style={styles.itemName}>{item.name}</Text>
                   <Text style={styles.itemPrice}>GCPs {item.price}</Text>
                   <View style={styles.quantityContainer}>
-                    <TouchableOpacity style={styles.quantityMinusButton} onPress={() => decreaseQuantity(item.id)}>
+                    <TouchableOpacity
+                      style={styles.quantityMinusButton}
+                      onPress={() => decreaseQuantity(item.id)}
+                    >
                       <Text style={styles.quantityMinusText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{item.quantity}</Text>
-                    <TouchableOpacity style={styles.quantityButton} onPress={() => increaseQuantity(item.id)}>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => increaseQuantity(item.id)}
+                    >
                       <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
@@ -87,8 +113,13 @@ const CartScreen = ({ navigation }) => {
   const renderEmptyCart = () => (
     <View style={styles.emptyCartContainer}>
       <Text style={styles.emptyCartText}>No products in cart</Text>
-      <Text style={styles.emptyCartSubText}>Click the button below to start adding items.</Text>
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('ChallengePage')}>
+      <Text style={styles.emptyCartSubText}>
+        Click the button below to start adding items.
+      </Text>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate("ChallengePage")}
+      >
         <Text style={styles.addButtonText}>Order Now</Text>
       </TouchableOpacity>
     </View>
@@ -97,7 +128,9 @@ const CartScreen = ({ navigation }) => {
   const handleCheckout = () => {
     setLoading(true);
     setTimeout(() => {
-      navigation.navigate('Checkout', { totalPrice: getTotalPrice() + 5 + getDeliveryFee() });
+      navigation.navigate("Checkout", {
+        totalPrice: getTotalPrice() + 5 + getDeliveryFee(),
+      });
       setLoading(false);
     }, 300);
   };
@@ -106,8 +139,13 @@ const CartScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <Animated.View style={[styles.animatedView, { opacity: fadeAnim }]}>
         <View style={styles.header}>
-          <Text style={styles.cartTitle}>My Cart ({cartItems.length} Items)</Text>
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('ChallengePage')}>
+          <Text style={styles.cartTitle}>
+            My Cart ({cartItems.length} Items)
+          </Text>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigation.navigate("ChallengePage")}
+          >
             <Text style={styles.addButtonText}>Claim More</Text>
           </TouchableOpacity>
         </View>
@@ -117,7 +155,7 @@ const CartScreen = ({ navigation }) => {
           <FlatList
             data={cartItems}
             renderItem={renderItem}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.list}
           />
         )}
@@ -133,14 +171,21 @@ const CartScreen = ({ navigation }) => {
             </View>
             <View style={styles.priceRow}>
               <Text style={styles.totalPriceLabel}>Delivery fee:</Text>
-              <Text style={styles.totalPrice}>{getDeliveryFee() === 0 ? 'Free' : `GCPs ${getDeliveryFee()}`}</Text>
+              <Text style={styles.totalPrice}>
+                {getDeliveryFee() === 0 ? "Free" : `GCPs ${getDeliveryFee()}`}
+              </Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.priceRow}>
               <Text style={styles.subTotalLabel}>Cash In:</Text>
-              <Text style={styles.subTotal}>GCPs {getTotalPrice() + 5 + getDeliveryFee()}</Text>
+              <Text style={styles.subTotal}>
+                GCPs {getTotalPrice() + 5 + getDeliveryFee()}
+              </Text>
             </View>
-            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={handleCheckout}
+            >
               {loading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
@@ -157,51 +202,50 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     padding: 5,
-    paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0,
-
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   animatedView: {
     flex: 1,
-    margin: 10
+    margin: 10,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   cartTitle: {
     fontSize: 19,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   cartItem: {
     borderRadius: 22,
     padding: 10,
     marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   itemInfo: {
     flex: 1,
     padding: 10,
-    width: '100%',
+    width: "100%",
   },
   sellerName: {
     fontSize: 13,
-    color: '#888',
+    color: "#888",
     marginBottom: 5,
   },
   itemDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   itemImage: {
     width: 50,
@@ -214,111 +258,111 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: "500",
+    color: "#333",
   },
   itemPrice: {
     fontSize: 12,
-    color:'green',
+    color: "green",
     marginTop: 5,
   },
   quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   quantityButton: {
-    backgroundColor:'green',
+    backgroundColor: "green",
     padding: 5,
     paddingVertical: 2,
     borderRadius: 9,
     marginHorizontal: 5,
     width: 25,
     height: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   quantityMinusButton: {
-    backgroundColor:'#f1f1f1',
+    backgroundColor: "#f1f1f1",
     padding: 5,
     paddingVertical: 2,
     borderRadius: 9,
     marginHorizontal: 5,
     width: 25,
     height: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   quantityButtonText: {
     color: Color.colorWhite,
     fontSize: 13,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   quantityMinusText: {
     color: Color.colorBlack,
     fontSize: 20,
     marginTop: -6,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   deleteButton: {
-    backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "green",
+    justifyContent: "center",
+    alignItems: "center",
     width: 70,
-    height: '90%',
-    marginLeft: '5%',
+    height: "90%",
+    marginLeft: "5%",
     borderRadius: 20,
   },
   footer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 20,
     padding: 15,
     elevation: 2,
     marginTop: 20,
   },
   priceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
   totalPriceLabel: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
   },
   totalPrice: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
   },
   subTotalLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   subTotal: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   separator: {
     height: 1,
-    backgroundColor: '#ddd',
+    backgroundColor: "#ddd",
     marginVertical: 10,
   },
   checkoutButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: "#28a745",
     paddingVertical: 15,
     borderRadius: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   checkoutButtonText: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
     marginLeft: -55,
   },
@@ -330,38 +374,38 @@ const styles = StyleSheet.create({
   },
   profileText: {
     fontSize: 12,
-    color: '#888',
+    color: "#888",
     marginLeft: 5,
   },
   emptyCartContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   emptyCartText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 10,
   },
   emptyCartSubText: {
     fontSize: 16,
-    color: '#888',
-    textAlign: 'center',
+    color: "#888",
+    textAlign: "center",
     marginBottom: 20,
   },
   addButton: {
-    backgroundColor:'green',
+    backgroundColor: "green",
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 11,
     height: 40,
   },
   addButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

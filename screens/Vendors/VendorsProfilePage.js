@@ -1,22 +1,39 @@
 import * as React from "react";
-import { StyleSheet, Text, View, Animated, Dimensions, Platform, StatusBar, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Dimensions,
+  Platform,
+  StatusBar,
+  FlatList,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import LottieView from 'lottie-react-native'; // Import LottieView
+import Ionicons from "@expo/vector-icons/Ionicons";
+import LottieView from "lottie-react-native"; // Import LottieView
 import FastImage from "react-native-fast-image";
 
 // ActionButton Component
 const ActionButton = ({ onPress, iconSource, text }) => (
-  <TouchableOpacity style={styles.buttonContainer} onPress={onPress} accessibilityLabel={text}>
-    <FastImage style={styles.iconStyle} source={iconSource} resizeMode={FastImage.resizeMode.cover} />
+  <TouchableOpacity
+    style={styles.buttonContainer}
+    onPress={onPress}
+    accessibilityLabel={text}
+  >
+    <FastImage
+      style={styles.iconStyle}
+      source={iconSource}
+      resizeMode={FastImage.resizeMode.cover}
+    />
     <Text style={styles.buttonText}>{text}</Text>
   </TouchableOpacity>
 );
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const VendorsProfilePage = () => {
   const navigation = useNavigation();
@@ -83,13 +100,19 @@ const VendorsProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Animated.View style={[styles.vendorsProfilePage, { opacity: screenAnim }]}>
+      <Animated.View
+        style={[styles.vendorsProfilePage, { opacity: screenAnim }]}
+      >
         <StatusBar barStyle="dark-content" />
 
         {/* Header with Vendor Name */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
+            <Ionicons
+              name="arrow-back-circle-outline"
+              size={25}
+              color="green"
+            />
           </TouchableOpacity>
           <Text style={styles.heading}>{username}'s Profile</Text>
         </View>
@@ -110,7 +133,11 @@ const VendorsProfilePage = () => {
         </View>
 
         <View style={styles.vendorInfoContainer}>
-          <FastImage source={usericon} style={styles.icon} resizeMode={FastImage.resizeMode.cover}/>
+          <FastImage
+            source={usericon}
+            style={styles.icon}
+            resizeMode={FastImage.resizeMode.cover}
+          />
           <Text style={styles.vendorName}>{username}</Text>
           <Text style={styles.vendorDescription}>{userprofession}</Text>
           <TouchableOpacity style={styles.removeFromVendorContainer}>
@@ -122,7 +149,6 @@ const VendorsProfilePage = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
       </Animated.View>
     </SafeAreaView>
   );
@@ -131,38 +157,38 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   vendorsProfilePage: {
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   loadingContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center' 
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingAnimation: {
-     width: 150,
-     height: 150 
-  }, 
+    width: 150,
+    height: 150,
+  },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginBottom: '5%'
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginBottom: "5%",
   },
   heading: {
     fontSize: FontSize.size_xl,
     fontWeight: "700",
-    color: 'green',
-    marginLeft: '20%'
+    color: "green",
+    marginLeft: "20%",
   },
   container: {
     marginTop: 20,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   icon: {
     height: 80,
@@ -176,12 +202,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     height: 63,
     width: width * 0.95, // Set all buttons to full width
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     borderRadius: 16,
     marginVertical: 10,
     marginHorizontal: 8,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     paddingHorizontal: 10,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -201,36 +227,36 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   vendorInfoContainer: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 22,
     marginTop: 30, // Adjusted to push it to the bottom
-    width: '100%',
+    width: "100%",
   },
   vendorName: {
     color: Color.colorWhite,
-    fontFamily: FontFamily.poppinsBold,
+
     fontWeight: "600",
     fontSize: FontSize.size_lg,
   },
   vendorDescription: {
     color: Color.colorWhite,
-    fontFamily: FontFamily.poppinsRegular,
+
     marginTop: 2,
   },
   removeFromVendorList: {
     fontSize: FontSize.size_base,
     color: Color.colorDarkturquoise,
-    fontFamily: FontFamily.poppinsRegular,
+
     textAlign: "left",
   },
   removeFromVendorContainer: {
     marginTop: 5,
   },
   buttonList: {
-    alignItems: 'center', // Centering the list items
-  }
+    alignItems: "center", // Centering the list items
+  },
 });
 
 export default VendorsProfilePage;

@@ -1,17 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, Animated, Alert, ActivityIndicator, Dimensions } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/core';
-import { FontFamily, Color } from '../../GlobalStyles'; // Ensure you have your GlobalStyles configured
+import React, { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ScrollView,
+  Animated,
+  Alert,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/core";
+import { FontFamily, Color } from "../../GlobalStyles"; // Ensure you have your GlobalStyles configured
 
-const { width, height } = Dimensions.get('window'); // Get device width & height for responsive styles
+const { width, height } = Dimensions.get("window"); // Get device width & height for responsive styles
 
 const WiFiScreen = () => {
   const navigation = useNavigation();
-  const [wifiNumber, setWifiCode] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
+  const [wifiNumber, setWifiCode] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
   const [isValidWifi, setIsValidWifi] = useState(true); // Input validation flag for WiFi
   const [isValidMobile, setIsValidMobile] = useState(true); // Input validation flag for Mobile
   const [isLoading, setIsLoading] = useState(false); // Loading state for the button
@@ -41,16 +51,20 @@ const WiFiScreen = () => {
     setMobileNumber(number);
   };
 
-  const isButtonDisabled = !wifiNumber || !mobileNumber || !isValidWifi || !isValidMobile || isLoading; // Disable button if any field is empty or invalid
+  const isButtonDisabled =
+    !wifiNumber || !mobileNumber || !isValidWifi || !isValidMobile || isLoading; // Disable button if any field is empty or invalid
 
   // Simulate registration process with a delay, then navigate to WiFiSuccessful
   const handleRegister = () => {
     if (!isValidWifi) {
-      Alert.alert('Invalid WiFi Code', 'WiFi Code must be exactly 8 digits.');
+      Alert.alert("Invalid WiFi Code", "WiFi Code must be exactly 8 digits.");
       return;
     }
     if (!isValidMobile) {
-      Alert.alert('Invalid Mobile Number', 'Mobile Number must be 10 or 11 digits.');
+      Alert.alert(
+        "Invalid Mobile Number",
+        "Mobile Number must be 10 or 11 digits."
+      );
       return;
     }
 
@@ -58,7 +72,7 @@ const WiFiScreen = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false); // Hide spinner after delay
-      navigation.navigate('WifiPlan'); // Navigate to WifiSuccessful screen
+      navigation.navigate("WifiPlan"); // Navigate to WifiSuccessful screen
     }, 2000); // Simulate 2-second registration process
   };
 
@@ -80,15 +94,18 @@ const WiFiScreen = () => {
             <TextInput
               style={[styles.input, !isValidWifi && styles.invalidInput]} // Style red border if invalid
               value={wifiNumber}
-              placeholder='Enter wifi code'
+              placeholder="Enter wifi code"
               onChangeText={validateWifiCode}
-              keyboardType='numeric'
+              keyboardType="numeric"
               placeholderTextColor={Color.colorGray_100}
             />
-            {!isValidWifi && <Text style={styles.errorText}>WiFi code must be 8 digits.</Text>}
+            {!isValidWifi && (
+              <Text style={styles.errorText}>WiFi code must be 8 digits.</Text>
+            )}
 
             <Text style={styles.note}>
-              Note: Your Router/MiFi SIMCARD is your WiFi mobile code which is an 8-digit code.
+              Note: Your Router/MiFi SIMCARD is your WiFi mobile code which is
+              an 8-digit code.
             </Text>
 
             {/* Mobile Number Input */}
@@ -101,21 +118,31 @@ const WiFiScreen = () => {
               keyboardType="numeric"
               placeholderTextColor={Color.colorGray_100}
             />
-            {!isValidMobile && <Text style={styles.errorText}>Mobile number must be 10 or 11 digits.</Text>}
+            {!isValidMobile && (
+              <Text style={styles.errorText}>
+                Mobile number must be 10 or 11 digits.
+              </Text>
+            )}
 
             <Text style={styles.note}>
-              Note: This is your primary mobile number where you will receive a 6-digit one-time password (OTP).
+              Note: This is your primary mobile number where you will receive a
+              6-digit one-time password (OTP).
             </Text>
 
             {/* Terms Agreement */}
             <View style={styles.checkboxContainer}>
-              <Text style={styles.termsConditions}>I've already purchased a Router/MiFi Device</Text>
+              <Text style={styles.termsConditions}>
+                I've already purchased a Router/MiFi Device
+              </Text>
             </View>
 
             {/* Register Button */}
-            <TouchableOpacity 
-              style={[styles.registerButton, isButtonDisabled && styles.disabledButton]} 
-              onPress={handleRegister} 
+            <TouchableOpacity
+              style={[
+                styles.registerButton,
+                isButtonDisabled && styles.disabledButton,
+              ]}
+              onPress={handleRegister}
               disabled={isButtonDisabled}
               activeOpacity={0.8} // Active opacity for better feedback
             >
@@ -136,35 +163,35 @@ const WiFiScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   container: {
     flexGrow: 1,
-    backgroundColor: '#f5f5f5',
-    padding: '5%', // Padding as a percentage for responsive design
+    backgroundColor: "#f5f5f5",
+    padding: "5%", // Padding as a percentage for responsive design
   },
   scrollContainer: {
     flexGrow: 1,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'green',
-    padding: '4%', // Padding percentage for responsiveness
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "green",
+    padding: "4%", // Padding percentage for responsiveness
     borderRadius: 10,
-    marginBottom: '5%',
+    marginBottom: "5%",
   },
   headerTitle: {
     fontSize: width * 0.05, // 5% of screen width
-    color: 'white',
+    color: "white",
     marginLeft: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   content: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 14,
-    padding: '6%', // Padding for responsive layout
-    shadowColor: '#000',
+    padding: "6%", // Padding for responsive layout
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -176,53 +203,52 @@ const styles = StyleSheet.create({
   subHeader: {
     fontSize: width * 0.045, // Responsive font size based on screen width
     marginBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Color.dad,
-    fontFamily: FontFamily.manropeSemiBold,
   },
   input: {
     height: 45,
     borderRadius: 17,
     paddingHorizontal: 10,
     marginBottom: 15,
-    backgroundColor: '#ffff',
+    backgroundColor: "#ffff",
     elevation: 3,
-    shadowOffset: { width: 0, height: 2},
-    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
   invalidInput: {
-    borderColor: 'red', // Red border for invalid input
+    borderColor: "red", // Red border for invalid input
   },
   errorText: {
     fontSize: width * 0.03, // Responsive font size for error text
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
   note: {
     fontSize: width * 0.035, // Responsive note text
-    color: '#666',
+    color: "#666",
     marginBottom: 15,
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   checkboxText: {
     fontSize: width * 0.035, // Responsive text
-    color: '#333',
+    color: "#333",
   },
   termsConditions: {
     fontSize: width * 0.035,
-    color: '#E63946',
-    fontWeight: 'bold',
+    color: "#E63946",
+    fontWeight: "bold",
     marginLeft: 5,
   },
   registerButton: {
-    backgroundColor: 'green',
-    shadowColor: '#000',
+    backgroundColor: "green",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -230,21 +256,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 1,
-    alignSelf: 'center',
+    alignSelf: "center",
     width: width * 0.85, // Responsive button width
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
     marginTop: 20,
   },
   disabledButton: {
-    backgroundColor: '#ddd', // Gray out button if disabled
+    backgroundColor: "#ddd", // Gray out button if disabled
   },
   registerButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: width * 0.04, // Responsive font size
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,33 +11,33 @@ import {
   ActivityIndicator,
   Modal,
   Animated,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { Color } from "../../GlobalStyles";
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { createReport } from '../redux/actions/reportActions';
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { createReport } from "../../redux/actions/reports";
 
 const ReportVendorScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  
-  const [vendorName, setVendorName] = useState('');
-  const [reason, setReason] = useState('');
-  const [additionalDetails, setAdditionalDetails] = useState('');
+
+  const [vendorName, setVendorName] = useState("");
+  const [reason, setReason] = useState("");
+  const [additionalDetails, setAdditionalDetails] = useState("");
   const [incidentDate, setIncidentDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [incidentLocation, setIncidentLocation] = useState('');
-  const [severity, setSeverity] = useState('Low');
+  const [incidentLocation, setIncidentLocation] = useState("");
+  const [severity, setSeverity] = useState("Low");
   const [followUp, setFollowUp] = useState(false);
-  const [vendorPhone, setVendorPhone] = useState('');
+  const [vendorPhone, setVendorPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
 
   // Redux state
-  const reportState = useSelector(state => state.report);
+  const reportState = useSelector((state) => state.report);
   const { loading: reportLoading, error } = reportState;
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const ReportVendorScreen = () => {
   const handleSubmit = () => {
     // Basic validation
     if (!vendorName || !reason || !incidentLocation || !vendorPhone) {
-      Alert.alert('Validation Error', 'Please fill in all required fields.');
+      Alert.alert("Validation Error", "Please fill in all required fields.");
       return;
     }
 
@@ -76,7 +76,7 @@ const ReportVendorScreen = () => {
     } else {
       setLoading(false);
       if (error) {
-        Alert.alert('Error', error);
+        Alert.alert("Error", error);
       } else if (!reportLoading) {
         setModalVisible(true); // Show modal on successful report creation
       }
@@ -89,7 +89,11 @@ const ReportVendorScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color={Color.colorGray_100} />
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={Color.colorGray_100}
+              />
             </TouchableOpacity>
             <Text style={styles.header}>Report Vendor Ticket</Text>
           </View>
@@ -137,7 +141,9 @@ const ReportVendorScreen = () => {
 
           <Text style={styles.label}>Incident Date:</Text>
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Text style={styles.datePicker}>{incidentDate.toLocaleDateString()}</Text>
+            <Text style={styles.datePicker}>
+              {incidentDate.toLocaleDateString()}
+            </Text>
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
@@ -164,10 +170,14 @@ const ReportVendorScreen = () => {
 
           <Text style={styles.label}>Severity Level:</Text>
           <View style={styles.severityContainer}>
-            {['Low', 'Medium', 'High'].map((level) => (
+            {["Low", "Medium", "High"].map((level) => (
               <TouchableOpacity
                 key={level}
-                style={severity === level ? styles.severitySelected : styles.severityButton}
+                style={
+                  severity === level
+                    ? styles.severitySelected
+                    : styles.severityButton
+                }
                 onPress={() => setSeverity(level)}
               >
                 <Text style={styles.severityText}>{level}</Text>
@@ -177,21 +187,28 @@ const ReportVendorScreen = () => {
 
           <View style={styles.checkboxContainer}>
             <TouchableOpacity onPress={() => setFollowUp(!followUp)}>
-              <Text style={styles.checkbox}>{followUp ? '☑️' : '⬜️'} Follow-up Contact</Text>
+              <Text style={styles.checkbox}>
+                {followUp ? "☑️" : "⬜️"} Follow-up Contact
+              </Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
-            <Text style={{ color: 'white' }}>Submit Report</Text>
+            <Text style={{ color: "white" }}>Submit Report</Text>
           </TouchableOpacity>
 
           <Text style={styles.footer}>
-            By submitting this report, you agree to our Terms of Service and Privacy Policy.
+            By submitting this report, you agree to our Terms of Service and
+            Privacy Policy.
           </Text>
         </ScrollView>
 
         {loading && (
-          <ActivityIndicator size="large" color={'green'} style={styles.loader} />
+          <ActivityIndicator
+            size="large"
+            color={"green"}
+            style={styles.loader}
+          />
         )}
 
         <Modal
@@ -200,18 +217,23 @@ const ReportVendorScreen = () => {
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
-            navigation.navigate('VendorsProfilePage');
+            navigation.navigate("VendorsProfilePage");
           }}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalText}>Report Submitted Successfully</Text>
-              <Text style={styles.modalSubText}>Sorry for the incident, we ensure our customers are served honestly.</Text>
+              <Text style={styles.modalText}>
+                Report Submitted Successfully
+              </Text>
+              <Text style={styles.modalSubText}>
+                Sorry for the incident, we ensure our customers are served
+                honestly.
+              </Text>
               <TouchableOpacity
                 style={styles.okButton}
                 onPress={() => {
                   setModalVisible(false);
-                  navigation.navigate('HomePageExistingUser');
+                  navigation.navigate("HomePageExistingUser");
                 }}
               >
                 <Text style={styles.okButtonText}>OK</Text>
@@ -228,22 +250,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    padding: '2%',
+    padding: "2%",
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: '1%',
+    padding: "1%",
   },
   headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   header: {
     fontSize: 22,
-    fontWeight: 'bold',
-    marginLeft: '13%',
-    color: 'green'
+    fontWeight: "bold",
+    marginLeft: "13%",
+    color: "green",
   },
   vendorInfo: {
     marginBottom: 20,
@@ -253,11 +275,11 @@ const styles = StyleSheet.create({
     height: 100,
     marginVertical: 10,
     borderRadius: 20,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 5,
   },
   input: {
@@ -267,11 +289,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 1
+    elevation: 1,
   },
   textArea: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 15,
     padding: 10,
     height: 80,
@@ -279,99 +301,99 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 14,
     padding: 10,
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   severityContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 15,
-    width: '100%',
+    width: "100%",
   },
   severityButton: {
     padding: 10,
-    borderColor: 'white',
+    borderColor: "white",
     borderWidth: 1,
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
     borderRadius: 12,
     marginBottom: 15,
     elevation: 3,
   },
   submit: {
     padding: 10,
-    borderColor: 'white',
+    borderColor: "white",
     borderWidth: 1,
-    alignItems: 'center',
-    backgroundColor: 'green',
+    alignItems: "center",
+    backgroundColor: "green",
     borderRadius: 14,
     marginBottom: 15,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
     elevation: 5,
-    width: '80%',
-    height: '20%',
+    width: "80%",
+    height: "20%",
   },
   modalText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalSubText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   okButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 10,
   },
   okButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   footer: {
     marginTop: 20,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12,
-    color: '#777',
+    color: "#777",
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 15,
   },
   checkbox: {
     fontSize: 14,
   },
   loader: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     marginLeft: -15,
   },
   severitySelected: {
     padding: 10,
-    borderColor: 'white',
+    borderColor: "white",
     borderWidth: 1,
-    alignItems: 'center',
-    backgroundColor: 'green',
+    alignItems: "center",
+    backgroundColor: "green",
     borderRadius: 14,
     paddingBottom: -5,
   },
   severityText: {
-    color: 'black',
+    color: "black",
   },
 });
 

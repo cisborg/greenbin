@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
-  SafeAreaView,
+  SafeAreaView, Platform, StatusBar
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FlashSale from "../e-Commerce/FlashSale";
@@ -16,8 +16,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
 import { FlashList } from "@shopify/flash-list";
-import Lottie from 'lottie-react-native'; // Import Lottie
-import FastImage from 'react-native-fast-image'; // Import FastImage
+import Lottie from "lottie-react-native"; // Import Lottie
+import FastImage from "react-native-fast-image"; // Import FastImage
 
 const challenges = [
   { id: "1", title: "EcoBikes", icon: require("../../assets/bikes.png") },
@@ -44,7 +44,8 @@ const { width, height } = Dimensions.get("window");
 export default function HomePageExistingUser() {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [filteredChallenges, setFilteredChallenges] = React.useState(challenges);
+  const [filteredChallenges, setFilteredChallenges] =
+    React.useState(challenges);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const [loading, setLoading] = React.useState(true); // Loading state
@@ -54,7 +55,8 @@ export default function HomePageExistingUser() {
     return acc;
   }, {});
 
-  const [vendorConnectState, setVendorConnectState] = React.useState(initialVendorState);
+  const [vendorConnectState, setVendorConnectState] =
+    React.useState(initialVendorState);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -120,10 +122,10 @@ export default function HomePageExistingUser() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Lottie 
-          source={require('../../assets/lottie/homy.json')} // Adjust path to your Lottie file
-          autoPlay 
-          loop 
+        <Lottie
+          source={require("../../assets/lottie/homy.json")} // Adjust path to your Lottie file
+          autoPlay
+          loop
           style={styles.lottie} // Optional: add styles if needed
         />
       </View>
@@ -149,12 +151,28 @@ export default function HomePageExistingUser() {
           <FlashList
             horizontal
             data={[
-              { id: "1", name: "Leakey Jokes", icon: require("../../assets/vendorimg.png"), profession: "Tree Vendor" },
-              { id: "2", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Techy" },
-              { id: "3", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Health" },
+              {
+                id: "1",
+                name: "Leakey Jokes",
+                icon: require("../../assets/vendorimg.png"),
+                profession: "Tree Vendor",
+              },
+              {
+                id: "2",
+                name: "Hassan Tbag",
+                icon: require("../../assets/vendorimg1.png"),
+                profession: "Smart Techy",
+              },
+              {
+                id: "3",
+                name: "Hassan Tbag",
+                icon: require("../../assets/vendorimg1.png"),
+                profession: "Smart Health",
+              },
             ]}
             renderItem={({ item }) => {
-              const { connecting, connected } = vendorConnectState[item.id] || {};
+              const { connecting, connected } =
+                vendorConnectState[item.id] || {};
               return (
                 <View style={styles.vendorDetails}>
                   <FastImage style={styles.vendorImgIcon} source={item.icon} />
@@ -164,7 +182,9 @@ export default function HomePageExistingUser() {
                   <TouchableOpacity
                     style={[
                       styles.connectButton,
-                      connected ? styles.approvedButton : styles.connectBlueButton,
+                      connected
+                        ? styles.approvedButton
+                        : styles.connectBlueButton,
                       { opacity: connected ? 1 : 0.8 },
                     ]}
                     onPress={() => {
@@ -183,7 +203,9 @@ export default function HomePageExistingUser() {
                     {connecting ? (
                       <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                      <Text style={styles.buttonText}>{connected ? "Approved" : "Connect"}</Text>
+                      <Text style={styles.buttonText}>
+                        {connected ? "Approved" : "Connect"}
+                      </Text>
                     )}
                   </TouchableOpacity>
                 </View>
@@ -238,7 +260,7 @@ export default function HomePageExistingUser() {
       </GestureHandlerRootView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -253,11 +275,11 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    alignItems: 'center',
-    top: '20%'
+    alignItems: "center",
+    top: "20%",
   },
   lottie: {
-    width: '80%', // Adjust size as needed
+    width: "80%", // Adjust size as needed
     height: 300,
   },
   bannerContainer: {
@@ -286,7 +308,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   vendorsYouFollow: {
-    fontFamily: FontFamily.manropeBold,
     fontWeight: "600",
     fontSize: 16,
     color: Color.colorGray_400,
@@ -295,7 +316,7 @@ const styles = StyleSheet.create({
   },
   vendorFrame: {
     paddingHorizontal: 11, // Only padding-related styles
-    backgroundColor: "transparent", 
+    backgroundColor: "transparent",
   },
   vendorDetails: {
     width: 140,
@@ -316,15 +337,13 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     marginBottom: 5,
-    marginTop: 5
+    marginTop: 5,
   },
   vendorName: {
-    fontFamily: FontFamily.manropeBold,
     fontSize: 12,
     marginBottom: 2,
   },
   vendorProfession: {
-    fontFamily: FontFamily.manropeMedium,
     fontSize: 11,
     marginBottom: 5,
   },
@@ -332,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    marginBottom: 10
+    marginBottom: 10,
   },
   connectBlueButton: {
     backgroundColor: "green",
@@ -352,7 +371,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 60,
   },
-   searchBarContainer: {
+  searchBarContainer: {
     marginTop: 15,
   },
   searchBar: {
@@ -372,7 +391,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   challengeBox: {
-    width: '90%',
+    width: "90%",
     height: 75,
     marginRight: 10,
     marginBottom: 20,
@@ -390,7 +409,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1.41,
     elevation: 2,
-    paddingHorizontal: '8%'
+    paddingHorizontal: "8%",
   },
   rainIcon: {
     width: 20,
@@ -399,7 +418,7 @@ const styles = StyleSheet.create({
   },
   challengeText: {
     fontSize: 10,
-    fontFamily: FontFamily.manropeBold,
+
     textAlign: "center",
   },
 });

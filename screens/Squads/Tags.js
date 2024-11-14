@@ -1,32 +1,38 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList ,TouchableOpacity } from 'react-native';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { FontFamily, Color } from "../../GlobalStyles";
 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from "@react-navigation/core";
 
 const TagList = () => {
   const trendingTags = [
-    'startup',
-    'career',
-    'tailwind-css',
-    'react-native',
-    'tutorial',
-    'backend',
-    'typescript',
-    'malware',
-    'javascript',
-    'android',
+    "startup",
+    "career",
+    "tailwind-css",
+    "react-native",
+    "tutorial",
+    "backend",
+    "typescript",
+    "malware",
+    "javascript",
+    "android",
   ];
 
   const popularTags = [
-    'tools',
-    'html',
-    'community',
-    'cyber',
-    'tutorial',
-    'productivity',
+    "tools",
+    "html",
+    "community",
+    "cyber",
+    "tutorial",
+    "productivity",
   ];
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const renderTag = ({ item }) => (
     <View style={styles.tagContainer}>
       <Text style={styles.tagText}>{item}</Text>
@@ -35,7 +41,6 @@ const TagList = () => {
 
   return (
     <View style={styles.container}>
-
       <Text style={styles.header}>Trending Tags</Text>
       <FlatList
         data={trendingTags}
@@ -51,9 +56,7 @@ const TagList = () => {
         keyExtractor={(item, index) => index.toString()}
         style={styles.list}
       />
-      
     </View>
-    
   );
 };
 
@@ -62,34 +65,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   header: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
 
     marginVertical: 5,
-    color: 'green',
-    FontFamily: FontFamily.manropeBold
+    color: "green",
   },
- 
+
   cardText: {
-    color: 'green',
-    fontWeight: 'bold',
+    color: "green",
+    fontWeight: "bold",
   },
   list: {
     marginBottom: 20,
   },
   tagContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 12,
     padding: 10,
     marginVertical: 5,
-    
   },
   tagText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
   },
 });
 

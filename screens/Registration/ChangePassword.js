@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-import { Color } from '../../GlobalStyles';
-import Toast from '../../helpers/Toast'; // Adjust the import path as necessary
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+  Platform,
+  StatusBar,
+} from "react-native";
+import { useNavigation } from "@react-navigation/core";
+import { Color } from "../../GlobalStyles";
+import Toast from "../../helpers/Toast"; // Adjust the import path as necessary
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const ChangePassword = () => {
   const navigation = useNavigation();
-  const [userId, setUserId] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [userId, setUserId] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('info');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
 
   const validateUserId = (id) => {
     const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirements
@@ -23,17 +34,20 @@ const ChangePassword = () => {
 
   const handleChangePassword = async () => {
     if (!validateUserId(userId)) {
-      showToast('Invalid phone number. Please enter a valid phone number.', 'error');
+      showToast(
+        "Invalid phone number. Please enter a valid phone number.",
+        "error"
+      );
       return;
     }
 
-    if (newPassword === '') {
-      showToast('New password cannot be empty.', 'error');
+    if (newPassword === "") {
+      showToast("New password cannot be empty.", "error");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      showToast('Passwords do not match.', 'error');
+      showToast("Passwords do not match.", "error");
       return;
     }
 
@@ -42,10 +56,10 @@ const ChangePassword = () => {
       // Implement password change logic here
       // Simulating successful password change
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-      showToast('Password changed successfully!', 'success');
+      showToast("Password changed successfully!", "success");
       navigation.goBack();
     } catch (error) {
-      showToast('Failed to change password. Please try again.', 'error');
+      showToast("Failed to change password. Please try again.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -60,11 +74,17 @@ const ChangePassword = () => {
 
   return (
     <View style={styles.container}>
-      {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
-      <Image 
-        source={require('../../assets/seated.webp')} 
-        style={styles.image} 
-        resizeMode='cover' 
+      {toastVisible && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastVisible(false)}
+        />
+      )}
+      <Image
+        source={require("../../assets/seated.webp")}
+        style={styles.image}
+        resizeMode="cover"
       />
       <Text style={styles.title}>Change Password</Text>
       <TextInput
@@ -91,7 +111,11 @@ const ChangePassword = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <TouchableOpacity style={styles.proceed} onPress={handleChangePassword} disabled={isLoading}>
+      <TouchableOpacity
+        style={styles.proceed}
+        onPress={handleChangePassword}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <ActivityIndicator size="small" color={Color.colorWhite} />
         ) : (
@@ -107,10 +131,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: width * 0.05, // Responsive padding
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   image: {
     borderRadius: 20,
@@ -121,34 +145,34 @@ const styles = StyleSheet.create({
   title: {
     fontSize: width * 0.06, // Responsive font size
     marginBottom: height * 0.02, // Responsive margin
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     height: height * 0.06, // Responsive height
     borderRadius: 15,
     marginBottom: height * 0.03, // Responsive margin
     paddingHorizontal: width * 0.04, // Responsive padding
-    width: '100%',
+    width: "100%",
     backgroundColor: Color.colorWhite,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
   proceed: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     marginTop: height * 0.01, // Responsive margin
-    width: '70%',
+    width: "70%",
     height: height * 0.06, // Responsive height
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: height * 0.02, // Responsive margin
   },
   proceedButtonText: {
     color: Color.colorWhite,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: width * 0.035, // Responsive font size
   },
 });

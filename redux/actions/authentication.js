@@ -17,7 +17,6 @@ import {
   LOGIN_USER,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  
 } from "./actionTypes";
 import { Alert } from "react-native";
 
@@ -56,6 +55,7 @@ export const loginUser = (credentials) => async (dispatch) => {
     const response = await api.post("/user/login", credentials);
 
     const { token, name, email, ...user } = response.data.data;
+    console.log("Login response: ", response.data);
     if (response.data.status === "success") {
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem(
@@ -72,6 +72,7 @@ export const loginUser = (credentials) => async (dispatch) => {
 
     return { token: token };
   } catch (error) {
+    console.log("Login error: ", error);
     dispatch({
       type: LOGIN_FAILURE,
       payload: error.response?.data?.message || error.message,
@@ -90,29 +91,26 @@ export const sendResetPassword = (email) => async (dispatch) => {
   } catch (error) {
     dispatch({ type: SEND_RESET_PASSWORD_FAILURE, payload: error.message });
   }
- };
-
-
+};
 
 // Connection Request action
- export const connectionRequest = (userId) => async (dispatch) => {
+export const connectionRequest = (userId) => async (dispatch) => {
   dispatch({ type: CONNECTION_REQUEST });
-   try {
-     const response = await api.post(" api/connection-request", { userId });
-     dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
-   } catch (error) {
-     dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
-   }
- };
+  try {
+    const response = await api.post(" api/connection-request", { userId });
+    dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
+  }
+};
 
-
- // Get Referral Code action
- export const getReferralCode = (userId) => async (dispatch) => {
+// Get Referral Code action
+export const getReferralCode = (userId) => async (dispatch) => {
   dispatch({ type: GET_REFERRAL_CODE_REQUEST });
   try {
     const response = await api.get(` api/get-referral-code/${userId}`);
-     dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data });
-   } catch (error) {
+    dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data });
+  } catch (error) {
     dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
-   }
- };
+  }
+};

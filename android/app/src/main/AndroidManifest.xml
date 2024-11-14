@@ -4,7 +4,6 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.CAMERA"/>
   <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE"/>
-
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -37,8 +36,4 @@
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
   </application>
-<<<<<<< HEAD
 </manifest>
-=======
-</manifest>
->>>>>>> 875f3b77ab04d266cf06caf89b88bfcecbdf84c9

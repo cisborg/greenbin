@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,27 +9,27 @@ import {
   Alert,
   ActivityIndicator,
   Modal,
-  Animated
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as ImagePicker from 'expo-image-picker';
-import FastImage from 'react-native-fast-image';
-import { useDispatch, useSelector } from 'react-redux';
-import { addSquadActivity } from './path/to/actions';
-import LottieView from 'lottie-react-native'; // Import Lottie component
+  Animated,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
+import FastImage from "react-native-fast-image";
+import { useDispatch, useSelector } from "react-redux";
+// import { addSquadActivity } from './path/to/actions';
+import LottieView from "lottie-react-native"; // Import Lottie component
 
 const EventForm = () => {
-  const [eventName, setEventName] = useState('');
+  const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [eventLocation, setEventLocation] = useState('');
+  const [eventLocation, setEventLocation] = useState("");
   const [eventPhoto, setEventPhoto] = useState(null);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(true); // State for controlling the loading screen
 
   const dispatch = useDispatch();
-  const loading = useSelector(state => state.squadActivities.loading);
-  const error = useSelector(state => state.squadActivities.error);
+  const loading = useSelector((state) => state.squadActivities.loading);
+  const error = useSelector((state) => state.squadActivities.error);
 
   useEffect(() => {
     // Simulate an async loading (you can replace this with actual data fetching or other loading logic)
@@ -38,9 +38,13 @@ const EventForm = () => {
     }, 3000);
 
     const requestPermissions = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission required', 'You need to grant permission to access the camera roll.');
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "You need to grant permission to access the camera roll."
+        );
       }
     };
     requestPermissions();
@@ -61,7 +65,7 @@ const EventForm = () => {
 
   const handleSubmit = () => {
     if (!eventName || !eventLocation) {
-      Alert.alert('Entry Error', 'Please fill in all required fields.');
+      Alert.alert("Entry Error", "Please fill in all required fields.");
       return;
     }
 
@@ -89,7 +93,7 @@ const EventForm = () => {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Path to your Lottie JSON file
+          source={require("../../assets/lottie/rotateLoad.json")} // Path to your Lottie JSON file
           autoPlay
           loop
           style={styles.lottie}
@@ -112,7 +116,9 @@ const EventForm = () => {
 
           <Text style={styles.label}>Event Date:</Text>
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Text style={styles.dateText}>{eventDate.toLocaleDateString()}</Text>
+            <Text style={styles.dateText}>
+              {eventDate.toLocaleDateString()}
+            </Text>
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
@@ -140,20 +146,27 @@ const EventForm = () => {
           <TouchableOpacity onPress={handleImagePick}>
             <Text style={styles.photoButton}>Pick an image</Text>
           </TouchableOpacity>
-          {eventPhoto && <FastImage source={{ uri: eventPhoto }} style={styles.image} resizeMode={FastImage.resizeMode.cover} />}
+          {eventPhoto && (
+            <FastImage
+              source={{ uri: eventPhoto }}
+              style={styles.image}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+          )}
 
           <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
-            <Text style={{ color: 'white' }}>Submit Event</Text>
+            <Text style={{ color: "white" }}>Submit Event</Text>
           </TouchableOpacity>
 
           {loading && (
-            <ActivityIndicator size="large" color={'green'} style={styles.loader} />
+            <ActivityIndicator
+              size="large"
+              color={"green"}
+              style={styles.loader}
+            />
           )}
 
-          {error && (
-            <Text style={styles.errorText}>Error: {error}</Text>
-          )}
-
+          {error && <Text style={styles.errorText}>Error: {error}</Text>}
         </ScrollView>
       </Animated.View>
     </View>
@@ -163,16 +176,16 @@ const EventForm = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   label: {
     marginBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   lottie: {
     width: 150,
@@ -180,23 +193,23 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
-    backgroundColor: 'lightgray',
+    borderColor: "gray",
+    backgroundColor: "lightgray",
     marginBottom: 15,
     paddingLeft: 10,
     borderRadius: 14,
   },
   dateText: {
     height: 40,
-    backgroundColor: 'lightgray',
+    backgroundColor: "lightgray",
     marginBottom: 15,
     paddingHorizontal: 10,
     borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   photoButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
     padding: 10,
     borderRadius: 14,
     marginBottom: 15,
@@ -207,40 +220,40 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   submit: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 15,
     borderRadius: 14,
     marginBottom: 15,
     marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
   },
   modalContent: {
     width: 300,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalText: {
     fontSize: 14,
     marginBottom: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   okButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 10,
   },
   okButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 14,
   },
 });

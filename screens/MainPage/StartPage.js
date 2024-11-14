@@ -1,15 +1,25 @@
 import React, { useRef, useEffect } from "react";
-import { Animated, StyleSheet, Text, View, Easing, TouchableOpacity, Dimensions } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  View,
+  Easing,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { FontFamily, FontSize, Color } from "../../GlobalStyles";
-import FastImage from 'react-native-fast-image'; // Import FastImage
+import FastImage from "react-native-fast-image"; // Import FastImage
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const StartPage = () => {
   const navigation = useNavigation();
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const animatedValues = useRef([1, 2, 3, 4, 5, 6].map(() => new Animated.Value(0))).current;
+  const animatedValues = useRef(
+    [1, 2, 3, 4, 5, 6].map(() => new Animated.Value(0))
+  ).current;
 
   useEffect(() => {
     Animated.loop(
@@ -65,7 +75,7 @@ const StartPage = () => {
     } else {
       initialY = -150;
     }
-    
+
     return {
       translateY: animatedValue.interpolate({
         inputRange: [0, 1],
@@ -100,8 +110,16 @@ const StartPage = () => {
           styles.startimgIcon,
           {
             transform: [
-              { rotate: waveInterpolation },
-              { translateY: translateYInterpolation },
+              {
+                rotate:
+                  waveInterpolation.length > 1 ? waveInterpolation : "0deg",
+              },
+              {
+                translateY:
+                  typeof translateYInterpolation === "number"
+                    ? translateYInterpolation
+                    : 0,
+              },
             ],
           },
         ]}
@@ -156,10 +174,10 @@ const styles = StyleSheet.create({
   },
   manageYourWaste: {
     top: height * 0.7,
-    left: '4%',
+    left: "4%",
     fontSize: 15,
     color: Color.colorGray_800,
-    fontWeight: '400',
+    fontWeight: "400",
   },
   getStartedBtn: {
     backgroundColor: "white",
@@ -184,32 +202,31 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardText: {
-    color: 'green',
-    fontWeight: '700',
+    color: "green",
+    fontWeight: "700",
     fontSize: 18,
-    fontFamily: FontFamily.manropeBold,
   },
   textTypo: {
     textAlign: "center",
-    fontFamily: FontFamily.poppinsBold,
+
     fontWeight: "700",
   },
 });
 
 // Platform-specific styles
-const platformStyles = StyleSheet.create({
-  getStartedBtn: {
-    ...Platform.select({
-      ios: {
-        // iOS specific styles
-        backgroundColor: "lightblue",
-      },
-      android: {
-        // Android specific styles
-        backgroundColor: "lightgreen",
-      },
-    }),
-  },
-});
+// const platformStyles = StyleSheet.create({
+//   getStartedBtn: {
+//     ...Platform.select({
+//       ios: {
+//         // iOS specific styles
+//         backgroundColor: "lightblue",
+//       },
+//       android: {
+//         // Android specific styles
+//         backgroundColor: "lightgreen",
+//       },
+//     }),
+//   },
+// });
 
 export default StartPage;

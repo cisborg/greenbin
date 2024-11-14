@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated, StatusBar } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { Color, FontFamily } from '../../GlobalStyles';
-import { useNavigation } from '@react-navigation/core';
-import { useDispatch } from 'react-redux';
-import { createSquad } from '../../redux/actions/squads';
-import FastImage from 'react-native-fast-image';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  SafeAreaView,
+  Animated,
+  StatusBar,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { Color, FontFamily } from "../../GlobalStyles";
+import { useNavigation } from "@react-navigation/core";
+import { useDispatch } from "react-redux";
+import { createSquad } from "../../redux/actions/squads";
+import FastImage from "react-native-fast-image";
 
 const CreateSquad = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   // const [squadData,setSquadData]=useState({})
-  const [squadName, setSquadName] = useState('');
-  const [description, setDescription] = useState('');
-  const [moderators,setModerators]=useState([])
+  const [squadName, setSquadName] = useState("");
+  const [description, setDescription] = useState("");
+  const [moderators, setModerators] = useState([]);
 
-  const [postPermission, setPostPermission] = useState('all');
-  const [invitePermission, setInvitePermission] = useState('all');
+  const [postPermission, setPostPermission] = useState("all");
+  const [invitePermission, setInvitePermission] = useState("all");
   const [greenPoints, setGreenPoints] = useState(0);
   const [loadingLaunch, setLoadingLaunch] = useState(false);
   const [loadingJoin, setLoadingJoin] = useState(false);
@@ -36,43 +48,41 @@ const CreateSquad = () => {
 
   const handleCreateSquad = async () => {
     if (!squadName || greenPoints < 2500) {
-      alert('Please fill in all fields and ensure you have enough Green Points.');
+      alert(
+        "Please fill in all fields and ensure you have enough Green Points."
+      );
       return;
     }
-    
+
     setLoadingLaunch(true);
-    const squadData={
-      name:squadName,
-      description:description,
-      moderators:moderators,
-    }
+    const squadData = {
+      name: squadName,
+      description: description,
+      moderators: moderators,
+    };
     // setTimeout(() => {
     //   console.log('Creating squad:', { squadName, description, postPermission, invitePermission, greenPoints });
     //   setLoadingLaunch(false);
     //   navigation.navigate('Confirmed'); // Navigate to confirmation screen
     // }, 2000); // Simulated delay for API call
     try {
-      console.log('Creating squad:', squadData);
-      const response= await dispatch(createSquad(squadData))
-      console.log('Response from creating squad:',response)
+      console.log("Creating squad:", squadData);
+      const response = await dispatch(createSquad(squadData));
+      console.log("Response from creating squad:", response);
 
-navigation.navigate('Confirmed')
-
-
-
-    }catch(error){
-      console.log('Error in creating squad:',err)
+      navigation.navigate("Confirmed");
+    } catch (error) {
+      console.log("Error in creating squad:", err);
     }
-
   };
 
   const handleJoinSquad = () => {
     setLoadingJoin(true);
     // Simulate API call
     setTimeout(() => {
-      console.log('Joining existing squads...');
+      console.log("Joining existing squads...");
       setLoadingJoin(false);
-      navigation.navigate('JoinSquads'); // Navigate to existing squads
+      navigation.navigate("JoinSquads"); // Navigate to existing squads
     }, 2000); // Simulated delay for API call
   };
 
@@ -96,9 +106,12 @@ navigation.navigate('Confirmed')
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Launch Squad 🚀</Text>
-            <TouchableOpacity style={styles.joinButton} onPress={handleJoinSquad}>
+            <TouchableOpacity
+              style={styles.joinButton}
+              onPress={handleJoinSquad}
+            >
               {loadingJoin ? (
-                <ActivityIndicator size="small" color='white' />
+                <ActivityIndicator size="small" color="white" />
               ) : (
                 <Text style={styles.joinButtonText}>Join</Text>
               )}
@@ -106,7 +119,9 @@ navigation.navigate('Confirmed')
           </View>
 
           <Text style={styles.subtitle}>
-            Create a <Text style={{ color: 'green' }}>squad</Text> where you can learn and interact with other ecoWarriors around topics that matter to you
+            Create a <Text style={{ color: "green" }}>squad</Text> where you can
+            learn and interact with other ecoWarriors around topics that matter
+            to you
           </Text>
 
           <TextInput
@@ -127,27 +142,63 @@ navigation.navigate('Confirmed')
             numberOfLines={3}
           />
 
-          <TouchableOpacity style={styles.photoPicker} onPress={() => pickImage(setCoverPhoto)}>
+          <TouchableOpacity
+            style={styles.photoPicker}
+            onPress={() => pickImage(setCoverPhoto)}
+          >
             <Text style={styles.photoText}>Add Cover Photo</Text>
-            {coverPhoto && <FastImage source={{ uri: coverPhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
+            {coverPhoto && (
+              <FastImage
+                source={{ uri: coverPhoto }}
+                style={styles.photoPreview}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.photoPicker} onPress={() => pickImage(setProfilePhoto)}>
+          <TouchableOpacity
+            style={styles.photoPicker}
+            onPress={() => pickImage(setProfilePhoto)}
+          >
             <Text style={styles.photoText}>Add Profile Photo</Text>
-            {profilePhoto &&<FastImage source={{ uri: profilePhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
+            {profilePhoto && (
+              <FastImage
+                source={{ uri: profilePhoto }}
+                style={styles.photoPreview}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+            )}
           </TouchableOpacity>
 
           <Text style={styles.permissionTitle}>Post permissions</Text>
           <Text style={styles.permissionSubtitle}>
             Choose who is allowed to post new content in this Squad.
           </Text>
-          <TouchableOpacity style={styles.option} onPress={() => setPostPermission('all')}>
-            <Text style={postPermission === 'all' ? styles.selectedOption : styles.optionText}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setPostPermission("all")}
+          >
+            <Text
+              style={
+                postPermission === "all"
+                  ? styles.selectedOption
+                  : styles.optionText
+              }
+            >
               All members (recommended)
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={() => setPostPermission('moderators')}>
-            <Text style={postPermission === 'moderators' ? styles.selectedOption : styles.optionText}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setPostPermission("moderators")}
+          >
+            <Text
+              style={
+                postPermission === "moderators"
+                  ? styles.selectedOption
+                  : styles.optionText
+              }
+            >
               Only moderators
             </Text>
           </TouchableOpacity>
@@ -156,13 +207,31 @@ navigation.navigate('Confirmed')
           <Text style={styles.permissionSubtitle}>
             Choose who is allowed to invite new members to this Squad.
           </Text>
-          <TouchableOpacity style={styles.option} onPress={() => setInvitePermission('all')}>
-            <Text style={invitePermission === 'all' ? styles.selectedOption : styles.optionText}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setInvitePermission("all")}
+          >
+            <Text
+              style={
+                invitePermission === "all"
+                  ? styles.selectedOption
+                  : styles.optionText
+              }
+            >
               All members (recommended)
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={() => setInvitePermission('moderators')}>
-            <Text style={invitePermission === 'moderators' ? styles.selectedOption : styles.optionText}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setInvitePermission("moderators")}
+          >
+            <Text
+              style={
+                invitePermission === "moderators"
+                  ? styles.selectedOption
+                  : styles.optionText
+              }
+            >
               Only moderators
             </Text>
           </TouchableOpacity>
@@ -171,7 +240,9 @@ navigation.navigate('Confirmed')
           <View style={styles.paymentBox}>
             <Text style={styles.paymentTitle}>Payment for Squad</Text>
             <Text style={styles.paymentSubtitle}>
-              You need to pay <Text style={styles.greenPoints}>{2500} Green Points</Text> to create this squad.
+              You need to pay{" "}
+              <Text style={styles.greenPoints}>{2500} Green Points</Text> to
+              create this squad.
             </Text>
             <TextInput
               style={styles.input}
@@ -179,11 +250,14 @@ navigation.navigate('Confirmed')
               value={greenPoints.toString()}
               keyboardType="numeric"
               placeholderTextColor="gray"
-              onChangeText={text => setGreenPoints(parseInt(text) || 0)}
+              onChangeText={(text) => setGreenPoints(parseInt(text) || 0)}
             />
           </View>
 
-          <TouchableOpacity style={styles.createButton} onPress={handleCreateSquad}>
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={handleCreateSquad}
+          >
             {loadingLaunch ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
@@ -201,29 +275,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     padding: 10,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollContainer: {
     paddingBottom: 20,
-    margin: 15
+    margin: 15,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 15,
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     fontSize: 20, // Reduced font size
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 5,
-    fontFamily: FontFamily.poppinsRegular,
-    color: 'orange',
+
+    color: "orange",
   },
   subtitle: {
     fontSize: 14, // Reduced font size
     marginBottom: 15,
-    color: '#555',
+    color: "#555",
   },
   input: {
     height: 35, // Reduced height
@@ -236,18 +310,18 @@ const styles = StyleSheet.create({
   },
   permissionTitle: {
     fontSize: 16, // Reduced font size
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 15,
   },
   permissionSubtitle: {
     fontSize: 13, // Reduced font size
     marginBottom: 8,
-    color: '#555',
+    color: "#555",
   },
   option: {
     padding: 8, // Reduced padding
     borderRadius: 6, // Reduced border radius
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     marginBottom: 8, // Reduced margin
   },
   optionText: {
@@ -255,19 +329,19 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     fontSize: 14, // Reduced font size
-    fontWeight: 'bold',
-    color: 'green',
+    fontWeight: "bold",
+    color: "green",
   },
   photoPicker: {
     marginVertical: 12, // Reduced margin
     padding: 8, // Reduced padding
     borderRadius: 8,
-    backgroundColor: '#eaeaea',
-    alignItems: 'center',
+    backgroundColor: "#eaeaea",
+    alignItems: "center",
   },
   photoText: {
     fontSize: 14, // Reduced font size
-    color: 'gray'
+    color: "gray",
   },
   photoPreview: {
     marginTop: 8,
@@ -278,27 +352,27 @@ const styles = StyleSheet.create({
   paymentBox: {
     marginTop: 18,
     padding: 13,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 14,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   paymentTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   paymentSubtitle: {
     fontSize: 12,
-    color: '#555',
+    color: "#555",
     marginBottom: 8,
   },
   greenPoints: {
-    fontWeight: 'bold',
-    color: 'green',
+    fontWeight: "bold",
+    color: "green",
   },
   createButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -308,22 +382,22 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    margin: 13
+    margin: 13,
   },
   createButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
     alignSelf: "center",
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   joinButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     paddingHorizontal: 13,
     paddingVertical: 6,
     borderRadius: 13,
   },
   joinButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
   },
 });
