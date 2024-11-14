@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const notificationsData = [
-  { id: '1', date: '20 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a bronze tier of 800 points' },
-  { id: '2', date: '22 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a gold tier of 1200 points' },
-  { id: '3', date: '28 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a platinum tier of 1500 points' },
-  { id: '4', date: '30 SEP 2024', message: 'Congratulations! You have donated  GCPs 40000 successfully! You earn  a diamond tier of 15000 points' },
-];
+import { getAllDonations, deleteDonation, clearAllDonations } from '../../redux/actions/donations';
 
 const HistoryScreen = ({ navigation }) => {
-  const [notifications, setNotifications] = useState(notificationsData);
+  const dispatch = useDispatch();
+  const donations = useSelector(state => state.donations.donations);
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    dispatch(getAllDonations());
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
+  }, [dispatch, fadeAnim]);
 
-  const clearAllNotifications = () => {
-    setNotifications([]);
+  const clearAllDonationsHandler = () => {
+    dispatch(clearAllDonations()); // Dispatch batch delete
   };
 
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={() => (
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNotification(item.id)}>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteDonationHandler(item.id)}>
           <Text style={styles.deleteText}>Delete</Text>
         </TouchableOpacity>
       )}
@@ -43,8 +41,8 @@ const HistoryScreen = ({ navigation }) => {
     </Swipeable>
   );
 
-  const deleteNotification = (id) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  const deleteDonationHandler = (id) => {
+    dispatch(deleteDonation(id));
   };
 
   return (
@@ -54,15 +52,15 @@ const HistoryScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Donations Catalog</Text>
-        <TouchableOpacity onPress={clearAllNotifications}>
+        <TouchableOpacity onPress={clearAllDonationsHandler}>
           <Text style={styles.clearAllText}>Clear All</Text>
         </TouchableOpacity>
       </View>
       <Animated.View style={{ ...styles.listContainer, opacity: fadeAnim }}>
         <FlatList
-          data={notifications}
+          data={donations}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.listContent}
         />
       </Animated.View>

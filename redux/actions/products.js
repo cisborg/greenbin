@@ -5,15 +5,6 @@ import {
     FETCH_PRODUCTS_REQUEST,
     FETCH_PRODUCTS_SUCCESS,
     FETCH_PRODUCTS_FAILURE,
-    CREATE_PRODUCT_REQUEST,
-    CREATE_PRODUCT_SUCCESS,
-    CREATE_PRODUCT_FAILURE,
-    UPDATE_PRODUCT_REQUEST,
-    UPDATE_PRODUCT_SUCCESS,
-    UPDATE_PRODUCT_FAILURE,
-    DELETE_PRODUCT_REQUEST,
-    DELETE_PRODUCT_SUCCESS,
-    DELETE_PRODUCT_FAILURE,
     PURCHASE_PRODUCT_REQUEST,
     PURCHASE_PRODUCT_SUCCESS,
     PURCHASE_PRODUCT_FAILURE,
@@ -36,39 +27,6 @@ export const fetchProducts = () => async (dispatch) => {
     }
 };
 
-// Create product action
-export const createProduct = (productData) => async (dispatch) => {
-    dispatch({ type: CREATE_PRODUCT_REQUEST });
-    try {
-        const response = await api.post('/api/products', productData);
-        dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
-    }
-};
-
-// Update product action
-export const updateProduct = (productId, productData) => async (dispatch) => {
-    dispatch({ type: UPDATE_PRODUCT_REQUEST });
-    try {
-        const response = await api.put(`/api/products/${productId}`, productData);
-        dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
-    }
-};
-
-// Delete product action
-export const deleteProduct = (productId) => async (dispatch) => {
-    dispatch({ type: DELETE_PRODUCT_REQUEST });
-    try {
-        await api.delete(`/api/products/${productId}`);
-        dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
-    } catch (error) {
-        dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
-    }
-};
-
 // Purchase product action
 export const purchaseProduct = (productId, quantity) => async (dispatch) => {
     dispatch({ type: PURCHASE_PRODUCT_REQUEST });
@@ -79,7 +37,6 @@ export const purchaseProduct = (productId, quantity) => async (dispatch) => {
         dispatch({ type: PURCHASE_PRODUCT_FAILURE, payload: error.message });
     }
 };
-
 
 // Subscribe to product action
 export const subscribeProduct = (productId) => async (dispatch) => {

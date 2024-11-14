@@ -1,93 +1,83 @@
-// squadReducer.js
+// src/redux/reducers/cartReducer.js
 import {
-    ADD_SQUAD_CHALLENGE,
-    REMOVE_SQUAD_CHALLENGE,
-    UPDATE_SQUAD_CHALLENGE,
-    FETCH_SQUAD_CHALLENGES,
-    SEND_SQUAD_INVITATION,
-    ACCEPT_SQUAD_INVITATION,
-    DECLINE_SQUAD_INVITATION,
-    FETCH_SQUAD_INVITATIONS,
-    ADD_SQUAD_MEMBER,
-    REMOVE_SQUAD_MEMBER,
-    FETCH_SQUAD_MEMBERS,
-    ADD_SQUAD_LEADER,
-    REMOVE_SQUAD_LEADER,
-    UPDATE_SQUAD_LEADER,
-    FETCH_SQUAD_NOTIFICATIONS,
-    REMOVE_SQUAD_NOTIFICATION
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
+    UPDATE_CART_ITEM_QUANTITY,
+    CLEAR_CART,
 } from '../actions/actionTypes';
 
 const initialState = {
-    squadChallenges: [],
-    squadInvitations: [],
-    squadMembers: [],
-    squadLeaders: [],
-    squadNotifications: [],
+    cartItems: [],
+    totalQuantity: 0,
+    totalPrice: 0,
 };
 
-const squadReducer = (state = initialState, action) => {
+const cartReducer = (state = initialState, action) => {
     switch (action.type) {
-        // Squad Challenges
-        case FETCH_SQUAD_CHALLENGES:
-            return { ...state, squadChallenges: action.payload };
-        case ADD_SQUAD_CHALLENGE:
-            return { ...state, squadChallenges: [...state.squadChallenges, action.payload] };
-        case REMOVE_SQUAD_CHALLENGE:
-            return { ...state, squadChallenges: state.squadChallenges.filter(challenge => challenge.id !== action.payload) };
-        case UPDATE_SQUAD_CHALLENGE:
+        case ADD_TO_CART:
+            const existingItemIndex = state.cartItems.findIndex(item => item.id === action.payload.id);
+            let updatedCartItems;
+
+            if (existingItemIndex >= 0) {
+                // Update quantity if the item already exists in the cart
+                const updatedItem = {
+                    ...state.cartItems[existingItemIndex],
+                    quantity: state.cartItems[existingItemIndex].quantity + action.payload.quantity,
+                };
+                updatedCartItems = [
+                    ...state.cartItems.slice(0, existingItemIndex),
+                    updatedItem,
+                    ...state.cartItems.slice(existingItemIndex + 1),
+                ];
+            } else {
+                // Add new item to the cart
+                updatedCartItems = [...state.cartItems, { ...action.payload, quantity: action.payload.quantity }];
+            }
+
             return {
                 ...state,
-                squadChallenges: state.squadChallenges.map(challenge =>
-                    challenge.id === action.payload.id ? action.payload : challenge
-                ),
+                cartItems: updatedCartItems,
+                totalQuantity: updatedCartItems.reduce((total, item) => total + item.quantity, 0),
+                totalPrice: updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0),
             };
 
-        // Squad Invitations
-        case FETCH_SQUAD_INVITATIONS:
-            return { ...state, squadInvitations: action.payload };
-        case SEND_SQUAD_INVITATION:
-            return { ...state, squadInvitations: [...state.squadInvitations, action.payload] };
-        case ACCEPT_SQUAD_INVITATION:
+        case REMOVE_FROM_CART:
+            const filteredCartItems = state.cartItems.filter(item => item.id !== action.payload);
             return {
                 ...state,
-                squadInvitations: state.squadInvitations.map(invitation =>
-                    invitation.id === action.payload.id ? action.payload : invitation
-                ),
-            };
-        case DECLINE_SQUAD_INVITATION:
-            return { ...state, squadInvitations: state.squadInvitations.filter(invitation => invitation.id !== action.payload) };
-
-        // Squad Members
-        case FETCH_SQUAD_MEMBERS:
-            return { ...state, squadMembers: action.payload };
-        case ADD_SQUAD_MEMBER:
-            return { ...state, squadMembers: [...state.squadMembers, action.payload] };
-        case REMOVE_SQUAD_MEMBER:
-            return { ...state, squadMembers: state.squadMembers.filter(member => member.id !== action.payload) };
-
-        // Squad Leaders
-        case ADD_SQUAD_LEADER:
-            return { ...state, squadLeaders: [...state.squadLeaders, action.payload] };
-        case REMOVE_SQUAD_LEADER:
-            return { ...state, squadLeaders: state.squadLeaders.filter(leader => leader.id !== action.payload) };
-        case UPDATE_SQUAD_LEADER:
-            return {
-                ...state,
-                squadLeaders: state.squadLeaders.map(leader =>
-                    leader.id === action.payload.id ? action.payload : leader
-                ),
+                cartItems: filteredCartItems,
+                totalQuantity: filteredCartItems.reduce((total, item) => total + item.quantity, 0),
+                totalPrice: filteredCartItems.reduce((total, item) => total + item.price * item.quantity, 0),
             };
 
-        // Squad Notifications
-        case FETCH_SQUAD_NOTIFICATIONS:
-            return { ...state, squadNotifications: action.payload };
-        case REMOVE_SQUAD_NOTIFICATION:
-            return { ...state, squadNotifications: state.squadNotifications.filter(notification => notification.id !== action.payload) };
+        case UPDATE_CART_ITEM_QUANTITY:
+            const itemIndex = state.cartItems.findIndex(item => item.id === action.payload.id);
+            if (itemIndex >= 0) {
+                const updatedItemQuantity = {
+                    ...state.cartItems[itemIndex],
+                    quantity: action.payload.quantity,
+                };
+                const updatedCartItemsQuantity = [
+                    ...state.cartItems.slice(0, itemIndex),
+                    updatedItemQuantity,
+                    ...state.cartItems.slice(itemIndex + 1),
+                ];
+
+                return {
+                    ...state,
+                    cartItems: updatedCartItemsQuantity,
+                    totalQuantity: updatedCartItemsQuantity.reduce((total, item) => total + item.quantity, 0),
+                    totalPrice: updatedCartItemsQuantity.reduce((total, item) => total + item.price * item.quantity, 0),
+                };
+            }
+            return state;
+
+        case CLEAR_CART:
+            return initialState;
 
         default:
             return state;
     }
 };
 
-export default squadReducer;
+export default cartReducer;

@@ -12,13 +12,14 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    totalBalance: 0, // Renamed for clarity
+    Balance: 0, // Renamed for clarity
     points: 0,
     loading: false,
     error: null,
+    greenBankBalance: 0, // Assume Green Bank balance is stored separately
 };
 
-const paymentReducer = (state = initialState, action) => {
+const greenBankReducer = (state = initialState, action) => {
     switch (action.type) {
         case DEPOSIT_REQUEST:
         case WITHDRAW_REQUEST:
@@ -32,14 +33,14 @@ const paymentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                totalBalance: state.totalBalance + action.payload.points, // Assuming points are cash equivalents
+                Balance: state.Balance + action.payload.points, // Assuming points are cash equivalents
             };
 
         case WITHDRAW_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                totalBalance: state.totalBalance - action.payload.points,
+                Balance: state.Balance - action.payload.points,
             };
 
         case SEND_POINTS_SUCCESS:
@@ -47,6 +48,11 @@ const paymentReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 points: Math.max(0, state.points - action.payload.points), // Ensure points don't go negative
+            };
+        case UPDATE_GREEN_BANK_BALANCE:
+            return {
+                ...state,
+                greenBankBalance: state.greenBankBalance + action.payload, // Update Green Bank balance
             };
         
 
@@ -64,4 +70,4 @@ const paymentReducer = (state = initialState, action) => {
     }
 };
 
-export default paymentReducer;
+export default greenBankReducer;

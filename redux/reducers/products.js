@@ -17,9 +17,9 @@ import {
     PURCHASE_PRODUCT_FAILURE,
     ADD_TO_CART,
     REMOVE_FROM_CART,
-    SUBSCRIBE_PRODUCT_REQUEST,
-    SUBSCRIBE_PRODUCT_SUCCESS,
-    SUBSCRIBE_PRODUCT_FAILURE,
+    SUBSCRIBE_BUNDLE_REQUEST,
+    SUBSCRIBE_BUNDLE_SUCCESS,
+    SUBSCRIBE_BUNDLE_FAILURE,
     CANCEL_SUBSCRIPTION_REQUEST,
     CANCEL_SUBSCRIPTION_SUCCESS,
     CANCEL_SUBSCRIPTION_FAILURE,
@@ -40,7 +40,7 @@ const productReducer = (state = initialState, action) => {
         case UPDATE_PRODUCT_REQUEST:
         case DELETE_PRODUCT_REQUEST:
         case PURCHASE_PRODUCT_REQUEST:
-        case SUBSCRIBE_PRODUCT_REQUEST:
+        case SUBSCRIBE_BUNDLE_REQUEST:
         case CANCEL_SUBSCRIPTION_REQUEST:
             return {
                 ...state,
@@ -96,7 +96,7 @@ const productReducer = (state = initialState, action) => {
                 cart: state.cart.filter(item => item.product.id !== action.payload),
             };
 
-        case SUBSCRIBE_PRODUCT_SUCCESS:
+        case SUBSCRIBE_BUNDLE_SUCCESS:
             return {
                 ...state,
                 loading: false,
@@ -115,7 +115,7 @@ const productReducer = (state = initialState, action) => {
         case UPDATE_PRODUCT_FAILURE:
         case DELETE_PRODUCT_FAILURE:
         case PURCHASE_PRODUCT_FAILURE:
-        case SUBSCRIBE_PRODUCT_FAILURE:
+        case SUBSCRIBE_BUNDLE_FAILURE:
         case CANCEL_SUBSCRIPTION_FAILURE:
             return {
                 ...state,

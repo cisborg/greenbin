@@ -12,6 +12,9 @@ import {
     DELETE_DONATION_REQUEST,
     DELETE_DONATION_SUCCESS,
     DELETE_DONATION_FAILURE,
+    CLEAR_ALL_DONATIONS_REQUEST,
+    CLEAR_ALL_DONATIONS_SUCCESS,
+    CLEAR_ALL_DONATIONS_FAILURE,
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
 
@@ -57,5 +60,15 @@ export const deleteDonation = (donationId) => async (dispatch) => {
         dispatch({ type: DELETE_DONATION_SUCCESS, payload: donationId });
     } catch (error) {
         dispatch({ type: DELETE_DONATION_FAILURE, payload: error.message });
+    }
+};
+
+export const clearAllDonations = () => async (dispatch) => {
+    dispatch({ type: CLEAR_ALL_DONATIONS_REQUEST });
+    try {
+        await api.delete('/api/clear-all-donations'); // Assuming endpoint exists for batch delete
+        dispatch({ type: CLEAR_ALL_DONATIONS_SUCCESS });
+    } catch (error) {
+        dispatch({ type: CLEAR_ALL_DONATIONS_FAILURE, payload: error.message });
     }
 };

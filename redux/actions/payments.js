@@ -9,8 +9,34 @@ import {
     SEND_POINTS_REQUEST,
     SEND_POINTS_SUCCESS,
     SEND_POINTS_FAILURE,
+    DELETE_TRANSACTION_REQUEST,
+    DELETE_TRANSACTION_SUCCESS,
+    DELETE_TRANSACTION_FAILURE,
+    CLEAR_ALL_TRANSACTIONS_REQUEST,
+    CLEAR_ALL_TRANSACTIONS_SUCCESS,
+    CLEAR_ALL_TRANSACTIONS_FAILURE,
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
+
+
+// Cash Deposit Action
+export const cashDeposit = (amount) => async (dispatch) => {
+    const depositAmount = parseFloat(amount);
+    const greenBankAmount = depositAmount * 0.10; // 10% for Green Bank
+
+    try {
+        // Assuming you have an API endpoint to handle cash deposits
+        await api.post('/api/cash-deposit', { amount: depositAmount });
+
+        // Dispatch actions to update both total balance and Green Bank balance
+        dispatch({ type: DEPOSIT_SUCCESS, payload: depositAmount });
+        dispatch({ type: UPDATE_GREEN_BANK_BALANCE, payload: greenBankAmount }); // New action to update Green Bank balance
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message;
+        dispatch({ type: DEPOSIT_FAILURE, payload: errorMessage });
+    }
+};
+
 
 // Deposit action
 export const deposit = (amount) => async (dispatch) => {
@@ -19,9 +45,11 @@ export const deposit = (amount) => async (dispatch) => {
         const response = await api.post('/api/deposit', { amount });
         dispatch({ type: DEPOSIT_SUCCESS, payload: response.data });
     } catch (error) {
-        dispatch({ type: DEPOSIT_FAILURE, payload: error.message });
+        const errorMessage = error.response?.data?.message || error.message;
+        dispatch({ type: DEPOSIT_FAILURE, payload: errorMessage });
     }
 };
+
 
 // Withdraw action
 export const withdraw = (amount) => async (dispatch) => {
@@ -44,3 +72,22 @@ export const sendPoints = (userId, points) => async (dispatch) => {
     }
   };
  
+  export const deleteTransaction = (donationId) => async (dispatch) => {
+    dispatch({ type: DELETE_TRANSACTION_REQUEST });
+    try {
+        await api.delete(`/api/delete-donation/${donationId}`);
+        dispatch({ type: DELETE_TRANSACTION_SUCCESS, payload: donationId });
+    } catch (error) {
+        dispatch({ type: DELETE_TRANSACTION_FAILURE, payload: error.message });
+    }
+};
+
+export const clearAllTransactions = () => async (dispatch) => {
+    dispatch({ type: CLEAR_ALL_TRANSACTIONS_REQUEST });
+    try {
+        await api.delete('/api/clear-all-donations'); // Assuming endpoint exists for batch delete
+        dispatch({ type: CLEAR_ALL_TRANSACTIONS_SUCCESS });
+    } catch (error) {
+        dispatch({ type: CLEAR_ALL_TRANSACTIONS_FAILURE, payload: error.message });
+    }
+};
