@@ -5,6 +5,9 @@ import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAILURE,
+  FETCH_PRODUCT_BY_ID_REQUEST,
+  FETCH_PRODUCT_BY_ID_SUCCESS,
+  FETCH_PRODUCT_BY_ID_FAILURE,
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAILURE,
@@ -29,7 +32,7 @@ import {
 export const fetchProducts = () => async (dispatch) => {
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
   try {
-    const response = await api.get("/api/products");
+    const response = await api.get("/product/all");
     console.log("Products(response.data)", response.data);
     dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
   } catch (error) {
@@ -38,11 +41,22 @@ export const fetchProducts = () => async (dispatch) => {
   }
 };
 
+// Fetch product by ID action
+export const fetchProductById = (productId) => async (dispatch) => {
+  dispatch({ type: FETCH_PRODUCT_BY_ID_REQUEST });
+  try {
+    const response = await api.get(`/product/one/${productId}`);
+    dispatch({ type: FETCH_PRODUCT_BY_ID_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: FETCH_PRODUCT_BY_ID_FAILURE, payload: error.message });
+  }
+};
+
 // Create product action
 export const createProduct = (productData) => async (dispatch) => {
   dispatch({ type: CREATE_PRODUCT_REQUEST });
   try {
-    const response = await api.post("/api/products", productData);
+    const response = await api.post("/product/create", productData);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
@@ -53,7 +67,7 @@ export const createProduct = (productData) => async (dispatch) => {
 export const updateProduct = (productId, productData) => async (dispatch) => {
   dispatch({ type: UPDATE_PRODUCT_REQUEST });
   try {
-    const response = await api.put(`/api/products/${productId}`, productData);
+    const response = await api.put(`/product/update/${productId}`, productData);
     dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
@@ -64,7 +78,7 @@ export const updateProduct = (productId, productData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
   dispatch({ type: DELETE_PRODUCT_REQUEST });
   try {
-    await api.delete(`/api/products/${productId}`);
+    await api.delete(`/product/delete/${productId}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
   } catch (error) {
     dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
@@ -75,7 +89,10 @@ export const deleteProduct = (productId) => async (dispatch) => {
 export const purchaseProduct = (productId, quantity) => async (dispatch) => {
   dispatch({ type: PURCHASE_PRODUCT_REQUEST });
   try {
-    const response = await api.post(`/api/purchase`, { productId, quantity });
+    const response = await api.post(`/product/purchase/${productId}`, {
+      productId,
+      quantity,
+    });
     dispatch({ type: PURCHASE_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: PURCHASE_PRODUCT_FAILURE, payload: error.message });
@@ -86,7 +103,9 @@ export const purchaseProduct = (productId, quantity) => async (dispatch) => {
 export const subscribeProduct = (productId) => async (dispatch) => {
   dispatch({ type: SUBSCRIBE_PRODUCT_REQUEST });
   try {
-    const response = await api.post(`/api/subscribe`, { productId });
+    const response = await api.post(`product/subscribe/${productId}`, {
+      productId,
+    });
     dispatch({ type: SUBSCRIBE_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: SUBSCRIBE_PRODUCT_FAILURE, payload: error.message });
@@ -97,7 +116,7 @@ export const subscribeProduct = (productId) => async (dispatch) => {
 export const cancelSubscription = (productId) => async (dispatch) => {
   dispatch({ type: CANCEL_SUBSCRIPTION_REQUEST });
   try {
-    await api.delete(`/api/subscribe/${productId}`);
+    await api.delete(`/product/delete/subscription/${productId}`);
     dispatch({ type: CANCEL_SUBSCRIPTION_SUCCESS, payload: productId });
   } catch (error) {
     dispatch({ type: CANCEL_SUBSCRIPTION_FAILURE, payload: error.message });
