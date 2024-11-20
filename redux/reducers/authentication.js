@@ -12,6 +12,9 @@ import {
   GET_REFERRAL_CODE_REQUEST,
   GET_REFERRAL_CODE_SUCCESS,
   GET_REFERRAL_CODE_FAILURE,
+  REGISTER_CODE_REQUEST, 
+  REGISTER_CODE_SUCCESS,
+  REGISTER_CODE_FAILURE,
   LOGIN_USER,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -29,6 +32,7 @@ const initialState = {
   error: null,
   user: null,
   referralCode: "",
+  greenBankCode: ''
 };
 
 const authReducer = (state = initialState, action) => {
@@ -36,6 +40,7 @@ const authReducer = (state = initialState, action) => {
     // Grouping loading cases
     case REGISTER_USER:
     case SEND_RESET_PASSWORD:
+    case REGISTER_CODE_REQUEST:
     case LOGIN_USER:
     case CONNECTION_REQUEST:
     case GET_REFERRAL_CODE_REQUEST:
@@ -56,6 +61,11 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         user: action.payload.user,
         token: action.payload.token,
+      };
+    case REGISTER_CODE_SUCCESS:
+      return {
+        loading: false,
+        token: action.payload.greenBankCode,
       };
 
     case SEND_RESET_PASSWORD_SUCCESS:
@@ -85,6 +95,7 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_FAILURE:
     case SEND_RESET_PASSWORD_FAILURE:
     case CONNECTION_REQUEST_FAILURE:
+    case REGISTER_CODE_FAILURE:
     case GET_REFERRAL_CODE_FAILURE:
       return { ...state, loading: false, error: action.payload };
 

@@ -13,20 +13,16 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
-  Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Color, FontFamily } from "../../GlobalStyles";
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '../../redux/actions/admin'; 
+import { deleteUser } from '../../redux/actions/admin'; // Import the deleteUser action
+import { Color } from "../../GlobalStyles";
 
-const CustomInput = ({
-  icon,
-  placeholder,
-  value,
-  onChangeText,
-  secureTextEntry,
-}) => (
+const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
   <View style={styles.inputContainer}>
     <FontAwesome
       name={icon}
@@ -49,36 +45,32 @@ const CustomInput = ({
 
 const ProfileSettings = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.user.id);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [twoStepVerification, setTwoStepVerification] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const fadeAnim = useState(new Animated.Value(0))[0]; // Fade animation state
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
-  // Email Validation
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Name Validation (string)
   const validateName = (name) => {
     return /^[a-zA-Z0-9_]+$/.test(name);
   };
 
-  // Phone Number Validation (strict 10-digit)
   const validatePhoneNumber = (number) => {
     return /^\d{10}$/.test(number);
   };
 
   const handleSaveProfile = () => {
     if (!validateName(username)) {
-      Alert.alert(
-        "Invalid Username",
-        "Username should only contain letters and numbers."
-      );
+      Alert.alert("Invalid Username", "Username should only contain letters and numbers.");
       return;
     }
 
@@ -88,13 +80,20 @@ const ProfileSettings = () => {
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert(
-        "Invalid Phone Number",
-        "Please enter a valid 10-digit phone number."
-      );
+      Alert.alert("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
       return;
     }
 
+    const userData = {
+      username,
+      email,
+      about,
+      phoneNumber,
+      twoStepVerification,
+      profilePicture,
+    };
+    
+    dispatch(updateUser(userId, userData));
     Alert.alert("Profile Updated", "Your profile settings have been saved.");
     navigation.goBack();
   };
@@ -108,6 +107,7 @@ const ProfileSettings = () => {
         {
           text: "Delete",
           onPress: () => {
+            dispatch(deleteUser(userId)); // Dispatch the deleteUser action
             Alert.alert("Account Deleted", "Your account has been deleted.");
             navigation.navigate("Start"); // Navigate to start page after deletion
           },
@@ -125,21 +125,15 @@ const ProfileSettings = () => {
     });
 
     if (!result.cancelled) {
-      console.log("Selected image:", result.uri);
       setProfilePicture(result.uri);
     }
   };
 
-  // Screen animation effect on mount
   useEffect(() => {
     const requestPermission = async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
-          "You need to grant camera roll permissions to use this feature."
-        );
+        Alert.alert("Permission required", "You need to grant camera roll permissions to use this feature.");
       }
     };
 
@@ -154,22 +148,14 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
-      />
+      <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"} />
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>Profile Settings</Text>
 
-          <TouchableOpacity
-            onPress={pickProfileImage}
-            style={styles.imageContainer}
-          >
+          <TouchableOpacity onPress={pickProfileImage} style={styles.imageContainer}>
             {profilePicture ? (
-              <Image
-                source={{ uri: profilePicture }}
-                style={styles.profileImage}
-              />
+              <Image source={{ uri: profilePicture }} style={styles.profileImage} />
             ) : (
               <View style={styles.imagePlaceholder}>
                 <FontAwesome name="user-circle" size={50} color="#888" />

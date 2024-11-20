@@ -9,14 +9,15 @@ import {
   Alert,
   ActivityIndicator,
   Modal,
-  Animated
+  Animated,
+  Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSquadActivity } from './path/to/actions';
-import LottieView from 'lottie-react-native'; // Import Lottie component
+import { createSquadActivity } from '../../redux/actions/events';
+import LottieView from 'lottie-react-native';
 
 const EventForm = () => {
   const [eventName, setEventName] = useState('');
@@ -25,22 +26,22 @@ const EventForm = () => {
   const [eventLocation, setEventLocation] = useState('');
   const [eventPhoto, setEventPhoto] = useState(null);
   const [fadeAnim] = useState(new Animated.Value(0));
-  const [isLoading, setIsLoading] = useState(true); // State for controlling the loading screen
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
   const loading = useSelector(state => state.squadActivities.loading);
   const error = useSelector(state => state.squadActivities.error);
 
   useEffect(() => {
-    // Simulate an async loading (you can replace this with actual data fetching or other loading logic)
+    // Simulate loading during initialization
     setTimeout(() => {
-      setIsLoading(false); // Turn off loading after 3 seconds
+      setIsLoading(false);
     }, 3000);
 
     const requestPermissions = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission required', 'You need to grant permission to access the camera roll.');
+        Alert.alert('Permission Required', 'Please grant permission to access the camera roll.');
       }
     };
     requestPermissions();
@@ -56,6 +57,8 @@ const EventForm = () => {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setEventPhoto(result.assets[0].uri);
+    } else {
+      Alert.alert('No Image Selected', 'Please select an image to upload.');
     }
   };
 
@@ -69,11 +72,10 @@ const EventForm = () => {
       name: eventName,
       date: eventDate.toISOString(),
       location: eventLocation,
-      image: eventPhoto,
+      image: Platform.OS === 'android' ? eventPhoto : eventPhoto?.replace('file://', ''),
     };
 
-    // Dispatch addSquadActivity action
-    dispatch(addSquadActivity(activity));
+    dispatch(createSquadActivity(activity));
   };
 
   useEffect(() => {
@@ -84,12 +86,26 @@ const EventForm = () => {
     }).start();
   }, []);
 
+  useEffect(() => {
+    if (!loading && !error && eventName) {
+      Alert.alert('Success', 'Event created successfully!');
+      setEventName('');
+      setEventDate(new Date());
+      setEventLocation('');
+      setEventPhoto(null);
+    }
+
+    if (error) {
+      Alert.alert('Error', error.includes('Network Error') ? 'Network error, please try again.' : 'Something went wrong.');
+    }
+  }, [loading, error]);
+
   if (isLoading) {
     // Show Lottie animation while loading
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Path to your Lottie JSON file
+          source={require('../../assets/lottie/rotateLoad.json')}
           autoPlay
           loop
           style={styles.lottie}
@@ -140,20 +156,13 @@ const EventForm = () => {
           <TouchableOpacity onPress={handleImagePick}>
             <Text style={styles.photoButton}>Pick an image</Text>
           </TouchableOpacity>
-          {eventPhoto && <FastImage source={{ uri: eventPhoto }} style={styles.image} resizeMode={FastImage.resizeMode.cover} />}
+          {eventPhoto && (
+            <FastImage source={{ uri: eventPhoto }} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
+          )}
 
-          <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
-            <Text style={{ color: 'white' }}>Submit Event</Text>
+          <TouchableOpacity style={styles.submit} onPress={handleSubmit} disabled={loading}>
+            {loading ? <ActivityIndicator color="white" /> : <Text style={{ color: 'white' }}>Submit Event</Text>}
           </TouchableOpacity>
-
-          {loading && (
-            <ActivityIndicator size="large" color={'green'} style={styles.loader} />
-          )}
-
-          {error && (
-            <Text style={styles.errorText}>Error: {error}</Text>
-          )}
-
         </ScrollView>
       </Animated.View>
     </View>

@@ -28,9 +28,9 @@ const TagList = () => {
   ];
   const navigation = useNavigation()
   const renderTag = ({ item }) => (
-    <View style={styles.tagContainer}>
+    <TouchableOpacity style={styles.tagContainer}>
       <Text style={styles.tagText}>{item}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

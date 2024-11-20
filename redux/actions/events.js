@@ -9,33 +9,38 @@ import {
 import api from "../../utils/axiosConfig";
 
 // Add Squad Activity
-export const addSquadActivity = (activity) => async (dispatch) => {
+export const createSquadActivity = (activityDetails) => async (dispatch) => {
+    dispatch({ type: SQUAD_ACTIVITY_LOADING });
     try {
-        dispatch({ type: SQUAD_ACTIVITY_LOADING });
-        
         const formData = new FormData();
-        formData.append("name", activity.name);
-        formData.append("date", activity.date);
-        formData.append("location", activity.location);
+        formData.append("name", activityDetails.name);
+        formData.append("date", activityDetails.date);
+        formData.append("location", activityDetails.location);
 
-        // Append image if it exists
-        if (activity.image) {
+        // Handle image upload
+        if (activityDetails.image) {
             formData.append("image", {
-                uri: activity.image,
-                type: "image/jpeg", // or the appropriate image type
-                name: "squad_activity_image.jpg"
+                uri: Platform.OS === "android" ? activityDetails.image : activityDetails.image.replace("file://", ""),
+                type: "image/jpeg", // Adjust type based on your backend
+                name: "activity_image.jpg",
             });
         }
 
-        const response = await api.post('/api/squad-activities', formData, {
+        const response = await api.post('/squad/activity/create', formData, {
             headers: {
-                "Content-Type": "multipart/form-data"
-            }
+                "Content-Type": "multipart/form-data",
+            },
         });
 
-        dispatch({ type: CREATE_SQUAD_ACTIVITY, payload: response.data });
+        dispatch({
+            type: CREATE_SQUAD_ACTIVITY,
+            payload: response.data,
+        });
     } catch (error) {
-        dispatch({ type: SQUAD_ACTIVITY_ERROR, payload: error.message });
+        dispatch({
+            type: SQUAD_ACTIVITY_ERROR,
+            payload: error.response?.data?.message || error.message,
+        });
     }
 };
 

@@ -13,7 +13,7 @@ const squadsData = [
     points: 1500,
     activitiesCompleted: 30,
     memberCount: 25,
-    recentAchievements: 'Reached a milestone of 72% threshold',
+    rank: 'Reached a milestone of 72% threshold',
   },
   {
     id: '2',
@@ -22,7 +22,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 8,
     memberCount: 20,
-    recentAchievements: 'Reached a milestone of 68% threshold',
+    rank: 'Reached a milestone of 68% threshold',
   },
   {
     id: '3',
@@ -31,7 +31,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 7,
     memberCount: 20,
-    recentAchievements: 'Reached a milestone of 64% threshold',
+    rank: 'Reached a milestone of 64% threshold',
   },
   {
     id: '4',
@@ -40,7 +40,7 @@ const squadsData = [
     points: 1300,
     activitiesCompleted: 6,
     memberCount: 20,
-    recentAchievements: 'Reached a milestone of 60% threshold',
+    rank: 'Reached a milestone of 60% threshold',
   },
 ];
 
@@ -78,7 +78,7 @@ const LeaderboardScreen = () => {
         <Text style={styles.points}>Total Tiers: {item.points}</Text>
         <Text style={styles.activities}>Activities: {item.activitiesCompleted}</Text>
         <Text style={styles.members}>Members: {item.memberCount}</Text>
-        <Text style={styles.achievements}>{item.recentAchievements}</Text>
+        <Text style={styles.rank}>{item.rank}</Text>
       </View>
       <TouchableOpacity
         style={[styles.followButton, pendingSquads[item.id] === 'pending' ? styles.pendingButton : {}]}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#555',
   },
-  achievements: {
+  rank: {
     fontSize: 11,
     color: '#777',
     marginTop: 5,

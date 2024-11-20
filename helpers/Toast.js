@@ -35,7 +35,7 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }) => {
 
   const getToastStyle = () => {
     switch (type) {
-      case 'success':
+      case 'successful':
         return styles.success;
       case 'error':
         return styles.error;

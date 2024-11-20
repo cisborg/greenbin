@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, Platform,StatusBar,ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { sendResetPassword } from '../../redux/actions/userActions'; // Adjust the import path as necessary
 import { Color } from '../../GlobalStyles';
 import Toast from '../../helpers/Toast'; // Adjust the import path as necessary
 
@@ -8,6 +10,7 @@ const { width, height } = Dimensions.get('window');
 
 const ChangePassword = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch(); // Initialize dispatch
   const [userId, setUserId] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -39,13 +42,12 @@ const ChangePassword = () => {
 
     setIsLoading(true);
     try {
-      // Implement password change logic here
-      // Simulating successful password change
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-      showToast('Password changed successfully!', 'success');
+      // Dispatch the sendResetPassword action
+      await dispatch(sendResetPassword(userId)); // Use the userId as email or modify as needed
+      showToast('Password reset link sent successfully!', 'success');
       navigation.goBack();
     } catch (error) {
-      showToast('Failed to change password. Please try again.', 'error');
+      showToast('Failed to send reset password link. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }

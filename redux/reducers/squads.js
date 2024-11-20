@@ -47,6 +47,19 @@ import {
 
 const initialState = {
     squads: [],
+    squadData: [
+        {
+            id: 1,
+            name: '',
+            handle: '',
+            status: ['moderated', 'add post'],
+            description: '',
+            avatarPhoto: null,
+            coverPhoto: null,
+            connections: 0
+        },
+       
+    ],
     loading: false,
     error: null,
     squadChallenges: [],
@@ -66,7 +79,8 @@ const squadReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                squads: [...state.squads, action.payload],
+                squads: [...state.squads, action.payload], // Add the new squad
+                squadData: [], // Clear temporary data after creation
                 error: null,
             };
         case CREATE_SQUAD_FAILURE:
@@ -109,7 +123,7 @@ const squadReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                squads: action.payload,
+                squads: action.payload || [],
             };
 
         case REQUEST_JOIN_SQUAD_FAILURE:

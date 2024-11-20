@@ -3,51 +3,18 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, Pe
 import * as Location from 'expo-location';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
+import { useDispatch,useSelector } from 'react-redux'; // Import useDispatch
+import { getNearbyShops } from '../../redux/actions/shop'; 
 import { Color } from '../../GlobalStyles';
 import FastImage from 'react-native-fast-image';
-
-const shops = [
-  {
-    id: '1',
-    name: 'Green Grocer',
-    description: 'Organic fruits and vegetables',
-    location: { lat: -1.2920, lng: 36.8219 },
-    vendors: ['Fresh Farm', 'Bio Market'],
-    rating: 4.5,
-    logo: 'https://example.com/Bags.png',
-    distance: '1.2 km',
-    hours: '8:00 AM - 8:00 PM'
-  },
-  {
-    id: '2',
-    name: 'Eco Mart',
-    description: 'Sustainable household products',
-    location: { lat: -1.2921, lng: 36.8217 },
-    vendors: ['Eco Life', 'Green World'],
-    rating: 4.2,
-    logo: 'https://example.com/greenFriday.png',
-    distance: '0.9 km',
-    hours: '9:00 AM - 6:00 PM'
-  },
-  {
-    id: '3',
-    name: 'Nature’s Basket',
-    description: 'Locally sourced groceries',
-    location: { lat: -1.2923, lng: 36.8220 },
-    vendors: ['Organic Valley', 'Local Harvest'],
-    rating: 4.8,
-    logo: require('../../assets/woofer.png'),
-    distance: '1.5 km',
-    hours: '7:00 AM - 7:00 PM'
-  },
-];
 
 const { width } = Dimensions.get('window');
 
 const ConnectToShops = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [filteredShops, setFilteredShops] = useState([]);
+  const shops = useSelector(state => state.shops); 
   const navigation = useNavigation();
+  const dispatch = useDispatch(); // Get the dispatch function
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -91,36 +58,13 @@ const ConnectToShops = () => {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
       setCurrentLocation({ lat: latitude, lng: longitude });
-      filterShops(latitude, longitude);
+
+      // Dispatch the getNearbyShops action with the current location
+      dispatch(getNearbyShops({ lat: latitude, lng: longitude }));
     } catch (error) {
       console.error('Error getting location:', error);
       Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
     }
-  };
-  
-
-  const filterShops = (latitude, longitude) => {
-    const nearbyShops = shops.filter(shop => {
-      const distance = calculateDistance(latitude, longitude, shop.location.lat, shop.location.lng);
-      return distance <= 12; // 12 km radius
-    });
-    setFilteredShops(nearbyShops);
-  };
-
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in km
-    const dLat = degreesToRadians(lat2 - lat1);
-    const dLon = degreesToRadians(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
-  };
-
-  const degreesToRadians = (degrees) => {
-    return degrees * (Math.PI / 180);
   };
 
   const renderShopCard = ({ item }) => (
@@ -146,36 +90,33 @@ const ConnectToShops = () => {
           renderItem={({ item }) => <Text style={styles.vendorItem}>{item}</Text>}
           keyExtractor={(vendor, index) => index.toString()}
         />
-        <TouchableOpacity style={styles.connectButton}>
+        <TouchableOpacity style={styles.connectButton} onPress={()=> navigation.goBack()}>
           <Text style={styles.connectButtonText}>Shop Now</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-  
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Connect to Local Green Shops</Text>
       <Text style={styles.subtitle}>
         Your current location: {currentLocation ? `${currentLocation.lat}, ${currentLocation.lng}` : 'Fetching...'}
       </Text>
-      {filteredShops.length > 0 ? (
+      {shops.length > 0 ? (
         <FlatList
-          data={filteredShops}
+          data={shops}
           renderItem={renderShopCard}
           keyExtractor={item => item.id}
-          contentContainerStyle={styles.shopList}
+          contentContainerStyle={styles.listContainer}
         />
       ) : (
-        <Text style={styles.noShopsText}>No shops found within 12 km.</Text>
+        <Text style={styles.noShopsText}>No nearby shops found.</Text>
       )}
-      <TouchableOpacity style={styles.returnButton} onPress={() => navigation.goBack()}>
-        <Text style={{ color: 'green'}}>Go Back</Text>
-      </TouchableOpacity>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

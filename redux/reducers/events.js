@@ -10,6 +10,14 @@ import {
 
 const initialState = {
     activities: [],
+    activityDetails:{
+        id: null,
+        title: '',
+        description: '',
+        date: '',
+        location: '',
+        image: null, // For storing image data
+    },
     loading: false,
     error: null,
     successMessage: '', // For success confirmation messages
@@ -29,13 +37,18 @@ const squadActivitiesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                activities: [...state.activities, {
-                    ...action.payload,
-                    image: action.payload.image || null, // Handle image data
-                }],
+                activities: [
+                    ...state.activities,
+                    {
+                        ...state.activityDetails, // Use data from activityDetails
+                        id: action.payload.id, // Ensure ID comes from the server response
+                        image: action.payload.image || null, // Ensure image field is set
+                    },
+                ],
+                activityDetails: initialState.activityDetails, // Reset form data
                 successMessage: 'Activity created successfully!',
             };
-
+            
         case DELETE_SQUAD_ACTIVITY:
             return {
                 ...state,

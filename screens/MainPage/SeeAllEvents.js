@@ -1,32 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, View, Text, TextInput, Dimensions, Animated, FlatList, TouchableOpacity, Platform, StatusBar } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TextInput, Dimensions, Animated, FlatList, TouchableOpacity, ActivityIndicator, Platform, StatusBar } from "react-native";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import FastImage from "react-native-fast-image";
+import moment from 'moment';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { fetchSquadActivities } from "../../actions/squadActivities"; // Import the action
 import { Color } from "../../GlobalStyles";
 
 const { width } = Dimensions.get('window');
 
+const formatDate = (dateString) => {
+  return moment(dateString).format('ddd, MMM D • h:mm A'); // "Sat, May 1 • 2:00 PM"
+};
+const formatLocation = (location) => {
+  // Example: Split location string and add custom formatting
+  const locationParts = location.split(', ');
+  if (locationParts.length > 1) {
+    return `${locationParts[0]} - ${locationParts[1]}`; // Example: "Nairobi - Kenya"
+  }
+  return location; // If location format is simple or not split, just return as is
+};
+
+
 const SeeAllEvents = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+  const { activities, loading, error } = useSelector(state => state.squadActivities); // Access Redux state
   
-  const events = [
-    { title: "Renewable Energy Technology Show", date: "Sat, May 1 • 2:00 PM", location: "Lot 13 • Embu, Kenya", image: require("../../assets/rectangle-57.png") },
-    { title: "National Tree Planting Week Out", date: "Fri, Apr 23 • 6:00 PM", location: "Lot 13 • BlueRidge, Mombasa", image: require("../../assets/tree.avif") },
-    { title: "Green Circular Economy Expo 2024", date: "Mon, Jun 21 • 10:00 PM", location: "Safari Park Nairobi - Kenya", image: require("../../assets/greenCircular.webp") },
-    { title: "Women's Leadership Conference 2024", date: "Sat, Apr 24 • 1:30 PM", location: "53 Bush St • Parklands, Nairobi", image: require("../../assets/women.avif") },
-    { title: "Scrap Waste Collection Expo 2024", date: "Wed, Apr 28 • 5:30 PM", location: "Serena • Nairobi, Kenya", image: require("../../assets/rectangle-571.png") },
-    { title: "International Gala Music Festival", date: "Sun, Apr 25 • 10:15 AM", location: "Kenyatta Avenue Nairobi, Kenya", image: require("../../assets/galaMusic.avif") }
-  ];
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const animationRefs = useRef([]);
 
-  const [filteredEvents, setFilteredEvents] = useState(events);
-  const animationRefs = useRef(filteredEvents.map(() => new Animated.Value(0)));
+  useEffect(() => {
+    dispatch(fetchSquadActivities()); // Fetch squad activities on component mount
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (activities) {
+      setFilteredEvents(activities); // Initialize filtered events with squad activities
+      animationRefs.current = activities.map(() => new Animated.Value(0));
+      runAnimations(activities.length);
+    }
+  }, [activities]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filtered = events.filter(event => 
-      event.title.toLowerCase().includes(query.toLowerCase()) ||
-      event.date.toLowerCase().includes(query.toLowerCase()) ||
-      event.location.toLowerCase().includes(query.toLowerCase())
+    const filtered = activities.filter(activity => 
+      activity.title.toLowerCase().includes(query.toLowerCase()) ||
+      activity.date.toLowerCase().includes(query.toLowerCase()) ||
+      activity.location.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredEvents(filtered);
     animationRefs.current = filtered.map(() => new Animated.Value(0));
@@ -42,10 +63,6 @@ const SeeAllEvents = () => {
       }).start();
     }
   };
-
-  useEffect(() => {
-    runAnimations(filteredEvents.length);
-  }, []);
 
   const handleEventPress = (event) => {
     console.log(`Event clicked: ${event.title}`);
@@ -63,7 +80,7 @@ const SeeAllEvents = () => {
           title={item.title}
           date={item.date}
           location={item.location}
-          imageSource={item.image}
+          imageSource={{ uri: item.image }} // Updated to handle dynamic image URLs
         />
       </TouchableOpacity>
     </Animated.View>
@@ -84,12 +101,18 @@ const SeeAllEvents = () => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={filteredEvents}
-        renderItem={renderEventCard}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.groupParent}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="green" style={{ marginTop: 20 }} />
+      ) : error ? (
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 20 }}>{error}</Text>
+      ) : (
+        <FlatList
+          data={filteredEvents}
+          renderItem={renderEventCard}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.groupParent}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -102,10 +125,10 @@ const EventCard = ({ title, date, location, imageSource }) => {
         <FastImage style={styles.groupInner} resizeMode={FastImage.resizeMode.cover} source={imageSource} />
         <View style={styles.groupInnerShadowBox}>
           <Text style={styles.imGoingTo}>{title}</Text>
-          <Text style={styles.satMay1}>{date}</Text>
+          <Text style={styles.satMay1}>{formatDate(date)}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <FastImage style={styles.locationIcon} resizeMode={FastImage.resizeMode.cover} source={require('../../assets/location.jpg')} />
-            <Text style={styles.min}>{location}</Text>
+            <Text style={styles.min}>{formatLocation(location)}</Text>
           </View>
         </View>
       </View>

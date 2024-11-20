@@ -12,17 +12,21 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { getAllVendors } from '../../redux/actions/vendorAction'; // Adjust the path
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LottieView from 'lottie-react-native';
-import FastImage from 'react-native-fast-image'; // Import FastImage
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
 const VendorList = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [approvedVendors, setApprovedVendors] = useState({});
   const [loading, setLoading] = useState({});
@@ -30,46 +34,34 @@ const VendorList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [isScreenLoading, setIsScreenLoading] = useState(true);
 
-  const peopleToFollow = [
-    {
-      id: '1',
-      name: 'Tim Tebow',
-      job: 'Tree Vendor',
-      location: 'Nairobi',
-      description: 'Selling All kinds of Trees, 5x NYT Best-Selling Author, 2x National Champion, Heisman Trophy...',
-      followers: 'Followed by Michael Nyagha, Grace and 19 others you know',
-      connections: [
-        'https://example.com/connector1.jpg',
-        'https://example.com/connector2.jpg',
-        'https://example.com/connector3.jpg',
-      ],
-      image: 'https://example.com/profile1.jpg', // Add a profile image URL
-    },
-    // Other sample data
-  ];
+  // Get vendors and loading state from Redux store
+  const { vendors, loading: apiLoading } = useSelector(state => ({
+    vendors: state.vendor.vendors,
+    loading: state.vendor.loading,
+  }));
 
   useEffect(() => {
-    setTimeout(() => {
+    dispatch(getAllVendors()).then(() => {
       setIsScreenLoading(false);
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 1000,
         useNativeDriver: true,
       }).start();
-    }, 2000);
-  }, [fadeAnim]);
+    });
+  }, [dispatch]);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
+    dispatch(getAllVendors()).finally(() => {
       setRefreshing(false);
-    }, 2000);
+    });
   };
 
-  const filteredPeople = peopleToFollow.filter(person =>
-    person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    person.job.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    person.location.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredVendors = vendors.filter(vendor =>
+    vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    vendor.job.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    vendor.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleConnect = (id) => {
@@ -93,7 +85,7 @@ const VendorList = () => {
           style={[styles.connectionImage, { zIndex: connections.length - index }]}
         />
       ))}
-      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k connectors </Text>
+      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k connectors</Text>
     </View>
   );
 
@@ -102,7 +94,7 @@ const VendorList = () => {
     return (
       <View style={styles.card}>
         <View style={styles.infoContainer}>
-          <FastImage source={{ uri: item.image }} style={styles.profileImage} resizeMode={FastImage.resizeMode.cover} /> {/* Use FastImage */}
+          <FastImage source={{ uri: item.image }} style={styles.profileImage} resizeMode={FastImage.resizeMode.cover} />
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.job}>{item.job}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -128,7 +120,7 @@ const VendorList = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {isScreenLoading ? (
+      {isScreenLoading || apiLoading ? (
         <View style={styles.loadingContainer}>
           <LottieView
             source={require('../../assets/lottie/bouncing_check.json')}
@@ -155,7 +147,7 @@ const VendorList = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={filteredPeople}
+            data={filteredVendors}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             contentContainerStyle={styles.list}
@@ -168,6 +160,7 @@ const VendorList = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   safeArea: {

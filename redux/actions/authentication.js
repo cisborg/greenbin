@@ -17,7 +17,12 @@ import {
   LOGIN_USER,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  
+  UPDATE_USER,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
+  REGISTER_CODE_REQUEST,
+  REGISTER_CODE_SUCCESS,
+  REGISTER_CODE_FAILURE,
 } from "./actionTypes";
 import { Alert } from "react-native";
 
@@ -82,16 +87,37 @@ export const loginUser = (credentials) => async (dispatch) => {
 };
 
 // Send Reset Password action
+// Send Reset Password action
 export const sendResetPassword = (email) => async (dispatch) => {
   dispatch({ type: SEND_RESET_PASSWORD });
   try {
-    const response = await axios.post(" api/send-reset-password", { email });
-    dispatch({ type: SEND_RESET_PASSWORD_SUCCESS, payload: response.data });
+    const response = await api.post("/api/send-reset-password", { email });
+
+    if (response.data.status === "success") {
+      // Optionally store a success message or token in AsyncStorage
+      await AsyncStorage.setItem("resetPasswordEmail", email); // Store email for confirmation or further use
+      Alert.alert("Reset password link sent!", "Please check your email.");
+
+      dispatch({ type: SEND_RESET_PASSWORD_SUCCESS, payload: response.data });
+    } else {
+      dispatch({ type: SEND_RESET_PASSWORD_FAILURE, payload: response.data.message });
+      Alert.alert("Error", response.data.message);
+    }
   } catch (error) {
     dispatch({ type: SEND_RESET_PASSWORD_FAILURE, payload: error.message });
+    Alert.alert("Error", error.message);
   }
- };
+};
 
+export const registerCode = (productId) => async (dispatch) => {
+  dispatch({ type: REGISTER_CODE_REQUEST });
+  try {
+      const response = await api.post(`/api/register`, { productId }); // Adjust the endpoint as needed
+      dispatch({ type: REGISTER_CODE_SUCCESS, payload: response.data });
+  } catch (error) {
+      dispatch({ type: REGISTER_CODE_FAILURE, payload: error.message });
+  }
+};
 
 
 // Connection Request action
@@ -116,3 +142,25 @@ export const sendResetPassword = (email) => async (dispatch) => {
     dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
    }
  };
+
+export const updateUser = (userId, userData) => async (dispatch) => {
+  dispatch({ type: UPDATE_USER });
+  try {
+    const response = await api.put(`/user/update/${userId}`, userData);
+
+    if (response.data.status === "success") {
+      // Optionally, update the user information in AsyncStorage
+      const updatedUser = response.data.data;
+      await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+
+      dispatch({ type: UPDATE_USER_SUCCESS, payload: updatedUser });
+    } else {
+      dispatch({ type: UPDATE_USER_FAILURE, payload: response.data.message });
+    }
+  } catch (error) {
+    dispatch({
+      type: UPDATE_USER_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};

@@ -1,59 +1,39 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, FastImage, SafeAreaView,
-   ActivityIndicator,Platform,StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllSquads, requestJoinSquad } from '../../redux/actions/squadActions'; 
 import { Color } from '../../GlobalStyles';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { FlashList } from '@shopify/flash-list';
 import FastImage from 'react-native-fast-image';
-const squadsData = [
-  {
-    id: '1',
-    name: 'Nature Diversity',
-    handle: '@nature_diversity',
-    status: 'moderated',
-    description: 'Promoting nature green',
-    avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
-    cover: 'https://example.com/cover1.jpg',
-    connections: 950,
-  },
-  {
-    id: '2',
-    name: 'Smarty Tech',
-    handle: '@smarty_tech',
-    status: 'add post',
-    description: 'Smart Green Homes and Roofs',
-    avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
-    cover: 'https://example.com/cover2.jpg',
-    connections: 1200,
-  },
-  {
-    id: '3',
-    name: 'Green Waste Management',
-    handle: '@green_waste',
-    status: 'moderated',
-    description: 'Recycling, Reducing and Reusing Wastes',
-    avatar: 'https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/24467699/mFAGvppUlBQOYJuJ.jpeg?Expires=1724188829&Signature=LuMqvB-RIY8Fu~yNzvOkXM6ElDMc9ztLr9lBMoQf3~NPWmSTbtk3FafFkj0hwKUWtCqidCImktwQa7EK8KoGHKfFuvn7fWfS8vFPLwkmWUUF9ppJEXm3EwQ4rBShuCDcXJw2oUoiupZsBrpwTfgGiU9u3M0ljFTRLEUhPamzy~PvsKq~mkRXlzZGzVhH319NWRXsyckKsS~EzvgMQYOl2pBmycLSAg2lbGbb0wgzYjxHGXIvCfqWbnJNfEXjZltgLldn8Cl-fMuYVhigfjEjq1nlIIUegHaBJXIePAenIO3VFk4vpfq3LsOyIH5vNGHFhxVnc0LVd7RKSbTlCc4hDQ__&Key-Pair-Id=K3USGZIKWMDCSX',
-    cover: 'https://example.com/cover3.jpg',
-    connections: 800,
-  },
-];
 
 const JoinSquads = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [loadingStates, setLoadingStates] = useState({});
 
-  const filteredSquads = squadsData.filter(squad =>
+  // Get userId from Redux state
+  const { userId } = useSelector((state) => state.userReducer); // Adjust according to your state structure
+  const { squads, loading, error } = useSelector((state) => state.squadReducer);
+
+  useEffect(() => {
+    dispatch(getAllSquads());
+  }, [dispatch]);
+
+  const filteredSquads = squads.filter(squad =>
     squad.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     squad.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleJoinPress = (id) => {
-    setLoadingStates((prev) => ({ ...prev, [id]: 'loading' }));
+  const handleJoinPress = (squadId) => {
+    setLoadingStates((prev) => ({ ...prev, [squadId]: 'loading' }));
 
+    // Dispatch the join squad action with dynamic userId
+    dispatch(requestJoinSquad(squadId, userId));
+
+    // Optionally handle loading state after dispatch
     setTimeout(() => {
-      setLoadingStates((prev) => ({ ...prev, [id]: 'pending' }));
+      setLoadingStates((prev) => ({ ...prev, [squadId]: 'pending' }));
     }, 300); // Duration for the spinner
   };
 
@@ -91,21 +71,14 @@ const JoinSquads = () => {
                 onError={() => console.error('Connector image failed to load')} 
               />
             ))}
-            <Text style={styles.connectionsCount}>
-              {item.connections >= 1000 ? `${(item.connections / 1000).toFixed(1)}k connectors` : `${item.connections} connectors` }
-            </Text>
+            <Text style={styles.connectionsCount}>{item.connections} connections</Text>
           </View>
 
-          <TouchableOpacity 
-            style={[styles.joinButton, loadingState === 'pending' ? styles.loadingButton : null]} 
-            onPress={() => handleJoinPress(item.id)}
-          >
+          <TouchableOpacity style={styles.joinButton} onPress={() => handleJoinPress(item.id)}>
             {loadingState === 'loading' ? (
-              <ActivityIndicator size="small" color="#FFF" style={styles.spinner} />
+              <ActivityIndicator size="small" color={Color.colorWhite} />
             ) : (
-              <Text style={styles.joinButtonText}>
-                {loadingState === 'pending' ? 'Pending' : 'Join'}
-              </Text>
+              <Text style={styles.joinButtonText}>Join Squad</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -113,32 +86,35 @@ const JoinSquads = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Color.colorPrimary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load squads: {error}</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.heading}>
-          <Text style={styles.title}>Discover Squads Now! 🚀</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('GreenDaily')}>
-            <FontAwesome6 name="users-viewfinder" size={22} color="green" />
-          </TouchableOpacity>
-        </View>
-        
-        <Text style={styles.description}>
-          Join our community squads to share your knowledge, learn from others, and connect with like-minded individuals.
-        </Text>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search your favorite squads.."
-          placeholderTextColor={Color.colorGray_100}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-      <FlashList
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search Squads"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+      <FlatList
         data={filteredSquads}
         renderItem={renderSquadItem}
         keyExtractor={(item) => item.id}
-        estimatedItemSize={100} // Adjust based on your item size
+        contentContainerStyle={styles.listContainer}
       />
     </SafeAreaView>
   );

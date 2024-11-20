@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import { Color } from '../../GlobalStyles';
+import { useDispatch } from'react-redux';
+import { createVendor } from '../../redux/actions/vendorAction';
 
 const CustomInput = ({ placeholder, value, onChangeText, keyboardType, secureTextEntry, iconName }) => (
   <View style={styles.inputContainer}>
@@ -21,6 +23,7 @@ const CustomInput = ({ placeholder, value, onChangeText, keyboardType, secureTex
 );
 
 const VendorRegister = ({ navigation }) => {
+  const dispatch = useDispatch(); // Initialize dispatch
   const [vendorName, setVendorName] = useState('');
   const [profession, setProfession] = useState('');
   const [products, setProducts] = useState('');
@@ -33,7 +36,7 @@ const VendorRegister = ({ navigation }) => {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [idPhoto, setIdPhoto] = useState(null);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     // Input validation
     if (!vendorName || !profession || !products || !email || !phone || !address) {
       Alert.alert("All fields are required!");
@@ -49,10 +52,27 @@ const VendorRegister = ({ navigation }) => {
     }
 
     setLoading(true);
-    setTimeout(() => {
+    
+    // Prepare vendor data
+    const vendorData = {
+      name: vendorName,
+      profession,
+      products,
+      email,
+      phone,
+      address,
+      profilePhoto, // If you want to include the profile photo
+      idPhoto, // If you want to include the ID photo
+    };
+
+    try {
+      await dispatch(createVendor(vendorData)); // Dispatch the createVendor action
+      setModalVisible(true); // Show success modal
+    } catch (error) {
+      Alert.alert("Registration failed", error.message);
+    } finally {
       setLoading(false);
-      setModalVisible(true);
-    }, 2000);
+    }
   };
 
   const pickImage = async (type) => {
@@ -85,7 +105,7 @@ const VendorRegister = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       {loading ? (
         <View style={styles.loadingContainer}>
-          <Lottie source={require('../../assets/lottie/rotateLoad.json')} autoPlay loop /> {/* Adjust the path */}
+          <Lottie source={require('../../assets/lottie/rotateLoad.json')} autoPlay loop />
         </View>
       ) : (
         <Animated.View style={{ opacity: animation }}>
@@ -134,8 +154,7 @@ const VendorRegister = ({ navigation }) => {
               <TouchableOpacity onPress={() => pickImage('id')} style={styles.photoButton}>
                 <Text style={styles.photoButtonText}>Upload ID Photo (Optional)</Text>
               </TouchableOpacity>
-              {idPhoto &&<FastImage source={{ uri: idPhoto }} style={styles.imagePreview} resizeMode={FastImage.resizeMode.cover} />
-            }
+              {idPhoto && <FastImage source={{ uri: idPhoto }} style={styles.imagePreview} resizeMode={FastImage.resizeMode.cover} />}
             </View>
             <View style={styles.buttonContainer}>
               <Text style={styles.buttonText} onPress={handleRegister}>
@@ -158,7 +177,7 @@ const VendorRegister = ({ navigation }) => {
                       navigation.goBack();
                     }}
                   >
-                    <Text style={styles.okButtonText}>Okay</Text>
+                    <Text style={styles.okButtonText}>OK</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -169,7 +188,6 @@ const VendorRegister = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
 
 
 const styles = StyleSheet.create({

@@ -27,6 +27,20 @@ import {
 
 const initialState = {
     products: [],
+    productDetail: {
+        id: null,
+        title: '', 
+        price: 0,
+        originalPrice: 0,
+        image: '', 
+        rating: null, 
+        reviewCount: 0, 
+        brand: '', 
+        isBrandOfficial: false, 
+        isLocalDispatch: false, 
+        description: '',
+        quantity: 0,
+    },
     loading: false,
     error: null,
     cart: [],

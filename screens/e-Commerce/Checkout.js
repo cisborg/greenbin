@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar, ActivityIndicator } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
-import { ActivityIndicator } from 'react-native';
-
+import { useDispatch, useSelector } from'react-redux';
+import { fetchTiers } from '../../redux/actions/tierActions';
 
 const Checkout = ({ route }) => {
   const navigation = useNavigation();
@@ -11,13 +11,24 @@ const Checkout = ({ route }) => {
   const [points, setPoints] = React.useState(20000); // Example available points
   const [amountToUse, setAmountToUse] = React.useState('');
   const [greenBankCode, setGreenBankCode] = React.useState('');
-  const [discountApplied, setDiscountApplied] = React.useState(false);
   const [senderName, setSenderName] = React.useState('');
   const [mobileNumber, setMobileNumber] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
+  const dispatch = useDispatch();
+  const { tiers } = useSelector((state) => state.tiers);
   const [loading, setLoading] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState(18960); // Example total price
 
+  // Determine tier based on points
+
+  useEffect(() => {
+    dispatch(fetchTiers());
+  }, [dispatch]);
+
+  const getTierInfo = () => {
+    const tier = tiers.find(t => totalPrice >= t.min && totalPrice < t.max);
+    return tier ? { name: tier.name, value: tier.value } : { name: "Unknown", value: 0 };
+  };
 
   const handlePayment = () => {
     // Validate user input based on the selected payment method
@@ -35,7 +46,7 @@ const Checkout = ({ route }) => {
         return;
       }
     } else if (paymentMethod === 'greenPoints') {
-      const amount = parseInt(amountToUse, 10)
+      const amount = parseInt(amountToUse, 10);
       if (isNaN(amount) || amount > points || amount <= 0) {
         Alert.alert('Invalid Amount', 'Please enter a valid amount of points to use.');
         return;
@@ -55,10 +66,10 @@ const Checkout = ({ route }) => {
     
     // Timeout to simulate a loading period
     setTimeout(() => {
-        // Navigate to the payment confirmation screen
-        navigation.navigate('paymentConfirmed');
-        setLoading(false); // Stop loading
-    }, 400); // 300ms timeout
+      // Navigate to the payment confirmation screen
+      navigation.navigate('paymentConfirmed');
+      setLoading(false); // Stop loading
+    }, 400); // 400ms timeout
   };
 
   const togglePaymentMethod = (method) => {
@@ -122,15 +133,6 @@ const Checkout = ({ route }) => {
               placeholder="Enter points"
               placeholderTextColor={Color.colorGray_100}
             />
-            {discountApplied && <Text style={styles.discountText}>Voucher Applied!</Text>}
-            <TouchableOpacity
-              style={styles.applyDiscountButton}
-              onPress={() => setDiscountApplied(!discountApplied)}
-            >
-              <Text style={styles.applyDiscountButtonText}>
-                {discountApplied ? 'Voucher Applied' : 'Apply Voucher'}
-              </Text>
-            </TouchableOpacity>
           </>
         );
       case 'greenBank':
@@ -164,6 +166,8 @@ const Checkout = ({ route }) => {
     }
   };
 
+  const tierInfo = getTierInfo();
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -174,7 +178,15 @@ const Checkout = ({ route }) => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.totalPrice}>Total: GCPs 18960</Text>
+      <Text style={styles.totalPrice}>Total: GCPs {totalPrice}</Text>
+
+      {/* Tier Container */}
+      <View style={styles.tierContainer}>
+        <Text style={styles.tierName}>{tierInfo.name}</Text>
+        <Text style={styles.tierMessage}>
+          Congratulations, you've earned the {tierInfo.name} tier worth {tierInfo.value} points. Shop more goods to earn higher points.
+        </Text>
+      </View>
 
       <Text style={styles.label}>Select Payment Method</Text>
       <View style={styles.paymentOptions}>
@@ -200,14 +212,13 @@ const Checkout = ({ route }) => {
 
       {renderPaymentDetails()}
 
-          <TouchableOpacity style={styles.payButton} onPress={handlePayment} disabled={loading}>
+      <TouchableOpacity style={styles.payButton} onPress={handlePayment} disabled={loading}>
         {loading ? (
-            <ActivityIndicator color="white" />
+          <ActivityIndicator color="white" />
         ) : (
-            <Text style={styles.payButtonText}>Green Pay</Text>
+          <Text style={styles.payButtonText}>Green Pay</Text>
         )}
-    </TouchableOpacity>
-
+      </TouchableOpacity>
 
       <View style={styles.shareContainer}>
         <Text style={styles.shareTitle}>Share My Green Pay</Text>
@@ -226,7 +237,6 @@ const Checkout = ({ route }) => {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -250,6 +260,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4CAF50',
     marginBottom: 15,
+  },
+  tierContainer: {
+    padding: 15,
+    backgroundColor: '#f0f8ff',
+    borderRadius: 8,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  tierName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  tierMessage: {
+    textAlign: 'center',
+    marginTop: 5,
   },
   label: {
     fontSize: 14,

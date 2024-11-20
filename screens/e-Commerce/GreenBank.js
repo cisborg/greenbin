@@ -4,22 +4,40 @@ import { Picker } from '@react-native-picker/picker'; // For Dropdown
 import { useNavigation } from '@react-navigation/native'; // For Back Navigation
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Lottie from 'lottie-react-native'; // Import Lottie
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBalance, updateTokenBalance } from '../../redux/actions/balanceActions'; 
+import { deposit, withdraw } from '../../redux/actions/payments';
+import { fetchBalance, fetchTokenBalance } from '../../redux/actions/balanceActions'; // Import the actions
 import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
+import RegisterCode from './RegisterBankCode'; // 1. Import the BottomSheet
 
 const TOKEN_RATE = 1.0042; // Token rate for paying green tax 
 const GreenBankAccount = () => {
   const navigation = useNavigation();
-  const [balance, setBalance] = useState(1000); // Initial bank balance
-  const [tokenBalance, setTokenBalance] = useState(500); // Token balance (green points)
-  const [transactions, setTransactions] = useState([]);
+  const dispatch = useDispatch();
+  const balance = useSelector((state) => state.balance.balance);
+  const tokenBalance = useSelector((state) => state.balance.tokenBalance);  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState({ deposit: false, withdraw: false, transfer: false, screen: true }); // Add screen loading state
   const [amount, setAmount] = useState('');
   const [accountNumber, setAccountNumber] = useState(''); // For Transfer
   const [showTransferInputs, setShowTransferInputs] = useState(false); // Toggle transfer inputs
   const [transferPurpose, setTransferPurpose] = useState('fees'); // Transfer purpose dropdown
   const [screenAnimation] = useState(new Animated.Value(0)); // For Screen mount animation
+  const [isRegistered, setIsRegistered] = useState(false); // State to track registration
+  const bottomSheetRef = useRef(null); // 2. Create a ref for the BottomSheet
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await dispatch(fetchBalance());
+      await dispatch(fetchTokenBalance());
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [dispatch]);
   // 1. Toggle transfer inputs
   const toggleTransferInputs = () => {
     setShowTransferInputs(!showTransferInputs);
@@ -47,7 +65,10 @@ const GreenBankAccount = () => {
       setTimeout(() => {
         const depositAmount = parseFloat(amount);
         addTransaction('Deposit', depositAmount, 'Approved', 'green-points');
-        setTokenBalance((prev) => prev + depositAmount);
+        
+        // Dispatch deposit action
+        dispatch(deposit(depositAmount));
+        
         setLoading({ ...loading, deposit: false });
         setAmount('');
       }, 1000); // Simulate delay for processing
@@ -57,19 +78,20 @@ const GreenBankAccount = () => {
   // 4. Handle Withdraw (to M-Pesa or Bank)
   const handleWithdraw = () => {
     const totalPoints = calculateTotalPoints();
-
+  
     if (validateAmount() && parseFloat(amount) <= totalPoints) {
       setLoading({ ...loading, withdraw: true });
       setTimeout(() => {
         const withdrawAmount = parseFloat(amount);
         if (withdrawAmount <= balance) {
           // Deduct from bank balance if enough
-          setBalance((prev) => prev - withdrawAmount);
+          dispatch(withdraw(withdrawAmount)); // Dispatch withdrawal action
         } else {
           // Deduct from both bank balance and green points
           const remaining = withdrawAmount - balance;
-          setBalance(0); // Bank balance becomes 0
-          setTokenBalance((prev) => prev - remaining / TOKEN_RATE); // Deduct remaining from green points
+          dispatch(withdraw(balance)); // Withdraw available balance
+          const newTokenBalance = tokenBalance - remaining / TOKEN_RATE; // Deduct remaining from green points
+          dispatch(updateTokenBalance(newTokenBalance)); // Update token balance in Redux
         }
         addTransaction('Withdraw', withdrawAmount, 'Completed', 'mpesa/bank');
         setLoading({ ...loading, withdraw: false });
@@ -89,11 +111,13 @@ const GreenBankAccount = () => {
       setTimeout(() => {
         const transferAmount = parseFloat(amount);
         if (transferAmount <= balance) {
-          setBalance((prev) => prev - transferAmount); // Deduct from bank balance if enough
+          const newBalance = balance - transferAmount; // Deduct from bank balance if enough
+          dispatch(updateBalance(newBalance)); // Update balance in Redux
         } else {
           const remaining = transferAmount - balance;
-          setBalance(0); // Bank balance becomes 0
-          setTokenBalance((prev) => prev - remaining / TOKEN_RATE); // Deduct remaining from green points
+          dispatch(updateBalance(0)); // Bank balance becomes 0
+          const newTokenBalance = tokenBalance - remaining / TOKEN_RATE; // Deduct remaining from green points
+          dispatch(updateTokenBalance(newTokenBalance)) // Update token balance in Redux
         }
         addTransaction('Transfer', transferAmount, 'Completed', 'bank/mpesa');
         setLoading({ ...loading, transfer: false });
@@ -105,7 +129,7 @@ const GreenBankAccount = () => {
     }
   };
 
-  // Add new transaction with dynamic status and source
+
   const addTransaction = (type, amount, status, source) => {
     const newTransaction = {
       id: transactions.length + 1,
@@ -183,6 +207,12 @@ const GreenBankAccount = () => {
               <AntDesign name="leftcircle" size={22} color="green" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}> GreenBank Account   🌍</Text>
+            <TouchableOpacity 
+                style={{ marginRight: 15 }} 
+                onPress={() => bottomSheetRef.current?.present()} // 3. Open BottomSheet on press
+              >
+                <FontAwesome name="plus-circle" size={24} color="green" />
+              </TouchableOpacity>
           </View>
 
           {/* Display Static Balance */}
@@ -280,6 +310,7 @@ const GreenBankAccount = () => {
         </Animated.View>
          )}
       </KeyboardAvoidingView>
+      <RegisterCode ref={bottomSheetRef} isRegistered={isRegistered} />
     </SafeAreaView>
   );
 };
@@ -309,7 +340,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10, // Reduced margin
-    marginTop: -50, // Reduced margin
+    marginTop: -40, // Reduced margin
   },
   headerTitle: {
     fontSize: 20, // Reduced font size

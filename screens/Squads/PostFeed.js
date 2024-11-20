@@ -1,70 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, Animated, StatusBar,Platform } from 'react-native';
-import { WaveIndicator } from 'react-native-indicators';
-
-const posts = [
-  {
-    id: '1',
-    author: 'Masaku • Kenya Ecogreen',
-    time: '8h ago',
-    title: 'Waste Collection Expo Event Report',
-    upvotes: 450,
-    comments: 296,
-    saved: '2.0k',
-  },
-  {
-    id: '2',
-    author: 'Ashley Young • Eco Warriors',
-    time: 'Today',
-    title: 'Green Circular Economy',
-    upvotes: 656,
-    comments: 60,
-    saved: 899,
-  },
-  {
-    id: '3',
-    author: 'George Doyle • Nature Diversity',
-    time: 'Today',
-    title: 'With GreenBins we make waste collection possible',
-    upvotes: 892,
-    comments: 300,
-    saved: 99,
-  },
-  {
-    id: '4',
-    author: 'Ashley Young • Eco Warriors',
-    time: 'Today',
-    title: 'Green Circular Economy',
-    upvotes: 999,
-    comments: 69,
-    saved: 10,
-  },
-];
+import { View, Text, FlatList, StyleSheet, TextInput, Animated, StatusBar } from 'react-native';
+import LottieView from 'lottie-react-native'; // Import Lottie
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPosts } from '../../redux/actions/Posts'; // Adjust the import path as necessary
 
 const PostFeed = () => {
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState(posts);
-  const [loading, setLoading] = useState(true);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const fadeAnim = useState(new Animated.Value(0))[0];
 
+  // Get posts from Redux state
+  const { posts, loading, error } = useSelector((state) => state.postReducer);
+
   useEffect(() => {
-    // Simulate loading
+    // Fetch posts when the component mounts
+    dispatch(getAllPosts());
+
+    // Simulate loading animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
-    }).start(() => setLoading(false));
+    }).start();
+  }, [dispatch]);
 
+  useEffect(() => {
     // Filter posts based on search term
     const filtered = posts.filter(post =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredPosts(filtered);
-  }, [searchTerm]);
+  }, [searchTerm, posts]);
 
   const renderItem = ({ item }) => (
     <View style={styles.postContainer}>
-      <Text style={styles.author}>{item.author}</Text>
+      <Text style={styles.author}>
+        {item.author} • {item.squad}
+      </Text>
       <Text style={styles.time}>{item.time}</Text>
       <Text style={styles.title}>{item.title}</Text>
       <View style={styles.stats}>
@@ -78,9 +51,22 @@ const PostFeed = () => {
   if (loading) {
     return (
       <Animated.View style={[styles.loadingContainer, { opacity: fadeAnim }]}>
-        <WaveIndicator size={100} color="green" />
+        <LottieView
+          source={require('./path/to/loading.json')} // Update with the correct path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
         <Text style={styles.loadingText}>Loading...</Text>
       </Animated.View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load posts: {error}</Text>
+      </View>
     );
   }
 
@@ -118,8 +104,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     marginBottom: 10,
   },
-  feed: {
-  },
+  feed: {},
   postContainer: {
     backgroundColor: '#fff',
     marginVertical: 5,
@@ -164,6 +149,10 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  lottie: {
+    width: 100,
+    height: 100,
   },
 });
 

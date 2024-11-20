@@ -16,7 +16,6 @@ const initialState = {
     points: 0,
     loading: false,
     error: null,
-    greenBankBalance: 0, // Assume Green Bank balance is stored separately
 };
 
 const greenBankReducer = (state = initialState, action) => {
@@ -49,11 +48,7 @@ const greenBankReducer = (state = initialState, action) => {
                 loading: false,
                 points: Math.max(0, state.points - action.payload.points), // Ensure points don't go negative
             };
-        case UPDATE_GREEN_BANK_BALANCE:
-            return {
-                ...state,
-                greenBankBalance: state.greenBankBalance + action.payload, // Update Green Bank balance
-            };
+       
         
 
         case DEPOSIT_FAILURE:

@@ -8,37 +8,59 @@ import {
   Platform,
   Alert,
   SafeAreaView,
+  Share,
+  Modal,
 } from "react-native";
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 import { Color } from "../../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
 import * as Clipboard from 'expo-clipboard';
-import Lottie from 'lottie-react-native'; // Import Lottie
+import Lottie from 'lottie-react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getReferralCode } from '../../redux/actions/authentication';
+import { fetchEligibleRewards } from '../../redux/actions/rewards'; // Import the new action
 
 const ReferAndEarn = () => {
-  const [processing, setProcessing] = useState(true); // Start with loading state
+  const [processing, setProcessing] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
+  
   const navigation = useNavigation();
-  const promoCode = "PROMO2024";
+  const dispatch = useDispatch();
+  
+  const userId = useSelector(state => state.userReducer.userId); 
+  const referralCode = useSelector(state => state.referralReducer.referralCode);
+  const referralCount = useSelector(state => state.referralReducer.referralCount);
+  const eligibleRewards = useSelector(state => state.rewardsReducer.eligibleRewards); // Get eligible rewards from state
 
   const rewards = [
-    { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 20 friends!' },
-    { id: '2', title: 'KES 400 Cash', description: 'Earn KES 400 cash after referring 10 friends!' },
-    { id: '3', title: 'KES 500 Cash', description: 'Earn KES 500 cash after referring 15 friends!' },
-    { id: '4', title: 'Green Bank Deposit', description: 'Earn KES 400 cash deposited in your Green Bank plus add-ons!' },
+    { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 30 friends!', threshold: 30 },
+    { id: '2', title: 'KES 200 Cash', description: 'Earn KES 200 cash after referring 10 friends!', threshold: 10 },
+    { id: '3', title: 'KES 300 Cash', description: 'Earn KES 300 cash after referring 15 friends!', threshold: 15 },
+    { id: '4', title: 'Green Bank Deposit', description: 'Earn KES 400 cash deposited in your Green Bank plus add-ons after referring 30 friends!', threshold: 30 },
   ];
 
-  // Simulate loading completion
   useEffect(() => {
+    if (userId) {
+      dispatch(getReferralCode(userId));
+      dispatch(fetchEligibleRewards(userId)); // Fetch eligible rewards via dispatch
+    }
+    
     const timer = setTimeout(() => {
-      setProcessing(false); // Set loading to false after 2 seconds
+      setProcessing(false);
     }, 2000);
 
-    return () => clearTimeout(timer); // Clean up the timer
-  }, []);
+    return () => clearTimeout(timer);
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (eligibleRewards.length > 0) {
+      setModalVisible(true); // Show modal if there are eligible rewards
+    }
+  }, [eligibleRewards]);
 
   const handleRefer = useCallback(async () => {
     try {
-      const message = `Join GreenBin and earn rewards! Use my promo code: ${promoCode} to get 200 MB data bundles on your first registration. Check out more rewards in the app!`;
+      const message = `Join GreenBin and earn rewards! Use my promo code: ${referralCode} to get 200 MB data bundles on your first registration. Check out more rewards in the app!`;
       const result = await Share.share({ message });
 
       if (result.action === Share.sharedAction) {
@@ -50,22 +72,26 @@ const ReferAndEarn = () => {
       console.error('Error sharing referral:', error.message);
       Alert.alert('Error', 'Failed to share the referral. Please try again.');
     }
-  }, [promoCode]);
+  }, [referralCode]);
 
   const copyPromoCode = useCallback(async () => {
-    await Clipboard.setStringAsync(promoCode);
+    await Clipboard.setStringAsync(referralCode);
     Alert.alert("Promo Code Copied!", "You can now share it with your friends.");
-  }, [promoCode]);
+  }, [referralCode]);
 
-  const renderRewardCard = ({ item }) => (
-    <View style={styles.rewardCard}>
-      <FontAwesome name="gift" size={24} color="green" />
-      <View style={styles.rewardDetails}>
-        <Text style={styles.rewardTitle}>{item.title}</Text>
-        <Text style={styles.rewardDescription}>{item.description}</Text>
+  const renderRewardCard = ({ item }) => {
+    if (referralCount < item.threshold) return null;
+
+    return (
+      <View style={styles.rewardCard}>
+        <FontAwesome name="gift" size={24} color="green" />
+        <View style={styles.rewardDetails}>
+          <Text style={styles.rewardTitle}>{item.title}</Text>
+          <Text style={styles.rewardDescription}>{item.description}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Color.colorWhite, paddingTop: 33 }}>
@@ -76,10 +102,9 @@ const ReferAndEarn = () => {
         <Text style={styles.title}>Refer & Earn</Text>
       </View>
 
-      {/* Show Lottie animation only when processing is true */}
       {processing ? (
         <Lottie 
-          source={require('../../assets/lottie/gift.json')} // Adjust to your Lottie file
+          source={require('../../assets/lottie/gift.json')}
           autoPlay 
           loop 
           style={styles.lottie} 
@@ -107,7 +132,7 @@ const ReferAndEarn = () => {
 
           <View style={styles.promoCodeContainer}>
             <Text style={styles.promoCodeTitle}>Your Promo Code:</Text>
-            <Text style={styles.promoCode}>{promoCode}</Text>
+            <Text style={styles.promoCode}>{referralCode}</Text>
             <TouchableOpacity style={styles.copyButton} onPress={copyPromoCode} activeOpacity={0.7}>
               <Text style={styles.copyButtonText}>Copy Promo Code</Text>
             </TouchableOpacity>
@@ -119,10 +144,27 @@ const ReferAndEarn = () => {
           </TouchableOpacity>
 
           <Text style={styles.termsText}>
-            By clicking Refer & Earn you agree to accept the Terms & Conditions
+            By clicking Refer & Earn, you agree to our terms and conditions.
           </Text>
         </View>
       )}
+
+      {/* Reward Modal */}
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Congratulations!</Text>
+          {eligibleRewards.map(reward => (
+            <Text key={reward.id} style={styles.rewardText}>{reward.title}</Text>
+          ))}
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <Text style={styles.closeButton}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -135,8 +177,8 @@ const styles = StyleSheet.create({
   },
   lottie: {
     width: '100%',
-    height: 200, // Adjust as needed
-    marginBottom: 20, // Spacing below the animation
+    height: 200,
+    marginBottom: 20,
   },
   header: {
     flexDirection: 'row',
@@ -146,7 +188,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     backgroundColor: 'green',
     elevation: 1,
-    margin: 10
+    margin: 10,
   },
   backButton: {
     marginRight: 10,
@@ -243,38 +285,34 @@ const styles = StyleSheet.create({
   promoCode: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#007bff',
-    marginBottom: 10,
   },
   copyButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 12,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 10,
   },
   copyButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-
   },
   referButton: {
+    backgroundColor: 'blue',
+    padding: 15,
+    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#28a745',
-    padding: 10,
-    borderRadius: 14,
-    marginBottom: 15,
+    marginTop: 10,
   },
   buttonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
     color: '#fff',
     marginRight: 5,
   },
   termsText: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#777',
+    marginTop: 10,
     textAlign: 'center',
   },
   modalContainer: {
@@ -283,10 +321,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  rewardText: {
+    fontSize: 16,
+    color: '#fff',
+    marginVertical: 5,
+  },
+  closeButton: {
+    marginTop: 20,
+    color: 'blue',
+    fontSize: 16,
   },
 });
 

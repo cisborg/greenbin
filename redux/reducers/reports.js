@@ -13,6 +13,14 @@ import {
 
 const initialState = {
     reports: [],
+    reportDetails:{
+        id: null,
+        title: '',
+        description: '',
+        image: '',
+        location: '',
+        date: '',
+    },
     loading: false,
     error: null,
 };

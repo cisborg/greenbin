@@ -1,39 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { rateVendor } from '../../redux/actions/ratingAction';
 import { useNavigation } from '@react-navigation/native';
 
-const VendorRating = ({ visible, onClose }) => {
+const VendorRating = ({ vendorId, visible, onClose }) => {
   const [rating, setRating] = useState(0);
   const [reason, setReason] = useState('');
-  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  // Accessing state from Redux
+  const { loading, error, vendorRatings } = useSelector(state => state.vendor);
+
+  useEffect(() => {
+    // Reset state when modal is closed
+    if (!visible) {
+      setRating(0);
+      setReason('');
+      setSubmitted(false);
+    }
+  }, [visible]);
 
   const handleRating = (value) => {
     setRating(value);
   };
 
-  const handleSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
+  const handleSubmit = async () => {
+    if (rating === 0) {
+      Alert.alert("Please select a rating!");
+      return;
+    }
+
+    try {
+      await dispatch(rateVendor(vendorId, rating, reason)); // Pass reason here
       Alert.alert("Thank you for your feedback!", `Rating: ${rating} stars\nReason: ${reason}`);
-      setLoading(false);
       setSubmitted(true);
-    }, 1000); // Simulate a network request
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   const handleNavigate = () => {
-    navigation.goBack(); // Navigate back to Settings
+    navigation.goBack();
     if (typeof onClose === 'function') {
-      onClose(); // Close the modal
+      onClose();
     }
-    resetForm(); // Reset the form state
-  };
-
-  const resetForm = () => {
-    setRating(0);
-    setReason('');
-    setSubmitted(false);
   };
 
   const getRatingMessage = (value) => {
@@ -52,6 +66,13 @@ const VendorRating = ({ visible, onClose }) => {
         return { text: "", emoji: "" };
     }
   };
+
+  useEffect(() => {
+    if (vendorRatings.vendorId === vendorId) {
+      setRating(vendorRatings.stars);
+      setReason(vendorRatings.reason);
+    }
+  }, [vendorRatings, vendorId]);
 
   return (
     <Modal
@@ -80,7 +101,10 @@ const VendorRating = ({ visible, onClose }) => {
             multiline
           />
 
-          <TouchableOpacity onPress={loading ? null : (submitted ? handleNavigate : handleSubmit)} style={styles.button}>
+          <TouchableOpacity
+            onPress={loading || submitted ? null : handleSubmit}
+            style={styles.button}
+          >
             {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
@@ -92,6 +116,7 @@ const VendorRating = ({ visible, onClose }) => {
     </Modal>
   );
 };
+
 
 const styles = StyleSheet.create({
   overlay: {

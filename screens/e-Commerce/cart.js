@@ -2,26 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { Color } from '../../GlobalStyles';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cartActions';
+import { fetchVouchers } from '../../redux/actions/voucherActions'; // Import your fetch vouchers action
 
-const { width } = Dimensions.get('window'); // Get device width
+const { width } = Dimensions.get('window');
 
 const CartScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
+  const cartItems = useSelector((state) => state.cart.items);
+  const vouchers = useSelector((state) => state.vouchers.items); // Assuming you have a vouchers slice in your Redux store
   const [loading, setLoading] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    dispatch(fetchVouchers()); // Fetch vouchers when the component mounts
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
+  }, [dispatch, fadeAnim]);
 
   const increaseQuantity = (id) => {
     dispatch(addQuantity(id));
@@ -41,6 +43,23 @@ const CartScreen = ({ navigation }) => {
 
   const getDeliveryFee = () => {
     return getTotalPrice() > 5500 ? 129 : 0;
+  };
+
+  const getVoucherInfo = () => {
+    const totalPrice = getTotalPrice();
+    const applicableVoucher = vouchers.find(v => totalPrice >= v.minAmount && totalPrice < v.maxAmount);
+    return applicableVoucher ? { name: applicableVoucher.name, discount: applicableVoucher.value } : { name: "No Voucher", discount: 0 };
+  };
+
+  const getVoucherDiscount = () => {
+    const voucherInfo = getVoucherInfo();
+    return voucherInfo.discount; // Get the discount amount from the applicable voucher
+  };
+
+  const getNetTotalPrice = () => {
+    const totalPrice = getTotalPrice();
+    const discount = getVoucherDiscount();
+    return totalPrice - discount; // Subtract the discount from the total price
   };
 
   const renderItem = ({ item }) => {
@@ -97,10 +116,12 @@ const CartScreen = ({ navigation }) => {
   const handleCheckout = () => {
     setLoading(true);
     setTimeout(() => {
-      navigation.navigate('Checkout', { totalPrice: getTotalPrice() + 5 + getDeliveryFee() });
+      navigation.navigate('Checkout', { totalPrice: getNetTotalPrice() + 5 + getDeliveryFee() });
       setLoading(false);
     }, 300);
   };
+
+  const voucherInfo = getVoucherInfo();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -137,9 +158,16 @@ const CartScreen = ({ navigation }) => {
             </View>
             <View style={styles.separator} />
             <View style={styles.priceRow}>
-              <Text style={styles.subTotalLabel}>Cash In:</Text>
-              <Text style={styles.subTotal}>GCPs {getTotalPrice() + 5 + getDeliveryFee()}</Text>
+              <Text style={styles.subTotalLabel}>Green Net Pay:</Text>
+              <Text style={styles.subTotal}>GCPs {getNetTotalPrice() + 5 + getDeliveryFee()}</Text>
             </View>
+
+            {/* Voucher Information */}
+            <View style={styles.voucherContainer}>
+              <Text style={styles.voucherLabel}>Voucher Applied:</Text>
+              <Text style={styles.voucherMessage}>{voucherInfo.name} - GCPs {voucherInfo.discount} Off</Text>
+            </View>
+
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               {loading ? (
                 <ActivityIndicator size="small" color="#fff" />
@@ -153,6 +181,7 @@ const CartScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -188,6 +217,20 @@ const styles = StyleSheet.create({
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  voucherContainer: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: '#f0f0f0', // Adjust based on your design
+    borderRadius: 5,
+  },
+  voucherLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  voucherMessage: {
+    fontSize: 14,
+    color: 'green', // Adjust color based on your theme
   },
   itemInfo: {
     flex: 1,

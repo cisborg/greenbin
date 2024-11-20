@@ -24,7 +24,14 @@ import {
 
 const initialState = {
     chats: [],
-    chatDetails: null,
+    chatDetails: {
+        message:'',
+        messageNo: 0,
+        senderId: null,
+        senderPhoto: null,
+        createdAt: null,
+        status: boolean,
+    },
     loading: false,
     error: null,
     activeChatId: null,
@@ -32,6 +39,14 @@ const initialState = {
     totalPages: 0,
     hasMore: true,
     messages: [],
+    messageDetails: {
+        id: null,
+        text: '',
+        senderMessage: '',
+        createdAt: null,
+        receiverMessage: '',
+        status: boolean,
+    },
 };
 
 const chatReducer = (state = initialState, action) => {

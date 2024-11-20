@@ -5,7 +5,7 @@ const api = axios.create({
     baseURL: 'https://ecogreen-ouaj.onrender.com/api/v1', 
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Accept': 'application/json, application/octet-stream', // Accept images and videos
     },
     // timeout: 10000,
 });

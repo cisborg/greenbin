@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Color, FontFamily } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { createSquad } from '../../redux/actions/squads';
@@ -11,22 +10,18 @@ const CreateSquad = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  // const [squadData,setSquadData]=useState({})
   const [squadName, setSquadName] = useState('');
   const [description, setDescription] = useState('');
-  const [moderators,setModerators]=useState([])
-
+  const [moderators, setModerators] = useState([]);
   const [postPermission, setPostPermission] = useState('all');
   const [invitePermission, setInvitePermission] = useState('all');
   const [greenPoints, setGreenPoints] = useState(0);
   const [loadingLaunch, setLoadingLaunch] = useState(false);
-  const [loadingJoin, setLoadingJoin] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0));
   const [coverPhoto, setCoverPhoto] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    // Fade in animation on mount
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
@@ -39,44 +34,36 @@ const CreateSquad = () => {
       alert('Please fill in all fields and ensure you have enough Green Points.');
       return;
     }
-    
+
     setLoadingLaunch(true);
-    const squadData={
-      name:squadName,
-      description:description,
-      moderators:moderators,
-    }
-    // setTimeout(() => {
-    //   console.log('Creating squad:', { squadName, description, postPermission, invitePermission, greenPoints });
-    //   setLoadingLaunch(false);
-    //   navigation.navigate('Confirmed'); // Navigate to confirmation screen
-    // }, 2000); // Simulated delay for API call
+    const squadData = {
+      name: squadName,
+      description: description,
+      status: moderators,
+      postPermission: postPermission,
+      invitePermission: invitePermission,
+      greenPoints: greenPoints,
+      coverPhoto: coverPhoto,
+      profilePhoto: profilePhoto,
+    };
+
     try {
-      console.log('Creating squad:', squadData);
-      const response= await dispatch(createSquad(squadData))
-      console.log('Response from creating squad:',response)
+      const response = await dispatch(createSquad(squadData));
+      console.log('Response from creating squad:', response);
 
-navigation.navigate('Confirmed')
-
-
-
-    }catch(error){
-      console.log('Error in creating squad:',err)
+      if (response && response.status === 'success') {
+        navigation.navigate('Confirmed');
+      } else {
+        alert('Failed to create squad. Please try again.');
+      }
+    } catch (error) {
+      console.log('Error in creating squad:', error);
+      alert('An error occurred while creating the squad. Please try again.');
+    } finally {
+      setLoadingLaunch(false);
     }
-
   };
 
-  const handleJoinSquad = () => {
-    setLoadingJoin(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Joining existing squads...');
-      setLoadingJoin(false);
-      navigation.navigate('JoinSquads'); // Navigate to existing squads
-    }, 2000); // Simulated delay for API call
-  };
-
-  // Function to pick an image from local storage
   const pickImage = async (setImage) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -134,7 +121,7 @@ navigation.navigate('Confirmed')
 
           <TouchableOpacity style={styles.photoPicker} onPress={() => pickImage(setProfilePhoto)}>
             <Text style={styles.photoText}>Add Profile Photo</Text>
-            {profilePhoto &&<FastImage source={{ uri: profilePhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
+            {profilePhoto && <FastImage source={{ uri: profilePhoto }} style={styles.photoPreview} resizeMode={FastImage.resizeMode.cover} />}
           </TouchableOpacity>
 
           <Text style={styles.permissionTitle}>Post permissions</Text>
@@ -167,7 +154,6 @@ navigation.navigate('Confirmed')
             </Text>
           </TouchableOpacity>
 
-          {/* Payment Box Section */}
           <View style={styles.paymentBox}>
             <Text style={styles.paymentTitle}>Payment for Squad</Text>
             <Text style={styles.paymentSubtitle}>
@@ -195,6 +181,7 @@ navigation.navigate('Confirmed')
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

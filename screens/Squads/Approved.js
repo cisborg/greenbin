@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 const { width } = Dimensions.get('window');
 
 const Approved = ({ navigation }) => {
-  const [vendors, setVendors] = useState([
+  const [users, setUsers] = useState([
     {
       id: 1,
       name: "John Doe",
@@ -33,18 +33,18 @@ const Approved = ({ navigation }) => {
   const [loadingStates, setLoadingStates] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleUnfollow = (vendorId) => {
-    setLoadingStates((prev) => ({ ...prev, [vendorId]: true }));
+  const handleUnfollow = (userId) => {
+    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
 
     setTimeout(() => {
-      setVendors((prev) => prev.filter(vendor => vendor.id !== vendorId));
-      setLoadingStates((prev) => ({ ...prev, [vendorId]: false }));
+      setUsers((prev) => prev.filter(users => users.id !== userId));
+      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
     }, 400);
   };
 
-  const filteredVendors = vendors.filter(vendor => 
-    vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    vendor.profession.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(users => 
+    users.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    users.profession.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -62,24 +62,24 @@ const Approved = ({ navigation }) => {
         />
       </View>
       <View style={styles.content}>
-        {filteredVendors.length === 0 ? (
+        {filteredUsers.length === 0 ? (
           <Text style={styles.emptyMessage}>Approval Complete! </Text>
         ) : (
-          filteredVendors.map((vendor) => (
-            <Animated.View key={vendor.id} style={styles.card}>
-              <TouchableOpacity style={styles.vendorInfo}>
-                <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover}/>
+          filteredUsers.map((users) => (
+            <Animated.View key={users.id} style={styles.card}>
+              <TouchableOpacity style={styles.userInfo}>
+                <FastImage source={{ uri: users.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover}/>
                 <View style={styles.details}>
-                  <Text style={styles.vendorName}>{vendor.name}</Text>
-                  <Text style={styles.vendorProfession}>{vendor.profession}</Text>
-                  <Text style={styles.vendorDescription}>{vendor.description}</Text>
+                  <Text style={styles.userName}>{users.name}</Text>
+                  <Text style={styles.userProfession}>{users.profession}</Text>
+                  <Text style={styles.userDescription}>{users.description}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity 
-                onPress={() => handleUnfollow(vendor.id)} 
-                style={[styles.unfollowButton, loadingStates[vendor.id] ? styles.loadingButton : null]}
+                onPress={() => handleUnfollow(users.id)} 
+                style={[styles.unfollowButton, loadingStates[users.id] ? styles.loadingButton : null]}
               >
-                {loadingStates[vendor.id] ? (
+                {loadingStates[users.id] ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
                   <Text style={styles.buttonText}>Approve</Text>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: width * 0.98,
   },
-  vendorInfo: {
+  userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
@@ -153,15 +153,15 @@ const styles = StyleSheet.create({
   details: {
     flexDirection: 'column',
   },
-  vendorName: {
+user: {
     fontSize: 15,
     fontWeight: 'bold',
   },
-  vendorProfession: {
+  userProfession: {
     fontSize: 13,
     color: 'gray',
   },
-  vendorDescription: {
+  userDescription: {
     fontSize: 11,
     color: 'darkgray',
   },

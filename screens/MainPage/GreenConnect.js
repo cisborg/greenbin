@@ -7,9 +7,11 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Animated,Platform, StatusBar
+  Animated,
+  Platform,
+  StatusBar
 } from 'react-native';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import NotificationScreen from '../GreenConnect/ConnectNotification';
@@ -18,30 +20,30 @@ import SettingsScreen from '../GreenConnect/Settings';
 import { SafeAreaView } from 'react-native-safe-area-context'; // SafeAreaView for screen edges
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { fetchUsers } from '../../redux/actions/admin'; // Adjust the import path as necessary
 
 const Tab = createBottomTabNavigator(); // Define the Tab navigator
 
-// Custom Header Component
 const CustomHeader = ({ profileImage }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.headerContainer}>
       <View style={{ flexDirection: 'column' }}>
-      <Text style={styles.headerTitle}>Pilot Green Connect</Text>
-      <Text style={styles.subheaderTitle}> Connect and Go green with GreenBin! </Text>
+        <Text style={styles.headerTitle}>Pilot Green Connect</Text>
+        <Text style={styles.subheaderTitle}> Connect and Go green with GreenBin! </Text>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
         <FastImage
-            style={styles.profileImageHeader}
-            source={{ uri: profileImage , priority: FastImage.priority.normal,}}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-     </TouchableOpacity>
+          style={styles.profileImageHeader}
+          source={{ uri: profileImage, priority: FastImage.priority.normal }}
+          resizeMode={FastImage.resizeMode.contain}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
 
-// Custom Bottom Tab Bar
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   return (
     <View style={styles.tabBarContainer}>
@@ -94,16 +96,21 @@ const GreenConnectMain = ({ navigation }) => {
   const [loading, setLoading] = useState({}); // Track loading status for each user
   const fadeAnim = useRef(new Animated.Value(0)).current; // For screen animation
 
-  const users = [
-    { id: '1', name: 'Valary Akinyi', description: 'Data Assistant at Dapstrem Entertainment', followers: 100, awards: 5,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '2', name: 'Mercy Njeri', description: 'Environmental Education and Advocacy', followers: 50, awards: 3,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '3', name: 'Geff Kirui', description: 'Web Developer specializing in Web Technologies', followers: 150, awards: 10,   profileImage: 'https://via.placeholder.com/50', category: 'Popular' },
-    { id: '4', name: 'Abdijabar Saney', description: 'Humanitarian | Emergency Response', followers: 80, awards: 4,  profileImage: 'https://via.placeholder.com/50', category: 'Suggested' },
-    { id: '5', name: 'Michael Brown', description: 'Software Engineer', followers: 200, awards: 8,  profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
-    { id: '6', name: 'Jane Smith', description: 'AI Researcher', followers: 250, awards: 6, profileImage: 'https://via.placeholder.com/50', category: 'Most Followed' },
-    { id: '7', name: 'John Doe', description: 'Data Scientist', followers: 300, awards: 12, mutuals: 7,  profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
-    { id: '8', name: 'Alice Johnson', description: 'Community Organizer', followers: 90, awards: 2,  profileImage: 'https://via.placeholder.com/50', category: 'Individuals with Highest Awards' },
-  ];
+  const dispatch = useDispatch(); // Get the dispatch function
+  const users = useSelector(state => state.users); // Access users from Redux state
+
+  useEffect(() => {
+    dispatch(fetchUsers()); // Fetch users when the component mounts
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Fade-in animation on screen mount
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -115,15 +122,6 @@ const GreenConnectMain = ({ navigation }) => {
     { title: 'Most Popular', filter: user => user.category === 'Popular' },
     { title: 'Most Followed', filter: user => user.category === 'Most Followed' },
   ];
-
-  useEffect(() => {
-    // Fade-in animation on screen mount
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   const handleConnectToggle = (userId) => {
     setLoading((prev) => ({ ...prev, [userId]: true }));
@@ -144,10 +142,10 @@ const GreenConnectMain = ({ navigation }) => {
       <View style={styles.userContainer}>
         <View style={styles.profileImageContainer}>
           <FastImage
-              style={styles.profileImage}
-              source={{ uri: item.profileImage }}
-              resizeMode={FastImage.resizeMode.contain}
-            />
+            style={styles.profileImage}
+            source={{ uri: item.profileImage }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
         </View>
         <Text style={styles.userName}>{item.name}</Text>
         <Text>{item.description}</Text>
@@ -249,6 +247,7 @@ const GreenConnect = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   safeArea: {

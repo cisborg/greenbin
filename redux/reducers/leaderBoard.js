@@ -15,7 +15,26 @@ import {
 
 const initialState = {
     squadLeaderboard: [],
+    squadLeaderDetails: {
+        id: null,
+        squadName: '',
+        rank: null,
+        awardType: null,
+        profilelogo: null,
+        points: null,
+        membersCount: 0,
+        activitiesCompleted: 0
+    },
     userLeaderboard: [],
+    userLeaderboard: {
+        id: null,
+        username: '',
+        rank: null,
+        awardType: null,
+        profilePicture: null,
+        points: null,
+        squadName: null,
+    },
     loading: false,
     error: null,
 };

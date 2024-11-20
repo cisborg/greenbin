@@ -19,7 +19,22 @@ import {
 
 const initialState = {
     shops: [],
-    shopDetails: null,
+    shopDetails: {
+        id: null,
+        name: '',
+        address: '',
+        contact: '',
+        description: '',
+        coverImage: null,
+        profileLogo: null,
+        vendors: [],
+        rating: 0,
+        openHours: '',
+        closeHours: '',
+        location: null,
+        distance: '',
+        
+    },
     loading: false,
     error: null,
 };

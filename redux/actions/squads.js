@@ -35,7 +35,7 @@ export const createSquad = (squadData) => async (dispatch) => {
     try {
         const response = await api.post('/squad/create', squadData);
         if (response.data.status === 'success') {
-            dispatch({ type: CREATE_SQUAD_SUCCESS, payload: response.data });
+            dispatch({ type: CREATE_SQUAD_SUCCESS, payload: response.data.squadData });
         }
     } catch (error) {
         dispatch({ type: CREATE_SQUAD_FAILURE, payload: error.message });
@@ -101,8 +101,8 @@ export const leaveSquad = (squadId, userId) => async (dispatch) => {
 export const deleteSquad = (squadId) => async (dispatch) => {
     dispatch({ type: DELETE_SQUAD_REQUEST });
     try {
-        const response = await api.delete(`/api/delete-squad/${squadId}`);
-        dispatch({ type: DELETE_SQUAD_SUCCESS, payload: response.data });
+        const response = await api.delete(`/api/delete-squad/${squadId}`, squadData);
+        dispatch({ type: DELETE_SQUAD_SUCCESS, payload: response.data.squadData });
     } catch (error) {
         dispatch({ type: DELETE_SQUAD_FAILURE, payload: error.message });
     }
@@ -112,8 +112,8 @@ export const deleteSquad = (squadId) => async (dispatch) => {
 export const getAllSquads = () => async (dispatch) => {
     dispatch({ type: GET_ALL_SQUADS_REQUEST });
     try {
-        const response = await api.get('/api/get-all-squads');
-        dispatch({ type: GET_ALL_SQUADS_SUCCESS, payload: response.data });
+        const response = await api.get('/api/squads', squads);
+        dispatch({ type: GET_ALL_SQUADS_SUCCESS, payload: response.data.squads });
     } catch (error) {
         dispatch({ type: GET_ALL_SQUADS_FAILURE, payload: error.message });
     }

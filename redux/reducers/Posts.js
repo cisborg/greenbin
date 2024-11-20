@@ -46,6 +46,19 @@ import {
 
 const initialState = {
   posts: [],
+  postDetails: {
+    id: null,
+    title: '',
+    content: '',
+    squad: '',
+    author: '',
+    createdAt: Date.now(),
+    images: [],
+    likes: 0,
+    comments: [],
+    isSaved: false,
+    tags: []
+  },
   loading: false,
   error: null,
 };

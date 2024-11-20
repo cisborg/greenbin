@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/balanceActions'; // Import actions
 import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Color } from "../../GlobalStyles";
-import { useRoute } from '@react-navigation/native';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import FastImage from 'react-native-fast-image';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Color } from "../../GlobalStyles";
 
 const CardScroll = () => {
   const cards = [
@@ -72,18 +72,23 @@ const CardScroll = () => {
 };
 
 const HomeScreen = ({ navigation }) => {
-  const route = useRoute();
-  const { name, bal } = route.params;
+  const dispatch = useDispatch();
+  const mobiTiers = useSelector((state) => state.balance.mobiTiers);
+  const donationTiers = useSelector((state) => state.balance.donationTiers);
+  const airtimeBought = useSelector((state) => state.balance.airtimeBought);
+  
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    // Simulate a loading delay, replace with actual data fetching if needed
-    const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after 2 seconds
-    }, 2000);
+    const fetchData = async () => {
+      await dispatch(fetchMobiTiers());
+      await dispatch(fetchDonationTiers());
+      await dispatch(fetchAirtimeBought());
+      setLoading(false);
+    };
 
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-  }, []);
+    fetchData();
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -104,7 +109,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity>
           <AntDesign name="leftcircle" size={23} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Welcome, {name}</Text>
+        <Text style={styles.headerText}>Welcome, User</Text>
         <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('manageAccount')}>
           <Text style={styles.button1Text}>Account</Text>
         </TouchableOpacity>
@@ -113,21 +118,21 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Airtime</Text>
-          <Text style={styles.statNumber}>200</Text>
+          <Text style={styles.statNumber}>{airtimeBought}</Text>
         </View>
 
         <View style={styles.separator} />
 
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Mobi Tiers</Text>
-          <Text style={styles.statNumber}>400</Text>
+          <Text style={styles.statNumber}>{mobiTiers}</Text>
         </View>
 
         <View style={styles.separator} />
 
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Donation Tiers</Text>
-          <Text style={styles.statNumber}>1200</Text>
+          <Text style={styles.statNumber}>{donationTiers}</Text>
         </View>
       </View>
 
@@ -140,20 +145,13 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.balanceBox1}>
-        <View style={styles.Container}>
-          <FontAwesome6 name="mobile-retro" size={24} color="green" />
-          <Text style={styles.greenMoney}>Green Carbon Points</Text>
-        </View>
-        <Text style={styles.moneyBalance}>GCPS Wallet: {bal}</Text>
-        <Text style={styles.moneyBalance1}>Your Equivalent KES is GCPs BALANCE/10.25</Text>
-      </View>
-
       <CardScroll />
 
       <View style={styles.quickActionsTitle}>
         <Text style={styles.ActionText}>Quick Actions</Text>
-        <Text style={styles.ActionText1}>All Offers</Text>
+        <TouchableOpacity activeOpacity={0.3}>
+          <Text style={styles.ActionText1}>All Offers</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.navigationContainer}>
@@ -179,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('getPremium')}>
             <MaterialIcons name="health-and-safety" size={24} color='green' />
-            <Text style={styles.navButtonText}>HealthSmart</Text>
+            <Text style={styles.navButtonText}>Your Shop</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Transaction')}>
             <FontAwesome name="send" size={24} color='green' />

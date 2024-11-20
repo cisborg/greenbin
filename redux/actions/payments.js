@@ -22,15 +22,12 @@ import api from "../../utils/axiosConfig";
 // Cash Deposit Action
 export const cashDeposit = (amount) => async (dispatch) => {
     const depositAmount = parseFloat(amount);
-    const greenBankAmount = depositAmount * 0.10; // 10% for Green Bank
-
     try {
         // Assuming you have an API endpoint to handle cash deposits
         await api.post('/api/cash-deposit', { amount: depositAmount });
 
         // Dispatch actions to update both total balance and Green Bank balance
         dispatch({ type: DEPOSIT_SUCCESS, payload: depositAmount });
-        dispatch({ type: UPDATE_GREEN_BANK_BALANCE, payload: greenBankAmount }); // New action to update Green Bank balance
     } catch (error) {
         const errorMessage = error.response?.data?.message || error.message;
         dispatch({ type: DEPOSIT_FAILURE, payload: errorMessage });
