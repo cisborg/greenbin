@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     height: height * 0.051,
     shadowColor: "#000",
+    width: "80%",
   },
   label: {
     fontSize: width * 0.04,
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
   },
   togglePasswordText: {
     color: "green",
-    marginLeft: 10,
+    marginLeft: 5,
   },
   buttonContainer: {
     justifyContent: "center",

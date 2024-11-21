@@ -54,10 +54,11 @@ const productReducer = (state = initialState, action) => {
       };
 
     case FETCH_PRODUCTS_SUCCESS:
+      console.log("=>FETCH_PRODUCTS_SUCCESS dispatch received");
       return {
         ...state,
         loading: false,
-        products: action.payload,
+        products: action.payload["data"],
       };
 
     case FETCH_PRODUCT_BY_ID_SUCCESS:

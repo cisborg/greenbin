@@ -33,8 +33,11 @@ export const fetchProducts = () => async (dispatch) => {
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
   try {
     const response = await api.get("/product/all");
-    console.log("Products(response.data)", response.data);
     dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
+    if (response.data.status === "success") {
+      // console.log("Products fetched successfully:", response.data.data);
+      return response.data.data;
+    }
   } catch (error) {
     console.error("Error fetching products:", error);
     dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });

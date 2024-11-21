@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TextInput,
+  ScrollView,
   TouchableOpacity,
   SafeAreaView,
   Animated,
@@ -30,12 +31,12 @@ const ChallengePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [data, setData] = useState(categories);
-  // const { products, error } = useSelector((state) => state.products);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const bannerImages = [
@@ -46,11 +47,8 @@ const ChallengePage = () => {
   ];
 
   useEffect(() => {
-    console.log("X1");
     dispatch(fetchProducts());
-    console.log("X2");
-
-    // console.log("Products:", products);
+    products && setData(products);
   }, []);
 
   useEffect(() => {
@@ -149,7 +147,7 @@ const ChallengePage = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={{ opacity: fadeAnim }}>
-        <View style={styles.container}>
+        <ScrollView horizontal={true} style={styles.scrollContainer}>
           <View style={styles.sidebar}>
             <TouchableOpacity
               style={styles.homeContainer}
@@ -190,6 +188,7 @@ const ChallengePage = () => {
                 onRefresh={onRefresh}
                 loadMoreItems={loadMoreItems}
                 navigation={navigation}
+                products={products}
                 onEndReached={() => handleSidebarItemPress(selectedCategory)} // Auto select category on scroll end
               />
             ) : (
@@ -219,7 +218,7 @@ const ChallengePage = () => {
               />
             )}
           </View>
-        </View>
+        </ScrollView>
       </Animated.View>
     </SafeAreaView>
   );
@@ -257,6 +256,13 @@ const categories = [
   { name: "Watches", image: require("../../assets/watches.png") },
   { name: "Beauty & Personal Care", image: require("../../assets/beauty.png") },
   { name: "Clothes", image: require("../../assets/clothes.png") },
+  { name: "Accessories" },
+  { name: "Bags" },
+  { name: "Jewelry" },
+  { name: "Garden & Outdoors" },
+  { name: "Books" },
+  { name: "Furniture" },
+  { name: "Sports" },
 ];
 
 const styles = StyleSheet.create({
@@ -264,11 +270,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 6,
-    flexDirection: "row",
+  scrollContainer: {
+    // flex: 1,
+    // backgroundColor: "#fff",
+    // padding: 6,
     minHeight: height * 0.98,
     marginTop: -35,
   },

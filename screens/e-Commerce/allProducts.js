@@ -1,124 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FastImage from 'react-native-fast-image';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
+import FastImage from "react-native-fast-image";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
-const ItemGridScreen = ({ navigation }) => {
-  const [data, setData] = useState([]);
+const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
+  const [groupedData, setGroupedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
-  // Use a flag to track if more items are loading
-  const [loadingMore, setLoadingMore] = useState(false);
+  const ITEMS_PER_PAGE = 10; // Adjust as needed
 
-  const fetchData = () => {
-    setLoading(true);
-    // Simulate fetching data
-    const DATA = [
-      {
-        title: "Recommended",
-        data: [
-          { title: 'Top-Handle Bags', image: require('../../assets/Bags.png'), rating: 4 },
-          { title: 'Crossbody Bags', image: require('../../assets/Bags.png'), rating: 5 },
-          { title: 'Tote Bags', image: require('../../assets/Bags.png'), rating: 3 },
-          { title: 'Shoulder Bags', image: require('../../assets/Bags.png'), rating: 4 },
-          { title: 'Fashion Backpacks', image: require('../../assets/Bags.png'), rating: 5 },
-          { title: 'Wallets & Holders', image: require('../../assets/Bags.png'), rating: 4 },
-        ],
-      },
-      {
-        title: "Latest in Store",
-        data: [
-          { title: 'Fashion Backpacks', image: require('../../assets/beauty.png'), rating: 4 },
-          { title: 'Wallets & Holders', image: require('../../assets/refurbished.png'), rating: 5 },
-          { title: 'Cross-Body Sling Bags', image: require('../../assets/Bags.png'), rating: 3 },
-          { title: 'Shoulder Bags', image: require('../../assets/refurbished.png'), rating: 4 },
-          { title: 'Waist Packs', image: require('../../assets/clothes.png'), rating: 2 },
-        ],
-      },
-      {
-        title: 'Mostly Purchased',
-        data: [
-          { title: 'Travel Bags', image: require('../../assets/Appliance.png'), rating: 5 },
-          { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 2 },
-          { title: 'Gym Bags', image: require('../../assets/earphones.png'), rating: 3 },
-        ],
-      },
-    ];
-    setData(prevData => [...prevData, ...DATA]);
-    setLoading(false);
+  // Paginate the products based on the selected category
+  const paginateData = (data, page) => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   };
 
-  // Fetch data when the component mounts
+  // Filter and group products by the selected category
   useEffect(() => {
-    fetchData();
-  }, [page]);
+    if (products && selectedCategory) {
+      const filteredProducts = products.filter(
+        (product) =>
+          product.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+
+      setGroupedData((prevData) => [
+        ...prevData,
+        ...paginateData(filteredProducts, page),
+      ]);
+    }
+  }, [products, selectedCategory, page]);
 
   // Handle item click to navigate to product details
   const handleProductClick = (item) => {
-    navigation.navigate('productDetail', { product: item });
+    navigation.navigate("productDetail", { product: item });
   };
 
-  // Handle "View All" button click for each section
-  const handleViewAllClick = (sectionTitle) => {
-    navigation.navigate('Products', { category: sectionTitle });
+  // Load more items when the user scrolls to the end
+  const loadMore = () => {
+    if (!loading) {
+      setLoading(true);
+      setPage((prevPage) => prevPage + 1);
+      setLoading(false);
+    }
   };
 
   // Render each product item in the grid
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleProductClick(item)}>
       <View style={styles.productContainer}>
-        <FastImage source={item.image || require('../../assets/Bags.png')}  resizeMode={FastImage.resizeMode.cover} style={styles.productImage} />
+        <FastImage
+          source={{ uri: item.image }}
+          resizeMode={FastImage.resizeMode.cover}
+          style={styles.productImage}
+        />
         <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
+        <Text style={styles.rating}>
+          {"★".repeat(item.rating)}
+          {"☆".repeat(5 - item.rating)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
-  // Render a section with products
-  const renderSection = ({ section }) => (
-    <View style={styles.sectionContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>{section.title}</Text>
-        <TouchableOpacity style={styles.viewAllContainer} onPress={() => handleViewAllClick(section.title)}>
-          <Text style={styles.viewAll}>View All</Text>
-          <MaterialIcons name="arrow-forward-ios" size={14} color="green" />
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data={section.data}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
-        numColumns={3}
-        columnWrapperStyle={styles.columnWrapper}
-        scrollEnabled={false} // Prevent FlatList from taking over scroll
-      />
-    </View>
-  );
-
-  // Load more items when user scrolls to the end
-  const loadMore = () => {
-    if (!loadingMore) {
-      setLoadingMore(true);
-      setPage(prevPage => prevPage + 1);
-      setLoadingMore(false); // Reset flag
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <SectionList
-        sections={data}
-        keyExtractor={(item, index) => `${item.title}-${index}`}  
-        renderSectionHeader={({ section }) => renderSection({ section })}
-        renderItem={() => null} // To avoid duplicate rendering in SectionList
-        stickySectionHeadersEnabled={false}
-        onEndReached={loadMore} // Trigger when user reaches end
-        onEndReachedThreshold={0.5} // Load more items when halfway through
-        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="blue" /> : null}
-      />
+      {groupedData.length > 0 ? (
+        <FlatList
+          data={groupedData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
+          numColumns={3}
+          columnWrapperStyle={styles.columnWrapper}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loading ? <ActivityIndicator size="large" color="blue" /> : null
+          }
+        />
+      ) : (
+        <Text style={styles.emptyMessage}>No items available.</Text>
+      )}
     </View>
   );
 };
@@ -126,58 +97,41 @@ const ItemGridScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-    paddingHorizontal: 5,
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-
-  },
-  viewAllContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  viewAll: {
-    fontSize: 14,
-    color: '#808080',
-    marginRight: 5,
-  },
-  sectionContainer: {
-    marginBottom: 20,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
   },
   productContainer: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: "#f8f8f8",
     borderRadius: 15,
-    width: width / 3.5 - 20, // Adjusted width to fit 3 items per row
+    width: width / 3.5 - 10, // Adjust width to fit 3 items per row
     margin: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   productImage: {
-    width: '100%',
+    width: "100%",
     height: 60,
     borderRadius: 12,
     marginBottom: 2,
   },
   productTitle: {
     fontSize: 10,
-    fontWeight: '400',
+    fontWeight: "400",
     marginBottom: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   rating: {
     fontSize: 12,
-    color: '#FFD700',
+    color: "#FFD700",
   },
   columnWrapper: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
+  },
+  emptyMessage: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
+    color: "#808080",
   },
 });
 
