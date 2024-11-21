@@ -46,7 +46,7 @@ const ItemGridScreen = ({ navigation, selectedCategory }) => {
   }, [products, selectedCategory, page]);
 
   const handleProductClick = (item) => {
-    navigation.navigate("productDetail", { product: item });
+    navigation.navigate("productDetail", { productId: item.id });
   };
 
   // Load more items when the user scrolls to the end

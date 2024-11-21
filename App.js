@@ -1,9 +1,9 @@
 import * as React from "react";
-import 'react-native-gesture-handler'; 
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView, Platform, Dimensions } from 'react-native';
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView, Platform, Dimensions } from "react-native";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -36,18 +36,18 @@ import VendorList from "./screens/Vendors/VendorList";
 import CreateSquad from "./screens/Squads/createSquad";
 import GoodHome from "./screens/MainPage/GreenDaily";
 import CartScreen from "./screens/e-Commerce/cart";
-import BuySuccess from  "./screens/QuickActions/BuyBundleSuccessful";
-import  WifiSuccess from "./screens/QuickActions/BuyWifiSuccessful";
+import BuySuccess from "./screens/QuickActions/BuyBundleSuccessful";
+import WifiSuccess from "./screens/QuickActions/BuyWifiSuccessful";
 import Transactions from "./screens/e-Commerce/Transaction";
-import ViewSquadScreen from  "./screens/Squads/ViewSquads"
-import NewPostScreen from  "./screens/Squads/PostSquad"
-import ChangePassword from "./screens/Registration/ChangePassword"
+import ViewSquadScreen from "./screens/Squads/ViewSquads";
+import NewPostScreen from "./screens/Squads/PostSquad";
+import ChangePassword from "./screens/Registration/ChangePassword";
 import ReferAndEarn from "./screens/GreenPoints/ReferAndEarn";
 import ProfileSettings from "./screens/Registration/ProfileSettings";
-import NotificationScreen from "./screens/GreenConnect/ConnectNotification"
+import NotificationScreen from "./screens/GreenConnect/ConnectNotification";
 import SettingsScreen from "./screens/GreenConnect/Settings";
 import Checkout from "./screens/e-Commerce/Checkout";
-import  CartDetail from "./screens/e-Commerce/productDetail"
+import ProductDetail from "./screens/e-Commerce/productDetail";
 import GreenBankAccount from "./screens/e-Commerce/GreenBank";
 import JoinUsScreen from "./screens/AboutApp/JoinUs";
 import DonatePoints from "./screens/GreenPoints/DonatePoints";
@@ -57,7 +57,7 @@ import AboutScreen from "./screens/AboutApp/AboutUs";
 import ReportVendorScreen from "./screens/Vendors/ReportVendor";
 import ProductScreen from "./screens/Vendors/VendorProducts";
 import BuyGoods from "./screens/QuickActions/BuyGoods";
-import CarbonFootprintCalculator from "./screens/GreenPoints/CarbonCalculator"
+import CarbonFootprintCalculator from "./screens/GreenPoints/CarbonCalculator";
 import GamesScreen from "./screens/QuickActions/GoGames";
 import WalletScreen from "./screens/QuickActions/Crypto";
 import LegalScreen from "./screens/AboutApp/LegalScreen";
@@ -65,10 +65,10 @@ import LeaderboardScreen from "./screens/Squads/SquadsAward";
 import TagSelection from "./screens/Squads/selectTag";
 import NotificationsScreen from "./screens/Squads/Updates";
 import CommentsSection from "./screens/Squads/SquadComments";
-import ConnectToShops from "./screens/e-Commerce/ShopLocator"
+import ConnectToShops from "./screens/e-Commerce/ShopLocator";
 import ProfilePage from "./screens/MainPage/ProfilePage";
 import VendorChat from "./screens/Vendors/VendorChat";
-import ViewSquad2Screen from  "./screens/Squads/ViewSquads2"
+import ViewSquad2Screen from "./screens/Squads/ViewSquads2";
 import PaymentConfirmed from "./screens/GreenPoints/paymentConfirmed";
 import ItemGridScreen from "./screens/e-Commerce/allProducts";
 import DonationConfirmed from "./screens/GreenPoints/donationConfirmed";
@@ -80,13 +80,13 @@ import HelpfulTips from "./screens/AboutApp/HelpFull";
 import SquadConfirmation from "./screens/Squads/Confirmed";
 import SquadCreated from "./screens/Squads/SquadCreated";
 import RatingModal from "./screens/AboutApp/AppRating";
-import ChatScreen  from "./screens/GreenConnect/chatConnect"
-import HistoryScreen from "./screens/GreenPoints/donationHist"
-import FollowedVendors from "./screens/Vendors/VendorsFollowed"
+import ChatScreen from "./screens/GreenConnect/chatConnect";
+import HistoryScreen from "./screens/GreenPoints/donationHist";
+import FollowedVendors from "./screens/Vendors/VendorsFollowed";
 import Approved from "./screens/Squads/Approved";
-import VendorRating from './screens/Vendors/RateVendor';
+import VendorRating from "./screens/Vendors/RateVendor";
 import Products from "./screens/e-Commerce/Products";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Color } from "./GlobalStyles";
 import PostFeed from "./screens/Squads/PostFeed";
 import FlashSale from "./screens/e-Commerce/FlashSale";
@@ -94,19 +94,15 @@ import SalesList from "./screens/e-Commerce/SalesList";
 import CoinRewards from "./screens/GreenPoints/GreenCoins";
 import Tailored from "./screens/e-Commerce/Tailored";
 
-
-
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: false,
   tabBarStyle: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderTopWidth: 0,
     borderRadius: 18,
     shadowColor: "rgba(0,0,0,0.03)",
@@ -114,111 +110,122 @@ const screenOptions = {
     shadowOpacity: 0.5,
     shadowRadius: 1,
     elevation: 2,
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: 50, // Increased height for text
-    width: windowWidth
+    width: windowWidth,
   },
 };
 
 // Define the TabBarIcon component
 const TabBarIcon = ({ focused, activeIcon, inactiveIcon, label }) => {
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+    <View
+      style={{ justifyContent: "center", alignItems: "center", padding: 5 }}
+    >
       {focused ? (
-        <MaterialCommunityIcons name={activeIcon} size={25} color={Color.colorLimegreen_200} />
+        <MaterialCommunityIcons
+          name={activeIcon}
+          size={25}
+          color={Color.colorLimegreen_200}
+        />
       ) : (
-        <MaterialCommunityIcons name={inactiveIcon} size={25} color={Color.colorGray_100} />
+        <MaterialCommunityIcons
+          name={inactiveIcon}
+          size={25}
+          color={Color.colorGray_100}
+        />
       )}
-      <Text style={{ color: focused ? '#000' : '#888', fontSize: 10 }}>{label}</Text>
+      <Text style={{ color: focused ? "#000" : "#888", fontSize: 10 }}>
+        {label}
+      </Text>
     </View>
   );
 };
 
-
 // Define the MainTabs component
 const MainTabs = () => {
   return (
-    <SafeAreaView style={{ flex: 1, paddingTop: Platform.OS === 'android' ? 25 : 0 }}>
-
-    <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen
-        name="HomePageExistingUser"
-        component={HomePageExistingUser}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon
-              focused={focused}
-              activeIcon="home-circle" 
-              inactiveIcon="home-circle"
-              label="Home" // Add label here
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="ChallengePage"
-        component={ChallengePage}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon
-              focused={focused}
-              activeIcon="lightning-bolt-circle"
-              inactiveIcon="lightning-bolt-circle"
-              label="Shop" // Add label here
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="GreenDaily"
-        component={GoodHome}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon
-              focused={focused}
-              activeIcon="crowd"
-              inactiveIcon="crowd"
-              label="Discover" // Add label here
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="SeeAllEvents"
-        component={SeeAllEvents}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon
-              focused={focused}
-              activeIcon="map-marker"
-              inactiveIcon="map-marker"
-              label="Events" // Add label here
-            />
-          )
-        }}
-      />
-      <Tab.Screen
-        name="ProfilePage"
-        component={ProfilePage}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon
-              focused={focused}
-              activeIcon="account"
-              inactiveIcon="account"
-              label="Me" // Add label here
-            />
-          )
-        }}
-      />
-    </Tab.Navigator>
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: Platform.OS === "android" ? 25 : 0 }}
+    >
+      <Tab.Navigator screenOptions={screenOptions}>
+        <Tab.Screen
+          name="HomePageExistingUser"
+          component={HomePageExistingUser}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabBarIcon
+                focused={focused}
+                activeIcon="home-circle"
+                inactiveIcon="home-circle"
+                label="Home" // Add label here
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ChallengePage"
+          component={ChallengePage}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabBarIcon
+                focused={focused}
+                activeIcon="lightning-bolt-circle"
+                inactiveIcon="lightning-bolt-circle"
+                label="Shop" // Add label here
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="GreenDaily"
+          component={GoodHome}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabBarIcon
+                focused={focused}
+                activeIcon="crowd"
+                inactiveIcon="crowd"
+                label="Discover" // Add label here
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="SeeAllEvents"
+          component={SeeAllEvents}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabBarIcon
+                focused={focused}
+                activeIcon="map-marker"
+                inactiveIcon="map-marker"
+                label="Events" // Add label here
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ProfilePage"
+          component={ProfilePage}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabBarIcon
+                focused={focused}
+                activeIcon="account"
+                inactiveIcon="account"
+                label="Me" // Add label here
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
     </SafeAreaView>
   );
 };
-
 
 const App = () => {
   const [hideSplashScreen, setHideSplashScreen] = React.useState(false);
@@ -238,94 +245,401 @@ const App = () => {
 
   return (
     <Provider store={store}>
-     <GestureHandlerRootView style={{ flex: 1 }}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
-        <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={MainTabs} />
-        <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
-        <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />
-        <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
-        <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyBundles" component={BuyScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
-        <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
-        <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
-        <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
-        <Stack.Screen name="Wifi" component={WiFiScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="WifiPlan" component={WifiPlans} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorList" component={VendorList} options={{ headerShown: false }} />
-        <Stack.Screen name="createSquad" component={CreateSquad} options={{ headerShown: false }} />
-        <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyBundleSuccessful" component={BuySuccess} options={{ headerShown: false }} />
-        <Stack.Screen name="messageUI" component={MessagesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyWifiSuccessful" component={WifiSuccess} options={{ headerShown: false }} />
-        <Stack.Screen name="Transaction" component={Transactions} options={{ headerShown: false }} />
-        <Stack.Screen name="ViewSquads" component={ViewSquadScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PostSquad" component={NewPostScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false  }} />
-        <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} options={{ headerShown: false  }} />
-        <Stack.Screen name="ProfileSettings" component={ProfileSettings} options={{ headerShown: false  }} />
-        <Stack.Screen name="ConnectNotification" component={NotificationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-        <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
-        <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
-        <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="greenBin" component={GreenBin} options={{ headerShown: false }} />
-        <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RateVendor" component={VendorRating} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyGoods" component={BuyGoods} options={{ headerShown: false }} />
-        <Stack.Screen name="CarbonCalculator" component={CarbonFootprintCalculator} options={{ headerShown: false }} />
-        <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Crypto" component={WalletScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="selectTag" component={TagSelection} options={{ headerShown: false }} />
-        <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
-        <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
-        <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
-        <Stack.Screen name="paymentConfirmed" component={PaymentConfirmed} options={{ headerShown: false }} />
-        <Stack.Screen name="allProducts" component={ItemGridScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="donationConfirmed" component={DonationConfirmed} options={{ headerShown: false }} />
-        <Stack.Screen name="getPremium" component={GetPremium} options={{ headerShown: false }} />
-        <Stack.Screen name="Support" component={HelpSupportScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="FAQ" component={FAQScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorRegister" component={VendorRegister} options={{ headerShown: false }} />
-        <Stack.Screen name="HelpFull" component={HelpfulTips} options={{ headerShown: false }} />
-        <Stack.Screen name="Confirmed" component={SquadConfirmation} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadCreated" component={SquadCreated} options={{ headerShown: false }} />
-        <Stack.Screen name="AppRating" component={RatingModal} options={{ headerShown: false }} />
-        <Stack.Screen name="chatConnect" component={ChatScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="donationHist" component={HistoryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
-        <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
-        <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
-        <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
-        <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
-        <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
-        <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
-        <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
-        <Stack.Screen name="Insurance" component={Insurance} options={{ headerShown: false }} />
-        <Stack.Screen name="Tailored" component={Tailored} options={{ headerShown: false }} />
-
-
-
-
-      </Stack.Navigator>
-    </NavigationContainer>
-    </GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="StartPage"
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen
+              name="StartPage"
+              component={StartPage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="RegisterPage"
+              component={RegisterPage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SignInPage"
+              component={SignInPage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Main" component={MainTabs} />
+            <Stack.Screen
+              name="GreenConnect"
+              component={GreenConnect}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Squads"
+              component={YourSquads}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorsProfilePage"
+              component={VendorsProfilePage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Payment"
+              component={PrepaidRechargeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ProfileGCPs"
+              component={ProfileGCPs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="manageAccount"
+              component={ManageAccountScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BuyBundles"
+              component={BuyScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Happy"
+              component={LeaderBoard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="callPage"
+              component={CallScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="JoinSquads"
+              component={JoinSquads}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="TagList"
+              component={TagList}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="DialPad"
+              component={DialPad}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Wifi"
+              component={WiFiScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="WifiPlan"
+              component={WifiPlans}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorList"
+              component={VendorList}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="createSquad"
+              component={CreateSquad}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="cart"
+              component={CartScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BuyBundleSuccessful"
+              component={BuySuccess}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="messageUI"
+              component={MessagesScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BuyWifiSuccessful"
+              component={WifiSuccess}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Transaction"
+              component={Transactions}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ViewSquads"
+              component={ViewSquadScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="PostSquad"
+              component={NewPostScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ReferAndEarn"
+              component={ReferAndEarn}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ProfileSettings"
+              component={ProfileSettings}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ConnectNotification"
+              component={NotificationScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Checkout"
+              component={Checkout}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="productDetail"
+              component={ProductDetail}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="GreenBank"
+              component={GreenBankAccount}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="JoinUs"
+              component={JoinUsScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="PurchaseHist"
+              component={NotifScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="greenBin"
+              component={GreenBin}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AboutUs"
+              component={AboutScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ReportVendor"
+              component={ReportVendorScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorProducts"
+              component={ProductScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="RateVendor"
+              component={VendorRating}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BuyGoods"
+              component={BuyGoods}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CarbonCalculator"
+              component={CarbonFootprintCalculator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="GoGames"
+              component={GamesScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Crypto"
+              component={WalletScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="LegalScreen"
+              component={LegalScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SquadsAward"
+              component={LeaderboardScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="selectTag"
+              component={TagSelection}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Updates"
+              component={NotificationsScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SquadComments"
+              component={CommentsSection}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ShopLocator"
+              component={ConnectToShops}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorChat"
+              component={VendorChat}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ViewSquads2"
+              component={ViewSquad2Screen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="paymentConfirmed"
+              component={PaymentConfirmed}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="allProducts"
+              component={ItemGridScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="donationConfirmed"
+              component={DonationConfirmed}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="getPremium"
+              component={GetPremium}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Support"
+              component={HelpSupportScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="FAQ"
+              component={FAQScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorRegister"
+              component={VendorRegister}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="HelpFull"
+              component={HelpfulTips}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Confirmed"
+              component={SquadConfirmation}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SquadCreated"
+              component={SquadCreated}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AppRating"
+              component={RatingModal}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="chatConnect"
+              component={ChatScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="donationHist"
+              component={HistoryScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="DonatePoints"
+              component={DonatePoints}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="VendorsFollowed"
+              component={FollowedVendors}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Approved"
+              component={Approved}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Products"
+              component={Products}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="EventForm"
+              component={EventForm}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="PostFeed"
+              component={PostFeed}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="FlashSale"
+              component={FlashSale}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SalesList"
+              component={SalesList}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="GreenCoins"
+              component={CoinRewards}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Insurance"
+              component={Insurance}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Tailored"
+              component={Tailored}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </Provider>
   );
 };
