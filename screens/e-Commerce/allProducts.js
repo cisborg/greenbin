@@ -17,21 +17,22 @@ const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
-  const ITEMS_PER_PAGE = 10; // Adjust as needed
+  const ITEMS_PER_PAGE = 10;
 
-  // Paginate the products based on the selected category
   const paginateData = (data, page) => {
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   };
 
-  // Filter and group products by the selected category
   useEffect(() => {
     if (products && selectedCategory) {
-      const filteredProducts = products.filter(
-        (product) =>
+      const filteredProducts = products.filter((product) => {
+        console.log(product.category.toLowerCase());
+        console.log("Selected category: ", selectedCategory.toLowerCase());
+        return (
           product.category.toLowerCase() === selectedCategory.toLowerCase()
-      );
+        );
+      });
 
       setGroupedData((prevData) => [
         ...prevData,
@@ -40,7 +41,6 @@ const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
     }
   }, [products, selectedCategory, page]);
 
-  // Handle item click to navigate to product details
   const handleProductClick = (item) => {
     navigation.navigate("productDetail", { product: item });
   };
