@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 const useProcessedProducts = (products) => {
   return useMemo(() => {
-    const defaultImage = "../../assets/Bags.png";
+    const defaultImage = require("../assets/Bags.png");
 
     // Step 1: Transform products
     const processedProducts = products.map((product) => ({
@@ -11,6 +11,7 @@ const useProcessedProducts = (products) => {
       formattedCreatedAt: new Date(product.createdAt).toLocaleDateString(),
       formattedUpdatedAt: new Date(product.updatedAt).toLocaleDateString(),
       image: product.image.length ? product.image : [defaultImage],
+      rating: Math.floor(Math.random() * 5) + 1, // TODO: Replace with actual rating
     }));
 
     // Step 2: Group products by category
@@ -27,9 +28,9 @@ const useProcessedProducts = (products) => {
       array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
     return {
-      processedProducts, // List of all products with transformations
-      groupedProducts, // Products grouped by category
-      paginate, // Pagination utility
+      processedProducts,
+      groupedProducts,
+      paginate,
     };
   }, [products]); // Recalculate only when products change
 };

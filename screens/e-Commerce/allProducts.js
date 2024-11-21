@@ -9,30 +9,34 @@ import {
   ActivityIndicator,
 } from "react-native";
 import FastImage from "react-native-fast-image";
+import { useSelector, useDispatch } from "react-redux";
+import useProcessedProducts from "../../hooks/use-processed-products";
 
 const { width } = Dimensions.get("window");
 
-const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
+// TODO: Update product card UI and grid layout
+const ItemGridScreen = ({ navigation, selectedCategory }) => {
   const [groupedData, setGroupedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  const products = useSelector((state) => state.product.products);
+  const { processedProducts, groupedProducts, paginate } =
+    useProcessedProducts(products);
+
   const ITEMS_PER_PAGE = 10;
 
   const paginateData = (data, page) => {
+    if (!data) return [];
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   };
 
   useEffect(() => {
     if (products && selectedCategory) {
-      const filteredProducts = products.filter((product) => {
-        console.log(product.category.toLowerCase());
-        console.log("Selected category: ", selectedCategory.toLowerCase());
-        return (
-          product.category.toLowerCase() === selectedCategory.toLowerCase()
-        );
-      });
+      console.log("Selected category: ", selectedCategory);
+
+      const filteredProducts = groupedProducts[selectedCategory.toLowerCase()];
 
       setGroupedData((prevData) => [
         ...prevData,
@@ -47,7 +51,7 @@ const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
 
   // Load more items when the user scrolls to the end
   const loadMore = () => {
-    if (!loading) {
+    if (!loading && groupedData.length < processedProducts.length) {
       setLoading(true);
       setPage((prevPage) => prevPage + 1);
       setLoading(false);
@@ -57,13 +61,16 @@ const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
   // Render each product item in the grid
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleProductClick(item)}>
+      {console.log("Item: ", item)}
       <View style={styles.productContainer}>
         <FastImage
-          source={{ uri: item.image }}
+          // source={{ uri: item.image }}
+          source={item.image[0]}
           resizeMode={FastImage.resizeMode.cover}
           style={styles.productImage}
         />
-        <Text style={styles.productTitle}>{item.title}</Text>
+        <Text style={styles.productTitle}>{item.name}</Text>
+        <Text style={styles.productPrice}>{item.price} KSH</Text>
         <Text style={styles.rating}>
           {"★".repeat(item.rating)}
           {"☆".repeat(5 - item.rating)}
@@ -74,12 +81,13 @@ const ItemGridScreen = ({ navigation, selectedCategory, products }) => {
 
   return (
     <View style={styles.container}>
+      {console.log(`${selectedCategory} Category Products`)}
       {groupedData.length > 0 ? (
         <FlatList
           data={groupedData}
           renderItem={renderItem}
           keyExtractor={(item, index) => `${item.id}-${index}`}
-          numColumns={3}
+          numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
@@ -119,6 +127,12 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     marginBottom: 1,
     textAlign: "center",
+  },
+  productPrice: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 1,
+    color: "#000",
   },
   rating: {
     fontSize: 12,

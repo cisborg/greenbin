@@ -35,8 +35,8 @@ const ChallengePage = () => {
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
+
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.products);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const bannerImages = [
@@ -48,7 +48,6 @@ const ChallengePage = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    products && setData(products);
   }, []);
 
   useEffect(() => {
@@ -188,7 +187,6 @@ const ChallengePage = () => {
                 onRefresh={onRefresh}
                 loadMoreItems={loadMoreItems}
                 navigation={navigation}
-                products={products}
                 onEndReached={() => handleSidebarItemPress(selectedCategory)} // Auto select category on scroll end
               />
             ) : (
