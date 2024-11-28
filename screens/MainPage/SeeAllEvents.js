@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import FastImage from "react-native-fast-image";
 import moment from 'moment';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fetchSquadActivities } from "../../actions/squadActivities"; // Import the action
+import { fetchSquadActivities } from "../../redux/actions/events"; // Import the action
 import { Color } from "../../GlobalStyles";
 
 const { width } = Dimensions.get('window');

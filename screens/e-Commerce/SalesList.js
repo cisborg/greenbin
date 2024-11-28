@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { fetchProducts, purchaseProduct } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 const categories = [
     { id: '1', name: 'All' },
@@ -13,65 +15,24 @@ const categories = [
     { id: '3', name: 'Phones & Accessories' },
 ];
 
-const productsData = [
-    {
-        id: '1',
-        title: "Valentine's Day Gift 9 PIECES! Earrings Women's",
-        price: 9,
-        originalPrice: 1200,
-        quantity: 0,
-        soldOut: true,
-        category: 'All',
-        imageUrl: 'https://example.com/image1.jpg',
-    },
-    {
-        id: '2',
-        title: 'IPCONE 2L Energy Efficient Electric Water Kettle',
-        price: 599,
-        originalPrice: 1499,
-        quantity: 5,
-        soldOut: false,
-        category: 'Computers & Accessories',
-        imageUrl: 'https://example.com/image2.jpg',
-    },
-    {
-        id: '3',
-        title: '[Super Brand] Brand New Samsung Galaxy A05',
-        price: 11199,
-        originalPrice: 19995,
-        quantity: 4,
-        soldOut: false,
-        category: 'Phones & Accessories',
-        imageUrl: 'https://example.com/image3.jpg',
-    },
-    {
-        id: '4',
-        title: 'Volsmart 138L Fridge Freezer VL-BCD138',
-        price: 2499,
-        originalPrice: 3999,
-        quantity: 100,
-        soldOut: false,
-        category: 'Computers & Accessories',
-        imageUrl: 'https://example.com/image4.jpg',
-    },
-    {
-        id: '5',
-        title: 'Hair straightener The New Wireless Curling Irons',
-        price: 599,
-        originalPrice: 999,
-        quantity: 1000,
-        soldOut: false,
-        category: 'Computers & Accessories',
-        imageUrl: 'https://example.com/image5.jpg',
-    },
-];
 const SalesList = () => {
     const [countdown, setCountdown] = useState(75 * 60);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [loadingId, setLoadingId] = useState(null);
-    const [loading, setLoading] = useState(true);  // Add loading state
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    // Get products and loading state from Redux
+    const { products, loading: productsLoading } = useSelector(state => ({
+        products: state.product.products, // Adjust based on your state structure
+        loading: state.product.loading,
+    }));
+
+    useEffect(() => {
+        dispatch(fetchProducts()); // Fetch products when the component mounts
+    }, [dispatch]);
 
     useEffect(() => {
         const now = new Date();
@@ -96,8 +57,8 @@ const SalesList = () => {
 
         // Simulate loading delay
         setTimeout(() => {
-            setLoading(false);  // Set loading to false after a delay
-        }, 2000);  // Adjust delay as needed
+            setLoading(false);
+        }, 2000);
 
         return () => clearInterval(timer);
     }, []);
@@ -110,13 +71,15 @@ const SalesList = () => {
         return `Ends on: ${day} at 12:00 midnight`;
     };
 
-    const filteredData = productsData.filter(
+    const filteredData = products.filter(
         (product) => selectedCategory === 'All' || product.category === selectedCategory
     );
 
     const handleGrabIt = (item) => {
         if (item.soldOut) return;
         setLoadingId(item.id);
+
+        dispatch(purchaseProduct(item.id));
 
         setTimeout(() => {
             if (item.quantity > 0) {
@@ -132,8 +95,8 @@ const SalesList = () => {
         }, 300);
     };
 
-    // Show Lottie loading animation if loading is true
-    if (loading) {
+    // Show Lottie loading animation if products are loading
+    if (productsLoading) {
         return (
             <View style={styles.loadingContainer}>
                 <LottieView
@@ -237,7 +200,6 @@ const SalesList = () => {
         </Animated.View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: { flex: 1,  backgroundColor: '#f9f9f9' },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,25 +9,38 @@ import FastImage from 'react-native-fast-image';
 import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../redux/actions/products';
+import { fetchProducts, followVendor, unfollowVendor, addFavorite, addToCart } from '../../redux/actions/products';
 
-const StoreHeader = () => {
+const StoreHeader = ({ vendor }) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [followText, setFollowText] = useState('Follow');
-    const [followers, setFollowers] = useState(99);
+    const [followers, setFollowers] = useState(vendor.followers || 0);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        setFollowers(vendor.followers);
+    }, [vendor.followers]);
 
     const handleFollow = () => {
         setIsFollowing(true);
+        dispatch(followVendor(vendor.id)); // Dispatch follow action
         setTimeout(() => {
             setIsFollowing(false);
             setFollowers(prevFollowers => {
-                if (followText === 'Follow') {
-                    setFollowText('Connected');
-                    return prevFollowers + 1;
-                } else {
-                    setFollowText('Follow');
-                    return prevFollowers - 1;
-                }
+                setFollowText('Connected');
+                return prevFollowers + 1;
+            });
+        }, 300);
+    };
+
+    const handleUnfollow = () => {
+        setIsFollowing(true);
+        dispatch(unfollowVendor(vendor.id)); // Dispatch unfollow action
+        setTimeout(() => {
+            setIsFollowing(false);
+            setFollowers(prevFollowers => {
+                setFollowText('Follow');
+                return prevFollowers - 1;
             });
         }, 300);
     };
@@ -40,16 +53,16 @@ const StoreHeader = () => {
                 resizeMode={FastImage.resizeMode.cover}
             />
             <View style={styles.storeInfoContainer}>
-                <Text style={styles.storeName}>Sysnex Electronics</Text>
-                <Text style={styles.storeDetails}>Total 707 products | {followers} followers</Text>
+                <Text style={styles.storeName}>{vendor.name}</Text>
+                <Text style={styles.storeDetails}>Total {vendor.productsCount} products | {followers} followers</Text>
                 <View style={styles.ratingContainer}>
-                    <Text style={styles.storeScore}>Score: 3.95</Text>
-                    <Text style={styles.ratingsCount}>(292 Ratings)</Text>
+                    <Text style={styles.storeScore}>Score: {vendor.score}</Text>
+                    <Text style={styles.ratingsCount}>({vendor.ratingsCount} Ratings)</Text>
                 </View>
             </View>
             <TouchableOpacity 
                 style={[styles.followButton, { backgroundColor: followText === 'Connected' ? 'green' : '#FF5722' }]} 
-                onPress={handleFollow}
+                onPress={isFollowing ? handleUnfollow : handleFollow}
                 disabled={isFollowing}
             >
                 {isFollowing ? (
@@ -111,35 +124,46 @@ const Products = () => {
     const products = useSelector(state => state.products.products);
     const loading = useSelector(state => state.products.loading);
     const error = useSelector(state => state.products.error);
+    const brands = useSelector(state => state.products.brands); // Fetch brands from Redux
+    const vendor = useSelector(state => state.vendor.currentVendor);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [selectedSort, setSelectedSort] = useState('Best Match');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [isScreenLoading, setIsScreenLoading] = useState(true);
-    const [favorites, setFavorites] = useState([]);
     const [cartCount, setCartCount] = useState(0);
-    const [brandFilters, setBrandFilters] = useState({ EcoBrand: false, ReGreen: false });
+    const [brandFilters, setBrandFilters] = useState({});
     const [priceRanges, setPriceRanges] = useState({ low: false, medium: false, high: false });
     const animation = useRef(new Animated.Value(0)).current;
     const navigation = useNavigation();
 
     useEffect(() => {
-        Animated.timing(animation, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-        }).start(() => setIsScreenLoading(false));
-    }, []);
-
-    useEffect(() => {
         const fetchData = async () => {
-            await dispatch(fetchProducts());
+            await dispatch(fetchProducts()); // Fetch products and brands
             setIsScreenLoading(false);
         };
         fetchData();
     }, [dispatch]);
 
-   
+    const refreshProducts = () => {
+        setIsRefreshing(true);
+        dispatch(fetchProducts()); // Refresh products and brands
+        setIsRefreshing(false);
+    };
+
+    const addToFavorites = (item) => {
+        dispatch(addFavorite(item)); // Dispatch add favorite action
+    };
+
+    const addToCart = (item) => {
+        dispatch(addToCart(item)); // Dispatch add to cart action
+        setCartCount(cartCount + 1);
+    };
+
+    const handleSortChange = (value) => {
+        setSelectedSort(value);
+        // Sorting logic can remain localized
+    };
 
     const filterProducts = () => {
         // Filtering logic using products from Redux
@@ -162,31 +186,11 @@ const Products = () => {
             filteredProducts = filteredProducts.filter(product => product.price >= 1500);
         }
 
-        // Update the Redux store if necessary or handle it in your state
-        // setProducts(filteredProducts); // This will throw an error as products is not a local state
+        // Update the filtered products in the UI
+        // This could be handled by setting a local state if you want to display filtered results
+        // setFilteredProducts(filteredProducts); // Uncomment if you want to manage local filtered state
         setShowFilterModal(false);
     };
-
-    const refreshProducts = () => {
-        setIsRefreshing(true);
-        dispatch(fetchProducts());
-        setIsRefreshing(false);
-    };
-
-    const addToFavorites = (item) => {
-        setFavorites([...favorites, item]);
-    };
-
-    const addToCart = (item) => {
-        setCartCount(cartCount + 1);
-    };
-
-    const handleSortChange = (value) => {
-        setSelectedSort(value);
-        sortProducts(value); // Ensure this function is implemented correctly.
-    };
-
-    
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -197,12 +201,7 @@ const Products = () => {
         <SafeAreaView style={styles.safeArea}>
             {isScreenLoading ? (
                 <View style={styles.loadingContainer}>
-                    <Lottie 
-                        source={require('../../assets/lottie/rotatingBalls.json')}
-                        autoPlay
-                        loop
-                        style={styles.loadingAnimation}
-                    />
+                    {/* Add your loading animation here */}
                 </View>
             ) : (
                 <Animated.View style={[styles.container, { opacity: animation }]}>
@@ -214,14 +213,14 @@ const Products = () => {
                             style={styles.searchBar} 
                             placeholder="Search products..." 
                             value={searchQuery} 
-                            onChangeText={handleSearch} 
+                            onChangeText={setSearchQuery} 
                         />
                         <TouchableOpacity onPress={() => navigation.navigate('cart')}>
                             <FontAwesome5 name="cart-plus" size={24} color="black" />
                             {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
                         </TouchableOpacity>
                     </View>
-                    <StoreHeader />
+                    <StoreHeader vendor={vendor} />
 
                     <View style={styles.sortFilterRow}>
                         <View style={styles.pickerContainer}>
@@ -252,10 +251,10 @@ const Products = () => {
                                 <Text style={styles.modalTitle}>Filter Products</Text>
                                 <ScrollView>
                                     <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500' }}>Brand Filter</Text>
-                                    {Object.keys(brandFilters).map((brand) => (
+                                    {brands.map((brand) => (
                                         <View key={brand} style={styles.checkboxContainer}>
                                             <BouncyCheckbox
-                                                isChecked={brandFilters[brand]}
+                                                isChecked={brandFilters[brand] || false}
                                                 onPress={() => setBrandFilters({ ...brandFilters, [brand]: !brandFilters[brand] })}
                                             />
                                             <Text style={{ marginLeft: 5 }}>{brand}</Text>
@@ -297,7 +296,6 @@ const Products = () => {
         </SafeAreaView>
     );
 };
-
 
 const styles = StyleSheet.create({
   safeArea: {

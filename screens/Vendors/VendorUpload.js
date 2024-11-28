@@ -235,7 +235,7 @@ export default function ProductUpload() {
 
         <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit)}>
           {loading ? (
-            <Lottie source={require('../../assets/lottie/loading.json')} autoPlay loop style={styles.loadingIndicator} />
+            <Lottie source={require('../../assets/lottie/bouncing_check.json')} autoPlay loop style={styles.loadingIndicator} />
           ) : (
             <Text style={styles.submitText}>Submit</Text>
           )}

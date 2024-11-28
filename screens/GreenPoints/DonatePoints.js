@@ -4,8 +4,10 @@ import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Lottie from 'lottie-react-native';
+import { Color } from '../../GlobalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { createDonation } from '../../redux/actions/donations';
+import { addDonationTier } from '../../redux/actions/userTiers';
+import { createDonation } from '../../redux/actions/donations'; // Import necessary actions
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,7 +28,7 @@ const DonatePoints = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(false);
+      setDonateLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
@@ -54,11 +56,19 @@ const DonatePoints = () => {
       categories: selectedCategories,
     };
 
+    // Dispatch the create donation action
     dispatch(createDonation(donationData));
-    setTimeout(() => {
-      setDonateLoading(false);
-      navigation.navigate('donationConfirmed');
-    }, 2000);
+
+    // Add donation tier based on the donation amount
+    dispatch(addDonationTier(userId, { amount: donationAmount }))
+      .then(() => {
+        setDonateLoading(false);
+        navigation.navigate('donationConfirmed');
+      })
+      .catch(error => {
+        setDonateLoading(false);
+        Alert.alert("Error", "Failed to add donation tier. Please try again.");
+      });
   };
 
   const shareDonation = () => {
@@ -68,9 +78,9 @@ const DonatePoints = () => {
       return;
     }
 
-    setLoading(true);
+    setDonateLoading(true);
     setTimeout(() => {
-      setLoading(false);
+      setDonateLoading(false);
       const categories = selectedCategories.map(cat => cat.name).join(', ');
       Share.share({
         message: `I just donated ${donationAmount} points for ${categories}! Join me in making a difference!`,
@@ -182,7 +192,7 @@ const DonatePoints = () => {
 
           {isRecurring && (
             <View style={styles.recurringInfo}>
-              <Text style={styles.recurringText}>Recurring donations will be processed monthly.</Text>
+              <Text style={styles.recurringText}>Recurring donations will be processed every month.</Text>
             </View>
           )}
         </>

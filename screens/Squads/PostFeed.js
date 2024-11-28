@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, Animated, StatusBar } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, Animated, StatusBar, Platform } from 'react-native';
 import LottieView from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPosts } from '../../redux/actions/Posts'; // Adjust the import path as necessary
@@ -52,7 +52,7 @@ const PostFeed = () => {
     return (
       <Animated.View style={[styles.loadingContainer, { opacity: fadeAnim }]}>
         <LottieView
-          source={require('./path/to/loading.json')} // Update with the correct path to your Lottie file
+          source={require('../../assets/lottie/rotateLoad.json')} // Update with the correct path to your Lottie file
           autoPlay
           loop
           style={styles.lottie}

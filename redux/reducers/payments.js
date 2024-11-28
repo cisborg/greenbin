@@ -12,10 +12,12 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    totalBalance: 0, // Renamed for clarity
+    greenBalance: 0, // Renamed for clarity
     points: 0,
     loading: false,
     error: null,
+    greenBankBalance: 0,
+
 };
 
 const paymentReducer = (state = initialState, action) => {
@@ -32,14 +34,14 @@ const paymentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                totalBalance: state.totalBalance + action.payload.points, // Assuming points are cash equivalents
+                greenBalance: state.greenBalance + action.payload.points, // Assuming points are cash equivalents
             };
 
         case WITHDRAW_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                totalBalance: state.totalBalance - action.payload.points,
+                greenBalance: state.greenBalance - action.payload.points,
             };
 
         case SEND_POINTS_SUCCESS:

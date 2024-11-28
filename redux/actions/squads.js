@@ -3,6 +3,9 @@ import {
     CREATE_SQUAD_REQUEST,
     CREATE_SQUAD_SUCCESS,
     CREATE_SQUAD_FAILURE,
+    FETCH_SQUADS_DATA_REQUEST,
+    FETCH_SQUADS_DATA_SUCCESS,
+    FETCH_SQUADS_DATA_FAILURE,
     REQUEST_JOIN_SQUAD_REQUEST,
     REQUEST_JOIN_SQUAD_SUCCESS,
     REQUEST_JOIN_SQUAD_FAILURE,
@@ -39,6 +42,17 @@ export const createSquad = (squadData) => async (dispatch) => {
         }
     } catch (error) {
         dispatch({ type: CREATE_SQUAD_FAILURE, payload: error.message });
+    }
+};
+
+// fetch squash data
+export const fetchSquadData = () => async (dispatch) => {
+    dispatch({ type: FETCH_SQUADS_DATA_REQUEST });
+    try {
+        const response = await api.get('/api/squash-data');
+        dispatch({ type: FETCH_SQUADS_DATA_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_SQUADS_DATA_FAILURE, payload: error.message });
     }
 };
 

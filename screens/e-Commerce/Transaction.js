@@ -10,24 +10,21 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Dimensions,
-  ScrollView
+  ScrollView,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux';
-import { withdraw, sendPoints } from '../redux/actions/paymentActions';
+import { withdraw, sendPoints, buyAirtime } from '../../redux/actions/payments';
 
 const { width, height } = Dimensions.get('window');
 
 const TransactionScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { totalBalance, loading, error } = useSelector(state => state.payment);
-  
-  const [generalPoints, setGeneralPoints] = useState({
-    GreenPoints: 340000,
-    GreenBank: 150000
-  });
+  const { greenBalance, greenBankBalance, loading, error } = useSelector(state => state.payment);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [recipientNumber, setRecipientNumber] = useState('');
   const [amountToSend, setAmountToSend] = useState('');
@@ -37,7 +34,6 @@ const TransactionScreen = ({ navigation }) => {
   const [showSendInput, setShowSendInput] = useState(false);
   const [showReceiveInput, setShowReceiveInput] = useState(false);
   const [totalDeducted, setTotalDeducted] = useState(0);
-  const [isAddingUser, setIsAddingUser] = useState(false);
   const [opacity] = useState(new Animated.Value(0));
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [recentRecipients, setRecentRecipients] = useState([]);
@@ -82,7 +78,10 @@ const TransactionScreen = ({ navigation }) => {
       return;
     }
   
-    if (sendAmount > generalPoints[currentCard]) {
+    // Check against the Redux state balances
+    const availableBalance = currentCard === 'GreenPoints' ? greenBalance : greenBankBalance;
+  
+    if (sendAmount > availableBalance) {
       alert('Insufficient balance');
       return;
     }
@@ -90,20 +89,17 @@ const TransactionScreen = ({ navigation }) => {
     // Dispatch sendPoints action
     dispatch(sendPoints(recipientNumber, sendAmount));
   
-    // Update general points
-    setGeneralPoints(prevState => ({
-      ...prevState,
-      [currentCard]: prevState[currentCard] - sendAmount
-    }));
+    // Update the Redux state balance directly
+    // Assuming you have an action to update the balance in Redux
+    dispatch(updateBalance(currentCard, -sendAmount));
   
     // Update total deducted
     setTotalDeducted(prevTotal => prevTotal + sendAmount);
   
-    // Update recent recipients with a unique ID
+    // Update recent recipients
     setRecentRecipients(prevRecipients => {
       const newRecipient = { id: Date.now(), mobile: recipientNumber, amount: sendAmount };
       const updatedRecipients = [...prevRecipients, newRecipient];
-
       return updatedRecipients.length > 2 ? updatedRecipients.slice(1) : updatedRecipients;
     });
   
@@ -112,65 +108,63 @@ const TransactionScreen = ({ navigation }) => {
     setRecipientNumber('');
     setShowSendInput(false);
   };
+  
 
   const handleReceivePoints = () => {
     const receiveAmount = parseInt(amountToReceive, 10);
     const currentCard = cardTypes[activeCardIndex];
-
+  
     if (isNaN(receiveAmount) || receiveAmount <= 0) {
       alert('Invalid receive amount');
       return;
     }
-
-    if (receiveAmount > generalPoints[currentCard]) {
+  
+    // Check against the Redux state balances
+    const availableBalance = currentCard === 'GreenPoints' ? greenBalance : greenBankBalance;
+  
+    if (receiveAmount > availableBalance) {
       alert('Insufficient balance');
       return;
     }
-
+  
     // Dispatch withdraw action
     dispatch(withdraw(receiveAmount));
-
-    // Update general points for withdrawal
-    setGeneralPoints(prevState => ({
-      ...prevState,
-      [currentCard]: prevState[currentCard] - receiveAmount
-    }));
-
+  
+    // Update the Redux state balance directly
+    dispatch(updateBalance(currentCard, -receiveAmount));
+  
     // Update total deducted
     setTotalDeducted(prevTotal => prevTotal + receiveAmount);
     setAmountToReceive('');
     setShowReceiveInput(false);
   };
-
-  const handleAddUser = () => {
-    setIsAddingUser(true);
-    setShowAirtimeInput(true);
-    setTimeout(() => {
-      setIsAddingUser(false);
-    }, 2000);
-  };
-
+  
   const handleAirtimePurchase = () => {
     const amount = parseInt(airtimeAmount, 10);
     if (isNaN(amount) || amount <= 0) {
       alert('Invalid airtime amount');
       return;
     }
-
+  
     const currentCard = cardTypes[activeCardIndex];
-    if (amount > generalPoints[currentCard]) {
+    if (amount > (currentCard === 'GreenPoints' ? greenBalance : greenBankBalance)) {
       alert('Insufficient balance');
       return;
     }
-
+  
+    // Dispatch the buy airtime action
+    dispatch(buyAirtime(amount));
+  
+    // Update local state to reflect the deducted amount
     setGeneralPoints(prevState => ({
       ...prevState,
       [currentCard]: prevState[currentCard] - amount
     }));
-
+  
     setAirtimeAmount('');
     setShowAirtimeInput(false);
   };
+  
 
   const handleSubscriptionClick = () => {
     setIsLoadingSubscription(true);

@@ -5,6 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
 import LottieView from 'lottie-react-native';
+import { Color,FontFamily } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/core';
 
 const ManageAccountScreen = () => {

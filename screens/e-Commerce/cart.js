@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList,Platform,StatusBar, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator, Dimensions } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { Color } from '../../GlobalStyles';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
-import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cartActions';
-import { fetchVouchers } from '../../redux/actions/voucherActions'; // Import your fetch vouchers action
+import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cart';
+import { fetchVouchers } from '../../redux/actions/rewardsActions'; // Import your fetch vouchers action
 
 const { width } = Dimensions.get('window');
 

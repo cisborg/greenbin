@@ -7,20 +7,25 @@ import {
   Animated, 
   StyleSheet, 
   ActivityIndicator, 
-  Dimensions 
+  Dimensions, 
+  Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/core';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { addToCart } from '../../redux/actions/cart'; 
 import { FlashList } from '@shopify/flash-list'; // Import FlashList
 import FastImage from 'react-native-fast-image';
 
 const { width, height } = Dimensions.get('window');
 
-const CartDetail = () => {
+const CartDetail = ({route }) => {
   const navigation = useNavigation();
+  const { product } = route.params;
+  const dispatch = useDispatch(); // Get the dispatch function
   const [cartCount, setCartCount] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
   const [showReviews, setShowReviews] = useState(false);
@@ -29,13 +34,9 @@ const CartDetail = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [loadingOrder, setLoadingOrder] = useState(false); // Loading state for the order button
 
-  const images = [
-    require('../../assets/greenBin.png'),
-    require('../../assets/Appliance.png'),
-    require('../../assets/bikes.png'),
-    require('../../assets/greenBin.png')
-  ];
-
+  const images = product.images; // Use all product images
+  const discountPercentage = ((product.originalPrice - product.price) / product.originalPrice * 100).toFixed(0);
+  
   const reviewers = [
     { name: "John Doe", stars: 5, message: "Excellent product, highly recommend!", date: new Date() },
     { name: "Jane Smith", stars: 4, message: "Good quality, but the zipper could be better.", date: new Date() },
@@ -50,13 +51,20 @@ const CartDetail = () => {
     }).start();
   }, []);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     setCartCount(cartCount + 1);
     Animated.sequence([
       Animated.timing(cartBounce, { toValue: 1.2, duration: 200, useNativeDriver: true }),
       Animated.timing(cartBounce, { toValue: 1, duration: 200, useNativeDriver: true }),
     ]).start();
+  
+    try {
+      await dispatch(addToCart(product)); // Dispatch the action with the product
+    } catch (error) {
+      Alert(`${error} in adding product to cart`); // Handle any errors
+    }
   };
+  
 
   const handleNextImage = () => {
     if (currentImage < images.length - 1) {
@@ -83,7 +91,7 @@ const CartDetail = () => {
     setLoadingOrder(true); // Set loading state to true
     setTimeout(() => {
       setLoadingOrder(false); // Reset loading state
-      navigation.navigate('ChallengePage'); // Navigate to another screen
+      navigation.navigate('Checkout'); // Navigate to another screen
     }, 300); // Duration for the spinner
   };
 
@@ -128,12 +136,11 @@ const CartDetail = () => {
           </View>
 
           <View style={styles.productInfoContainer}>
-            <Text style={styles.discountedPrice}>GCPs 459</Text>
-            <Text style={styles.originalPrice}>GCPs 1,299</Text>
-            <Text style={styles.discountPercentage}>-64%</Text>
-            <Text style={styles.productTitle}>
-              Green Bin - 100% Recycled and Renewable Green Bins with Zippered Handles. Material: 100% Recycled Plastic, Dimensions: 30 x 30 x 30 cm, Weight: 1.5 kg, Warranty: 2 years.
-            </Text>
+            <Text style={styles.discountedPrice}>GCPs {product.price}</Text>
+            <Text style={styles.originalPrice}>GCPs {product.originalPrice}</Text>
+            <Text style={styles.discountPercentage}>-{discountPercentage}%</Text>    
+            <Text style={styles.productTitle}>{product.title}</Text>
+            <Text style={styles.productDescription}>{product.description}</Text>
 
             <View style={styles.ratingContainer}>
               <Icon name="star" type="font-awesome" color="#f5c518" size={16} />

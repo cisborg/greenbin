@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
+import { View, Text, TextInput, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For Dropdown
 import { useNavigation } from '@react-navigation/native'; // For Back Navigation
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux';
-import { updateBalance, updateTokenBalance } from '../../redux/actions/balanceActions'; 
+import { updateBalance, updateTokenBalance } from '../../redux/actions/bankGreen'; 
 import { deposit, withdraw } from '../../redux/actions/payments';
-import { fetchBalance, fetchTokenBalance } from '../../redux/actions/balanceActions'; // Import the actions
+import { fetchBalance, fetchTokenBalance } from '../../redux/actions/bankGreen'; // Import the actions
 import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
-import RegisterCode from './RegisterBankCode'; // 1. Import the BottomSheet
 
 const TOKEN_RATE = 1.0042; // Token rate for paying green tax 
 const GreenBankAccount = () => {
@@ -26,7 +24,6 @@ const GreenBankAccount = () => {
   const [transferPurpose, setTransferPurpose] = useState('fees'); // Transfer purpose dropdown
   const [screenAnimation] = useState(new Animated.Value(0)); // For Screen mount animation
   const [isRegistered, setIsRegistered] = useState(false); // State to track registration
-  const bottomSheetRef = useRef(null); // 2. Create a ref for the BottomSheet
 
   useEffect(() => {
     const fetchData = async () => {
@@ -207,12 +204,7 @@ const GreenBankAccount = () => {
               <AntDesign name="leftcircle" size={22} color="green" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}> GreenBank Account   🌍</Text>
-            <TouchableOpacity 
-                style={{ marginRight: 15 }} 
-                onPress={() => bottomSheetRef.current?.present()} // 3. Open BottomSheet on press
-              >
-                <FontAwesome name="plus-circle" size={24} color="green" />
-              </TouchableOpacity>
+           
           </View>
 
           {/* Display Static Balance */}
@@ -310,7 +302,6 @@ const GreenBankAccount = () => {
         </Animated.View>
          )}
       </KeyboardAvoidingView>
-      <RegisterCode ref={bottomSheetRef} isRegistered={isRegistered} />
     </SafeAreaView>
   );
 };

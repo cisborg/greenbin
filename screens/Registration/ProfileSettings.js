@@ -13,6 +13,8 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
+  Dimensions,
+
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";

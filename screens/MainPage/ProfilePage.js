@@ -53,6 +53,15 @@ const ProfilePage = () => {
     "Green Bins": 50,
   });
 
+  const calculateActivityPopulation = () => {
+    return Object.keys(targetData).map((activity) => ({
+      name: activity,
+      population: calculateProgress(completedData[activity], targetData[activity]),
+    }));
+  };
+
+  const activitiesData = calculateActivityPopulation();
+
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const [lastUpdatedMonth, setLastUpdatedMonth] = useState(currentMonth);
@@ -200,7 +209,7 @@ const ProfilePage = () => {
               resizeMode={FastImage.resizeMode.contain} />  
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator")}>
+            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator", { activities: activitiesData } )}>
               <FastImage style={styles.cardIcon} source={require("../../assets/checked.png")}
               resizeMode={FastImage.resizeMode.contain}/>   
               <Text style={styles.cardTitle}>GCPs Calculator 🔐</Text>

@@ -93,7 +93,14 @@ import FlashSale from "./screens/e-Commerce/FlashSale";
 import SalesList from "./screens/e-Commerce/SalesList";
 import CoinRewards from "./screens/GreenPoints/GreenCoins";
 import Tailored from "./screens/e-Commerce/Tailored";
+import ProductUpload from "./screens/Vendors/VendorUpload";
+import RegisterCode from "./screens/e-Commerce/RegisterBankCode";
+import  GreenBankCodeScreen from "./screens/e-Commerce/CodeAccept";
+import IncomingCallScreen from "./screens/Vendors/IncomingCall";
 
+
+import { StreamCall } from '@stream-io/video-react-native-sdk';
+import SquadMembers from "./screens/Squads/SquadMembers";
 
 
 
@@ -223,6 +230,20 @@ const MainTabs = () => {
 const App = () => {
   const [hideSplashScreen, setHideSplashScreen] = React.useState(false);
 
+ /* React.useEffect(() => {
+    // Stream SDK incoming call listener
+    const listener = StreamCall.onIncomingCall((call) => {
+      // Navigate to IncomingCallScreen with call details
+      navigation.navigate('IncomingCall', { call });
+    });
+
+    return () => {
+      listener.remove(); // Cleanup
+    };
+  }, []);
+   */
+
+
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
     "Poppins-SemiBold": require("./assets/fonts/Poppins-SemiBold.ttf"),
@@ -319,9 +340,11 @@ const App = () => {
         <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
         <Stack.Screen name="Insurance" component={Insurance} options={{ headerShown: false }} />
         <Stack.Screen name="Tailored" component={Tailored} options={{ headerShown: false }} />
-
-
-
+        <Stack.Screen name="RegisterBankCode" component={RegisterCode} options={{ headerShown: false }} />
+        <Stack.Screen name="VendorUpload" component={ProductUpload} options={{ headerShown: false }} />
+        <Stack.Screen name="CodeAccept" component={GreenBankCodeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SquadMembers" component={SquadMembers} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>

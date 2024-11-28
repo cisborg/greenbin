@@ -15,6 +15,9 @@ import {
     CLEAR_ALL_TRANSACTIONS_REQUEST,
     CLEAR_ALL_TRANSACTIONS_SUCCESS,
     CLEAR_ALL_TRANSACTIONS_FAILURE,
+    BUY_AIRTIME_REQUEST,
+    BUY_AIRTIME_REQUEST_SUCCESS,
+    BUY_AIRTIME_REQUEST_FAILURE,
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
 
@@ -88,3 +91,22 @@ export const clearAllTransactions = () => async (dispatch) => {
         dispatch({ type: CLEAR_ALL_TRANSACTIONS_FAILURE, payload: error.message });
     }
 };
+
+// actions/paymentActions.js
+export const buyAirtime = (amount) => async (dispatch) => {
+    dispatch({ type: 'BUY_AIRTIME' });
+    
+    try {
+      // Assume you have an API endpoint for purchasing airtime
+      const response = await api.post('/airtime/purchase', { amount });
+      
+      if (response.data.status === 'success') {
+        dispatch({ type: 'BUY_AIRTIME_SUCCESS', payload: response.data });
+        return response.data; // Return success data if needed
+      }
+    } catch (error) {
+      dispatch({ type: 'BUY_AIRTIME_FAILURE', payload: error.message });
+      throw new Error(error.message);
+    }
+  };
+  

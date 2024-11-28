@@ -8,11 +8,14 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
-  SafeAreaView,
+  SafeAreaView,Platform, StatusBar
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FlashSale from "../e-Commerce/FlashSale";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from 'react-redux'; 
+import { connectToVendor } from "../../redux/actions/authentication";
+import { getAllVendors } from '../../redux/actions/vendorAction'; // Import the action
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
 import { FlashList } from "@shopify/flash-list";
@@ -48,6 +51,13 @@ export default function HomePageExistingUser() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const [loading, setLoading] = React.useState(true); // Loading state
+  const dispatch = useDispatch();
+
+  const { vendors, loading: vendorsLoading } = useSelector(state => state.vendor);
+
+  React.useEffect(() => {
+    dispatch(getAllVendors());
+  }, [dispatch]);
 
   const initialVendorState = challenges.reduce((acc, challenge) => {
     acc[challenge.id] = { connecting: false, connected: false };
@@ -66,17 +76,21 @@ export default function HomePageExistingUser() {
 
   const handleConnectPress = (vendorId) => {
     setVendorConnectState((prevState) => ({
-      ...prevState,
-      [vendorId]: { connecting: true, connected: false },
+        ...prevState,
+        [vendorId]: { connecting: true, connected: false },
     }));
 
+    // Dispatch the connectToVendor action
+    dispatch(connectToVendor(vendorId));
+
+    // Simulate connection success
     setTimeout(() => {
-      setVendorConnectState((prevState) => ({
-        ...prevState,
-        [vendorId]: { connecting: false, connected: true },
-      }));
+        setVendorConnectState((prevState) => ({
+            ...prevState,
+            [vendorId]: { connecting: false, connected: true },
+        }));
     }, 1000);
-  };
+};
 
   const animateBanner = () => {
     Animated.timing(fadeAnim, {
@@ -148,11 +162,7 @@ export default function HomePageExistingUser() {
           <Text style={styles.vendorsYouFollow}>Recommended For You</Text>
           <FlashList
             horizontal
-            data={[
-              { id: "1", name: "Leakey Jokes", icon: require("../../assets/vendorimg.png"), profession: "Tree Vendor" },
-              { id: "2", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Techy" },
-              { id: "3", name: "Hassan Tbag", icon: require("../../assets/vendorimg1.png"), profession: "Smart Health" },
-            ]}
+            data={vendors}
             renderItem={({ item }) => {
               const { connecting, connected } = vendorConnectState[item.id] || {};
               return (

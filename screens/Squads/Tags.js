@@ -1,46 +1,70 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList ,TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTrendingTags, fetchPopularTags } from '../../redux/actions/Posts';
 import { FontFamily, Color } from "../../GlobalStyles";
+import LottieView from 'lottie-react-native';
 
-import { useNavigation } from '@react-navigation/core';
+
+const { width, height } = Dimensions.get('window');
 
 const TagList = () => {
-  const trendingTags = [
-    'startup',
-    'career',
-    'tailwind-css',
-    'react-native',
-    'tutorial',
-    'backend',
-    'typescript',
-    'malware',
-    'javascript',
-    'android',
-  ];
+  const dispatch = useDispatch();
+  const { trendingTags, popularTags, trendingLoading, popularLoading, error } = useSelector((state) => state.tags);
 
-  const popularTags = [
-    'tools',
-    'html',
-    'community',
-    'cyber',
-    'tutorial',
-    'productivity',
-  ];
-  const navigation = useNavigation()
+  useEffect(() => {
+    dispatch(fetchTrendingTags());
+    dispatch(fetchPopularTags());
+  }, [dispatch]);
+
+  const handleTryAgain = () => {
+    dispatch(fetchTrendingTags());
+    dispatch(fetchPopularTags());
+
+  };
+
   const renderTag = ({ item }) => (
     <TouchableOpacity style={styles.tagContainer}>
       <Text style={styles.tagText}>{item}</Text>
     </TouchableOpacity>
   );
 
+  if (trendingLoading || popularLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+        <Text style={styles.errorText}>{`${error} Try Again`}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-
       <Text style={styles.header}>Trending Tags</Text>
       <FlatList
         data={trendingTags}
         renderItem={renderTag}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.toString()}
         style={styles.list}
       />
 
@@ -48,12 +72,10 @@ const TagList = () => {
       <FlatList
         data={popularTags}
         renderItem={renderTag}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.toString()}
         style={styles.list}
       />
-      
     </View>
-    
   );
 };
 
@@ -72,7 +94,16 @@ const styles = StyleSheet.create({
     color: 'green',
     FontFamily: FontFamily.manropeBold
   },
- 
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
+  },
   cardText: {
     color: 'green',
     fontWeight: 'bold',

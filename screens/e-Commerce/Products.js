@@ -1,167 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, ScrollView, TextInput } from 'react-native';
-import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
-import CheckBox from '@react-native-community/checkbox';
-import { Button } from 'react-native-elements';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import FastImage from 'react-native-fast-image';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Swipeable } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
 import { RefreshControl } from 'react-native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox'; // Import BouncyCheckbox
-import FastImage from 'react-native-fast-image';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts, fetchBrands, addFavorite, addToCart } from '../../redux/actions/products'; // Import necessary actions
 
-
-const initialProducts = [
-  {
-    id: '1',
-    title: 'Eco-Friendly Solar Lamp',
-    price: 899,
-    originalPrice: 999,
-    image: require('../../assets/check.png'),
-    rating: 4.5,
-    reviewCount: 10,
-    brand: 'EcoBrand',
-    isBrandOfficial: false,
-    isLocalDispatch: true,
-  },
-  {
-    id: '2',
-    title: 'Recycled Plastic Chair',
-    price: 1154,
-    originalPrice: null,
-    image: require('../../assets/clothes.png'),
-    rating: 4.0,
-    reviewCount: 5,
-    brand: 'ReGreen',
-    isBrandOfficial: true,
-    isLocalDispatch: false,
-  },
-  {
-    id: '3',
-    title: 'Recycled Plastic Chair',
-    price: 1154,
-    originalPrice: null,
-    image: require('../../assets/clothes.png'),
-    rating: 4.0,
-    reviewCount: 5,
-    brand: 'ReGreen',
-    isBrandOfficial: true,
-    isLocalDispatch: false,
-  },
-  {
-    id: '4',
-    title: 'Eco-Friendly Solar Lamp',
-    price: 899,
-    originalPrice: 999,
-    image: require('../../assets/check.png'),
-    rating: 4.5,
-    reviewCount: 10,
-    brand: 'EcoBrand',
-    isBrandOfficial: false,
-    isLocalDispatch: true,
-  },
- 
-];
-
-const StoreHeader = () => {
-
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [followText, setFollowText] = useState('Follow');
-    const [followers, setFollowers] = useState(99); // Initial number of followers
-
-    const handleFollow = () => {
-      setIsFollowing(true);
-      setTimeout(() => {
-        setIsFollowing(false);
-        setFollowers(prevFollowers => {
-          if (followText === 'Follow') {
-            setFollowText('Connected');
-            return prevFollowers + 1; // Increment followers
-          } else {
-            setFollowText('Follow');
-            return prevFollowers - 1; // Decrement followers
-          }
-        });
-      }, 300);
-    };
-  
-
+const ProductCard = ({ item, addToFavorites, addToCart }) => {
   return (
-    <View style={styles.storeHeaderContainer}>
-      <FastImage source={require('../../assets/tree.avif')} resizeMode={FastImage.resizeMode.cover} style={styles.storeImage} />
-      <View style={styles.storeInfoContainer}>
-        <Text style={styles.storeName}>Sysnex Electronics</Text>
-        <Text style={styles.storeDetails}>Total 707 products | {followers} followers</Text>
-        <View style={styles.ratingContainer}>
-          <Text style={styles.storeScore}>Score: 3.95</Text>
-          <Text style={styles.ratingsCount}>(292 Ratings)</Text>
-        </View>
-      </View>
-        <TouchableOpacity 
-        style={[styles.followButton, { backgroundColor: followText === 'Connected' ? 'green' : '#FF5722' }]} 
-        onPress={handleFollow}
-        disabled={isFollowing}  // Disable button when following is in progress
-        >
-        {isFollowing ? (
-          <ActivityIndicator color="#fff" /> // Show indicator if isFollowing is true
-        ) : (
-          <Text style={styles.followText}>{followText}</Text> // Button text changes dynamically
+    <View style={styles.card}>
+      <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
+      <View style={styles.infoContainer}>
+        <Text style={styles.productTitle}>{item.title}</Text>
+        {item.originalPrice && (
+          <View style={styles.priceContainer}>
+            <Text style={styles.originalPrice}>{item.originalPrice} GCP</Text>
+            <Text style={styles.discountedPrice}>{item.price} GCP</Text>
+            <Text style={styles.discountBadge}>{Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF</Text>
+          </View>
         )}
-      </TouchableOpacity>
-
+        <TouchableOpacity onPress={() => addToFavorites(item)}>
+          <Ionicons name="heart-outline" size={24} color="red" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => addToCart(item)}>
+          <Ionicons name="cart-outline" size={24} color="orange" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-
-const ProductCard = ({ item, addToFavorites, addToCart }) => {
-  const swipeableRef = useRef(null);
-
-  return (
-    <Swipeable
-      ref={swipeableRef}
-      renderRightActions={() => (
-        <View style={styles.swipeActions}>
-          <TouchableOpacity onPress={() => addToCart(item)}>
-            <Ionicons name="cart-outline" size={24} color="orange" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => addToFavorites(item)}>
-            <Ionicons name="heart-outline" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      )}
-    >
-      <TouchableOpacity style={styles.card} >
-        <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
-        <View style={styles.infoContainer}>
-          <Text style={styles.productTitle}>{item.title}</Text>
-          {item.originalPrice && (
-            <View style={styles.priceContainer}>
-              <Text style={styles.originalPrice}>{item.originalPrice} GCP</Text>
-              <Text style={styles.discountedPrice}>{item.price} GCP</Text>
-              <Text style={styles.discountBadge}>{Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF</Text>
-            </View>
-          )}
-          {!item.originalPrice && <Text style={styles.productPrice}>{item.price} GCP</Text>}
-          <Text style={styles.productBrand}>{item.brand}</Text>
-          {item.isBrandOfficial && <Text style={styles.officialBadge}>Brand Official</Text>}
-          <Text style={styles.ratingText}>{item.rating} ({item.reviewCount} reviews)</Text>
-          <View style={styles.ratingContainer}>
-            {[...Array(Math.floor(item.rating))].map((_, index) => (
-              <Ionicons key={index} name="star" size={16} color="#FFD700" />
-            ))}
-            {item.rating % 1 !== 0 && <Ionicons name="star-half" size={16} color="#FFD700" />}
-          </View>
-        </View>
-      </TouchableOpacity>
-    </Swipeable>
-  );
-};
-
-export default Products = () => {
-  const [products, setProducts] = useState(initialProducts);
-  const [isLoading, setIsLoading] = useState(false);
+const Products = () => {
+  const dispatch = useDispatch();
+  const products = useSelector(state => state.products.products);
+  const loading = useSelector(state => state.products.loading);
+  const error = useSelector(state => state.products.error);
+  const brands = useSelector(state => state.products.brands); // Fetch brands from Redux store
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Best Match');
   const [searchQuery, setSearchQuery] = useState('');
@@ -169,40 +47,57 @@ export default Products = () => {
   const [isScreenLoading, setIsScreenLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
   const [cartCount, setCartCount] = useState(0);
-  const [brandFilters, setBrandFilters] = useState({ EcoBrand: false, ReGreen: false });
+  const [brandFilters, setBrandFilters] = useState({});
   const [priceRanges, setPriceRanges] = useState({ low: false, medium: false, high: false });
   const animation = useRef(new Animated.Value(0)).current;
 
   const navigation = useNavigation();
 
   useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchProducts()); // Fetch products from the backend
+      await dispatch(fetchBrands()); // Fetch brands from the backend
+      setIsScreenLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
+
+  useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
-    }).start(() => setIsScreenLoading(false));
+    }).start();
   }, []);
 
+  const refreshProducts = () => {
+    setIsRefreshing(true);
+    dispatch(fetchProducts()); // Refresh products from the backend
+    setIsRefreshing(false);
+  };
+
+  const addToFavorites = (item) => {
+    dispatch(addFavorite(item)); // Dispatch add favorite action
+    setFavorites([...favorites, item]);
+  };
+
+  const addToCart = (item) => {
+    dispatch(addToCart(item)); // Dispatch add to cart action
+    setCartCount(cartCount + 1);
+  };
+
   const sortProducts = (sortOrder) => {
-    setIsLoading(true);
-    try {
-      let sortedProducts;
-      if (sortOrder === 'PriceLowHigh') {
-        sortedProducts = [...products].sort((a, b) => a.price - b.price);
-      } else if (sortOrder === 'PriceHighLow') {
-        sortedProducts = [...products].sort((a, b) => b.price - a.price);
-      }
-      setProducts(sortedProducts);
-    } catch (error) {
-      console.error("Error sorting products:", error);
-      Alert.alert("Error", "There was an issue sorting the products.");
-    } finally {
-      setIsLoading(false);
+    let sortedProducts;
+    if (sortOrder === 'PriceLowHigh') {
+      sortedProducts = [...products].sort((a, b) => a.price - b.price);
+    } else if (sortOrder === 'PriceHighLow') {
+      sortedProducts = [...products].sort((a, b) => b.price - a.price);
     }
+    return sortedProducts;
   };
 
   const filterProducts = () => {
-    let filteredProducts = initialProducts;
+    let filteredProducts = products;
 
     // Filter by brands
     const selectedBrands = Object.keys(brandFilters).filter(brand => brandFilters[brand]);
@@ -221,151 +116,136 @@ export default Products = () => {
       filteredProducts = filteredProducts.filter(product => product.price >= 1500);
     }
 
-    setProducts(filteredProducts);
-    setShowFilterModal(false);
-  };
-
-  const refreshProducts = () => {
-    setIsRefreshing(true);
-    // Logic to refresh products from API or database
-    setIsRefreshing(false);
-  };
-
-  const addToFavorites = (item) => {
-    setFavorites([...favorites, item]);
-  };
-
-  const addToCart = (item) => {
-    setCartCount(cartCount + 1);
+    return filteredProducts;
   };
 
   const handleSortChange = (value) => {
     setSelectedSort(value);
-    if (value === 'PriceLowHigh' || value === 'PriceHighLow') {
-      sortProducts(value);
-    }
+    const sortedProducts = sortProducts(value);
+    setProducts(sortedProducts); // Update products with sorted results
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filteredProducts = initialProducts.filter(product => 
+    const filteredProducts = products.filter(product => 
       product.title.toLowerCase().includes(query.toLowerCase())
     );
     setProducts(filteredProducts);
   };
 
   const renderFooter = () => {
-    if (!isLoading) return null;
+    if (!loading) return null;
     return <ActivityIndicator size="large" color="#388e3c" style={{ margin: 10 }} />;
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-    {isScreenLoading ? (
-      <View style={styles.loadingContainer}>
-        <Lottie 
-          source={require('../../assets/lottie/rotatingBalls.json')} // Specify the path to your Lottie file
-          autoPlay
-          loop
-          style={styles.loadingAnimation}
-        />
-      </View>
-    ) : (
-      <Animated.View style={[styles.container, { opacity: animation }]}>
-        {/* Header Section */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={20} color="black" />
-          </TouchableOpacity>
-          <TextInput 
-            style={styles.searchBar} 
-            placeholder="Search products..." 
-            value={searchQuery} 
-            onChangeText={handleSearch} 
-          />
-          <TouchableOpacity onPress={() => navigation.navigate('cart')}>
-            <FontAwesome5 name="cart-plus" size={24} color="black" />
-            {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
-          </TouchableOpacity>
+      {isScreenLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#388e3c" />
         </View>
-        <StoreHeader />
-
-        <View style={styles.sortFilterRow}>
-          <View style={styles.pickerContainer}>
-            <Picker selectedValue={selectedSort} onValueChange={handleSortChange} style={{ height: 40, width: 150, borderRadius: 14 }}>
-              <Picker.Item label="Best Match" value="Best Match" />
-              <Picker.Item label="Price: Low to High" value="PriceLowHigh" />
-              <Picker.Item label="Price: High to Low" value="PriceHighLow" />
-            </Picker>
+      ) : (
+        <Animated.View style={[styles.container, { opacity: animation }]}>
+          {/* Header Section */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={20} color="black" />
+            </TouchableOpacity>
+            <TextInput 
+              style={styles.searchBar} 
+              placeholder="Search products..." 
+              value={searchQuery} 
+              onChangeText={handleSearch} 
+            />
+            <TouchableOpacity onPress={() => navigation.navigate('cart')}>
+              <FontAwesome5 name="cart-plus" size={24} color="black" />
+              {cartCount > 0 && <Text style={styles.cartCount}>{cartCount}</Text>}
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-            <Ionicons name="filter-outline" size={28} color="black" />
-          </TouchableOpacity>
-        </View>
 
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />}
-          numColumns={2}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshProducts} />}
-        />
-
-        <Modal visible={showFilterModal} animationType="fade" transparent>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Filter Products</Text>
-              <ScrollView>
-                {/* Brand Filter Section */}
-                <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500' }}>Brand Filter</Text>
-                {Object.keys(brandFilters).map((brand) => (
-                  <View key={brand} style={styles.checkboxContainer}>
-                    <BouncyCheckbox
-                      isChecked={brandFilters[brand]}
-                      onPress={() => setBrandFilters({ ...brandFilters, [brand]: !brandFilters[brand] })}
-                    />
-                    <Text style={{ marginLeft: 5 }}>{brand}</Text>
-                  </View>
-                ))}
-                
-                {/* Price Range Section */}
-                <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500' }}>Price Range</Text>
-                <View style={styles.checkboxContainer}>
-                  <BouncyCheckbox
-                    isChecked={priceRanges.low}
-                    onPress={() => setPriceRanges({ ...priceRanges, low: !priceRanges.low })}
-                  />
-                  <Text style={{ marginLeft: 5 }}>Below 1000 GCP</Text>
-                </View>
-                <View style={styles.checkboxContainer}>
-                  <BouncyCheckbox
-                    isChecked={priceRanges.medium}
-                    onPress={() => setPriceRanges({ ...priceRanges, medium: !priceRanges.medium })}
-                  />
-                  <Text style={{ marginLeft: 5 }}>1000 - 1500 GCP</Text>
-                </View>
-                <View style={styles.checkboxContainer}>
-                  <BouncyCheckbox
-                    isChecked={priceRanges.high}
-                    onPress={() => setPriceRanges({ ...priceRanges, high: !priceRanges.high })}
-                  />
-                  <Text style={{ fontSize: 14}}>Above 1500 GCP</Text>
-                </View>
-                
-                {/* Apply Button */}
-                <TouchableOpacity style={styles.apply} onPress={filterProducts}>
-                  <Text style={styles.applyText}>Apply</Text>
-                </TouchableOpacity>
-              </ScrollView>
+          <View style={styles.sortFilterRow}>
+            <View style={styles.pickerContainer}>
+              <Picker selectedValue={selectedSort} onValueChange={handleSortChange} style={{ height: 40, width: 150, borderRadius: 14 }}>
+                <Picker.Item label="Best Match" value="Best Match" />
+                <Picker.Item label="Price: Low to High" value="PriceLowHigh" />
+                <Picker.Item label="Price: High to Low" value="PriceHighLow" />
+              </Picker>
             </View>
+            <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+              <Ionicons name="filter-outline" size={28} color="black" />
+            </TouchableOpacity>
           </View>
-        </Modal>
 
-      </Animated.View>
-    )}
-  </SafeAreaView>
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>Error fetching products: {error}</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filterProducts()} // Apply filtering here
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />
+              )}
+              numColumns={2}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={renderFooter}
+              refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshProducts} />}
+            />
+          )}
+
+          <Modal visible={showFilterModal} animationType="fade" transparent>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Filter Products</Text>
+                <ScrollView>
+                  {/* Brand Filter Section */}
+                  <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500' }}>Brand Filter</Text>
+                  {brands.map((brand) => (
+                    <View key={brand.id} style={styles.checkboxContainer}>
+                      <BouncyCheckbox
+                        isChecked={brandFilters[brand.name] || false}
+                        onPress={() => setBrandFilters({ ...brandFilters, [brand.name]: !brandFilters[brand.name] })}
+                      />
+                      <Text style={{ marginLeft: 5 }}>{brand.name}</Text>
+                    </View>
+                  ))}
+                  
+                  {/* Price Range Section */}
+                  <Text style={{ color: 'green', marginBottom: 5, fontWeight: '500' }}>Price Range</Text>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      isChecked={priceRanges.low}
+                      onPress={() => setPriceRanges({ ...priceRanges, low: !priceRanges.low })}
+                    />
+                    <Text style={{ marginLeft: 5 }}>Below 1000 GCP</Text>
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      isChecked={priceRanges.medium}
+                      onPress={() => setPriceRanges({ ...priceRanges, medium: !priceRanges.medium })}
+                    />
+                    <Text style={{ marginLeft: 5 }}>1000 - 1500 GCP</Text>
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      isChecked={priceRanges.high}
+                      onPress={() => setPriceRanges({ ...priceRanges, high: !priceRanges.high })}
+                    />
+                    <Text style={{ fontSize: 14 }}>Above 1500 GCP</Text>
+                  </View>
+                  
+                  {/* Apply Button */}
+                  <TouchableOpacity style={styles.apply} onPress={filterProducts}>
+                    <Text style={styles.applyText}>Apply</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
+        </Animated.View>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -603,3 +483,5 @@ const styles = StyleSheet.create({
   },
  
 });
+
+export default Products;

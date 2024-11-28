@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView, Animated } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform,StatusBar,ActivityIndicator, SafeAreaView, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { createSquad } from '../../redux/actions/squads';
+import { Color, FontFamily } from "../../GlobalStyles";
+
 import FastImage from 'react-native-fast-image';
 
 const CreateSquad = () => {

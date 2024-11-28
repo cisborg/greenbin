@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -7,106 +7,29 @@ import {
     SafeAreaView,
     ActivityIndicator,
     FlatList,
+    Share,
+    
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchProducts,
+    purchaseProduct,
+    subscribeProduct,
+} from '../../redux/actions/products';
 
-const categories = {
-    Daily: [
-        {
-            name: "Delight Breakfast",
-            items: [
-                { name: "Organic Apples", quantity: 3 },
-                { name: "Almond Butter", quantity: 1 },
-            ],
-            price: 200,
-            stock: 100,
-        },
-        {
-            name: "Quality Refresh",
-            items: [
-                { name: "Fresh Berries", quantity: 5 },
-                { name: "Whole Grain Bread", quantity: 1 },
-            ],
-            price: 250,
-            stock: 50,
-        },
-    ],
-    Weekly: [
-        {
-            name: "Weekly Wellness Box 1",
-            items: [
-                { name: "Herbal Supplements", quantity: 1 },
-                { name: "Essential Oils", quantity: 1 },
-            ],
-            price: 30,
-            stock: 30,
-        },
-    ],
-    BiWeekly: [
-        {
-            name: "Bi-Weekly Gourmet Box 1",
-            items: [
-                { name: "Artisan Cheese", quantity: 1 },
-                { name: "Charcuterie Meats", quantity: 1 },
-            ],
-            price: 35,
-            stock: 40,
-        },
-    ],
-    Monthly: [
-        {
-            name: "Monthly Self-Care Box 1",
-            items: [
-                { name: "Face Masks", quantity: 4 },
-                { name: "Bath Salts", quantity: 1 },
-            ],
-            price: 40,
-            stock: 25,
-        },
-    ],
-};
-
-const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, isSharing }) => {
-    const [stockRemaining, setStockRemaining] = useState(pkg.stock);
-    const [itemsOrdered, setItemsOrdered] = useState(0);
-    const [localVoucherApplied, setLocalVoucherApplied] = useState(voucherApplied);
-    const [isSubscribing, setIsSubscribing] = useState(false);
-    const [subscribed, setSubscribed] = useState(false);
-    const [isOrdering, setIsOrdering] = useState(false); // Individual loading for the Order button
-    const navigation = useNavigation();
+const PackageCard = ({ pkg, onOrder, onShare, isSharing, onPurchase, onSubscribe }) => {
+    const [isOrdering, setIsOrdering] = useState(false);
 
     const handleOrder = () => {
-        if (stockRemaining <= 0) {
-            alert("Out of stock");
-            return;
-        }
         setIsOrdering(true);
+        onPurchase(pkg.id, 1); // Assuming quantity is 1 for simplicity
         setTimeout(() => {
             setIsOrdering(false);
-            navigation.navigate('Checkout'); 
+            onOrder(); // Navigate to checkout
         }, 300); // Simulate loading
     };
-
-    const handleApplyVoucher = () => {
-        if (pkg.price < 100) {
-            alert("Voucher can only be applied to packages above $100.");
-            return;
-        }
-        if (!localVoucherApplied) {
-            setLocalVoucherApplied(true);
-            onApplyVoucher(pkg.name);
-        }
-    };
-
-    const handleSubscribe = () => {
-        setIsSubscribing(true);
-        setTimeout(() => {
-            setIsSubscribing(false);
-            setSubscribed(true);
-        }, 300);
-    };
-
 
     return (
         <View style={styles.card}>
@@ -120,25 +43,14 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
                     )}
                 </TouchableOpacity>
             </View>
-            <Text style={styles.stockText}>Stock: {stockRemaining}</Text>
+            <Text style={styles.stockText}>Stock: {pkg.stock}</Text>
             {pkg.items.map((item, index) => (
                 <Text key={index} style={styles.itemText}>
                     {item.name} (Qty: {item.quantity})
                 </Text>
             ))}
-            <Text style={styles.priceText}>
-                Price: ${pkg.price - (localVoucherApplied ? 10 : 0)}
-                {localVoucherApplied && <Text style={styles.voucherText}> (Voucher Applied: $10 OFF)</Text>}
-            </Text>
+            <Text style={styles.priceText}>Price: ${pkg.price}</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.voucherButton, localVoucherApplied && styles.voucherButtonInactive]}
-                    onPress={handleApplyVoucher}
-                    disabled={localVoucherApplied}
-                >
-                    <Text style={styles.voucherButtonText}>{localVoucherApplied ? 'Voucher Applied' : 'Voucher ($10 OFF)'}</Text>
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.orderButton} onPress={handleOrder}>
                     {isOrdering ? (
                         <ActivityIndicator size="small" color="#fff" />
@@ -148,36 +60,30 @@ const PackageCard = ({ pkg, onOrder, onApplyVoucher, voucherApplied, onShare, is
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.subscribeButton, subscribed ? styles.subscribed : null]}
-                    onPress={handleSubscribe}
-                    disabled={subscribed || isSubscribing}
+                    style={styles.subscribeButton}
+                    onPress={() => onSubscribe(pkg.id)}
                 >
-                    {isSubscribing ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                    ) : (
-                        <Text style={styles.buttonText}>
-                            {subscribed ? 'Subscribed' : 'Subscribe'}
-                        </Text>
-                    )}
+                    <Text style={styles.buttonText}>Subscribe</Text>
                 </TouchableOpacity>
             </View>
-
-           
         </View>
     );
 };
 
-const BuyScreen = ({ navigation }) => {
+const BuyScreen = () => {
     const [selectedTab, setSelectedTab] = useState('Daily');
-    const [voucherApplied, setVoucherApplied] = useState({});
     const [sharingStatus, setSharingStatus] = useState({});
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const { products, loading, error } = useSelector(state => state.product);
+
+    useEffect(() => {
+        // Fetch products when the component mounts
+        dispatch(fetchProducts());
+    }, [dispatch]);
 
     const handleOrder = () => {
         navigation.navigate('OrderScreen');
-    };
-
-    const handleApplyVoucher = (packageName) => {
-        setVoucherApplied((prev) => ({ ...prev, [packageName]: true }));
     };
 
     const handleShare = async (packageName) => {
@@ -193,16 +99,30 @@ const BuyScreen = ({ navigation }) => {
         }
     };
 
+    const handlePurchase = (packageId, quantity) => {
+        dispatch(purchaseProduct(packageId, quantity));
+    };
+
+    const handleSubscribe = (packageId) => {
+        dispatch(subscribeProduct(packageId));
+    };
+
     const renderPackageCard = ({ item }) => (
         <PackageCard
             pkg={item}
             onOrder={handleOrder}
-            onApplyVoucher={handleApplyVoucher}
-            voucherApplied={voucherApplied[item.name]}
             onShare={() => handleShare(item.name)}
             isSharing={!!sharingStatus[item.name]}
+            onPurchase={handlePurchase}
+            onSubscribe={handleSubscribe}
         />
     );
+
+    // Filter products based on the selected tab
+    const filteredProducts = products.filter(product => product.category === selectedTab);
+
+    if (loading) return <ActivityIndicator size="large" color="#000" />;
+    if (error) return <Text>Error: {error}</Text>;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -213,8 +133,9 @@ const BuyScreen = ({ navigation }) => {
                 <Text style={styles.headerText}>EcoGreen Subscriptions</Text>
                 <Icon name="person" size={24} color="green" />
             </View>
+
             <View style={styles.tabContainer}>
-                {Object.keys(categories).map((category) => (
+                {['Daily', 'Weekly', 'BiWeekly', 'Monthly'].map((category) => (
                     <TouchableOpacity
                         key={category}
                         style={[styles.tab, selectedTab === category && styles.activeTab]}
@@ -228,14 +149,15 @@ const BuyScreen = ({ navigation }) => {
             </View>
 
             <FlatList
-                data={categories[selectedTab]}
+                data={filteredProducts} // Use filtered products based on the selected tab
                 renderItem={renderPackageCard}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id.toString()} // Assuming id is a unique identifier
                 contentContainerStyle={styles.contentContainer}
             />
         </SafeAreaView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

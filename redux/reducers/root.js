@@ -13,8 +13,13 @@ import postReducer from "./Posts";
 import tierReducer from "./tiers";
 import reportReducer from "./reports";
 import cartReducer from "./cart";
-
-
+import rewardsReducer from "./rewards";
+import balanceReducer from  "./bankGreen"
+import vendorReducer from "./vendor";
+import authReducer from "./authentication"
+import ratingsReducer from "./ratings";
+import  purchasesReducer from "./purchases";
+import notificationReducer from "./notification";
 const rootReducer = combineReducers({
     chat: chatReducer,
     product: productReducer,
@@ -30,6 +35,14 @@ const rootReducer = combineReducers({
     tiers: tierReducer,
     reports: reportReducer,
     cart: cartReducer,
+    rewards: rewardsReducer, 
+    balance: balanceReducer, 
+    vendor: vendorReducer,
+    auth: authReducer,
+    rating: ratingsReducer,
+    products: productReducer,
+    notification: notificationReducer,
+    purchases: purchasesReducer
 
 });
 

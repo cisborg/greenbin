@@ -46,6 +46,7 @@ const AboutScreen = ({ navigation }) => {
             <Text style={styles.listItem}><Icon name="flower" size={18} color="#27ae60" /> Tree Planting Initiatives</Text>
             <Text style={styles.listItem}><Icon name="cloud" size={18} color="#27ae60" /> Clean Air Projects</Text>
             <Text style={styles.listItem}><Icon name="flash" size={18} color="#27ae60" /> Green Renewable Energy Solutions</Text>
+            <Text style={styles.listItem}><Icon name="flash" size={18} color="#27ae60" /> Community Engagement</Text>
           </View>
 
           <Text style={styles.sectionTitle}>Our Currency:</Text>

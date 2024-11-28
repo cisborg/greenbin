@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Modal, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { createPost } from '../../redux/actions/Posts'; // Adjust the path as necessary
 import { Color } from '../../GlobalStyles';
 import FastImage from 'react-native-fast-image';
+import LottieView from 'lottie-react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const NewPostScreen = () => {
   const navigation = useNavigation();
-  const [squadModalVisible, setSquadModalVisible] = useState(false);
-  const [squads, setSquads] = useState(['Green Circular Economy', 'Nature Diversity', 'Tree Planting Expo']);
-  const [selectedSquad, setSelectedSquad] = useState('');
+  const dispatch = useDispatch(); // Initialize dispatch
   const [activeTab, setActiveTab] = useState('Write');
-  const [thumbnails, setThumbnails] = useState([]); // Changed to an array for multiple images
+  const [thumbnails, setThumbnails] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
-  const [newSquad, setNewSquad] = useState('');
+  const [postTags, setPostTags] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleImagePick = async () => {
@@ -31,7 +34,7 @@ const NewPostScreen = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      selectionLimit: 3, // Limit selection to 3 images
+      selectionLimit: 3,
     });
 
     if (!result.canceled && result.assets) {
@@ -40,35 +43,44 @@ const NewPostScreen = () => {
     }
   };
 
-  const handlePost = () => {
-    if (!postTitle || !postContent || !selectedSquad) {
+  const handleTagInput = (tag) => {
+    if (postTags.length < 2 && tag.trim() !== '') {
+      setPostTags([...postTags, tag.trim()]);
+    }
+  };
+
+  const handleRemoveTag = (index) => {
+    const newTags = [...postTags];
+    newTags.splice(index, 1);
+    setPostTags(newTags);
+  };
+
+  const handlePost = async () => {
+    if (!postTitle || !postContent) {
       Alert.alert('Validation Error', 'Please fill in all fields before posting.');
       return;
     }
 
     setLoading(true);
-    setTimeout(() => {
-      console.log('Post Title:', postTitle);
-      console.log('Post Content:', postContent);
-      console.log('Selected Squad:', selectedSquad);
-      console.log('Thumbnails:', thumbnails);
+    
+    const postData = {
+      title: postTitle,
+      content: postContent,
+      tags: postTags,
+      thumbnails: thumbnails,
+    };
 
+    try {
+      await dispatch(createPost(postData)); // Dispatch the createPost action
+      Alert.alert('Success', 'Post created successfully!');
+      // Reset the form after successful post
       setPostTitle('');
       setPostContent('');
-      setSelectedSquad('');
       setThumbnails([]);
+    } catch (error) {
+      Alert.alert('Error', error.message); // Handle any errors
+    } finally {
       setLoading(false);
-      Alert.alert('Success', 'Post created successfully!');
-    }, 2000);
-  };
-
-  const addSquad = () => {
-    if (newSquad.trim()) {
-      setSquads([...squads, newSquad.trim()]);
-      setNewSquad('');
-      Alert.alert('Success', 'New squad added!');
-    } else {
-      Alert.alert('Error', 'Please enter a squad name.');
     }
   };
 
@@ -81,7 +93,7 @@ const NewPostScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.postButton, loading && styles.disabledButton]} // Disable button when loading
+          style={[styles.postButton, loading && styles.disabledButton]}
           onPress={handlePost}
           disabled={loading}
         >
@@ -94,12 +106,6 @@ const NewPostScreen = () => {
       </View>
 
       <Text style={styles.title}>New Post</Text>
-
-      {/* Squad Selection */}
-      <TouchableOpacity style={styles.squadSelect} onPress={() => setSquadModalVisible(true)}>
-        <Text style={styles.squadText}>{selectedSquad || 'Select Squad'}</Text>
-        <Text style={styles.chevron}>▼</Text>
-      </TouchableOpacity>
 
       {/* Thumbnail Section */}
       <TouchableOpacity style={styles.thumbnail} onPress={handleImagePick}>
@@ -114,18 +120,50 @@ const NewPostScreen = () => {
         )}
       </TouchableOpacity>
 
+      <View style={styles.tagsContainer}>
+        <TextInput
+          style={styles.tagInput}
+          placeholder="Add up to 2 tags"
+          placeholderTextColor="#999"
+          onChangeText={handleTagInput}
+          onSubmitEditing={(event) => handleTagInput(event.nativeEvent.text)}
+          returnKeyType="done"
+        />
+        <View style={styles.tagsList}>
+          {postTags.map((tag, index) => (
+            <View key={index} style={styles.tagItem}>
+              <Text style={styles.tagText}>{tag}</Text>
+              <TouchableOpacity onPress={() => handleRemoveTag(index)}>
+                <Text style={styles.tagRemove}>x</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </View>
       {/* Title Input */}
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <View style={styles.postTitleContainer}>
-          <TextInput
-            style={styles.postTitleInput}
-            placeholder="Post Title*"
-            placeholderTextColor="#999"
-            maxLength={250}
-            value={postTitle}
-            onChangeText={setPostTitle}
-          />
-          <Text style={styles.characterCount}>{250 - postTitle.length}</Text>
+        <View style={styles.postTitleContent}>
+          <View style={styles.postTitleContainer}>
+            <TextInput
+              style={styles.postTitleInput}
+              placeholder="Post Title*"
+              placeholderTextColor="#999"
+              maxLength={250}
+              value={postTitle}
+              onChangeText={setPostTitle}
+            />
+            <Text style={styles.characterCount}>{250 - postTitle.length}</Text>
+          </View>
+          <View style={styles.tagsList}>
+            {postTags.map((tag, index) => (
+              <View key={index} style={styles.tagItem}>
+                <Text style={styles.tagText}>{tag}</Text>
+                <TouchableOpacity onPress={() => handleRemoveTag(index)}>
+                  <Text style={styles.tagRemove}>x</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
         </View>
 
         {/* Tabs */}
@@ -165,53 +203,14 @@ const NewPostScreen = () => {
       {/* Loading Indicator */}
       {loading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <LottieView
+            source={require('../../assets/lottie/rotateLoad.json')}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
         </View>
       )}
-
-      {/* Squad Selection Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={squadModalVisible}
-        onRequestClose={() => setSquadModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={squads}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.squadItem}
-                  onPress={() => {
-                    setSelectedSquad(item);
-                    setSquadModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.squadText}>{item}</Text>
-                </TouchableOpacity>
-              )}
-              style={{ maxHeight: 200 }} // Limit the FlatList height
-            />
-            <View style={styles.addSquadContainer}>
-              <TextInput
-                style={styles.newSquadInput}
-                placeholder="Add Custom Squad"
-                placeholderTextColor="gray"
-                value={newSquad}
-                onChangeText={setNewSquad}
-              />
-              <TouchableOpacity style={styles.addSquadButton} onPress={addSquad}>
-                <Text style={styles.addSquadText}>Add</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={() => setSquadModalVisible(false)}>
-              <Text style={styles.closeModalText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -232,6 +231,10 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontSize: 16,
   },
+  postTitleContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   postButton: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
@@ -247,6 +250,49 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.6,
   },
+  tagsContainer: {
+    marginBottom: 16,
+  },
+  tagInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+  },
+  tagsList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  tagItem: {
+    backgroundColor: Color.primary,
+    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tagText: {
+    color: '#fff',
+    marginRight: 4,
+  },
+  tagRemove: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -254,22 +300,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 15,
   },
-  squadSelect: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#f2f2f2',
-    padding: 15,
-    borderRadius: 17,
-    marginBottom: 15,
-  },
-  squadText: {
-    fontSize: 16,
-    color: 'black',
-  },
-  chevron: {
-    fontSize: 16,
-    color: '#007AFF',
-  },
+ 
   thumbnail: {
     backgroundColor: '#f2f2f2',
     padding: 20,
@@ -364,48 +395,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  squadItem: {
-    paddingVertical: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-  },
-  addSquadContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  newSquadInput: {
-    flex: 1,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    padding: 8,
-  },
-  addSquadButton: {
-    backgroundColor: '#007AFF',
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  addSquadText: {
-    color: 'white',
-  },
-  closeModalText: {
-    color: '#007AFF',
-    marginTop: 20,
-  },
+ 
+ 
+  
 });
 
 export default NewPostScreen;

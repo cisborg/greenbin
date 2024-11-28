@@ -1,69 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, StatusBar, Dimensions, TextInput } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, Dimensions, TextInput, FlatList,StatusBar, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import LottieView from 'lottie-react-native'; // Import LottieView
+import LottieView from 'lottie-react-native'; 
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFollowedVendors, unfollowVendor } from '../../redux/actions/vendorAction'; // Adjust the import path
 
 const { width } = Dimensions.get('window');
 
-const FollowedVendorsScreen = ({ navigation }) => {
-  const [vendors, setVendors] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      profession: "Graphic Designer",
-      description: "Creating stunning visuals for brands.",
-      profilePic: "https://example.com/profile1.jpg",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      profession: "Web Developer",
-      description: "Building responsive and user-friendly websites.",
-      profilePic: "https://example.com/profile2.jpg",
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      profession: "Digital Marketer",
-      description: "Expert in SEO and social media marketing.",
-      profilePic: "https://example.com/profile3.jpg",
-    },
-  ]);
+const VendorCard = ({ vendor, onUnfollow, isLoading }) => (
+  <Animated.View style={styles.card}>
+    <TouchableOpacity style={styles.vendorInfo}>
+      <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
+      <View style={styles.details}>
+        <Text style={styles.vendorName}>{vendor.name}</Text>
+        <Text style={styles.vendorProfession}>{vendor.profession}</Text>
+        <Text style={styles.vendorDescription}>{vendor.description}</Text>
+      </View>
+    </TouchableOpacity>
+    <TouchableOpacity 
+      onPress={onUnfollow} 
+      style={[styles.unfollowButton, isLoading ? styles.loadingButton : null]}
+    >
+      {isLoading ? (
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')}
+          autoPlay
+          loop
+          style={styles.buttonLottie}
+        />
+      ) : (
+        <Text style={styles.buttonText}>Unfollow</Text>
+      )}
+    </TouchableOpacity>
+  </Animated.View>
+);
 
-  const [loadingStates, setLoadingStates] = useState({});
-  const [isScreenLoading, setIsScreenLoading] = useState(true); // Screen loading state
-  const [searchTerm, setSearchTerm] = useState("");
+const FollowedVendorsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { followedVendors, loading, error } = useSelector(state => state.vendors); // Adjust according to your state structure
+  const userId = useSelector(state => state.user.id);
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   useEffect(() => {
-    // Simulate loading before displaying content
-    const timer = setTimeout(() => setIsScreenLoading(false), 1000); // Adjust time as needed
-    return () => clearTimeout(timer);
-  }, []);
+    dispatch(fetchFollowedVendors(userId));
+  }, [dispatch, userId]);
 
   const handleUnfollow = (vendorId) => {
-    setLoadingStates((prev) => ({ ...prev, [vendorId]: true }));
-
-    setTimeout(() => {
-      setVendors((prev) => prev.filter(vendor => vendor.id !== vendorId));
-      setLoadingStates((prev) => ({ ...prev, [vendorId]: false }));
-    }, 400);
+    dispatch(unfollowVendor(vendorId)); // Dispatch unfollow action
   };
 
-  const filteredVendors = vendors.filter(vendor => 
+  const filteredVendors = followedVendors.filter(vendor => 
     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     vendor.profession.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (isScreenLoading) {
+  if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotatingBalls.json')} // Path to your Lottie animation file
+          source={require('../../assets/lottie/rotatingBalls.json')}
           autoPlay
           loop
           style={styles.lottie}
         />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorMessage}>Error fetching vendors: {error.message}</Text>
       </SafeAreaView>
     );
   }
@@ -86,38 +94,24 @@ const FollowedVendorsScreen = ({ navigation }) => {
         {filteredVendors.length === 0 ? (
           <Text style={styles.emptyMessage}>No vendors found. Please follow some vendors!</Text>
         ) : (
-          filteredVendors.map((vendor) => (
-            <Animated.View key={vendor.id} style={styles.card}>
-              <TouchableOpacity style={styles.vendorInfo}>
-                <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
-                <View style={styles.details}>
-                  <Text style={styles.vendorName}>{vendor.name}</Text>
-                  <Text style={styles.vendorProfession}>{vendor.profession}</Text>
-                  <Text style={styles.vendorDescription}>{vendor.description}</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleUnfollow(vendor.id)} 
-                style={[styles.unfollowButton, loadingStates[vendor.id] ? styles.loadingButton : null]}
-              >
-                {loadingStates[vendor.id] ? (
-                  <LottieView
-                    source={require('../../assets/lottie/rotateLoad.json')} // Reuse the animation for the unfollow button if desired
-                    autoPlay
-                    loop
-                    style={styles.buttonLottie}
-                  />
-                ) : (
-                  <Text style={styles.buttonText}>Unfollow</Text>
-                )}
-              </TouchableOpacity>
-            </Animated.View>
-          ))
+          <FlatList
+            data={filteredVendors}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <VendorCard 
+                vendor={item} 
+                onUnfollow={() => handleUnfollow(item.id)} 
+                isLoading={loading} // Adjust if you want individual loading states
+              />
+            )}
+            contentContainerStyle={styles.listContainer}
+          />
         )}
       </View>
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

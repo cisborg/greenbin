@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph, Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import LottieView from 'lottie-react-native';

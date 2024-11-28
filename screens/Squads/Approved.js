@@ -1,51 +1,74 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, SafeAreaView, ActivityIndicator, StatusBar, Platform, Dimensions, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity,Platform,StatusBar, Animated, SafeAreaView, ActivityIndicator, Dimensions, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsers } from '../../redux/actions/admin';
+import { approveJoinRequest } from '../../redux/actions/squads';
+import LottieView from 'lottie-react-native'; // Import Lottie
 
 const { width } = Dimensions.get('window');
 
 const Approved = ({ navigation }) => {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      profession: "Graphic Designer",
-      description: "Creating stunning visuals for brands.",
-      profilePic: "https://example.com/profile1.jpg",
-    },
-    {
-      id: 2,
-      name: "James Bond",
-      profession: "Web Developer",
-      description: "Building responsive and user-friendly websites.",
-      profilePic: "https://example.com/profile2.jpg",
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      profession: "Digital Marketer",
-      description: "Expert in SEO and social media marketing.",
-      profilePic: "https://example.com/profile3.jpg",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const { users, loading, error } = useSelector((state) => state.users); // Adjust the state structure as needed
 
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const handleTryAgain = () => {
+    dispatch(fetchUsers());
+  };
   const [loadingStates, setLoadingStates] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleUnfollow = (userId) => {
     setLoadingStates((prev) => ({ ...prev, [userId]: true }));
 
-    setTimeout(() => {
-      setUsers((prev) => prev.filter(users => users.id !== userId));
+    dispatch(approveJoinRequest(userId))
+    .then(() => {
+      // Update the local state to remove the approved user
       setLoadingStates((prev) => ({ ...prev, [userId]: false }));
-    }, 400);
+    })
+    .catch((error) => {
+      // Handle the error
+      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
+    });
   };
 
-  const filteredUsers = users.filter(users => 
-    users.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    users.profession.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.profession.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+        <Text style={styles.errorText}>Try Again</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,33 +76,33 @@ const Approved = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back-sharp" size={24} color="green" />
         </TouchableOpacity>
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search for connectors to approve..." 
-          value={searchTerm} 
-          onChangeText={setSearchTerm} 
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for connectors to approve..."
+          value={searchTerm}
+          onChangeText={setSearchTerm}
           placeholderTextColor="#888"
         />
       </View>
       <View style={styles.content}>
         {filteredUsers.length === 0 ? (
-          <Text style={styles.emptyMessage}>Approval Complete! </Text>
+          <Text style={styles.emptyMessage}>Approval Complete!</Text>
         ) : (
-          filteredUsers.map((users) => (
-            <Animated.View key={users.id} style={styles.card}>
+          filteredUsers.map((user) => (
+            <Animated.View key={user.id} style={styles.card}>
               <TouchableOpacity style={styles.userInfo}>
-                <FastImage source={{ uri: users.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover}/>
+                <FastImage source={{ uri: user.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
                 <View style={styles.details}>
-                  <Text style={styles.userName}>{users.name}</Text>
-                  <Text style={styles.userProfession}>{users.profession}</Text>
-                  <Text style={styles.userDescription}>{users.description}</Text>
+                  <Text style={styles.userName}>{user.name}</Text>
+                  <Text style={styles.userProfession}>{user.profession}</Text>
+                  <Text style={styles.userDescription}>{user.description}</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleUnfollow(users.id)} 
-                style={[styles.unfollowButton, loadingStates[users.id] ? styles.loadingButton : null]}
+              <TouchableOpacity
+                onPress={() => handleUnfollow(user.id)}
+                style={[styles.unfollowButton, loadingStates[user.id] ? styles.loadingButton : null]}
               >
-                {loadingStates[users.id] ? (
+                {loadingStates[user.id] ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
                   <Text style={styles.buttonText}>Approve</Text>
@@ -92,6 +115,7 @@ const Approved = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

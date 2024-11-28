@@ -16,22 +16,24 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    donationTiers: [],
-    donationTierCategory: {
-        id: null,
-        categoryName: [],
-        minpoints: 0,
-        maxpoints: 0,
-        valuePoints: []
-    },
-    purchaseTiers: [],
-    purchaseTierCategory: {
-        id: null,
-        categoryName: '',
-        minpoints: 0,
-        maxpoints: 0,
-        valuePoints: []
-    },
+    donationTiers: [
+        {
+            id: null,
+            categoryName: [],
+            minpoints: 0,
+            maxpoints: 0,
+            valuePoints: []
+        },
+    ],
+    purchaseTiers: [
+        {
+            id: null,
+            categoryName: '',
+            minpoints: 0,
+            maxpoints: 0,
+            valuePoints: []
+        },
+    ],
     totalTiers: 0,
     loading: false,
     error: null,

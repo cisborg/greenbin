@@ -18,9 +18,13 @@ import {
   LOGIN_USER,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  ACCEPT_CODE,
+  ACCEPT_CODE_SUCCESS,
+  ACCEPT_CODE_FAILURE,
 } from "../actions/actionTypes";
 
 const initialState = {
+  id: null,
   name: "",
   email: "",
   password: "",
@@ -32,7 +36,11 @@ const initialState = {
   error: null,
   user: null,
   referralCode: "",
-  greenBankCode: ''
+  greenBankCode: '',
+  statusDescription: '',
+  image: null,
+  points: 0,
+  totalTiers: 0,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -43,6 +51,7 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_CODE_REQUEST:
     case LOGIN_USER:
     case CONNECTION_REQUEST:
+    case ACCEPT_CODE:
     case GET_REFERRAL_CODE_REQUEST:
       return { ...state, loading: true, error: null };
 
@@ -90,6 +99,14 @@ const authReducer = (state = initialState, action) => {
         loading: false,
       };
 
+    case ACCEPT_CODE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
+        token: action.payload.greenBankCode,
+      };
+
     // Grouping failure cases
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
@@ -97,6 +114,7 @@ const authReducer = (state = initialState, action) => {
     case CONNECTION_REQUEST_FAILURE:
     case REGISTER_CODE_FAILURE:
     case GET_REFERRAL_CODE_FAILURE:
+    case ACCEPT_CODE_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
     default:

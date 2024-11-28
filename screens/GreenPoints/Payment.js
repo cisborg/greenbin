@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
 import Paystack from 'react-native-paystack-webview';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Color, FontFamily} from '../../GlobalStyles'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { depositRequest, depositSuccess, depositFailure } from '../../redux/actions/paymentActions'; // Import your action creators
+import { depositRequest, depositSuccess, depositFailure } from '../../redux/actions/payments'; // Import your action creators
 
 const PrepaidRechargeScreen = () => {
   const [amount, setAmount] = useState(0);

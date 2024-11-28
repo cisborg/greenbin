@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, Platform,StatusBar,ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet,Linking, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { useDispatch } from 'react-redux'; // Import useDispatch
-import { sendResetPassword } from '../../redux/actions/userActions'; // Adjust the import path as necessary
+import { useDispatch } from 'react-redux';
+import { sendResetPassword } from '../../redux/actions/authentication';
 import { Color } from '../../GlobalStyles';
-import Toast from '../../helpers/Toast'; // Adjust the import path as necessary
+import Toast from '../../helpers/Toast'; // Adjust the import path
 
 const { width, height } = Dimensions.get('window');
 
 const ChangePassword = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch(); // Initialize dispatch
-  const [userId, setUserId] = useState('');
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [token, setToken] = useState(''); // To handle token from the link
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,19 +20,40 @@ const ChangePassword = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('info');
 
-  const validateUserId = (id) => {
-    const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirements
-    return phoneRegex.test(id);
-  };
+  // Deep link handling for token autofill
+  useEffect(() => {
+    const handleDeepLink = (event) => {
+      const data = Linking.parse(event.url);
+      if (data.queryParams?.token) {
+        setToken(data.queryParams.token); // Autofill the token
+      }
+    };
+
+    Linking.addEventListener('url', handleDeepLink);
+
+    return () => {
+      Linking.removeEventListener('url', handleDeepLink);
+    };
+  }, []);
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validatePassword = (password) =>
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password);
 
   const handleChangePassword = async () => {
-    if (!validateUserId(userId)) {
-      showToast('Invalid phone number. Please enter a valid phone number.', 'error');
+    if (!token) {
+      showToast('Invalid or missing reset token. Please try again.', 'error');
       return;
     }
 
-    if (newPassword === '') {
-      showToast('New password cannot be empty.', 'error');
+    if (!validateEmail(email)) {
+      showToast('Invalid email. Please enter a valid email address.', 'error');
+      return;
+    }
+
+    if (!validatePassword(newPassword)) {
+      showToast('Password must contain at least 8 characters, 1 uppercase letter, 1 symbol, and 1 number.', 'error');
       return;
     }
 
@@ -42,12 +64,12 @@ const ChangePassword = () => {
 
     setIsLoading(true);
     try {
-      // Dispatch the sendResetPassword action
-      await dispatch(sendResetPassword(userId)); // Use the userId as email or modify as needed
-      showToast('Password reset link sent successfully!', 'success');
-      navigation.goBack();
+      // Update to use token and new password
+      await dispatch(sendResetPassword({ email, token, newPassword }));
+      showToast('Password changed successfully!', 'success');
+      setTimeout(() => navigation.goBack(), 3000);
     } catch (error) {
-      showToast('Failed to send reset password link. Please try again.', 'error');
+      showToast('Failed to change password. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +79,7 @@ const ChangePassword = () => {
     setToastMessage(message);
     setToastType(type);
     setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 3000); // Hide toast after 3 seconds
+    setTimeout(() => setToastVisible(false), 3000);
   };
 
   return (
@@ -66,16 +88,23 @@ const ChangePassword = () => {
       <Image 
         source={require('../../assets/seated.webp')} 
         style={styles.image} 
-        resizeMode='cover' 
+        resizeMode="cover" 
       />
       <Text style={styles.title}>Change Password</Text>
       <TextInput
         style={styles.input}
-        placeholder="User ID (Phone Number)"
+        placeholder="Email"
         placeholderTextColor={Color.colorGray_100}
-        value={userId}
-        onChangeText={setUserId}
-        keyboardType="phone-pad"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Token"
+        placeholderTextColor={Color.colorGray_100}
+        value={token}
+        onChangeText={setToken} // Allow manual entry for fallback
       />
       <TextInput
         style={styles.input}
@@ -103,6 +132,7 @@ const ChangePassword = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

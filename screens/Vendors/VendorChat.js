@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -8,272 +8,271 @@ import * as Audio from 'expo-av';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    sendMessage as sendMessageAction,
+    attachFile as attachFileAction,
+    setOnlineStatus as setOnlineStatusAction,
+    receiveMessage as receiveMessageAction, // If needed
+} from '../../redux/actions/chats'; // Adjust the path as necessary
 
 const ChatScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { userName } = route.params;
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: 'Hello! How are you?',
-      timestamp: new Date(),
-      sender: userName,
-      read: false,
-    },
-    {
-      id: 2,
-      text: 'I am doing great, thank you!',
-      timestamp: new Date(),
-      sender: 'You',
-      read: true,
-    },
-  ]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [quotedMessage, setQuotedMessage] = useState(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [recording, setRecording] = useState(null);
-  const [isOnline, setIsOnline] = useState(true);
+    const navigation = useNavigation();
+    const route = useRoute();
+    const { userName } = route.params;
+    const dispatch = useDispatch();
+    const messages = useSelector((state) => state.chat.messages); // Access messages from Redux state
+    const currentUser = 'You';
 
-  const currentUser = 'You';
+    const [inputMessage, setInputMessage] = useState('');
+    const [quotedMessage, setQuotedMessage] = useState(null);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [recording, setRecording] = useState(null);
+    const [isOnline, setIsOnline] = useState(true);
 
-  const sendMessage = () => {
-    if (inputMessage.trim() !== '') {
-      const newMessage = {
-        id: Date.now(),
-        text: inputMessage,
-        timestamp: new Date(),
-        sender: currentUser,
-        read: false,
-        dateSignature: new Date().toLocaleDateString(),
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setInputMessage('');
-      setQuotedMessage(null);
-    }
-  };
+    useEffect(() => {
+        dispatch(setOnlineStatusAction(currentUser, true)); // Set online status when component mounts
 
-  const quoteMessage = (message) => {
-    setQuotedMessage(message);
-  };
+        return () => {
+            dispatch(setOnlineStatusAction(currentUser, false)); // Set offline status when component unmounts
+        };
+    }, [dispatch, currentUser]);
 
-  const handleFileAttachment = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({});
-      if (result.type === 'success') {
-        alert(`File Selected: ${result.name}`);
-      }
-    } catch (err) {
-      console.log('Error picking file:', err);
-    }
-  };
+    const sendMessage = () => {
+        if (inputMessage.trim() !== '') {
+            const newMessage = {
+                id: Date.now(),
+                text: inputMessage,
+                timestamp: new Date(),
+                sender: currentUser,
+                read: false,
+                dateSignature: new Date().toLocaleDateString(),
+            };
+            dispatch(sendMessageAction(newMessage)); // Dispatch the action
+            setInputMessage('');
+            setQuotedMessage(null);
+        }
+    };
 
-  const deleteMessage = (messageId) => {
-    setMessages((prevMessages) => prevMessages.filter((message) => message.id !== messageId));
-  };
+    const handleFileAttachment = async () => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({});
+            if (result.type === 'success') {
+                dispatch(attachFileAction(route.params.chatId, result)); // Dispatch attach file action
+                alert(`File Selected: ${result.name}`);
+            }
+        } catch (err) {
+            console.log('Error picking file:', err);
+        }
+    };
 
-  const forwardMessage = (message) => {
-    Alert.alert(
-      "Forward Message",
-      `Forward "${message.text}" to other users?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Forward", onPress: () => alert(`Message forwarded: "${message.text}"`) },
-      ]
-    );
-  };
+    const deleteMessage = (messageId) => {
+        // Implement delete logic if needed
+    };
 
-  const renderRightActions = (message) => (
-    <TouchableOpacity style={styles.deleteButton} onPress={() => deleteMessage(message.id)}>
-      <Text style={styles.deleteButtonText}>Delete</Text>
-    </TouchableOpacity>
-  );
-
-  const renderLeftActions = (message) => (
-    <TouchableOpacity style={styles.quoteButton} onPress={() => quoteMessage(message)}>
-      <Text style={styles.quoteButtonText}>Quote</Text>
-    </TouchableOpacity>
-  );
-
-  const renderMessageItem = ({ item, index }) => {
-    const showDateSignature = index === 0 || 
-      new Date(item.timestamp).toLocaleDateString() !== new Date(messages[index - 1].timestamp).toLocaleDateString();
-  
-    return (
-      <View>
-        {showDateSignature && (
-          <Text style={styles.dateSignature}>{item.dateSignature || new Date(item.timestamp).toLocaleDateString()}</Text>
-        )}
-        <Swipeable
-          renderRightActions={() => renderRightActions(item)}
-          renderLeftActions={() => renderLeftActions(item)}
-          onSwipeableLeftOpen={() => quoteMessage(item)}
-        >
-          <View
-            style={[
-              styles.messageContainer,
-              item.sender === currentUser ? styles.myMessage : styles.otherMessage,
-            ]}
-          >
-            <Text style={styles.messageSender}>{item.sender}</Text>
-            
-            {item.quotedMessage && (
-                <View
-                  style={[
-                    styles.quotedMessage,
-                    { backgroundColor: item.sender === currentUser ? '#f0f0f0' : '#d5f5d2' }, // Adjust colors as needed
-                  ]}
-                >
-                  <Text style={styles.quotedMessageText}>
-                    {item.quotedMessage.sender}: {item.quotedMessage.text}
-                  </Text>
-                </View>
-              )}
-            
-            {item.voiceNoteUri ? (
-              <TouchableOpacity onPress={() => playVoiceNote(item.voiceNoteUri)}>
-                <Text style={styles.voiceNoteText}>🎤 Voice Note</Text>
-              </TouchableOpacity>
-            ) : (
-              <Text style={styles.messageText}>{item.text}</Text>
-            )}
-            
-            <Text style={styles.messageTimestamp}>
-              {item.timestamp.toLocaleTimeString()}
-              {item.sender === currentUser && (
-                <View style={styles.receiptContainer}>
-                  <Text style={styles.receiptText}>{item.read ? '✓✓' : '✓'}</Text> {/* ✓✓ for read, ✓ for delivered */}
-                </View>
-              )}
-            </Text>
-
-          </View>
-        </Swipeable>
-      </View>
-    );
-  };
-
-  const playVoiceNote = async (uri) => {
-    try {
-      const { sound } = await Audio.Sound.createAsync({ uri });
-      await sound.playAsync();
-    } catch (error) {
-      console.error("Error playing voice note:", error);
-    }
-  };
-
-  const startRecording = async () => {
-    try {
-      const permission = await Audio.requestPermissionsAsync();
-      if (permission.granted) {
-        await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+    const forwardMessage = (message) => {
+        Alert.alert(
+            "Forward Message",
+            `Forward "${message.text}" to other users?`,
+            [
+                { text: "Cancel", style: "cancel" },
+                { text: "Forward", onPress: () => alert(`Message forwarded: "${message.text}"`) },
+            ]
         );
-        setRecording(recording);
-      } else {
-        alert('Permission to access microphone is required!');
-      }
-    } catch (err) {
-      console.error('Failed to start recording', err);
-    }
-  };
-  
-  const stopRecording = async () => {
-    if (recording) {
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
-      const newMessage = {
-        id: Date.now(),
-        text: '',
-        timestamp: new Date(),
-        sender: currentUser,
-        read: false,
-        voiceNoteUri: uri,
-        dateSignature: new Date().toLocaleDateString(),
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      alert('Voice note recorded: ' + uri);
-      setRecording(null);
-    }
-  };
+    };
 
-  return (
-    <GestureHandlerRootView style={styles.safeAreaView}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="white" />
+    const quoteMessage = (message) => {
+        setQuotedMessage(message);
+    };
+
+    const renderRightActions = (message) => (
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteMessage(message.id)}>
+            <Text style={styles.deleteButtonText}>Delete</Text>
         </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>{userName}</Text>
-          <Text style={styles.headerSubtitle}>
-            {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
-          </Text>
-        </View>
-        <TouchableOpacity style={styles.voiceCallButton}>
-          <Ionicons name="call" size={24} color="white" />
+    );
+
+    const renderLeftActions = (message) => (
+        <TouchableOpacity style={styles.quoteButton} onPress={() => quoteMessage(message)}>
+            <Text style={styles.quoteButtonText}>Quote</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.moreButton}>
-          <MaterialIcons name="more-vert" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+    );
 
-      {quotedMessage && (
-        <View style={styles.quotedMessageAboveInput}>
-          <Text style={styles.quotedMessageText}>
-            Replying to {quotedMessage.sender}: {quotedMessage.text}
-          </Text>
-        </View>
-      )}
+    const renderMessageItem = ({ item, index }) => {
+        const showDateSignature = index === 0 || 
+            new Date(item.timestamp).toLocaleDateString() !== new Date(messages[index - 1].timestamp).toLocaleDateString();
 
-      <FlashList
-        data={messages}
-        renderItem={renderMessageItem}
-        keyExtractor={(item) => item.id.toString()}
-        estimatedItemSize={50}
-        onEndReachedThreshold={0.5}
-        style={styles.messagesList}
-      />
+        return (
+            <View>
+                {showDateSignature && (
+                    <Text style={styles.dateSignature}>{item.dateSignature || new Date(item.timestamp).toLocaleDateString()}</Text>
+                )}
+                <Swipeable
+                    renderRightActions={() => renderRightActions(item)}
+                    renderLeftActions={() => renderLeftActions(item)}
+                >
+                    <View
+                        style={[
+                            styles.messageContainer,
+                            item.sender === currentUser ? styles.myMessage : styles.otherMessage,
+                        ]}
+                    >
+                        <Text style={styles.messageSender}>{item.sender}</Text>
+                        
+                        {item.quotedMessage && (
+                            <View style={[
+                                styles.quotedMessage,
+                                { backgroundColor: item.sender === currentUser ? '#f0f0f0' : '#d5f5d2' },
+                            ]}>
+                                <Text style={styles.quotedMessageText}>
+                                    {item.quotedMessage.sender}: {item.quotedMessage.text}
+                                </Text>
+                            </View>
+                        )}
 
-      {showEmojiPicker && (
-        <EmojiSelector
-          onEmojiSelected={(emoji) => setInputMessage((prev) => prev + emoji)}
-          columns={8}
-        />
-      )}
+                        {item.voiceNoteUri ? (
+                            <TouchableOpacity onPress={() => playVoiceNote(item.voiceNoteUri)}>
+                                <Text style={styles.voiceNoteText}>🎤 Voice Note</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <Text style={styles.messageText}>{item.text}</Text>
+                        )}
+                        
+                        <Text style={styles.messageTimestamp}>
+                            {item.timestamp.toLocaleTimeString()}
+                            {item.sender === currentUser && (
+                                <View style={styles.receiptContainer}>
+                                    <Text style={styles.receiptText}>{item.read ? '✓✓' : '✓'}</Text>
+                                </View>
+                            )}
+                        </Text>
+                    </View>
+                </Swipeable>
+            </View>
+        );
+    };
 
-      <View style={styles.inputContainer}>
-        <TouchableOpacity onPress={() => setShowEmojiPicker(!showEmojiPicker)}>
-          <FontAwesome name="smile-o" size={24} color="gray" />
-        </TouchableOpacity>
+    const playVoiceNote = async (uri) => {
+        try {
+            const { sound } = await Audio.Sound.createAsync({ uri });
+            await sound.playAsync();
+        } catch (error) {
+            console.error("Error playing voice note:", error);
+        }
+    };
 
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message"
-          value={inputMessage}
-          onChangeText={setInputMessage}
-        />
+    const startRecording = async () => {
+        try {
+            const permission = await Audio.requestPermissionsAsync();
+            if (permission.granted) {
+                await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
+                const { recording } = await Audio.Recording.createAsync(
+                    Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+                );
+                setRecording(recording);
+            } else {
+                alert('Permission to access microphone is required!');
+            }
+        } catch (err) {
+            console.error('Failed to start recording', err);
+        }
+    };
 
-        <TouchableOpacity onPress={handleFileAttachment}>
-          <Ionicons name="attach" size={24} color="gray" />
-        </TouchableOpacity>
+    const stopRecording = async () => {
+        if (recording) {
+            await recording.stopAndUnloadAsync();
+            const uri = recording.getURI();
+            const newMessage = {
+                id: Date.now(),
+                text: '',
+                timestamp: new Date(),
+                sender: currentUser,
+                read: false,
+                voiceNoteUri: uri,
+                dateSignature: new Date().toLocaleDateString(),
+            };
+            dispatch(sendMessageAction(newMessage)); // Dispatch the action for voice note
+            alert('Voice note recorded: ' + uri);
+            setRecording(null);
+        }
+    };
 
-        {inputMessage.trim() !== '' ? (
-          <TouchableOpacity onPress={sendMessage}>
-            <Ionicons name="send" size={24} color="#25D366" />
-          </TouchableOpacity>
-        ) : recording ? (
-          <TouchableOpacity onPress={stopRecording}>
-            <Ionicons name="mic-off" size={24} color="red" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={startRecording}>
-            <Ionicons name="mic" size={24} color="gray" />
-          </TouchableOpacity>
-        )}
-      </View>
-    </GestureHandlerRootView>
-)}
+    return (
+        <GestureHandlerRootView style={styles.safeAreaView}>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="white" />
+                </TouchableOpacity>
+                <View style={styles.headerInfo}>
+                    <Text style={styles.headerTitle}>{userName}</Text>
+                    <Text style={styles.headerSubtitle}>
+                        {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
+                    </Text>
+                </View>
+                <TouchableOpacity style={styles.voiceCallButton}>
+                    <Ionicons name="call" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.moreButton}>
+                    <MaterialIcons name="more-vert" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
+
+            {quotedMessage && (
+                <View style={styles.quotedMessageAboveInput}>
+                    <Text style={styles.quotedMessageText}>
+                        Replying to {quotedMessage.sender}: {quotedMessage.text}
+                    </Text>
+                </View>
+            )}
+
+            <FlashList
+                data={messages}
+                renderItem={renderMessageItem}
+                keyExtractor={(item) => item.id.toString()}
+                estimatedItemSize={50}
+                style={styles.messagesList}
+            />
+
+            {showEmojiPicker && (
+                <EmojiSelector
+                    onEmojiSelected={(emoji) => setInputMessage((prev) => prev + emoji)}
+                    columns={8}
+                />
+            )}
+
+            <View style={styles.inputContainer}>
+                <TouchableOpacity onPress={() => setShowEmojiPicker(!showEmojiPicker)}>
+                    <FontAwesome name="smile-o" size={24} color="gray" />
+                </TouchableOpacity>
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Type a message"
+                    value={inputMessage}
+                    onChangeText={setInputMessage}
+                />
+
+                <TouchableOpacity onPress={handleFileAttachment}>
+                    <Ionicons name="attach" size={24} color="gray" />
+                </TouchableOpacity>
+
+                {inputMessage.trim() !== '' ? (
+                    <TouchableOpacity onPress={sendMessage}>
+                        <Ionicons name="send" size={24} color="#25D366" />
+                    </TouchableOpacity>
+                ) : recording ? (
+                    <TouchableOpacity onPress={stopRecording}>
+                        <Ionicons name="mic-off" size={24} color="red" />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity onPress={startRecording}>
+                        <Ionicons name="mic" size={24} color="gray" />
+                    </TouchableOpacity>
+                )}
+            </View>
+        </GestureHandlerRootView>
+    );
+};
+
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,

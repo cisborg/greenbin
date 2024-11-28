@@ -24,9 +24,6 @@ import {
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
   LIKE_POST_FAILURE,
-  UNLIKE_POST_REQUEST,
-  UNLIKE_POST_SUCCESS,
-  UNLIKE_POST_FAILURE,
   POST_COMMENT_REQUEST,
   POST_COMMENT_SUCCESS,
   POST_COMMENT_FAILURE,
@@ -36,31 +33,44 @@ import {
   GET_ALL_COMMENTS_REQUEST,
   GET_ALL_COMMENTS_SUCCESS,
   GET_ALL_COMMENTS_FAILURE,
-  SAVE_POST_REQUEST,
-  SAVE_POST_SUCCESS,
-  SAVE_POST_FAILURE,
-  UNSAVE_POST_REQUEST,
-  UNSAVE_POST_SUCCESS,
-  UNSAVE_POST_FAILURE,
+  BOOKMARK_POST_REQUEST,
+  BOOKMARK_POST_SUCCESS,
+  BOOKMARK_POST_FAILURE,
+  FETCH_TAGS_REQUEST,
+  FETCH_TAGS_SUCCESS,
+  FETCH_TAGS_FAILURE,
+  FETCH_TRENDING_TAGS_REQUEST,
+  FETCH_TRENDING_TAGS_SUCCESS,
+  FETCH_TRENDING_TAGS_FAILURE,
+  FETCH_POPULAR_TAGS_REQUEST,
+  FETCH_POPULAR_TAGS_SUCCESS,
+  FETCH_POPULAR_TAGS_FAILURE,
+
 } from '../actions/actionTypes';
 
 const initialState = {
-  posts: [],
-  postDetails: {
-    id: null,
-    title: '',
-    content: '',
-    squad: '',
-    author: '',
-    createdAt: Date.now(),
-    images: [],
-    likes: 0,
-    comments: [],
-    isSaved: false,
-    tags: []
-  },
+  posts: [
+    {
+        id: null,
+        title: '',
+        content: '',
+        squad: '',
+        author: '',
+        createdAt: Date.now(),
+        images: [],
+        likes: 0,
+        comments: [],
+        isSaved: false,
+        tags: [],
+        connections: 0,
+      },
+  ],
+
   loading: false,
+  trendingTags: [],
+  popularTags: [],
   error: null,
+  page: 1
 };
 
 const postReducer = (state = initialState, action) => {
@@ -73,12 +83,13 @@ const postReducer = (state = initialState, action) => {
       case VIEW_SHARED_POST_REQUEST:
       case UPDATE_POST_REQUEST:
       case LIKE_POST_REQUEST:
-      case UNLIKE_POST_REQUEST:
+      case FETCH_TAGS_REQUEST:
       case POST_COMMENT_REQUEST:
       case DELETE_COMMENT_REQUEST:
       case GET_ALL_COMMENTS_REQUEST:
-      case SAVE_POST_REQUEST:
-      case UNSAVE_POST_REQUEST:
+      case BOOKMARK_POST_REQUEST:
+      case FETCH_TRENDING_TAGS_REQUEST:
+      case FETCH_POPULAR_TAGS_REQUEST:
           return {
               ...state,
               loading: true,
@@ -91,22 +102,35 @@ const postReducer = (state = initialState, action) => {
               loading: false,
               posts: [...state.posts, action.payload],
           };
-
+      case FETCH_TRENDING_TAGS_SUCCESS:
+          return { ...state, 
+            trendingTags: action.payload.trendingTags,
+            loading: false, 
+            error: null };
+      case FETCH_POPULAR_TAGS_SUCCESS:
+        return { ...state, popularTags: action.payload.popularTags, loading: false, error: null };
       case DELETE_POST_SUCCESS:
           return {
               ...state,
               loading: false,
               posts: state.posts.filter(post => post.id !== action.payload),
           };
-
+      case FETCH_TAGS_SUCCESS:
+        return { ...state, tags: action.payload.tags, loading: false, error: null };
       case SHARE_POST_SUCCESS:
       case UPDATE_POST_SUCCESS:
-      case LIKE_POST_SUCCESS:
-      case UNLIKE_POST_SUCCESS:
       case POST_COMMENT_SUCCESS:
+        const { postId, updatedPost } = action.payload;
+
+            return {
+                ...state,
+                loading: false,
+                posts: state.posts.map((post) =>
+                    post.id === postId ? { ...post, ...updatedPost } : post
+                ),
+            };
+
       case DELETE_COMMENT_SUCCESS:
-      case SAVE_POST_SUCCESS:
-      case UNSAVE_POST_SUCCESS:
           return {
               ...state,
               loading: false,
@@ -119,8 +143,27 @@ const postReducer = (state = initialState, action) => {
           return {
               ...state,
               loading: false,
-              posts: action.payload,
+              posts: [...state.posts, ...action.payload],
+              page: state.page +1
           };
+      case LIKE_POST_SUCCESS:
+        return {
+            ...state,
+            posts: state.posts.map(post =>
+                post.id === action.payload
+                    ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 }
+                    : post
+            ),
+        };
+      case BOOKMARK_POST_SUCCESS:
+        return {
+            ...state,
+            posts: state.posts.map(post =>
+                post.id === action.payload
+                    ? { ...post, isBookmarked: !post.isBookmarked }
+                    : post
+            ),
+        };
 
       case GET_POST_BY_ID_SUCCESS:
       case VIEW_SHARED_POST_SUCCESS:
@@ -145,12 +188,13 @@ const postReducer = (state = initialState, action) => {
       case VIEW_SHARED_POST_FAILURE:
       case UPDATE_POST_FAILURE:
       case LIKE_POST_FAILURE:
-      case UNLIKE_POST_FAILURE:
       case POST_COMMENT_FAILURE:
       case DELETE_COMMENT_FAILURE:
+      case FETCH_TAGS_FAILURE:
       case GET_ALL_COMMENTS_FAILURE:
-      case SAVE_POST_FAILURE:
-      case UNSAVE_POST_FAILURE:
+      case FETCH_POPULAR_TAGS_FAILURE:
+      case FETCH_TRENDING_TAGS_FAILURE:
+      case BOOKMARK_POST_FAILURE:
           return {
               ...state,
               loading: false,

@@ -1,127 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux'; // Import Redux hooks
+import { fetchProducts } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 const { width } = Dimensions.get('window');
 
 const ItemGridScreen = ({ navigation }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+    const dispatch = useDispatch(); // Initialize dispatch
+    const { products, loading } = useSelector(state => ({
+        products: state.products, // Adjust based on your state structure
+        loading: state.loading,
+    }));
 
-  // Use a flag to track if more items are loading
-  const [loadingMore, setLoadingMore] = useState(false);
+    // Fetch products on component mount
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
 
-  const fetchData = () => {
-    setLoading(true);
-    // Simulate fetching data
-    const DATA = [
-      {
-        title: "Recommended",
-        data: [
-          { title: 'Top-Handle Bags', image: require('../../assets/Bags.png'), rating: 4 },
-          { title: 'Crossbody Bags', image: require('../../assets/Bags.png'), rating: 5 },
-          { title: 'Tote Bags', image: require('../../assets/Bags.png'), rating: 3 },
-          { title: 'Shoulder Bags', image: require('../../assets/Bags.png'), rating: 4 },
-          { title: 'Fashion Backpacks', image: require('../../assets/Bags.png'), rating: 5 },
-          { title: 'Wallets & Holders', image: require('../../assets/Bags.png'), rating: 4 },
-        ],
-      },
-      {
-        title: "Latest in Store",
-        data: [
-          { title: 'Fashion Backpacks', image: require('../../assets/beauty.png'), rating: 4 },
-          { title: 'Wallets & Holders', image: require('../../assets/refurbished.png'), rating: 5 },
-          { title: 'Cross-Body Sling Bags', image: require('../../assets/Bags.png'), rating: 3 },
-          { title: 'Shoulder Bags', image: require('../../assets/refurbished.png'), rating: 4 },
-          { title: 'Waist Packs', image: require('../../assets/clothes.png'), rating: 2 },
-        ],
-      },
-      {
-        title: 'Mostly Purchased',
-        data: [
-          { title: 'Travel Bags', image: require('../../assets/Appliance.png'), rating: 5 },
-          { title: 'Suitcases', image: require('../../assets/genetic.png'), rating: 2 },
-          { title: 'Gym Bags', image: require('../../assets/earphones.png'), rating: 3 },
-        ],
-      },
-    ];
-    setData(prevData => [...prevData, ...DATA]);
-    setLoading(false);
-  };
+    // Handle item click to navigate to product details
+    const handleProductClick = (item) => {
+        navigation.navigate('productDetail', { product: item });
+    };
 
-  // Fetch data when the component mounts
-  useEffect(() => {
-    fetchData();
-  }, [page]);
+    // Handle "View All" button click for each section
+    const handleViewAllClick = (sectionTitle) => {
+        navigation.navigate('Products', { category: sectionTitle });
+    };
 
-  // Handle item click to navigate to product details
-  const handleProductClick = (item) => {
-    navigation.navigate('productDetail', { product: item });
-  };
-
-  // Handle "View All" button click for each section
-  const handleViewAllClick = (sectionTitle) => {
-    navigation.navigate('Products', { category: sectionTitle });
-  };
-
-  // Render each product item in the grid
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleProductClick(item)}>
-      <View style={styles.productContainer}>
-        <FastImage source={item.image || require('../../assets/Bags.png')}  resizeMode={FastImage.resizeMode.cover} style={styles.productImage} />
-        <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  // Render a section with products
-  const renderSection = ({ section }) => (
-    <View style={styles.sectionContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>{section.title}</Text>
-        <TouchableOpacity style={styles.viewAllContainer} onPress={() => handleViewAllClick(section.title)}>
-          <Text style={styles.viewAll}>View All</Text>
-          <MaterialIcons name="arrow-forward-ios" size={14} color="green" />
+    // Render each product item in the grid
+    const renderItem = ({ item }) => (
+        <TouchableOpacity onPress={() => handleProductClick(item)}>
+            <View style={styles.productContainer}>
+                <FastImage source={{ uri: item.image }} resizeMode={FastImage.resizeMode.cover} style={styles.productImage} />
+                <Text style={styles.productTitle}>{item.title}</Text>
+                <Text style={styles.rating}>{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</Text>
+            </View>
         </TouchableOpacity>
-      </View>
-      <FlatList
-        data={section.data}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
-        numColumns={3}
-        columnWrapperStyle={styles.columnWrapper}
-        scrollEnabled={false} // Prevent FlatList from taking over scroll
-      />
-    </View>
-  );
+    );
 
-  // Load more items when user scrolls to the end
-  const loadMore = () => {
-    if (!loadingMore) {
-      setLoadingMore(true);
-      setPage(prevPage => prevPage + 1);
-      setLoadingMore(false); // Reset flag
-    }
-  };
+    // Render a section with products
+    const renderSection = ({ section }) => (
+        <View style={styles.sectionContainer}>
+            <View style={styles.headerContainer}>
+                <Text style={styles.headerTitle}>{section.title}</Text>
+                <TouchableOpacity style={styles.viewAllContainer} onPress={() => handleViewAllClick(section.title)}>
+                    <Text style={styles.viewAll}>View All</Text>
+                    <MaterialIcons name="arrow-forward-ios" size={14} color="green" />
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                data={section.data}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => `${section.title}-${item.title}-${index}`}  
+                numColumns={3}
+                columnWrapperStyle={styles.columnWrapper}
+                scrollEnabled={false} // Prevent FlatList from taking over scroll
+            />
+        </View>
+    );
 
-  return (
-    <View style={styles.container}>
-      <SectionList
-        sections={data}
-        keyExtractor={(item, index) => `${item.title}-${index}`}  
-        renderSectionHeader={({ section }) => renderSection({ section })}
-        renderItem={() => null} // To avoid duplicate rendering in SectionList
-        stickySectionHeadersEnabled={false}
-        onEndReached={loadMore} // Trigger when user reaches end
-        onEndReachedThreshold={0.5} // Load more items when halfway through
-        ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="blue" /> : null}
-      />
-    </View>
-  );
+    // Prepare data for SectionList
+    const prepareData = () => {
+        return [
+            {
+                title: "Recommended",
+                data: products.filter(product => product.category === 'recommended'), // Adjust filtering based on your data
+            },
+            {
+                title: "Latest in Store",
+                data: products.filter(product => product.category === 'latest'), // Adjust filtering based on your data
+            },
+            {
+                title: 'Mostly Purchased',
+                data: products.filter(product => product.category === 'popular'), // Adjust filtering based on your data
+            },
+        ];
+    };
+
+    return (
+        <View style={styles.container}>
+            {loading ? (
+                <ActivityIndicator size="large" color="green" />
+            ) : (
+                <SectionList
+                    sections={prepareData()}
+                    keyExtractor={(item, index) => `${item.title}-${index}`}  
+                    renderSectionHeader={({ section }) => renderSection({ section })}
+                    renderItem={() => null} // To avoid duplicate rendering in SectionList
+                    stickySectionHeadersEnabled={false}
+                />
+            )}
+        </View>
+    );
 };
+
 
 const styles = StyleSheet.create({
   container: {

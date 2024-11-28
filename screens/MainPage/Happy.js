@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, SafeAreaView } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, Text, View,  Dimensions, Platform,StatusBar ,Animated } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LottieView from 'lottie-react-native';
 import JoinUsScreen from "../AboutApp/JoinUs";
+import { Color, FontFamily } from "../../GlobalStyles";
 import LeaderboardScreen from "../Squads/SquadsAward";
-import { FontFamily, Color } from "../../GlobalStyles";
-import FastImage from 'react-native-fast-image'; // Import FastImage
+import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserLeaderboard } from '../../redux/actions/leaderboard'; // Adjust path as necessary
 
 const Tab = createMaterialTopTabNavigator();
 const { width, height } = Dimensions.get('window');
@@ -30,26 +32,38 @@ const LeaderBoard = () => {
 };
 
 const LeaderboardContent = () => {
-  const [loading, setLoading] = useState(true);  // Add loading state
+  const dispatch = useDispatch();
+  const { userLeaderboard = [], loading, error, isFetchingMore } = useSelector(state => state.leaderboard);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const loadMoreRef = useRef(false);
 
+  const loadMoreUsers = useCallback(() => {
+    if (!loadMoreRef.current && !isFetchingMore) {
+      loadMoreRef.current = true;
+      dispatch(fetchUserLeaderboard(userLeaderboard.length));
+      setTimeout(() => (loadMoreRef.current = false), 1000); // Prevent rapid calls
+    }
+  }, [dispatch, isFetchingMore, userLeaderboard.length]);
+
+  const fetchLeaderboard = useCallback(() => {
+    dispatch(fetchUserLeaderboard());
+  }, [dispatch]);
+  
   useEffect(() => {
+    fetchLeaderboard();
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
+  }, [fetchLeaderboard, fadeAnim]);
+  
 
-    // Simulate a delay for loading (e.g., fetching data)
-    setTimeout(() => setLoading(false), 2000);  // Set loading to false after 2 seconds
-  }, [fadeAnim]);
-
-  // Show Lottie loading animation if loading is true
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/burst.json')}  // Update path to your Lottie animation
+          source={require('../../assets/lottie/burst.json')}
           autoPlay
           loop
           style={styles.loadingAnimation}
@@ -58,64 +72,66 @@ const LeaderboardContent = () => {
     );
   }
 
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          {error || "An unexpected error occurred. Please try again later."}
+        </Text>
+      </View>
+    );
+  }
+  
+
   return (
-    <Animated.ScrollView style={[styles.leaderboardContent, { opacity: fadeAnim }]}>
+    <Animated.View style={{ opacity: fadeAnim }}>
       {/* Top 3 Users */}
       <View style={styles.topUsersContainer}>
-        <UserTop
-          key={`top-2`}
-          position="2"
-          name="Yunus"
-          score="1397"
-          image={require("../../assets/man.avif")}
-          crown={false}
-          squad="Green Builder"
-          award="Trip to Paris"
-        />
-        <UserTop
-          key={`top-1`}
-          position="1"
-          name="Svetlana"
-          score="1463"
-          image={require("../../assets/women.avif")}
-          crown
-          squad="Nature Kenya"
-          award="Scholarship Award"
-          isCenter={true}
-        />
-        <UserTop
-          key={`top-3`}
-          position="3"
-          name="Raquel"
-          score="1351"
-          image={require("../../assets/anotherMan.avif")}
-          crown={false}
-          squad="Eco Warriors"
-          award="Hotel Reservation"
-        />
-      </View>
-
-      {/* Other Users */}
-      <View style={styles.otherUsersContainer}>
-        {[
-          { position: "4", name: "Andrea", score: "1296", squad: "Smarty Homes", award: "Bronze Medal", image: require("../../assets/man.avif") },
-          { position: "5", name: "Kristina", score: "1257", squad: "Eco Community Clean", award: "Certificate of Recognition", image: require("../../assets/anotherMan.avif") },
-          { position: "6", name: "Dayana", score: "1186", squad: "Green Wastes", award: "Participation Award", image: require("../../assets/women.avif") },
-          { position: "7", name: "Vitaly", score: "1103", squad: "Digital Green", award: "Certificate of Appreciation", image: require("../../assets/women.avif") },
-          { position: "8", name: "Marek", score: "1099", squad: "Green Guardians", award: "Honorable Mention", image: require("../../assets/man.avif") }
-        ].map((user) => (
-          <UserRow
-            key={`user-${user.name}-${user.position}`}
-            position={user.position}
-            name={user.name}
-            score={user.score}
-            image={user.image}
-            squad={user.squad}
-            award={user.award}
+        {userLeaderboard.slice(0, 3).map((user, index) => (
+          <UserTop
+            key={`top-${index}`}
+            position={(index + 1).toString()}
+            name={user.username}
+            score={user.points.toString()}
+            image={user.profilePicture ? { uri: user.profilePicture } : require("../../assets/defaultUserImage.png")}
+            crown={user.crown}
+            squad={user.squadName}
+            award={user.awardType}
+            isCenter={index === 0}
           />
         ))}
       </View>
-    </Animated.ScrollView>
+
+      {/* Other Users (FlatList for better performance) */}
+      <FlatList
+        data={userLeaderboard.slice(3)} // All users except the top 3
+        keyExtractor={(item, index) => `user-${item.username}-${index + 4}`}
+        renderItem={({ item, index }) => (
+          <UserRow
+            position={(index + 4).toString()}
+            name={item.username}
+            score={item.points.toString()}
+            image={item.profilePicture ? { uri: item.profilePicture } : require("../../assets/defaultUserImage.png")}
+            squad={item.squadName}
+            award={item.awardType}
+          />
+        )}
+        onEndReached={loadMoreUsers} // Fetch more data when the end of the list is reached
+        onEndReachedThreshold={0.5} // Trigger `onEndReached` when 50% away from the bottom
+        ListFooterComponent={
+          isFetchingMore && (
+            <View style={styles.loadingContainer}>
+              <LottieView
+                source={require("../../assets/lottie/rotatingBalls.json")}
+                autoPlay
+                loop
+                style={styles.loadingAnimation}
+              />
+            </View>
+          )
+        }
+      />
+    </Animated.View>
   );
 };
 
@@ -144,6 +160,7 @@ const UserRow = ({ position, name, score, image, squad, award }) => (
     <Text style={styles.userScore}>{score}</Text>
   </View>
 );
+
 
 const styles = StyleSheet.create({
   container: {

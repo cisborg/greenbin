@@ -1,4 +1,3 @@
-// src/redux/reducers/productReducer.js
 import {
     FETCH_PRODUCTS_REQUEST,
     FETCH_PRODUCTS_SUCCESS,
@@ -23,28 +22,45 @@ import {
     CANCEL_SUBSCRIPTION_REQUEST,
     CANCEL_SUBSCRIPTION_SUCCESS,
     CANCEL_SUBSCRIPTION_FAILURE,
+    UPDATE_PRODUCT_IMAGES, // New action type for updating images
 } from '../actions/actionTypes';
 
 const initialState = {
-    products: [],
-    productDetail: {
-        id: null,
-        title: '', 
-        price: 0,
-        originalPrice: 0,
-        image: '', 
-        rating: null, 
-        reviewCount: 0, 
-        brand: '', 
-        isBrandOfficial: false, 
-        isLocalDispatch: false, 
-        description: '',
-        quantity: 0,
-    },
+    products: [
+        {
+            id: null,
+            title: '', 
+            price: 0,
+            originalPrice: 0,
+            images: [], // Updated: Changed from a single image to an array of images
+            rating: null, 
+            reviewCount: 0, 
+            brand: '', 
+            isBrandOfficial: false, 
+            isLocalDispatch: false, 
+            description: '',
+            quantity: 0,
+            category: '',
+            itemsIncluded: [],
+            vendor: {
+                id: null,
+                name: '',
+                contact: '',
+                isVerified: false,
+            },
+            expirationDate: null,
+        },
+    ],
     loading: false,
     error: null,
     cart: [],
     subscriptions: [],
+    categories: {
+        Daily: [],
+        Weekly: [],
+        BiWeekly: [],
+        Monthly: [],
+    },
 };
 
 const productReducer = (state = initialState, action) => {
@@ -83,6 +99,7 @@ const productReducer = (state = initialState, action) => {
                 products: state.products.map(product =>
                     product.id === action.payload.id ? action.payload : product
                 ),
+                productDetail: action.payload, // Update productDetail if needed
             };
 
         case DELETE_PRODUCT_SUCCESS:
@@ -124,6 +141,16 @@ const productReducer = (state = initialState, action) => {
                 subscriptions: state.subscriptions.filter(sub => sub.productId !== action.payload),
             };
 
+        // New case for updating product images
+        case UPDATE_PRODUCT_IMAGES:
+            return {
+                ...state,
+                productDetail: {
+                    ...state.productDetail,
+                    images: action.payload, // Update images with the new array
+                },
+            };
+
         case FETCH_PRODUCTS_FAILURE:
         case CREATE_PRODUCT_FAILURE:
         case UPDATE_PRODUCT_FAILURE:
@@ -134,7 +161,7 @@ const productReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                error: action.payload,
+                error: action.payload, // Capture error message
             };
 
         default:

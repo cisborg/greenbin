@@ -4,9 +4,10 @@ import { StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../redux/actions/authentication'; 
+import { registerUser,validateReferralCode  } from '../../redux/actions/authentication'; 
 import { FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from "react-native-toast-message";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install react-native-vector-icons
 
 const { width, height } = Dimensions.get('window');
@@ -54,7 +55,8 @@ const RegisterPage = () => {
   const [promoCode, setPromoCode] = React.useState('');
   const [showPromoCodeInput, setShowPromoCodeInput] = React.useState(false);
   const [promoCodeError, setPromoCodeError] = React.useState('');
-  
+  const { validatedCode, error } = useSelector((state) => state.referral);
+
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -92,12 +94,35 @@ const RegisterPage = () => {
       return;
     }
 
-    if (promoCode) {
-      const isValidPromoCode = await checkPromoCode(promoCode);
-      if (!isValidPromoCode) {
-        setPromoCodeError('Promo code is invalid or already used.');
+    const handleValidateReferral = async () => {
+      if (!promoCode) {
+        setPromoCodeError('Please enter a referral code.');
+        return;
       }
+    
+      dispatch(validateReferralCode(promoCode));
+    
+    
+      if (error) {
+        setPromoCodeError('Invalid referral code.');
+        return;
+      }
+    
+      if (validatedCode) {
+        Toast.show({
+          type: 'success',
+          text1: 'Referral Code Valid!',
+          text2: 'You have been awarded 500 points! 🎉',
+        });
+      }
+    };
+
+     const promoCodeValid = showPromoCodeInput ? await handleValidateReferral() : true;
+    if (!promoCodeValid) {
+      setLoading(false);
+      return;
     }
+    
 
     try {
       dispatch(registerUser({ name, email, password, contact: selectedCountryCode + contact }));
@@ -111,10 +136,6 @@ const RegisterPage = () => {
     }
   };
 
-  const checkPromoCode = async (code) => {
-    const usedCodes = ['DAVID', 'DISCOUNT10']; 
-    return !usedCodes.includes(code);
-  };
 
   return (
     <SafeAreaView style={styles.registerPage}>

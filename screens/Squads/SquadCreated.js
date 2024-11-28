@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View, Text, TouchableOpacity, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal, Platform } from 'react-native';
+import React, { useState, useEffect , useRef} from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { StyleSheet, View, Text, TouchableOpacity, Platform, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
+import { fetchSquadData, deleteSquad } from '../../redux/actions/squads'; // Adjust the path as necessary
+import SquadMembers from './SquadMembers';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 const { width, height } = Dimensions.get('window');
 
 const SquadCreated = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+  const dispatch = useDispatch();
+  const bottomSheetRef = useRef(null);
+  const { squadData, loading: squadLoading, error } = useSelector(state => state.squad); // Adjust based on your state structure
   const [loading, setLoading] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,26 +26,9 @@ const SquadCreated = () => {
   const [ecoGreenActivities, setEcoGreenActivities] = useState([]);
   const [connects, setConnects] = useState(0); // Initial connects
 
-  const squadData = {
-    name: 'HEY',
-    handle: "@pollutiondaily",
-    createdDate: 'Oct 2024',
-    posts: 0,
-    views: 0,
-    upvotes: 0,
-    description: 'We initiate pilot monitoring, manage and control of pollution effluents!',
-    moderator: {
-      name: 'Vicky Mickey',
-      role: 'Admin',
-      avatar: 'https://example.com/avatar.jpg'
-    },
-    members: [
-      { name: 'Alice', avatar: 'https://example.com/alice.jpg' },
-      { name: 'Bob', avatar: 'https://example.com/bob.jpg' },
-      { name: 'Charlie', avatar: 'https://example.com/charlie.jpg' },
-    ],
-    notifications: 99,
-  };
+  useEffect(() => {
+    dispatch(fetchSquadData());
+  }, [dispatch]);
 
   useEffect(() => {
     const blink = () => {
@@ -68,22 +58,60 @@ const SquadCreated = () => {
     }, 2000);
   };
 
+  const handleTryAgain = () => {
+    dispatch(fetchSquadData());
+  };
+  
+  const handleAddModerator = () => {
+    bottomSheetRef.current?.expand(); // Open the Bottom Sheet
+  };
+
   const handleFeaturedClick = () => {
-    // Generate eco-green activities
     setEcoGreenActivities(['Plant Trees', 'Clean Beach', 'Recycle Waste']);
     setModalVisible(true);
   };
 
   const handleDeleteSquad = () => {
-    // Logic to delete the squad
+    // Assuming  the squad ID available in your component
+    const squadId = squadData.id; 
+
+    dispatch(deleteSquad(squadId));
     setDeleteModalVisible(false);
-    // Add further deletion logic here
-  };
+};
 
   const handleApproveMember = () => {
-    setConnects(connects + 1); // Logic to increase connects
+    setConnects(connects + 1);
     navigation.navigate('Approved');
   };
+
+  if (squadLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+          <Text style={styles.errorText}>Try Again</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -110,26 +138,24 @@ const SquadCreated = () => {
             <TouchableOpacity style={styles.feature} onPress={handleFeaturedClick}>
               <Text style={styles.featuredSquad}>Featured EcoGreen</Text>
             </TouchableOpacity>   
-            <TouchableOpacity onPress={()=> navigation.navigate('EventForm')}>
+            <TouchableOpacity onPress={() => navigation.navigate('EventForm')}>
               <Ionicons name="add-circle-outline" size={37} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
             </TouchableOpacity> 
-           
           </View>
           
-                {/* Posts, Comments, Upvotes Section */}
-        <View style={styles.statsContainer}>
-          <Text style={styles.statText}>
-            {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
-          </Text>
-          <Text style={styles.statText}>
-            {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
-          </Text>
-          <Text style={styles.statText}>
-            {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Likes
-          </Text>
-        </View>
+          {/* Posts, Comments, Upvotes Section */}
+          <View style={styles.statsContainer}>
+            <Text style={styles.statText}>
+              {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
+            </Text>
+            <Text style={styles.statText}>
+              {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
+            </Text>
+            <Text style={styles.statText}>
+              {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Likes
+            </Text>
+          </View>
 
-          
           <Animated.View style={{ opacity: fadeAnim }}>
             <Text style={styles.description}>{squadData.description}</Text>
           </Animated.View>
@@ -151,14 +177,14 @@ const SquadCreated = () => {
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.addAdminButton} accessibilityLabel="Add moderator">
+          <TouchableOpacity style={styles.addAdminButton} onPress={handleAddModerator} accessibilityLabel="Add moderator">
             <Ionicons name="person-add" size={24} color="green" />
           </TouchableOpacity>
         </View>
 
         {/* Members Container with Cascaded Images */}
         <View style={styles.membersContainer}>
-          <View style={styles.membersList}>
+          <View style={styles.membersList} onPress={handleAddModerator}>
             {squadData.members.map((member, index) => (
               <FastImage key={index} source={{ uri: member.avatar }}
               resizeMode={FastImage.resizeMode.cover}
@@ -187,20 +213,17 @@ const SquadCreated = () => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.invitationButton} onPress={()=> navigation.navigate('PostFeed')}>
-            <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
-            <Text style={styles.invitationText}>View Recent Posts</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.invitationButton} onPress={() => navigation.navigate('PostFeed')}>
+          <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
+          <Text style={styles.invitationText}>View Recent Posts</Text>
+        </TouchableOpacity>
         
-
         <View style={styles.postRestrictionsContainer}>
           <Fontisto name="unlocked" size={24} color="green" />
           <Text style={styles.postRestrictionsText}>Admins, moderators, and debated members can post</Text>
         </View>
         
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20,
-          marginBottom: 10, top: '-10%'
-         }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, marginBottom: 10, top: '-10%' }}>
           <TouchableOpacity style={styles.post} onPress={handleAddPost} accessibilityLabel="Add a post">
             {loading ? (
               <ActivityIndicator size="small" color="green" />
@@ -232,7 +255,6 @@ const SquadCreated = () => {
             <TouchableOpacity
               style={styles.submitButton}
               onPress={() => {
-                // Add submit logic here
                 setModalVisible(false);
               }}>
               <Text style={styles.submitButtonText}>Submit</Text>
@@ -250,7 +272,7 @@ const SquadCreated = () => {
           visible={deleteModalVisible}
           onRequestClose={() => setDeleteModalVisible(false)}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Are you sure you want to delete this squad?</Text>
+            <Text style={styles.modalTitle}>Delete this squad?</Text>
             <TouchableOpacity
               style={styles.submitButton}
               onPress={handleDeleteSquad}>
@@ -263,6 +285,16 @@ const SquadCreated = () => {
         </Modal>
        
       </ScrollView>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1} // Start closed
+        snapPoints={['25%', '50%']} // Define snap points
+        onChange={() => {}}
+      >
+        <SquadMembers setConnects={setConnects} closeBottomSheet={() => bottomSheetRef.current?.close()} />
+      </BottomSheet>
+
     </SafeAreaView>
   );
 };

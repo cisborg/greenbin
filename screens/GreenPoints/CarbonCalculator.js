@@ -5,122 +5,49 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Lottie from 'lottie-react-native'; // Import Lottie
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPurchaseTiers, fetchDonationTiers } from '../../redux/actions/userTiers'; // Adjust the path to your actions
 
 const screenWidth = Dimensions.get('window').width;
 
-// Refactored Pie Chart Data
-const pieData = {
-  activities: [
-    { name: "Waste Clean", population: 70, color: "#4CAF50" },
-    { name: "Tree Planting", population: 50, color: "#FF9800" },
-    { name: "Recycling", population: 40, color: "#2196F3" }
-  ],
-  donations: [
-    { name: "Bronze", population: 12, color: "#CD7F32" },
-    { name: "Silver", population: 5, color: "#9C27B0" },
-    { name: "Titanium", population: 3, color: "#00BCD4" },
-    { name: "Gold", population: 2, color: "#FFD700" },
-    { name: "Platinum", population: 1, color: "green" },
-    { name: "Diamond", population: 0, color: "blue" }
-  ],
-  purchases: [
-    { name: "Sprout", population: 6, color: "#9C27B0" },
-    { name: "Blossom", population: 2, color: "#FF5722" },
-    { name: "Canopy", population: 1, color: "#FF9800" },
-    { name: "Ecosystem", population: 1, color: "#4CAF50" },
-    { name: "Champion", population: 1, color: "#00BCD4" }
-  ]
-};
-
-// Function to calculate the percentage based on input tiers and focus value tiers
-const calculatePercentage = (userValues, focusValues) => {
-  let satisfiedTotal = 0;
-  const focusTotal = focusValues.reduce((acc, val) => acc + val, 0);
-
-  for (let i = 0; i < userValues.length; i++) {
-    if (userValues[i] > 0) {
-      satisfiedTotal += focusValues[i];
-    }
-  }
-
-  return (satisfiedTotal / focusTotal) * 100;
-};
-
-// Define focus value tiers
-const donationFocusValues = [6, 2, 1, 1, 1, 1]; // Tiers for donations
-const purchaseFocusValues = [6, 2, 1, 1, 1]; // Tiers for purchases
-
-// Calculate percentages for donations and purchases
-const donationPercentage = calculatePercentage(
-  [12, 5, 3, 2, 1, 0], // User donations
-  donationFocusValues
-);
-
-const purchasePercentage = calculatePercentage(
-  [6, 2, 1, 1, 1], // User purchases
-  purchaseFocusValues
-);
-
-// Calculate overall activity percentage
-const activitiesPercentage = pieData.activities.reduce((acc, item) => acc + item.population, 0) / 3; // Average activity percentage
-
-// Calculate final carbon calculator percentage
-const finalPercentage = (activitiesPercentage + donationPercentage + purchasePercentage) / 3;
-
-const monthlyThresholds = {
-  Jan: 210,
-  Feb: 250,
-  Mar: 190,
-  Apr: 220,
-  May: 300,
-  Jun: 180,
-  Jul: 240,
-  Aug: 210,
-  Sep: 260,
-  Oct: 230,
-  Nov: 200,
-  Dec: 250,
-};
-
-const maxThreshold = 300; // 100% max for the three categories
-
-const calculateUserThreshold = (total) => {
-  return (total / maxThreshold) * 100; // Convert to percentage
-};
-
-// Function to determine bar color based on value
-const getBarColor = (value) => {
-  if (value < 50) {
-    return '#A9A9A9'; // Gray for below 50%
-  } else if (value >= 50 && value <= 59) {
-    return '#FFA500'; // Orange for 50-59%
-  } else {
-    return '#4CAF50'; // Green for 60% and above
-  }
-};
-
-const CarbonFootprintCalculator = () => {
-  const [activeCard, setActiveCard] = useState('activities');
-  const [loading, setLoading] = useState(true); // Loading state
+const CarbonFootprintCalculator = ({ route }) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [activeCard, setActiveCard] = useState('activities');
+  const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  // Redux state for purchases and donations
+  const purchasesData = useSelector((state) => state.purchases); // Adjust based on your state structure
+  const donationsData = useSelector((state) => state.donations); // Adjust based on your state structure
+  const activitiesData = route.params.activities; // Get activities data from route params
+
   useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after delay
+    const fetchData = async () => {
+      await dispatch(fetchPurchaseTiers(userId)); // Fetch purchase tiers
+      await dispatch(fetchDonationTiers(userId)); // Fetch donation tiers
+      setLoading(false);
       Animated.timing(fadeAnim, {
-        toValue: 1, 
-        duration: 1000, 
+        toValue: 1,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
-    }, 2000); // Adjust the delay as needed
+    };
 
-    return () => clearTimeout(timer); // Clean up the timer
-  }, [fadeAnim]);
+    fetchData();
+  }, [dispatch, fadeAnim]);
 
-  const handleToggleCard = (card) => {
-    setActiveCard(card);
+  // Prepare pie chart data
+  const pieData = {
+    activities: activitiesData,
+    donations: donationsData.map((tier) => ({
+      name: tier.name,
+      population: tier.population,
+    })),
+    purchases: purchasesData.map((tier) => ({
+      name: tier.name,
+      population: tier.population,
+    })),
   };
 
   const getCurrentData = () => {
@@ -138,7 +65,31 @@ const CarbonFootprintCalculator = () => {
 
   const currentData = getCurrentData();
 
-  // Prepare bar chart data
+  // Calculate percentages and thresholds
+  const calculateMonthlyThresholds = (averagePercentage) => {
+    const baseThreshold = 200; // Base threshold value
+    const multiplier = averagePercentage / 100; // Scale based on average percentage
+
+    return {
+      Jan: baseThreshold * multiplier,
+      Feb: baseThreshold * multiplier,
+      Mar: baseThreshold * multiplier,
+      Apr: baseThreshold * multiplier,
+      May: baseThreshold * multiplier,
+      Jun: baseThreshold * multiplier,
+      Jul: baseThreshold * multiplier,
+      Aug: baseThreshold * multiplier,
+      Sep: baseThreshold * multiplier,
+      Oct: baseThreshold * multiplier,
+      Nov: baseThreshold * multiplier,
+      Dec: baseThreshold * multiplier,
+    };
+  };
+
+  const averagePercentage = (activitiesPercentage + donationPercentage + purchasePercentage) / 3;
+  const monthlyThresholds = calculateMonthlyThresholds(averagePercentage);
+
+  // Bar chart data
   const barData = {
     labels: Object.keys(monthlyThresholds),
     datasets: [{
@@ -148,7 +99,7 @@ const CarbonFootprintCalculator = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {loading ? ( // Show Lottie animation while loading
+      {loading ? (
         <View style={styles.loadingContainer}>
           <Lottie source={require('../../assets/lottie/rotatingBalls.json')} autoPlay loop style={styles.loadingAnimation} />
         </View>
@@ -166,7 +117,7 @@ const CarbonFootprintCalculator = () => {
               <PieChart
                 data={currentData}
                 width={screenWidth - 40}
-                height={150} // Reduced height
+                height={150}
                 chartConfig={{
                   backgroundColor: 'transparent',
                   color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
@@ -179,7 +130,7 @@ const CarbonFootprintCalculator = () => {
               />
               <View style={styles.legend}>
                 {currentData.map((item, index) => (
-                  <Text key={index} style={{ color: item.color, fontSize: 10 }}> {/* Reduced font size */}
+                  <Text key={index} style={{ color: item.color, fontSize: 10 }}>
                     {item.name}: {item.population}%
                   </Text>
                 ))}
@@ -227,7 +178,7 @@ const CarbonFootprintCalculator = () => {
               <BarChart
                 data={barData}
                 width={screenWidth - 20}
-                height={210} // Reduced height
+                height={210}
                 fromZero={true}
                 chartConfig={{
                   backgroundColor: 'yellow',
@@ -236,10 +187,8 @@ const CarbonFootprintCalculator = () => {
                   decimalPlaces: 0,
                   color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                   labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  barPercentage: 0.4,
-                  useShadowColorFromDataset: false,
                 }}
-                verticalLabelRotation={30}
+                style={styles.barChart}
               />
             </View>
           </ScrollView>

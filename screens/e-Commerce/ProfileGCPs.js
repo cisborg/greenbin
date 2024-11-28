@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/balanceActions'; // Import actions
+import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/userTiers'; // Import actions
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import FastImage from 'react-native-fast-image';

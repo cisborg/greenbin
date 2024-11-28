@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Modal,
   Animated,
-  Platform,
+  Platform,StatusBar
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';

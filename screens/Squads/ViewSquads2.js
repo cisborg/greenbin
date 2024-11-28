@@ -1,47 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import { StyleSheet, View, Text, Modal, Alert, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions ,Platform,StatusBar} from 'react-native';
-import { Color } from '../../GlobalStyles';
+import { useNavigation } from '@react-navigation/core';
+import { StyleSheet, View, Text, Modal, TouchableOpacity, Platform, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FastImage from 'react-native-fast-image';
+import { Color } from "../../GlobalStyles";
+
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSquadData, leaveSquad } from '../../redux/actions/squads'; // Adjust the path as necessary
+import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const ViewSquad2Screen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [isMember, setIsMember] = useState(false);
-
-  const { squadName } = route.params;
-  
+  const dispatch = useDispatch();
+  const { squadData, loading, error } = useSelector(state => state.squad); // Adjust based on your state structure
   const [isModalVisible, setModalVisible] = useState(false);
-
-  // Mock data for the squad
-  const squadData = {
-    name: squadName,
-    handle: "@pollutiondaily",
-    createdDate: 'Oct 2024',
-    posts: 309,
-    comments: 999,
-    upvotes: 1001,
-    description: 'We initiate pilot monitoring, manage and controlling pollution effluents!',
-    moderator: {
-      name: 'Vicky Mickey',
-      role: 'Admin',
-      avatar: 'https://example.com/avatar.jpg'
-    },
-    members: [
-      { name: 'Alice', avatar: 'https://example.com/alice.jpg' },
-      { name: 'Bob', avatar: 'https://example.com/bob.jpg' },
-      { name: 'Charlie', avatar: 'https://example.com/charlie.jpg' },
-    ],
-  };
+  const userId = useSelector(state => state.user.id); //
 
   // Animation for blinking description
   const [fadeAnim] = useState(new Animated.Value(1)); // Initial opacity of 1
+
+  useEffect(() => {
+    const squadId = squadData.id; // Replace with the actual squad ID
+    dispatch(fetchSquadData(squadId));
+  }, [dispatch]);
 
   useEffect(() => {
     const blink = () => {
@@ -50,17 +36,17 @@ const ViewSquad2Screen = () => {
         Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       ]).start();
     };
-  
+
     const interval = setInterval(() => {
       blink();
     }, 1000); // Blink every second
-  
+
     // Stop blinking after 4 seconds
     const timeout = setTimeout(() => {
       clearInterval(interval);
       fadeAnim.setValue(1); // Reset opacity to 1 after blinking
     }, 4000);
-  
+
     return () => {
       clearInterval(interval);
       clearTimeout(timeout);
@@ -68,18 +54,49 @@ const ViewSquad2Screen = () => {
   }, [fadeAnim]);
 
   const handleLeaveSquad = () => {
-    // Logic to leave the squad
-    Alert.alert('We regret seeing you leave!.');
-    setModalVisible(false); // Close the modal
+    const squadId = squadData.id; // Assuming squadData contains the ID
+    dispatch(leaveSquad(squadId, userId));
+    setModalVisible(false); // Close the modal after dispatching
   };
 
+  const handleTryAgain = () => {
+    dispatch(fetchSquadData());
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+          <Text style={styles.errorText}>{`${error} Try Again`}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         {/* Header Section */}
         <View style={styles.header}>
-         
           <FastImage
             source={{ uri: squadData.moderator.avatar }} 
             style={styles.squadAvatar} 
@@ -92,8 +109,8 @@ const ViewSquad2Screen = () => {
             <FontAwesome name="user-circle-o" size={24} color="orange" />
             <Text style={styles.featuredSquad}>Featured Activities</Text>
           </TouchableOpacity>   
+
           {/* Posts, Comments, Upvotes Section */}
-                    {/* Posts, Comments, Upvotes Section */}
           <View style={styles.statsContainer}>
             <Text style={styles.statText}>
               {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
@@ -106,7 +123,6 @@ const ViewSquad2Screen = () => {
             </Text>
           </View>
 
-          
           {/* Blinking Description */}
           <Animated.View style={{ opacity: fadeAnim }}>
             <Text style={styles.description}>
@@ -145,21 +161,17 @@ const ViewSquad2Screen = () => {
               resizeMode={FastImage.resizeMode.cover}
               style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
             ))}
-          <Text style={styles.totalMembers}>
-            {squadData.members.length >= 1000 ? `${(squadData.members.length / 1000).toFixed(1)}k` : squadData.members.length}
-          </Text>
-        </View>
+            <Text style={styles.totalMembers}>
+              {squadData.members.length >= 1000 ? `${(squadData.members.length / 1000).toFixed(1)}k` : squadData.members.length}
+            </Text>
+          </View>
           <View style={styles.actionsContainer}>
             <TouchableOpacity style={styles.icons} accessibilityLabel="Member check">
-            <FontAwesome6 name="user-check" size={23} color="green" />
-              
+              <FontAwesome6 name="user-check" size={23} color="green" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.icons} accessibilityLabel="Notifications">
               <Ionicons name="notifications-outline" size={25} color="#333" />
-             
             </TouchableOpacity>
-            <View style={styles.actionsContainer}>
-            {/* Ellipsis button with modal */}
             <TouchableOpacity 
               style={styles.icons} 
               accessibilityLabel="More options"
@@ -168,16 +180,14 @@ const ViewSquad2Screen = () => {
               <Ionicons name="ellipsis-vertical" size={25} color="#333" />
             </TouchableOpacity>
           </View>
-          </View>
         </View>
 
         {/* Invitation Link Section */}
         <View style={styles.invitationButton}>
-          <TouchableOpacity  accessibilityLabel="Invitation link">
+          <TouchableOpacity accessibilityLabel="Invitation link">
             <Ionicons name="person-add" size={20} color="white" style={styles.invitationIcon} />
           </TouchableOpacity>
           <Text style={styles.invitationText}>Invitation link</Text>
-
         </View>
 
         {/* Post Restrictions Section */}
@@ -185,6 +195,7 @@ const ViewSquad2Screen = () => {
           <Fontisto name="unlocked" size={24} color="green" />
           <Text style={styles.postRestrictionsText}>Admins, moderators, and debated members can post</Text>
         </View>
+        
         <TouchableOpacity style={styles.post} onPress={() => navigation.navigate('PostSquad')} accessibilityLabel="Add a post">
           <Text style={styles.addPost}>Add Post</Text>
         </TouchableOpacity>
@@ -198,7 +209,7 @@ const ViewSquad2Screen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Do you want to leave the squad ?</Text>
+            <Text style={styles.modalText}>Leaving this squad?</Text>
             <TouchableOpacity 
               style={styles.leaveButton} 
               onPress={handleLeaveSquad}
@@ -217,6 +228,7 @@ const ViewSquad2Screen = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -268,7 +280,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 13,
   },
-
+  fetchAgain: {
+    backgroundColor: 'green',
+    borderRadius: 14,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    left: '15%',
+    width: width < 400 ? '10%': '15%'
+  },
+  errorText: {
+    fontSize: 14,
+    color: 'white',
+    margin: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
+  },
   featuredSquad: {
     fontSize: 16,
     fontWeight: 'bold',

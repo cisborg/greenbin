@@ -6,7 +6,7 @@ import {
     RATE_VENDOR,
     RATE_VENDOR_SUCCESS,
     RATE_VENDOR_FAILURE
-  } from './actionTypes';
+  } from '../actions/actionTypes';
   
   // Initial state
   const initialState = {
@@ -20,7 +20,7 @@ import {
         points: 0,
         reason: '',
         vendorId: null,
-        stars: rating
+        stars: 0
     },
     loadingProductRating: false,
     loadingVendorRating: false,

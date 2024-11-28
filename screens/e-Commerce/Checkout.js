@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, S
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from'react-redux';
-import { fetchTiers } from '../../redux/actions/tierActions';
+import { fetchTiers } from '../../redux/actions/userTiers';
 
 const Checkout = ({ route }) => {
   const navigation = useNavigation();

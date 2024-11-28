@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { FontFamily, Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/core';
 import { Dimensions } from 'react-native';
 import Lottie from 'lottie-react-native'; // Import Lottie
+import { Color , FontFamily } from '../../GlobalStyles'; // Import your color palette
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { purchaseProduct } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 const { width, height } = Dimensions.get('window');
 
 const WifiPlans = () => {
     const navigation = useNavigation();
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const dispatch = useDispatch(); // Initialize dispatch
+    const loading = useSelector(state => state.product.loading); // Access loading state from Redux
     const [loadingStates, setLoadingStates] = useState({}); // State to manage loading for each plan
 
     const plans = [
@@ -20,6 +23,7 @@ const WifiPlans = () => {
             validity: '2 Weeks',
             price: 'Green Points - 15000',
             type: '2 Weeks',
+            id: 1 // Add a unique ID for each plan
         },
         {
             title: 'Amazing EcoConnect',
@@ -27,6 +31,7 @@ const WifiPlans = () => {
             validity: '3 Weeks',
             price: 'Green Points - 20000',
             type: '3 Weeks',
+            id: 2
         },
         {
             title: 'Super Squad Network',
@@ -34,6 +39,7 @@ const WifiPlans = () => {
             validity: 'Monthly Rate',
             price: 'Green Points - 24500',
             type: 'Monthly',
+            id: 3
         },
         {
             title: 'Circular Economy',
@@ -41,6 +47,7 @@ const WifiPlans = () => {
             validity: 'Monthly Rate',
             price: 'Green Points - 30000',
             type: 'Monthly',
+            id: 4
         },
         {
             title: 'Green Mifi Renewables',
@@ -48,6 +55,7 @@ const WifiPlans = () => {
             validity: '2 Months',
             price: 'Green Points - 50000',
             type: '2 Months',
+            id: 5
         },
         {
             title: 'Super Go Games',
@@ -55,44 +63,41 @@ const WifiPlans = () => {
             validity: '2 Months',
             price: 'Green Points - 45000',
             type: '2 Months',
+            id: 6
         },
     ];
 
-    useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-        }).start();
-    }, [fadeAnim]);
+    const handlePurchase = async (plan) => {
+        setLoadingStates(prev => ({ ...prev, [plan.title]: true }));
+        try {
+            await dispatch(purchaseProduct(plan.id, 1)); // Assuming quantity is always 1
+            navigation.navigate('BuyWifiSuccessful', { 
+                packaged: plan.benefits, 
+                valid: plan.validity, 
+                price: plan.price 
+            });
+        } catch (error) {
+            console.error(error); // Handle error appropriately
+        } finally {
+            setLoadingStates(prev => ({ ...prev, [plan.title]: false }));
+        }
+    };
 
     const renderPlansByType = (type) => {
         return plans
             .filter(plan => plan.type === type)
-            .map((plan, index) => (
+            .map((plan) => (
                 <View key={plan.title} style={styles.card}>
                     <Text style={styles.planTitle}>{plan.title}</Text>
                     <Text style={styles.benefits}>{plan.benefits}</Text>
                     <Text style={styles.validity}>Validity: {plan.validity}</Text>
                     <Text style={styles.price}>{plan.price}</Text>
                     <TouchableOpacity 
-                        onPress={() => {
-                            // Set loading state for this specific plan
-                            setLoadingStates(prev => ({ ...prev, [plan.title]: true }));
-                            setTimeout(() => {
-                                navigation.navigate('BuyWifiSuccessful', { 
-                                    packaged: plan.benefits, 
-                                    valid: plan.validity, 
-                                    price: plan.price 
-                                });
-                                // Reset loading state after navigation
-                                setLoadingStates(prev => ({ ...prev, [plan.title]: false }));
-                            }, 300);
-                        }}
-                        disabled={loadingStates[plan.title]} // Disable button when loading for this plan
+                        onPress={() => handlePurchase(plan)} // Call the purchase handler
+                        disabled={loading || loadingStates[plan.title]} // Disable button when loading for this plan or globally
                     >
                         <View style={styles.proceed}>
-                            {loadingStates[plan.title] ? (
+                            {loadingStates[plan.title] || loading ? (
                                 <Lottie source={require('../../assets/lottie/bouncing_check.json')} autoPlay loop style={styles.loadingAnimation} /> // Show Lottie animation when loading
                             ) : (
                                 <Text style={styles.cardText}>Confirm</Text>
@@ -125,6 +130,7 @@ const WifiPlans = () => {
         </SafeAreaView>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

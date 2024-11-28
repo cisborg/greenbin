@@ -1,38 +1,12 @@
-// components/FlashSaleSection.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
-
-// Sample data for products
-const products = [
-  {
-    id: '1',
-    name: 'Bra',
-    price: 'KSh 531',
-    imageUrl: 'https://yourcdn.com/image_bra.jpg', // replace with actual image
-  },
-  {
-    id: '2',
-    name: 'Hair Bonnet',
-    price: 'KSh 199',
-    imageUrl: 'https://yourcdn.com/image_bonnet.jpg', // replace with actual image
-  },
-  {
-    id: '3',
-    name: 'Wig',
-    price: 'KSh 687',
-    imageUrl: 'https://yourcdn.com/image_wig.jpg', // replace with actual image
-  },
-  {
-    id: '4',
-    name: 'Earrings',
-    price: 'KSh 335',
-    imageUrl: 'https://yourcdn.com/image_earrings.jpg', // replace with actual image
-  },
-];
+import LottieView from 'lottie-react-native'; // Import Lottie
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { fetchProducts } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 // Countdown timer function
 const CountdownTimer = () => {
@@ -64,6 +38,7 @@ const CountdownTimer = () => {
 
   return <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>;
 };
+
 const ProductItem = ({ item }) => (
   <View style={styles.productItem}>
     <FastImage source={{ uri: item.imageUrl }} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
@@ -74,26 +49,49 @@ const ProductItem = ({ item }) => (
 // Main flash sale component
 const FlashSale = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch(); // Initialize dispatch
+
+  // Get products and loading state from Redux
+  const { products, loading } = useSelector(state => ({
+    products: state.product.products, // Adjust based on your state structure
+    loading: state.product.loading,
+  }));
+
+  // Fetch products when component mounts
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
   return (
     <View style={styles.container}>
       {/* Flash Sale Header */}
-      <TouchableOpacity style={styles.header} onPress={()=> navigation.navigate('SalesList')}>
+      <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('SalesList')}>
         <Text style={styles.flashSaleText}> Fl⚡sh Sale Granary</Text>
         <CountdownTimer />
         <AntDesign name="right" size={24} color="green" />
       </TouchableOpacity>
 
-      {/* Horizontal Scrollable List */}
-      <FlatList
-        data={products}
-        renderItem={({ item }) => <ProductItem item={item} />}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+      {/* Loading Indicator */}
+      {loading ? (
+          <LottieView
+          source={require('../../assets/lottie/gift.json')} // Replace with your Lottie file path
+          autoPlay
+          loop
+          style={styles.loadingAnimation}
+          />      ) : (
+        // Horizontal Scrollable List
+        <FlatList
+          data={products}
+          renderItem={({ item }) => <ProductItem item={item} />}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -111,6 +109,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     paddingHorizontal: 5
+  },
+  loadingAnimation: {
+    width: 40, // Adjust width as needed
+    height: 40, // Adjust height as needed
+    alignSelf: 'center',
   },
   flashSaleText: {
     fontSize: 14,

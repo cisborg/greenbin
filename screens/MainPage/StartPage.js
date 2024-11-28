@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Animated, StyleSheet, Text, View, Easing, TouchableOpacity, Dimensions } from "react-native";
+import { Animated, StyleSheet, Text, View, Easing, TouchableOpacity, Dimensions,Platform } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import FastImage from 'react-native-fast-image'; // Import FastImage

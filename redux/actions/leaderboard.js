@@ -26,15 +26,6 @@ export const fetchSquadLeaderboard = () => async (dispatch) => {
 };
 
 // Fetch user leaderboard action
-export const fetchUserLeaderboard = () => async (dispatch) => {
-    dispatch({ type: FETCH_USER_LEADERBOARD_REQUEST });
-    try {
-        const response = await api.get('/api/leaderboard/user'); // API call to fetch user leaderboard
-        dispatch({ type: FETCH_USER_LEADERBOARD_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: FETCH_USER_LEADERBOARD_FAILURE, payload: error.message });
-    }
-};
 
 // Update squad leaderboard action
 export const updateSquadLeaderboard = (leaderboardData) => async (dispatch) => {
@@ -46,6 +37,16 @@ export const updateSquadLeaderboard = (leaderboardData) => async (dispatch) => {
         dispatch({ type: UPDATE_SQUAD_LEADERBOARD_FAILURE, payload: error.message });
     }
 };
+export const fetchUserLeaderboard = () => async (dispatch) => {
+    dispatch({ type: FETCH_USER_LEADERBOARD_REQUEST });
+    try {
+        const response = await api.get('/api/leaderboard/user'); // API call to fetch user leaderboard
+        dispatch({ type: FETCH_USER_LEADERBOARD_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_USER_LEADERBOARD_FAILURE, payload: error.message });
+    }
+};
+
 
 // Update user leaderboard action
 export const updateUserLeaderboard = (leaderboardData) => async (dispatch) => {
@@ -57,3 +58,22 @@ export const updateUserLeaderboard = (leaderboardData) => async (dispatch) => {
         dispatch({ type: UPDATE_USER_LEADERBOARD_FAILURE, payload: error.message });
     }
 };
+
+export const fetchMoreUsers = () => async (dispatch, getState) => {
+    try {
+      dispatch({ type: "FETCH_MORE_USERS_REQUEST" });
+  
+      const { userLeaderboard } = getState().leaderboard;
+      const response = await api.get(`/leaderboard?offset=${offset}&limit=20`);   
+      dispatch({
+        type: "FETCH_MORE_USERS_SUCCESS",
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "FETCH_MORE_USERS_FAILURE",
+        payload: error.response?.data?.message || "Failed to load more users",
+      });
+    }
+  };
+  

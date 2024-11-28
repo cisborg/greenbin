@@ -20,6 +20,14 @@ import {
     UPDATE_CHAT_STATUS_REQUEST,
     UPDATE_CHAT_STATUS_SUCCESS,
     UPDATE_CHAT_STATUS_FAILURE,
+    RECEIVE_MESSAGE,
+    SET_ONLINE_STATUS_REQUEST,
+    SET_ONLINE_STATUS_FAILURE,
+    SET_ONLINE_STATUS_SUCCESS,
+    ATTACH_FILE_REQUEST,
+    ATTACH_FILE_FAILURE,
+    ATTACH_FILE_SUCCESS,
+
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
 
@@ -97,5 +105,45 @@ export const updateChatStatus = (chatId, status) => async (dispatch) => {
         dispatch({ type: UPDATE_CHAT_STATUS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_CHAT_STATUS_FAILURE, payload: error.message });
+    }
+};
+
+// Action to receive a message (could be used with WebSocket or long polling)
+export const receiveMessage = (chatId, message) => (dispatch) => {
+    dispatch({ type: RECEIVE_MESSAGE, payload: { chatId, message } });
+};
+
+// Action to set the user's online status
+export const setOnlineStatus = (userId, status) => async (dispatch) => {
+    dispatch({ type: SET_ONLINE_STATUS_REQUEST });
+    try {
+        await api.put(`/api/users/${userId}/status`, { status });
+        dispatch({ type: SET_ONLINE_STATUS_SUCCESS, payload: { userId, status } });
+    } catch (error) {
+        dispatch({ type: SET_ONLINE_STATUS_FAILURE, payload: error.message });
+    }
+};
+
+// Action to update the message status when a user comes back online
+export const updateMessageStatusOnReconnect = (chatId, messageId) => async (dispatch) => {
+    dispatch({ type: UPDATE_MESSAGE_STATUS_REQUEST });
+    try {
+        const response = await api.put(`/api/chats/${chatId}/messages/${messageId}/status`, { status: 'read' });
+        dispatch({ type: UPDATE_MESSAGE_STATUS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: UPDATE_MESSAGE_STATUS_FAILURE, payload: error.message });
+    }
+};
+
+// Action to attach a file
+export const attachFile = (chatId, file) => async (dispatch) => {
+    dispatch({ type: ATTACH_FILE_REQUEST });
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await api.post(`/api/chats/${chatId}/attachments`, formData);
+        dispatch({ type: ATTACH_FILE_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: ATTACH_FILE_FAILURE, payload: error.message });
     }
 };

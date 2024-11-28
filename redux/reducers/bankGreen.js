@@ -6,7 +6,7 @@ import {
     FETCH_TOKEN_BALANCE_REQUEST,
     FETCH_TOKEN_BALANCE_SUCCESS,
     FETCH_TOKEN_BALANCE_FAILURE,
-  } from '../actions/balanceActions';
+  } from '../actions/actionTypes';
   
   const initialState = {
     balance: 0,

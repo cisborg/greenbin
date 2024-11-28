@@ -1,31 +1,27 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
-import { Color } from '../../GlobalStyles';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView,  Dimensions } from 'react-native';
+import LottieView from 'lottie-react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { Color } from "../../GlobalStyles";
+import { fetchTags } from '../../redux/actions/Posts';
 
-const availableTags = [
-  'ai', 'architecture', 'cloud', 'crypto', 'database', 'devops',
-  'elixir', 'gaming', 'golang', 'java', 'javascript', 'machine-learning',
-  'mobile', 'open-source', 'python', 'react', 'ruby', 'rust',
-  'security', 'tech-news', 'testing', 'tools', 'genetics', 'bioinformatics', 'robotics',
-  'environment-IoT', 'environment-liquidity', 'financial-engineering', 'ecology-software',
-   'biotechnology',
-  'byte-carbon', 'blockchain-technology','quantum-technology', 
-  'neuromorphic', 'design', 'animal-husbandry', 
-  
-];
+
+const { width, height } = Dimensions.get('window');
 
 const TagSelection = () => {
+  const dispatch = useDispatch();
+  const { tags, loading, error } = useSelector((state) => state.tags);
+
   const [selectedTags, setSelectedTags] = useState([]);
   const [feedName, setFeedName] = useState('');
 
+  useEffect(() => {
+    dispatch(fetchTags());
+  }, [dispatch]);
+
+  const handleTryAgain = () => {
+    dispatch(fetchTags());
+  };
   const toggleTag = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter(t => t !== tag));
@@ -35,7 +31,7 @@ const TagSelection = () => {
   };
 
   // Filter tags based on the feed name input
-  const filteredTags = availableTags.filter(tag =>
+  const filteredTags = tags.filter(tag =>
     tag.toLowerCase().includes(feedName.toLowerCase())
   );
 
@@ -50,6 +46,35 @@ const TagSelection = () => {
       <Text style={styles.tagText}>{item}</Text>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+        <Text style={styles.errorText}>{`${error} Try Again`}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -69,10 +94,10 @@ const TagSelection = () => {
           scrollEnabled={false}
         />
       </ScrollView>
-     
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -90,6 +115,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     marginBottom: 10,
     marginTop: 15
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
   },
   tagList: {
     flexDirection: 'row',

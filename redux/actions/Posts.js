@@ -26,9 +26,6 @@ import {
     LIKE_POST_REQUEST,
     LIKE_POST_SUCCESS,
     LIKE_POST_FAILURE,
-    UNLIKE_POST_REQUEST,
-    UNLIKE_POST_SUCCESS,
-    UNLIKE_POST_FAILURE,
     POST_COMMENT_REQUEST,
     POST_COMMENT_SUCCESS,
     POST_COMMENT_FAILURE,
@@ -38,12 +35,18 @@ import {
     GET_ALL_COMMENTS_REQUEST,
     GET_ALL_COMMENTS_SUCCESS,
     GET_ALL_COMMENTS_FAILURE,
-    SAVE_POST_REQUEST,
-    SAVE_POST_SUCCESS,
-    SAVE_POST_FAILURE,
-    UNSAVE_POST_REQUEST,
-    UNSAVE_POST_SUCCESS,
-    UNSAVE_POST_FAILURE,
+    BOOKMARK_POST_REQUEST,
+    BOOKMARK_POST_SUCCESS,
+    BOOKMARK_POST_FAILURE,
+    FETCH_TAGS_REQUEST,
+    FETCH_TAGS_SUCCESS,
+    FETCH_TAGS_FAILURE,
+    FETCH_TRENDING_TAGS_REQUEST,
+    FETCH_TRENDING_TAGS_SUCCESS,
+    FETCH_TRENDING_TAGS_FAILURE,
+    FETCH_POPULAR_TAGS_REQUEST,
+    FETCH_POPULAR_TAGS_SUCCESS,
+    FETCH_POPULAR_TAGS_FAILURE,
 } from './actionTypes';
 
 // Create Post action
@@ -55,6 +58,47 @@ export const createPost = (postData) => async (dispatch) => {
     } catch (error) {
         dispatch({ type: CREATE_POST_FAILURE, payload: error.message });
     }
+};
+
+export const fetchTags = () => async (dispatch) => {
+    dispatch({ type: FETCH_TAGS_REQUEST });
+
+    try {
+    // Make the API call to fetch the tags
+    const response = await api.get('/api/tags');
+    const tags = response.data;
+
+    dispatch({ type: FETCH_TAGS_SUCCESS, payload: tags });
+    } catch (error) {
+    dispatch({ type: FETCH_TAGS_FAILURE, payload: error.message });
+    }
+};
+
+export const fetchTrendingTags = () => async (dispatch) => {
+    dispatch({ type: FETCH_TRENDING_TAGS_REQUEST });
+  
+    try {
+      // Make the API call to fetch the trending tags
+      const response = await api.get('/api/tags/trending');
+      const trendingTags = response.data;
+  
+      dispatch({ type: FETCH_TRENDING_TAGS_SUCCESS, payload: trendingTags });
+    } catch (error) {
+      dispatch({ type: FETCH_TRENDING_TAGS_FAILURE, payload: error.message });
+    }
+  };
+  export const fetchPopularTags = () => async (dispatch) => {
+  dispatch({ type: FETCH_POPULAR_TAGS_REQUEST });
+
+  try {
+    // Make the API call to fetch the popular tags
+    const response = await api.get('/api/tags/popular');
+    const popularTags = response.data;
+
+    dispatch({ type: FETCH_POPULAR_TAGS_SUCCESS, payload: popularTags });
+  } catch (error) {
+    dispatch({ type: FETCH_POPULAR_TAGS_FAILURE, payload: error.message });
+  }
 };
 
 // Delete Post action
@@ -80,10 +124,10 @@ export const sharePost = (postId) => async (dispatch) => {
 };
 
 // Get All Posts action
-export const getAllPosts = () => async (dispatch) => {
+export const getAllPosts = (page =1 ) => async (dispatch) => {
     dispatch({ type: GET_ALL_POSTS_REQUEST });
     try {
-        const response = await api.get('/api/get-all-posts');
+        const response = await api.get(`/api/get-all-posts?page=${page}`);
         dispatch({ type: GET_ALL_POSTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_POSTS_FAILURE, payload: error.message });
@@ -134,16 +178,7 @@ export const likePost = (postId) => async (dispatch) => {
     }
 };
 
-// Unlike Post action
-export const unlikePost = (postId) => async (dispatch) => {
-    dispatch({ type: UNLIKE_POST_REQUEST });
-    try {
-        const response = await api.post(`/api/unlike-post`, { postId });
-        dispatch({ type: UNLIKE_POST_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UNLIKE_POST_FAILURE, payload: error.message });
-    }
-};
+
 
 // Post Comment action
 export const postComment = (postId, commentData) => async (dispatch) => {
@@ -179,23 +214,14 @@ export const getAllComments = (postId) => async (dispatch) => {
 };
 
 // Save Post action
-export const savePost = (postId) => async (dispatch) => {
-    dispatch({ type: SAVE_POST_REQUEST });
+export const bookmarkPost = (postId) => async (dispatch) => {
+    dispatch({ type: BOOKMARK_POST_REQUEST });
     try {
         const response = await api.post(`/api/save-post`, { postId });
-        dispatch({ type: SAVE_POST_SUCCESS, payload: response.data });
+        dispatch({ type: BOOKMARK_POST_SUCCESS, payload: response.data });
     } catch (error) {
-        dispatch({ type: SAVE_POST_FAILURE, payload: error.message });
+        dispatch({ type: BOOKMARK_POST_FAILURE, payload: error.message });
     }
 };
 
 // Unsaved Post action
-export const unsavePost = (postId) => async (dispatch) => {
-    dispatch({ type: UNSAVE_POST_REQUEST });
-    try {
-        const response = await api.post(`/api/unsave-post`, { postId });
-        dispatch({ type: UNSAVE_POST_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UNSAVE_POST_FAILURE, payload: error.message });
-    }
-};

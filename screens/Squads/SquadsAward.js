@@ -1,53 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
 import FastImage from 'react-native-fast-image';
-
-const squadsData = [
-  {
-    id: '1',
-    name: 'Eco Warriors',
-    logo: require('../../assets/greenBin.png'), // Replace with actual logo
-    points: 1500,
-    activitiesCompleted: 30,
-    memberCount: 25,
-    rank: 'Reached a milestone of 72% threshold',
-  },
-  {
-    id: '2',
-    name: 'Green Guardians',
-    logo: require('../../assets/greenBin.png'), // Replace with actual logo
-    points: 1300,
-    activitiesCompleted: 8,
-    memberCount: 20,
-    rank: 'Reached a milestone of 68% threshold',
-  },
-  {
-    id: '3',
-    name: 'Digital Green',
-    logo: require('../../assets/greenBin.png'), // Replace with actual logo
-    points: 1300,
-    activitiesCompleted: 7,
-    memberCount: 20,
-    rank: 'Reached a milestone of 64% threshold',
-  },
-  {
-    id: '4',
-    name: 'Nature Custodians',
-    logo: require('../../assets/greenBin.png'), // Replace with actual logo
-    points: 1300,
-    activitiesCompleted: 6,
-    memberCount: 20,
-    rank: 'Reached a milestone of 60% threshold',
-  },
-];
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { requestJoinSquad } from '../../redux/actions/squads'
+import { fetchSquadLeaderboard } from '../../redux/actions/leaderboard'; // Adjust the path as necessary
 
 const LeaderboardScreen = () => {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [animValue] = useState(new Animated.Value(0));
   const [pendingSquads, setPendingSquads] = useState({}); // Track pending states for each squad
+  const squadsLeaderboard = useSelector((state) => state.squad.leaderboard); // Adjust according to your state structure
+  const loading = useSelector((state) => state.squad.loading); // Loading state from Redux
+  const userId = useSelector((state) => state.user.id); // Get user ID from Redux state
 
   useEffect(() => {
     // Start animation on mount
@@ -56,17 +22,18 @@ const LeaderboardScreen = () => {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [animValue]);
+
+    // Fetch squad leaderboard data
+    dispatch(fetchSquadLeaderboard());
+  }, [dispatch]);
 
   const handleJoin = (id) => {
-    // Show pending state and start loading spinner
     setPendingSquads((prev) => ({ ...prev, [id]: true }));
 
-    // Simulate API call with a timeout
-    setTimeout(() => {
-      // Set squad as permanently pending
+    // Dispatch the request to join the squad using the dynamic user ID
+    dispatch(requestJoinSquad(id, userId)).then(() => {
       setPendingSquads((prev) => ({ ...prev, [id]: 'pending' }));
-    }, 400);
+    });
   };
 
   const renderSquadItem = ({ item, index }) => (
@@ -100,12 +67,16 @@ const LeaderboardScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ opacity: animValue }}>
-        <FlatList
-          data={squadsData}
-          renderItem={renderSquadItem}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color="#000" />
+        ) : (
+          <FlatList
+            data={squadsLeaderboard}
+            renderItem={renderSquadItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </Animated.View>
       <FastImage
         style={[styles.shapesIcon1, styles.vectorIconLayout]}
@@ -115,6 +86,7 @@ const LeaderboardScreen = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

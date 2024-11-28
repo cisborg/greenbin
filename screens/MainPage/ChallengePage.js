@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  Dimensions,
+  Dimensions,Platform,StatusBar
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -19,19 +19,26 @@ import { Color } from '../../GlobalStyles';
 import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../../redux/actions/products';
+
 
 const { width, height } = Dimensions.get('window');
 
 const ChallengePage = () => {
+  const dispatch = useDispatch();
+  const { products , productsLoading } = useSelector(state => state.products);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [data, setData] = useState(categories);
-  const [loading, setLoading] = useState(false);
+  const categories = sidebarCategories; // Sidebar categories array
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-
+  const [currentPage, setCurrentPage] = useState(1); // State for pagination
+  const [loadingMore, setLoadingMore] = useState(false); // Local loading state fo
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const totalProductsCount = products?.length || 0; // Example fallback
+
   const bannerImages = [
     { uri: "https://your-image-url.com/greenFriday.png" },
     { uri: "https://your-image-url.com/greenPoints.png" },
@@ -45,18 +52,26 @@ const ChallengePage = () => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-
+  
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
     }, 4000);
-
-    return () => clearInterval(interval);
-  }, [fadeAnim]);
+  
+    return () => clearInterval(interval); // Clear interval on unmount
+  }, [fadeAnim, bannerImages.length]);
+  
 
   const handleSidebarItemPress = (categoryName) => {
     setSelectedCategory(categoryName);
     onRefresh();
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchProducts());
+    };
+    fetchData();
+  }, [dispatch]);
 
   const handleHomePress = () => {
     setSelectedCategory(null);
@@ -64,31 +79,32 @@ const ChallengePage = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await dispatch(fetchProducts());
     setRefreshing(false);
   };
+  
 
   const loadMoreItems = async () => {
-    if (!loading && data.length < categories.length) {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setData(prevData => [...prevData, ...categories]);
-      setLoading(false);
+    if (!loadingMore && filteredProducts.length < totalProductsCount) {
+      setLoadingMore(true);
+      await dispatch(fetchProducts(currentPage + 1)); // Fetch next page
+      setCurrentPage(prevPage => prevPage + 1); // Increment page
+      setLoadingMore(false);
     }
   };
+  
 
-  const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={() => navigation.navigate('Products')}>
-      <FastImage source={item.image} style={styles.categoryImage} resizeMode={FastImage.resizeMode.cover} />
-      <Text style={styles.categoryText}>{item.name}</Text>
+
+  const renderProductItem = ({ item }) => (
+    <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('ProductDetails', { productId: item.id })}>
+      <FastImage source={{ uri: item.image }} style={styles.productImage} resizeMode={FastImage.resizeMode.COVER} />
+      <Text style={styles.productText}>{item.name}</Text>
     </TouchableOpacity>
   );
 
-  const renderListHeader = () => (
+  const renderListHeader = useMemo(() =>  (
     <>
       <View style={styles.header}>
         <TextInput
@@ -106,7 +122,7 @@ const ChallengePage = () => {
         <FastImage
           source={bannerImages[currentImageIndex]}
           style={styles.bannerImage}
-          resizeMode={FastImage.resizeMode.cover}
+          resizeMode={FastImage.resizeMode.COVER}
         />
         <View style={styles.dotsContainer}>
           {bannerImages.map((_, index) => (
@@ -121,7 +137,7 @@ const ChallengePage = () => {
         </View>
       </View>
     </>
-  );
+  ), [searchQuery, currentImageIndex]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -129,11 +145,11 @@ const ChallengePage = () => {
         <View style={styles.container}>
           <View style={styles.sidebar}>
             <TouchableOpacity style={styles.homeContainer} onPress={handleHomePress}>
-              <FastImage source={require('../../assets/menu.jpg')} style={styles.homeImage} resizeMode={FastImage.resizeMode.contain} />
+              <FastImage source={require('../../assets/menu.jpg')} style={styles.homeImage} resizeMode={FastImage.resizeMode.CONTAIN} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
             <FlatList // Use FlatList for sidebar items
-              data={sidebarCategories}
+              data={categories}
               keyExtractor={(item) => item.name}
               renderItem={({ item }) => (
                 <TouchableOpacity
@@ -160,19 +176,20 @@ const ChallengePage = () => {
               />
             ) : (
               <FlashList
-                data={filteredCategories}
-                renderItem={renderCategoryItem}
-                keyExtractor={(item, index) => index.toString()}
+                data={filteredProducts}
+                renderItem={renderProductItem}
+                keyExtractor={(item) => item.id.toString()}
                 numColumns={4}
                 columnWrapperStyle={styles.row}
                 contentContainerStyle={styles.categoriesContainer}
                 ListFooterComponent={
-                  loading && data.length < categories.length ? (
+                  productsLoading && filteredProducts.length < totalProductsCount ? (
                     <ActivityIndicator size="small" color="green" />
                   ) : (
                     <View style={{ paddingVertical: 20 }} />
                   )
                 }
+                
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 estimatedItemSize={40}
                 onEndReached={loadMoreItems}
@@ -199,20 +216,6 @@ const sidebarCategories = [
   { name: 'Garden & Outdoors', icon: 'leaf' },
 ];
 
-const categories = [
-  { name: 'Smart Phones', image: require('../../assets/smartphone.png') },
-  { name: 'Televisions', image: require('../../assets/Television.png') },
-  { name: 'Kitchen Supplies', image: require('../../assets/kitchen.png') },
-  { name: 'Refurbished Phones', image: require('../../assets/refurbished.png') },
-  { name: 'Earphones', image: require('../../assets/earphones.png') },
-  { name: 'Household Appliances', image: require('../../assets/Appliance.png') },
-  { name: 'Home Storage', image: require('../../assets/storage.png') },
-  { name: 'Sneakers', image: require('../../assets/sneakers.png') },
-  { name: 'Woofers', image: require('../../assets/woofer.png') },
-  { name: 'Watches', image: require('../../assets/watches.png') },
-  { name: 'Beauty & Personal Care', image: require('../../assets/beauty.png') },
-  { name: 'Clothes', image: require('../../assets/clothes.png') },
-];
 
 const styles = StyleSheet.create({
   safeArea: {

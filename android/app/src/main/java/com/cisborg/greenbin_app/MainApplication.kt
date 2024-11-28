@@ -11,9 +11,7 @@ import com.facebook.react.ReactHost
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-import com.reactnativecommunity.permissions.RNPermissionsPackage
-
-
+import com.zoontek.rnpermissions.RNPermissionsPackage
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
 
@@ -23,11 +21,7 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            // Packages that cannot be autolinked yet can be added manually here, for example:
-            val   packages = PackageList(this).packages
-
-            packages.add(RNPermissionsPackage())
-            // packages.add(new MyReactNativePackage());
+            val   packages = PackageList(this).packages            
             return  packages
           }
 

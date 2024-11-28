@@ -5,6 +5,7 @@ import { FontFamily, FontSize, Color } from "../../GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import LottieView from 'lottie-react-native'; // Import LottieView
 import FastImage from "react-native-fast-image";
 

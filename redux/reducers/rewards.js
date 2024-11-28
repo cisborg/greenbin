@@ -1,12 +1,22 @@
 // reducers/rewardsReducer.js
+import { State } from 'react-native-gesture-handler';
 import {
     FETCH_ELIGIBLE_REWARDS_REQUEST,
     FETCH_ELIGIBLE_REWARDS_SUCCESS,
     FETCH_ELIGIBLE_REWARDS_FAILURE,
-  } from '../actions/rewards';
+  } from '../actions/actionTypes';
 
   const initialState = {
-    eligibleRewards: [],
+    eligibleRewards: [
+      {
+        id: null,
+        rewardName: '',
+        description: '',
+        threshold: 0,
+        referralCount: 0
+        
+      },
+    ],
     loading: false,
     error: null,
   };
@@ -15,7 +25,7 @@ import {
     switch (action.type) {
       case FETCH_ELIGIBLE_REWARDS_REQUEST:
         return {
-          ...state,
+          ...State,
           loading: true,
           error: null,
         };

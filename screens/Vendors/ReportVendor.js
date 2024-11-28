@@ -17,7 +17,7 @@ import { Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { createReport } from '../redux/actions/reportActions';
+import { createReport } from '../../redux/actions/reports';
 
 const ReportVendorScreen = () => {
   const navigation = useNavigation();

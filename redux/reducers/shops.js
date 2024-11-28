@@ -18,23 +18,24 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    shops: [],
-    shopDetails: {
-        id: null,
-        name: '',
-        address: '',
-        contact: '',
-        description: '',
-        coverImage: null,
-        profileLogo: null,
-        vendors: [],
-        rating: 0,
-        openHours: '',
-        closeHours: '',
-        location: null,
-        distance: '',
-        
-    },
+    shops: [
+        {
+            id: null,
+            name: '',
+            address: '',
+            contact: '',
+            description: '',
+            coverImage: null,
+            profileLogo: null,
+            vendors: [],
+            rating: 0,
+            openHours: '',
+            closeHours: '',
+            location: null,
+            distance: '',
+            
+        },
+    ],
     loading: false,
     error: null,
 };

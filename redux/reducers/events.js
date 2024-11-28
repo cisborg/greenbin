@@ -9,15 +9,17 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    activities: [],
-    activityDetails:{
-        id: null,
-        title: '',
-        description: '',
-        date: '',
-        location: '',
-        image: null, // For storing image data
-    },
+    activities: [
+        {
+            id: null,
+            title: '',
+            description: '',
+            date: '',
+            location: '',
+            image: null, // For storing image data
+        },
+    ],
+   
     loading: false,
     error: null,
     successMessage: '', // For success confirmation messages

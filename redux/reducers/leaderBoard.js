@@ -14,8 +14,8 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    squadLeaderboard: [],
-    squadLeaderDetails: {
+    squadLeaderboard: [
+    {
         id: null,
         squadName: '',
         rank: null,
@@ -23,18 +23,21 @@ const initialState = {
         profilelogo: null,
         points: null,
         membersCount: 0,
-        activitiesCompleted: 0
-    },
-    userLeaderboard: [],
-    userLeaderboard: {
+        activitiesCompleted: 0 },
+    ],
+    
+    userLeaderboard: [
+    {
         id: null,
         username: '',
-        rank: null,
-        awardType: null,
+        rank: 0,
+        awardType: '',
         profilePicture: null,
-        points: null,
-        squadName: null,
+        points: 0,
+        squadName: '',
+        crown: false
     },
+    ],
     loading: false,
     error: null,
 };

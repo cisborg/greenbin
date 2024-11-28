@@ -4,63 +4,39 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Dimensions,
+  
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { getAllPosts } from '../../redux/actions/Posts'; // Adjust the path as necessary
 import { Color } from '../../GlobalStyles';
 import { FlashList } from '@shopify/flash-list'; // Import FlashList
 import FastImage from 'react-native-fast-image';
+import LottieView from 'lottie-react-native';
 
-const notificationsData = [
-  {
-    id: '1',
-    user: 'Sourabh Verma',
-    message: 'shared a new post on Build With GenAI',
-    postTitle: 'Introducing My Side Project: UI Creator - The Ultimate JSX-Based UI Library',
-    imageUrl: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '2',
-    user: 'Wee Center Project',
-    message: 'New post from Wee Center, check it out now!',
-    postTitle: 'The All-in-One API for wastes collection & monitoring',
-    imageUrl: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '3',
-    user: 'GreenDaily',
-    message: 'New post from GreenDaily, check it out now!',
-    postTitle: 'Making Green Circular Economy possible with Technology',
-    imageUrl: 'https://via.placeholder.com/150',
-  },
-];
+const { width, height } = Dimensions.get('window');
 
 const NotificationsScreen = () => {
-  const [notifications, setNotifications] = useState(notificationsData);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const notifications = useSelector((state) => state.posts.allPosts); // Assuming your reducer is set up accordingly
+  const loading = useSelector((state) => state.posts.loading); // Loading state from Redux
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchNotifications = async () => {
-    setLoading(true);
-    // Simulate fetching more notifications
-    const newNotifications = notificationsData.map((item) => ({
-      ...item,
-      id: `${parseInt(item.id) + page * notificationsData.length}`, // Update ID to prevent duplicates
-    }));
-    setNotifications((prev) => [...prev, ...newNotifications]);
-    setLoading(false);
-  };
-
-  const handleRefresh = async () => {
     setRefreshing(true);
-    // Simulate refreshing notifications
-    setNotifications(notificationsData);
-    setPage(1);
+    await dispatch(getAllPosts()); // Dispatch the action to fetch posts
     setRefreshing(false);
   };
 
-  useEffect(() => {
+  const handleRefresh = async () => {
+    setPage(1);
     fetchNotifications();
-  }, [page]);
+  };
+
+  useEffect(() => {
+    fetchNotifications(); // Fetch notifications when component mounts
+  }, []);
 
   const renderNotification = ({ item }) => (
     <TouchableOpacity style={styles.notificationContainer} activeOpacity={0.7}>
@@ -82,22 +58,31 @@ const NotificationsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <FlashList
-        data={notifications}
-        renderItem={renderNotification}
-        keyExtractor={(item) => item.id}
-        onEndReached={() => {
-          setPage((prev) => prev + 1); // Load more notifications
-        }}
-        onEndReachedThreshold={0.5} // Load more when 50% of the list is visible
-        refreshing={refreshing}
-        onRefresh={handleRefresh} // Pull to refresh
-        estimatedItemSize={100} // Estimate item size for performance
-      />
+      {loading ? ( // Show loading indicator while fetching
+        <View style={styles.loadingContainer}>
+          <LottieView
+            source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+      </View>      ) : (
+        <FlashList
+          data={notifications}
+          renderItem={renderNotification}
+          keyExtractor={(item) => item.id}
+          onEndReached={() => {
+            setPage((prev) => prev + 1); // Load more notifications
+          }}
+          onEndReachedThreshold={0.5} // Load more when 50% of the list is visible
+          refreshing={refreshing}
+          onRefresh={handleRefresh} // Pull to refresh
+          estimatedItemSize={100} // Estimate item size for performance
+        />
+      )}
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -120,6 +105,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
   },
   userContainer: {
     flexDirection: 'row',

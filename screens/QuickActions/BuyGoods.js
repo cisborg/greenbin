@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Animated,
-    KeyboardAvoidingView, Platform, SafeAreaView, Modal, ActivityIndicator, Alert
+    KeyboardAvoidingView, Platform, SafeAreaView, Modal, ActivityIndicator, Alert,
 } from 'react-native';
 import LottieView from 'lottie-react-native'; // Import LottieView
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image'; // Import FastImage
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { purchaseProduct } from '../../redux/actions/products'; 
 
 const paymentMethods = ['Green Bank', 'Request a Friend', 'GCPs Wallet'];
 const presetAmounts = [2000, 5000, 8000, 12000];
 
 const BuyGoods = () => {
     const navigation = useNavigation();
-    const [loading, setLoading] = useState(true); // New loading state
+    const dispatch = useDispatch(); // Initialize dispatch
+    const [loading, setLoading] = useState(true);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [customAmount, setCustomAmount] = useState('');
     const [selectedAmount, setSelectedAmount] = useState(null);
@@ -31,9 +34,8 @@ const BuyGoods = () => {
     const fadeAnim = useState(new Animated.Value(0))[0];
 
     useEffect(() => {
-        // Simulate a delay for loading (e.g., fetching resources)
         const timer = setTimeout(() => {
-            setLoading(false); // Set loading to false after delay
+            setLoading(false);
         }, 2000);
 
         return () => clearTimeout(timer);
@@ -53,7 +55,7 @@ const BuyGoods = () => {
         return (
             <View style={styles.loadingContainer}>
                 <LottieView
-                    source={require('../../assets/lottie/rotatingBalls.json')} // Replace with the path to your Lottie JSON file
+                    source={require('../../assets/lottie/rotatingBalls.json')}
                     autoPlay
                     loop
                     style={{ width: 150, height: 150 }}
@@ -101,6 +103,9 @@ const BuyGoods = () => {
 
         setIsProcessing(true);
 
+        // Dispatch the purchase action
+        dispatch(purchaseProduct(1, totalCost)); // Assuming productId is 1 and quantity is totalCost for demonstration
+
         // Simulate a 300ms process for payment
         setTimeout(() => {
             setIsProcessing(false);
@@ -142,9 +147,9 @@ const BuyGoods = () => {
                         {/* User Information */}
                         <View style={styles.userInfo}>
                             <FastImage
-                                source={{ uri: 'https://example.com/profile.jpg' }} // Replace with your profile image URL
+                                source={{ uri: 'https://example.com/profile.jpg' }}
                                 style={styles.profilePicture}
-                                resizeMode={FastImage.resizeMode.cover} // Use FastImage resizeMode
+                                resizeMode={FastImage.resizeMode.cover}
                             />
                             <TextInput
                                 style={styles.input1}
@@ -292,6 +297,7 @@ const BuyGoods = () => {
         </SafeAreaView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

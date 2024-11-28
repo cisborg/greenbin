@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text,Dimensions, FlatList, TextInput, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllSquads } from '../../redux/actions/squads'; // Import the action
-import { Color } from '../../GlobalStyles';
 import FastImage from 'react-native-fast-image';
+import LottieView from 'lottie-react-native'; // Import Lottie
+
+const { width } = Dimensions.get('window');
 
 const JoinSquads = () => {
   const navigation = useNavigation();
@@ -17,6 +19,9 @@ const JoinSquads = () => {
     dispatch(getAllSquads());
   }, [dispatch]);
 
+  const handleTryAgain = () => {
+    dispatch(fetchSquadData());
+  };
   // Get squads from Redux state
   const { squads, loading, error } = useSelector((state) => state.squadReducer);
 
@@ -75,18 +80,32 @@ const JoinSquads = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Color.colorPrimary} />
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Failed to load squads: {error}</Text>
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <TouchableOpacity style={styles.fetchAgain} onPress={handleTryAgain}>
+          <Text style={styles.errorText}>{`${error} Try Again`}</Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
 
   return (
     <SafeAreaView style={styles.container}>

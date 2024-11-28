@@ -11,6 +11,8 @@ import {
   Animated,
   Dimensions,
   RefreshControl,
+  Platform,
+  StatusBar
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +22,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
+import { connectToVendor} from '../../redux/actions/authentication'
 
 const { width } = Dimensions.get('window');
 
@@ -64,13 +67,39 @@ const VendorList = () => {
     vendor.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleConnect = (id) => {
+  const handleConnect = async (id) => {
     setLoading(prev => ({ ...prev, [id]: true }));
-    setTimeout(() => {
-      setLoading(prev => ({ ...prev, [id]: false }));
-      setApprovedVendors(prev => ({ ...prev, [id]: true }));
-    }, 500);
-  };
+    try {
+        // Dispatch the connect action
+        await dispatch(connectToVendor(id)); // Assuming this updates the backend
+        
+        // Fetch the current user's profile from the Redux store
+        const currentUserProfile = useSelector((state) => state.user.profile); // Adjust according to your state structure
+
+        // Update the approved vendors state
+        setApprovedVendors(prev => {
+            const currentConnections = prev[id]?.connections || [];
+            // Add the new connection and keep only the last 3
+            const updatedConnections = [
+                { image: currentUserProfile.image, name: currentUserProfile.name }, 
+                ...currentConnections
+            ].slice(0, 3);
+
+            return {
+                ...prev,
+                [id]: {
+                    ...prev[id],
+                    connections: updatedConnections,
+                    connectionsCount: updatedConnections.length, // Update count
+                },
+            };
+        });
+    } catch (error) {
+        console.error('Error connecting to vendor:', error);
+    } finally {
+        setLoading(prev => ({ ...prev, [id]: false }));
+    }
+};
 
   const handleProfileNavigation = (id) => {
     navigation.navigate('VendorsProfilePage', { vendorId: id });
@@ -78,16 +107,16 @@ const VendorList = () => {
 
   const renderConnections = (connections) => (
     <View style={styles.connectionsContainer}>
-      {connections.length > 0 && connections.map((uri, index) => (
-        <FastImage
-          key={index}
-          source={{ uri }}
-          style={[styles.connectionImage, { zIndex: connections.length - index }]}
-        />
-      ))}
-      <Text style={styles.connectionsCount}>{(connections.length / 1000).toFixed(1)}k connectors</Text>
+        {connections.map((connection, index) => (
+            <FastImage
+                key={index}
+                source={{ uri: connection.image }}
+                style={[styles.connectionImage, { zIndex: connections.length - index }]}
+            />
+        ))}
+        <Text style={styles.connectionsCount}>{connections.length} connectors</Text>
     </View>
-  );
+);
 
   const renderItem = ({ item }) => {
     const isLoading = loading[item.id];

@@ -1,5 +1,5 @@
 import React, { useState, memo, useCallback, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity,Platform, StatusBar, ActivityIndicator, SafeAreaView ,Alert} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/core';
 import TagList from '../Squads/Tags';
@@ -11,12 +11,13 @@ import LottieView from 'lottie-react-native';
 import TagSelection from '../Squads/selectTag';
 import { FlashList } from '@shopify/flash-list';
 import CommentBottomSheet from '../Squads/SquadComments';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPosts, likePost, bookmarkPost } from '../../redux/actions/Posts'; 
 import FastImage from 'react-native-fast-image'; // Import FastImage
 
 const Tab = createMaterialTopTabNavigator();
 
 const GoodHome = () => {
-  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -80,173 +81,114 @@ const HomeTabs = () => {
 };
 
 const ForYouScreen = () => {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "Waste Collection Expo Event Report",
-      author: "Masaku",
-      squad: "Kenya Ecogreen",
-      date: "8h ago",
-      likes: 450,
-      comments: 296,
-      moderated: false,
-      connections: 1200,
-      imageUri: "https://example.com/image1.jpg",
-      isLiked: false,
-    },
-    {
-      id: 2,
-      title: "Green Circular Economy",
-      author: "Ashley Young",
-      squad: "Eco Warriors",
-      date: "Today",
-      likes: 656,
-      comments: 60,
-      moderated: true,
-      connections: 999,
-      imageUri: "https://example.com/image2.jpg",
-      isLiked: false,
-    },
-    {
-      id: 3,
-      title: "With GreenBins we make waste collection possible",
-      author: "George Doyle",
-      squad: "Nature Diversity",
-      date: "Today",
-      likes: 892,
-      comments: 300,
-      moderated: false,
-      connections: 1500,
-      imageUri: "https://example.com/image3.jpg",
-      isLiked: false,
-    },
-    {
-      id: 4,
-      title: "Green Circular Economy",
-      author: "Ashley Young",
-      squad: "Eco Warriors",
-      date: "Today",
-      likes: 999,
-      comments: 69,
-      moderated: true,
-      connections: 200,
-      imageUri: "https://example.com/image4.jpg",
-      isLiked: false,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const { posts, loading, page } = useSelector(state => state.posts); // Get posts and loading state from Redux
 
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching posts
-    setTimeout(() => {
-      setPosts(initialPosts); // Replace with your actual fetching logic
-      setLoading(false);
-    }, 2000); // Adjust the timeout as necessary
-  }, []);
+    const fetchPosts = async () => {
+      await dispatch(getAllPosts()); // Fetch initial posts
+    };
+    
+    fetchPosts();
+  }, [dispatch]);
 
   const fetchMorePosts = useCallback(() => {
-    if (loadingMore || allLoaded) return;
-
+    if (loadingMore || allLoaded || loading) return;
+  
     setLoadingMore(true);
-    
-    // Simulate API request to fetch more posts
-    setTimeout(() => {
-      const newPosts = [
-        // Additional post data here
-      ];
+    dispatch(getAllPosts(page))
+      .then((newPosts) => {
+        if (newPosts?.length === 0) {
+          setAllLoaded(true); // Mark all posts loaded if no new data
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch more posts:', error);
+      })
+      .finally(() => setLoadingMore(false));
+  }, [loadingMore, allLoaded, loading, dispatch, page]);
+  
+ 
+  const handleCommentAdd = async (commentData) => {
+    dispatch(postComment(currentPostId, commentData));
+};
 
-      if (newPosts.length === 0) {
-        setAllLoaded(true);
-      } else {
-        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      }
-      setLoadingMore(false);
-    }, 1500);
-  }, [loadingMore, allLoaded]);
-
-  const handleLike = useCallback((postId) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === postId
-          ? { ...post, likes: post.isLiked ? post.likes - 1 : post.likes + 1, isLiked: !post.isLiked }
-          : post
-      )
-    );
-  }, []);
-
-  const handleCommentAdd = (comment) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === currentPostId ? { ...post, comments: post.comments + 1 } : post
-      )
-    );
-  };
 
   const openCommentSheet = (postId) => {
     setCurrentPostId(postId);
     setBottomSheetVisible(true);
   };
 
+  const renderPost = useCallback(
+    ({ item }) => (
+      <Post
+        postId={item.id}
+        onLike={() => dispatch(likePost(item.id))}
+        onCommentPress={() => openCommentSheet(item.id)}
+        onBookmarkPress={() => dispatch(bookmarkPost(item.id))} // Ensure bookmark handler is passed
+      />
+    ),
+    [dispatch, openCommentSheet]
+  );
+  
   return (
     <View style={styles.content}>
-      {loading ? (
+       {loading ? (
+        <ActivityIndicator size="large" color="green" />
+      ) : posts.length === 0 ? (
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          source={require('../../assets/lottie/burst.json')} // Adjust the path to your Lottie file
           autoPlay
           loop
           style={{ width: 100, height: 100 }} // Adjust size as needed
         />
+
       ) : (
         <FlashList
           data={posts}
           keyExtractor={(item) => item.id.toString()}
           estimatedItemSize={200}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => { /* Navigate to post details */ }}>
-              <Post 
-                post={item}
-                onLike={() => handleLike(item.id)} 
-                onCommentPress={() => openCommentSheet(item.id)}
-              />
-            </TouchableOpacity>
-          )}
+          renderItem={renderPost}
           onEndReached={fetchMorePosts}
           onEndReachedThreshold={0.7}
           ListFooterComponent={loadingMore ? <ActivityIndicator size="large" color="green" /> : null}
         />
       )}
 
-      <CommentBottomSheet
-        isVisible={isBottomSheetVisible}
-        onClose={() => setBottomSheetVisible(false)}
-        onCommentAdd={handleCommentAdd}
-      />
+    <CommentBottomSheet
+      isVisible={isBottomSheetVisible}
+      onClose={() => setBottomSheetVisible(false)} // Close the bottom sheet
+      onCommentAdd={(commentData) => handleCommentAdd(commentData)} // Dispatch the comment
+    />
+
+
     </View>
   );
 };
 
-const Post = memo(({ post, onLike, onCommentPress }) => {
-  const { title, author, squad, date, likes, comments, moderated, connections: initialConnections, imageUri: initialImageUri, isLiked } = post;
-  const [connections, setConnections] = useState(initialConnections); // State for connections
-  const [imageUri, setImageUri] = useState(initialImageUri); // Declare state for imageUri
-  const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark
+const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
+  const post = useSelector(state => state.posts.find(p => p.id === postId));
+  if (!post) return null;
+  const {
+    title = "",
+    author = "",
+    squad = "",
+    date,
+    likes = 0,
+    comments = 0,
+    imageUri,
+    isLiked = false,
+    isBookmarked = false,
+    moderated = false,
+    connections = 0,
+  } = post;
 
-  const handleLike = () => {
-    onLike();
-  };
-
-  const handleBookmark = () => {
-    setIsBookmarked((prev) => {
-      const newBookmarkStatus = !prev;
-      setConnections((current) => current + (newBookmarkStatus ? 1 : -1));
-      return newBookmarkStatus;
-    });
-  };
+  
 
   return (
     <View style={styles.postCard}>
@@ -254,7 +196,7 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
         <FastImage
           source={require('../../assets/anotherWoman.avif')}
           style={styles.profilePic}
-          onError={() => setImageUri(require('../../assets/profilePlaceholder.png'))}
+          onError={() => Alert('Image failed to load')}
         />
         <View style={styles.authorInfo}>
           <Text style={styles.postAuthor}>
@@ -272,10 +214,12 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
         <FastImage
           source={{ uri: imageUri }}
           style={styles.postImage}
+          onError={() => Alert('Image failed to load')}
+
         />
       )}
       <View style={styles.postStats}>
-        <TouchableOpacity style={styles.statButton} onPress={handleLike}>
+        <TouchableOpacity style={styles.statButton} onPress={onLike} accessibilityLabel='Like Post'>
           <Ionicons name={isLiked ? "heart" : "heart-outline"} size={17} color={isLiked ? 'green' : "black"} />
           <Text style={styles.statText}>
             {likes >= 1000 ? `${(likes / 1000).toFixed(1)}k` : likes} upvotes
@@ -287,7 +231,7 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
             {comments >= 1000 ? `${(comments / 1000).toFixed(1)}k` : comments} comments
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.statButton} onPress={handleBookmark}>
+        <TouchableOpacity style={styles.statButton} onPress={onBookmarkPress}>
           <Ionicons
             name={isBookmarked ? "bookmark" : "bookmark-outline"}
             size={17}
@@ -305,7 +249,6 @@ const Post = memo(({ post, onLike, onCommentPress }) => {
 });
 
 const Header = () => {
-  const navigation = useNavigation();
   return (
     <View style={styles.headerContainer}>
       <View style={{ flexDirection: 'column'}}> 

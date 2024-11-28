@@ -12,15 +12,17 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    reports: [],
-    reportDetails:{
-        id: null,
-        title: '',
-        description: '',
-        image: '',
-        location: '',
-        date: '',
-    },
+    reports: [
+        {
+            id: null,
+            title: '',
+            description: '',
+            image: '',
+            location: '',
+            date: '',
+        },
+    ],
+    
     loading: false,
     error: null,
 };

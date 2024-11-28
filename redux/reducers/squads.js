@@ -46,27 +46,47 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    squads: [],
-    squadData: [
+    squads: [
         {
+        
             id: 1,
             name: '',
             handle: '',
             status: ['moderated', 'add post'],
             description: '',
+            likes: 0,
+            comments: 0,
+            posts: 0,
             avatarPhoto: null,
             coverPhoto: null,
-            connections: 0
+            connections: 0,
+            createdDate: null,
+            moderators: [
+                {
+                    id: null,
+                    name: '',
+                    avatar: '',
+                },
+            ],
+            members: [
+                {
+                    id: null,
+                    name: '',
+                    avatar: '',
+                },
+                
+            ],
+            activities: [],
+            invitations: 0,
+            activitiesCompleted: 0,
+            notifications: 0,
+            activeMembers: 0,
+    
+                
         },
-       
     ],
     loading: false,
     error: null,
-    squadChallenges: [],
-    squadInvitations: [],
-    squadMembers: [],
-    squadLeaders: [],
-    squadNotifications: [],
 };
 
 const squadReducer = (state = initialState, action) => {
@@ -80,7 +100,6 @@ const squadReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 squads: [...state.squads, action.payload], // Add the new squad
-                squadData: [], // Clear temporary data after creation
                 error: null,
             };
         case CREATE_SQUAD_FAILURE:

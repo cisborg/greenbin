@@ -1,90 +1,124 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, Button } from 'react-native';
+import React, { useEffect, useRef, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Color } from '../../GlobalStyles';
+import { Swipeable } from 'react-native-gesture-handler';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { Color } from "../../GlobalStyles";
+
 import FastImage from 'react-native-fast-image';
 
-const notificationsData = [
-  { id: '1', type: 'message', content: 'John Doe and 5 others sent you a message.', time: '5 min ago', images: ['john.jpg', 'michael.jpg', 'jane.jpg'] },
-  { id: '2', type: 'squad', content: 'Emily posted a new update in the squad.', time: '10 min ago' },
-  { id: '3', type: 'update', content: 'New version of the app is available!', time: '1 hr ago' },
-  { id: '4', type: 'connection', content: 'Jane Smith has accepted your connection request.', time: '2 hrs ago', images: ['jane.jpg'] },
-  { id: '5', type: 'connection-request', content: 'John and 99 others have requested to connect with you!', time: '3 hrs ago', images: ['john.jpg', 'michael.jpg', 'jane.jpg'] },
-  { id: '6', type: 'squad-removed', content: 'You have been removed from these squads.', time: '4 hrs ago', images: ['squad1.jpg', 'squad2.jpg', 'squad3.jpg'] },
-];
+// Import Redux actions
+import { fetchNotifications, deleteNotification } from '../../redux/actions/notifications';
 
 const NotificationScreen = () => {
-  const [selectedNotification, setSelectedNotification] = useState(null);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const notifications = useSelector((state) => state.notifications.data); // Select notifications from Redux store
+  const loading = useSelector((state) => state.notifications.loading);
 
-  const renderNotification = ({ item }) => (
-    <TouchableOpacity style={styles.notificationContainer} onPress={() => handleNotificationPress(item)}>
-      <View style={styles.iconContainer}>
-        {item.type === 'message' && renderCascadedImages(item.images)}
-        {item.type === 'squad' && <MaterialIcons name="group" size={24} color="#4CAF50" />}
-        {item.type === 'update' && <AntDesign name="notification" size={24} color="#FFA500" />}
-        {item.type === 'connection' && <AntDesign name="user" size={24} color="#FF5722" />}
-        {item.type === 'connection-request' && renderCascadedImages(item.images)}
-        {item.type === 'squad-removed' && renderCascadedImages(item.images)}
-      </View>
-      <View style={styles.notificationContent}>
-        <Text style={styles.notificationText}>{item.content}</Text>
-        <Text style={styles.notificationTime}>{item.time}</Text>
-      </View>
-    </TouchableOpacity>
+  const [selectedNotification, setSelectedNotification] = React.useState(null);
+  const sheetRef = useRef(null);
+
+  // Snap points for the bottom sheet
+  const snapPoints = useMemo(() => ['50%', '25%'], []);
+
+  // Fetch notifications when the component mounts
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
+
+  // Handle open and close of the bottom sheet
+  const openBottomSheet = (notification) => {
+    setSelectedNotification(notification);
+    sheetRef.current?.expand();
+  };
+
+  const closeBottomSheet = () => {
+    sheetRef.current?.close();
+  };
+
+  // Handle "Delete Notification"
+  const handleDelete = (id) => {
+    dispatch(deleteNotification(id)); // Dispatch delete action
+  };
+
+  // Render swipeable actions
+  const renderRightActions = () => (
+    <View style={[styles.swipeAction, styles.delete]}>
+      <Text style={styles.swipeActionText}>Delete</Text>
+    </View>
   );
 
-  // Render cascaded overlapping images
-  const renderCascadedImages = (images) => {
-    return (
-      <View style={styles.cascadedImagesContainer}>
-        {images.length === 1 ? (
-          <>
-            <FastImage source={{ uri: images[0] }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: 0 }]} />
-            {/* Placeholder image for second position */}
-            <FastImage source={{ uri: 'placeholder_image_url' }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: 15 }]} />
-          </>
-        ) : (
-          images.map((image, index) => (
-            <FastImage key={index} source={{ uri: image }} resizeMode={FastImage.resizeMode.cover} style={[styles.cascadedImage, { left: index * 15 }]} />
-          ))
-        )}
-      </View>
-    );
-  };
+  // Render notification card
+  const renderNotification = ({ item }) => (
+    <Swipeable
+      renderRightActions={renderRightActions}
+      onSwipeableRightOpen={() => handleDelete(item.id)}
+    >
+      <TouchableOpacity
+        style={[styles.notificationContainer, item.read && styles.readNotification]}
+        onPress={() => openBottomSheet(item)}
+      >
+        <View style={styles.iconContainer}>
+          {item.type === 'message' && renderCascadedImages(item.images)}
+          {item.type === 'squad' && <MaterialIcons name="group" size={24} color="#4CAF50" />}
+          {item.type === 'update' && <AntDesign name="notification" size={24} color="#FFA500" />}
+          {item.type === 'connection' && <AntDesign name="user" size={24} color="#FF5722" />}
+          {item.type === 'connection-request' && renderCascadedImages(item.images)}
+          {item.type === 'squad-removed' && renderCascadedImages(item.images)}
+        </View>
+        <View style={styles.notificationContent}>
+          <Text style={styles.notificationText}>{item.content}</Text>
+          <Text style={styles.notificationTime}>{item.time}</Text>
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
+  );
 
-  const handleNotificationPress = (notification) => {
-    setSelectedNotification(notification);
-    setModalVisible(true);
-  };
+  // Render cascaded images for notifications
+  const renderCascadedImages = (images) => (
+    <View style={styles.cascadedImagesContainer}>
+      {images?.map((image, index) => (
+        <FastImage
+          key={index}
+          source={{ uri: image }}
+          resizeMode={FastImage.resizeMode.cover}
+          style={[styles.cascadedImage, { left: index * 15 }]}
+        />
+      ))}
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={notificationsData}
-        renderItem={renderNotification}
-        keyExtractor={item => item.id}
-        style={styles.notificationList}
-      />
-
-      {/* Modal for Notification Details */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <FlatList
+          data={notifications}
+          renderItem={renderNotification}
+          keyExtractor={(item) => item.id}
+          style={styles.notificationList}
+        />
+      )}
+      <BottomSheet
+        ref={sheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        backgroundStyle={styles.bottomSheetBackground}
+        handleIndicatorStyle={styles.bottomSheetHandle}
       >
-        <View style={styles.modalView}>
+        <View style={styles.bottomSheetContent}>
           <Text style={styles.modalTitle}>Notification Details</Text>
           <Text style={styles.modalContent}>{selectedNotification?.content}</Text>
           <Text style={styles.modalTime}>{selectedNotification?.time}</Text>
-          <Button title="Close" onPress={() => setModalVisible(false)} />
         </View>
-      </Modal>
+      </BottomSheet>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -105,6 +139,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 1,
+  },
+  swipeAction: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+    height: '100%',
+  },
+  markAsRead: {
+    backgroundColor: 'green',
+  },
+  delete: {
+    backgroundColor: 'red',
+  },
+  swipeActionText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  bottomSheetBackground: {
+    backgroundColor: '#fff',
+  },
+  bottomSheetHandle: {
+    backgroundColor: '#ccc',
+  },
+  bottomSheetContent: {
+    flex: 1,
+    padding: 20,
   },
   iconContainer: {
     marginBottom: 5, // Added margin to separate image from text
@@ -133,6 +193,9 @@ const styles = StyleSheet.create({
   notificationTime: {
     fontSize: 12,
     color: 'gray',
+  },
+  readNotification: {
+    backgroundColor: '#f0f0f0',
   },
   modalView: {
     marginTop: 'auto',

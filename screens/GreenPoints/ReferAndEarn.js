@@ -18,7 +18,7 @@ import * as Clipboard from 'expo-clipboard';
 import Lottie from 'lottie-react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReferralCode } from '../../redux/actions/authentication';
-import { fetchEligibleRewards } from '../../redux/actions/rewards'; // Import the new action
+import { fetchEligibleRewards } from '../../redux/actions/rewardsActions'; // Import the new action
 
 const ReferAndEarn = () => {
   const [processing, setProcessing] = useState(true);
@@ -27,9 +27,9 @@ const ReferAndEarn = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   
-  const userId = useSelector(state => state.userReducer.userId); 
-  const referralCode = useSelector(state => state.referralReducer.referralCode);
-  const referralCount = useSelector(state => state.referralReducer.referralCount);
+  const userId = useSelector(state => state.users.userId); 
+  const referralCode = useSelector(state => state.authReducer.referralCode);
+  const referralCount = useSelector(state => state.rewardsReducer.referralCount);
   const eligibleRewards = useSelector(state => state.rewardsReducer.eligibleRewards); // Get eligible rewards from state
 
   const rewards = [
@@ -60,7 +60,7 @@ const ReferAndEarn = () => {
 
   const handleRefer = useCallback(async () => {
     try {
-      const message = `Join GreenBin and earn rewards! Use my promo code: ${referralCode} to get 200 MB data bundles on your first registration. Check out more rewards in the app!`;
+      const message = `Join GreenBin and earn rewards! Use my promo code: ${referralCode} to get 500 points award on your first registration. Check out more rewards in the app!`;
       const result = await Share.share({ message });
 
       if (result.action === Share.sharedAction) {
@@ -126,7 +126,7 @@ const ReferAndEarn = () => {
 
           <View style={styles.referralInfo}>
             <Text style={styles.referralText}>Your Friend Earns:</Text>
-            <Text style={styles.friendReward}>200 MB Data Bundles</Text>
+            <Text style={styles.friendReward}>500 award green points</Text>
             <Text style={styles.friendDescription}>When they install the app and register!</Text>
           </View>
 

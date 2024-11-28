@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList,Platform, StatusBar, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import FastImage from 'react-native-fast-image'; // Import FastImage

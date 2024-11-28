@@ -20,18 +20,27 @@ import {
     UPDATE_CHAT_STATUS_REQUEST,
     UPDATE_CHAT_STATUS_SUCCESS,
     UPDATE_CHAT_STATUS_FAILURE,
+    RECEIVE_MESSAGE,
+    SET_ONLINE_STATUS_REQUEST,
+    SET_ONLINE_STATUS_FAILURE,
+    SET_ONLINE_STATUS_SUCCESS,
+    ATTACH_FILE_REQUEST,
+    ATTACH_FILE_SUCCESS,
+    ATTACH_FILE_FAILURE,
 } from '../actions/actionTypes';
 
 const initialState = {
-    chats: [],
-    chatDetails: {
-        message:'',
-        messageNo: 0,
-        senderId: null,
-        senderPhoto: null,
-        createdAt: null,
-        status: boolean,
-    },
+    chats: [
+        {
+            message: '',
+            messageNo: 0,
+            senderId: null,
+            senderPhoto: null,
+            createdAt: null,
+            status: false,
+        },
+    ],
+  
     loading: false,
     error: null,
     activeChatId: null,
@@ -45,7 +54,7 @@ const initialState = {
         senderMessage: '',
         createdAt: null,
         receiverMessage: '',
-        status: boolean,
+        status: false,
     },
 };
 
@@ -59,6 +68,8 @@ const chatReducer = (state = initialState, action) => {
         case DELETE_CHAT_REQUEST:
         case UPDATE_MESSAGE_STATUS_REQUEST:
         case UPDATE_CHAT_STATUS_REQUEST:
+        case SET_ONLINE_STATUS_REQUEST:
+        case ATTACH_FILE_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -82,7 +93,6 @@ const chatReducer = (state = initialState, action) => {
                 messages: action.payload.messages,
                 totalPages: action.payload.totalPages,
                 hasMore: action.payload.hasMore,
-
             };
 
         case SEND_MESSAGE_SUCCESS:
@@ -125,6 +135,26 @@ const chatReducer = (state = initialState, action) => {
                 ),
             };
 
+        case RECEIVE_MESSAGE:
+            return {
+                ...state,
+                messages: [...state.messages, action.payload.message],
+            };
+
+        case SET_ONLINE_STATUS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                // You can update the online status of the user here if needed
+            };
+
+        case ATTACH_FILE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                messages: [...state.messages, action.payload], // Assuming the response contains the attached file as a message
+            };
+
         // Grouping failure cases
         case FETCH_CHATS_FAILURE:
         case FETCH_MESSAGES_FAILURE:
@@ -133,6 +163,8 @@ const chatReducer = (state = initialState, action) => {
         case DELETE_CHAT_FAILURE:
         case UPDATE_MESSAGE_STATUS_FAILURE:
         case UPDATE_CHAT_STATUS_FAILURE:
+        case SET_ONLINE_STATUS_FAILURE:
+        case ATTACH_FILE_FAILURE:
             return {
                 ...state,
                 loading: false,

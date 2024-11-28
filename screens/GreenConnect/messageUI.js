@@ -7,14 +7,10 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
 import FastImage from 'react-native-fast-image';
-
-const Users = [
-  { id: '1', userName: 'Pushkin', userImg: require('../../assets/Appliance.png'), isOnline: true },
-  { id: '2', userName: 'Bonke', userImg: require('../../assets/anotherWoman.avif'), isOnline: false },
-  { id: '3', userName: 'Vicky', userImg: require('../../assets/anotherMan.avif'), isOnline: true },
-  { id: '4', userName: 'Sally', userImg: require('../../assets/anotherWoman.avif'), isOnline: false },
-];
+import { fetchChats } from '../../redux/actions/chats'; // Adjust the import path
+import LottieView from 'lottie-react-native'; // Import Lottie for animations
 
 const formatMessageTime = (timestamp) => {
   const messageDate = new Date(timestamp);
@@ -34,37 +30,9 @@ const formatMessageTime = (timestamp) => {
   }
 };
 
-const Messages = [
-  {
-    id: '1',
-    userName: 'Pushkin',
-    userImg: require('../../assets/Appliance.png'),
-    messageTime: formatMessageTime(new Date(Date.now() - 60000)),
-    hasUnreadMessages: true,
-    unreadCount: 2,
-    messageText: 'New message from Pushkin',
-  },
-  {
-    id: '2',
-    userName: 'Silvance',
-    userImg: require('../../assets/anotherWoman.avif'),
-    messageTime: formatMessageTime(new Date(Date.now() - 3600000)),
-    hasUnreadMessages: false,
-    unreadCount: 0,
-    messageText: 'Oh to namba ne',
-  },
-  {
-    id: '3',
-    userName: 'Vicky',
-    userImg: require('../../assets/anotherWoman.avif'),
-    messageTime: formatMessageTime(new Date(Date.now() - 86400000)),
-    hasUnreadMessages: false,
-    unreadCount: 0,
-    messageText: 'Hello!',
-  },
-];
-
 const MessagesScreen = ({ navigation }) => {
+  const dispatch = useDispatch(); // Initialize dispatch
+  const { chats, loading, error } = useSelector(state => state.chats); // Get chats, loading, and error from the Redux store
   const [selectedUser, setSelectedUser] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -74,7 +42,9 @@ const MessagesScreen = ({ navigation }) => {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, []);
+    
+    dispatch(fetchChats()); // Fetch chats when the component mounts
+  }, [dispatch]);
 
   const handleNavigateToChat = (user) => {
     try {
@@ -85,30 +55,6 @@ const MessagesScreen = ({ navigation }) => {
     }
   };
 
-  const renderActiveUser = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedUser(item)} style={styles.activeUser}>
-      <FastImage source={item.userImg} style={styles.userProfileImg} resizeMode={FastImage.resizeMode.cover} />
-      <Text style={styles.userName}>{item.userName}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderActiveUsers = () => {
-    const onlineUsers = Users.filter(user => user.isOnline);
-    if (onlineUsers.length === 0) {
-      return <Text style={styles.noActiveUsers}>No users online</Text>;
-    }
-    return (
-      <FlatList
-        data={onlineUsers}
-        horizontal
-        keyExtractor={(item) => item.id}
-        renderItem={renderActiveUser}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.userScrollView}
-      />
-    );
-  };
-
   const renderMessageItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleNavigateToChat(item)}>
       <View style={styles.userInfo}>
@@ -116,7 +62,7 @@ const MessagesScreen = ({ navigation }) => {
         <View style={styles.textSection}>
           <View style={styles.row}>
             <Text style={styles.userName}>{item.userName}</Text>
-            <Text style={styles.messageTime}>{item.messageTime}</Text>
+            <Text style={styles.messageTime}>{formatMessageTime(item.messageTime)}</Text>
           </View>
           <Text
             style={[
@@ -136,25 +82,52 @@ const MessagesScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading chats...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <LottieView
+          source={require('../../assets/lottie/flashed.json')} // Adjust the path to your Lottie file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+        <Text style={styles.errorText}>Error loading chats.</Text>
+      </View>
+    );
+  }
+
+  if (chats.length === 0) {
+    return (
+      <View style={styles.noChatsContainer}>
+        <Text>No Chats</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <Text style={styles.activeNowText}>Active Now</Text>
-        {renderActiveUsers()}
-      </Animated.View>
-
+      
       <FlatList
-        data={Messages}
+        data={chats} // Use chats from Redux store
         keyExtractor={(item) => item.id}
         renderItem={renderMessageItem}
         initialNumToRender={10}
         maxToRenderPerBatch={5}
         contentContainerStyle={styles.flatList}
-        removeClippedSubviews={true} // Added for performance
+        removeClippedSubviews={true}
       />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -187,6 +160,30 @@ const styles = StyleSheet.create({
   },
   flatList: {
     paddingHorizontal: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noChatsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: 100,
+    height: 100,
+  },
+  errorText: {
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#ff0000',
   },
   card: {
     flexDirection: 'row',

@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color } from "../../GlobalStyles";
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import Toast from '../../helpers/Toast'; // Import your custom Toast component
 
 const { width, height } = Dimensions.get("window");
