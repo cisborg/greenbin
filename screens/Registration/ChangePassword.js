@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet,Linking, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet,Linking, Image, TouchableOpacity,Platform,StatusBar, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { sendResetPassword } from '../../redux/actions/authentication';

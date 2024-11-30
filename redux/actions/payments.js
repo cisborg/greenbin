@@ -16,8 +16,8 @@ import {
     CLEAR_ALL_TRANSACTIONS_SUCCESS,
     CLEAR_ALL_TRANSACTIONS_FAILURE,
     BUY_AIRTIME_REQUEST,
-    BUY_AIRTIME_REQUEST_SUCCESS,
-    BUY_AIRTIME_REQUEST_FAILURE,
+    BUY_AIRTIME_SUCCESS,
+    BUY_AIRTIME_FAILURE,
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
 
@@ -42,7 +42,7 @@ export const cashDeposit = (amount) => async (dispatch) => {
 export const deposit = (amount) => async (dispatch) => {
     dispatch({ type: DEPOSIT_REQUEST });
     try {
-        const response = await api.post('/api/deposit', { amount });
+        const response = await api.post('/pay/init', { amount });
         dispatch({ type: DEPOSIT_SUCCESS, payload: response.data });
     } catch (error) {
         const errorMessage = error.response?.data?.message || error.message;
@@ -55,7 +55,7 @@ export const deposit = (amount) => async (dispatch) => {
 export const withdraw = (amount) => async (dispatch) => {
     dispatch({ type: WITHDRAW_REQUEST });
     try {
-        const response = await api.post('/api/withdraw', { amount });
+        const response = await api.post('/pay/transfer/init', { amount });
         dispatch({ type: WITHDRAW_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: WITHDRAW_FAILURE, payload: error.message });
@@ -65,7 +65,7 @@ export const withdraw = (amount) => async (dispatch) => {
 export const sendPoints = (userId, points) => async (dispatch) => {
     dispatch({ type: SEND_POINTS_REQUEST });
     try {
-     const response = await api.post(" api/send-points", { userId, points });
+     const response = await api.post("/user/transact/send", { userId, points });
      dispatch({ type: SEND_POINTS_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: SEND_POINTS_FAILURE, payload: error.message });
@@ -94,18 +94,18 @@ export const clearAllTransactions = () => async (dispatch) => {
 
 // actions/paymentActions.js
 export const buyAirtime = (amount) => async (dispatch) => {
-    dispatch({ type: 'BUY_AIRTIME' });
+    dispatch({ type: BUY_AIRTIME_REQUEST });
     
     try {
       // Assume you have an API endpoint for purchasing airtime
-      const response = await api.post('/airtime/purchase', { amount });
+      const response = await api.post('/quickAction/airtime', { amount });
       
       if (response.data.status === 'success') {
-        dispatch({ type: 'BUY_AIRTIME_SUCCESS', payload: response.data });
+        dispatch({ type: BUY_AIRTIME_SUCCESS, payload: response.data });
         return response.data; // Return success data if needed
       }
     } catch (error) {
-      dispatch({ type: 'BUY_AIRTIME_FAILURE', payload: error.message });
+      dispatch({ type: BUY_AIRTIME_FAILURE, payload: error.message });
       throw new Error(error.message);
     }
   };

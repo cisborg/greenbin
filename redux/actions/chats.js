@@ -35,7 +35,7 @@ import api from "../../utils/axiosConfig";
 export const fetchChats = () => async (dispatch) => {
     dispatch({ type: FETCH_CHATS_REQUEST });
     try {
-        const response = await api.get('/api/chats');
+        const response = await api.get('/chat/all');
         dispatch({ type: FETCH_CHATS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_CHATS_FAILURE, payload: error.message });
@@ -46,7 +46,7 @@ export const fetchChats = () => async (dispatch) => {
 export const fetchMessages = (chatId) => async (dispatch) => {
     dispatch({ type: FETCH_MESSAGES_REQUEST });
     try {
-        const response = await api.get(`/api/chats/${chatId}/messages`);
+        const response = await api.get(`/chat/${chatId}/messages`);
         dispatch({ type: FETCH_MESSAGES_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_MESSAGES_FAILURE, payload: error.message });
@@ -54,10 +54,10 @@ export const fetchMessages = (chatId) => async (dispatch) => {
 };
 
 // Send message action
-export const sendMessage = (chatId, message) => async (dispatch) => {
+export const sendMessage = ( message) => async (dispatch) => {
     dispatch({ type: SEND_MESSAGE_REQUEST });
     try {
-        const response = await api.post(`/api/chats/${chatId}/messages`, { message });
+        const response = await api.post(`/chat/${chatId}/message`, { message });
         dispatch({ type: SEND_MESSAGE_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: SEND_MESSAGE_FAILURE, payload: error.message });
@@ -79,7 +79,7 @@ export const deleteMessage = (chatId, messageId) => async (dispatch) => {
 export const deleteChat = (chatId) => async (dispatch) => {
     dispatch({ type: DELETE_CHAT_REQUEST });
     try {
-        await api.delete(`/api/chats/${chatId}`);
+        await api.delete(`/chat/delete/${chatId}`);
         dispatch({ type: DELETE_CHAT_SUCCESS, payload: chatId });
     } catch (error) {
         dispatch({ type: DELETE_CHAT_FAILURE, payload: error.message });
@@ -90,21 +90,10 @@ export const deleteChat = (chatId) => async (dispatch) => {
 export const updateMessageStatus = (chatId, messageId, status) => async (dispatch) => {
     dispatch({ type: UPDATE_MESSAGE_STATUS_REQUEST });
     try {
-        const response = await api.put(`/api/chats/${chatId}/messages/${messageId}`, { status });
+        const response = await api.put(`/chat/${chatId}/messages/${messageId}`, { status });
         dispatch({ type: UPDATE_MESSAGE_STATUS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_MESSAGE_STATUS_FAILURE, payload: error.message });
-    }
-};
-
-// Update chat status action
-export const updateChatStatus = (chatId, status) => async (dispatch) => {
-    dispatch({ type: UPDATE_CHAT_STATUS_REQUEST });
-    try {
-        const response = await api.put(`/api/chats/${chatId}`, { status });
-        dispatch({ type: UPDATE_CHAT_STATUS_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_CHAT_STATUS_FAILURE, payload: error.message });
     }
 };
 
@@ -113,27 +102,6 @@ export const receiveMessage = (chatId, message) => (dispatch) => {
     dispatch({ type: RECEIVE_MESSAGE, payload: { chatId, message } });
 };
 
-// Action to set the user's online status
-export const setOnlineStatus = (userId, status) => async (dispatch) => {
-    dispatch({ type: SET_ONLINE_STATUS_REQUEST });
-    try {
-        await api.put(`/api/users/${userId}/status`, { status });
-        dispatch({ type: SET_ONLINE_STATUS_SUCCESS, payload: { userId, status } });
-    } catch (error) {
-        dispatch({ type: SET_ONLINE_STATUS_FAILURE, payload: error.message });
-    }
-};
-
-// Action to update the message status when a user comes back online
-export const updateMessageStatusOnReconnect = (chatId, messageId) => async (dispatch) => {
-    dispatch({ type: UPDATE_MESSAGE_STATUS_REQUEST });
-    try {
-        const response = await api.put(`/api/chats/${chatId}/messages/${messageId}/status`, { status: 'read' });
-        dispatch({ type: UPDATE_MESSAGE_STATUS_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_MESSAGE_STATUS_FAILURE, payload: error.message });
-    }
-};
 
 // Action to attach a file
 export const attachFile = (chatId, file) => async (dispatch) => {

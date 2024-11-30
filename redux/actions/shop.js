@@ -23,7 +23,7 @@ import {
 export const createShop = (shopData) => async (dispatch) => {
     dispatch({ type: CREATE_SHOP_REQUEST });
     try {
-        const response = await api.post('/api/create-shop', shopData);
+        const response = await api.post('/shop/create', shopData);
         dispatch({ type: CREATE_SHOP_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_SHOP_FAILURE, payload: error.message });
@@ -34,7 +34,7 @@ export const createShop = (shopData) => async (dispatch) => {
 export const updateShop = (shopId, shopData) => async (dispatch) => {
     dispatch({ type: UPDATE_SHOP_REQUEST });
     try {
-        const response = await api.put(`/api/update-shop/${shopId}`, shopData);
+        const response = await api.put(`/shop/update/${shopId}`, shopData);
         dispatch({ type: UPDATE_SHOP_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_SHOP_FAILURE, payload: error.message });
@@ -45,7 +45,7 @@ export const updateShop = (shopId, shopData) => async (dispatch) => {
 export const deleteShop = (shopId) => async (dispatch) => {
     dispatch({ type: DELETE_SHOP_REQUEST });
     try {
-        await api.delete(`/api/delete-shop/${shopId}`);
+        await api.delete(`/shop/delete/${shopId}`);
         dispatch({ type: DELETE_SHOP_SUCCESS, payload: shopId });
     } catch (error) {
         dispatch({ type: DELETE_SHOP_FAILURE, payload: error.message });
@@ -56,7 +56,7 @@ export const deleteShop = (shopId) => async (dispatch) => {
 export const getNearbyShops = (location) => async (dispatch) => {
     dispatch({ type: GET_NEARBY_SHOPS_REQUEST });
     try {
-        const response = await api.get(`/api/get-nearby-shops`, { params: location });
+        const response = await api.get(`/shop/find/nearby`, { params: location });
         dispatch({ type: GET_NEARBY_SHOPS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_NEARBY_SHOPS_FAILURE, payload: error.message });
@@ -67,7 +67,7 @@ export const getNearbyShops = (location) => async (dispatch) => {
 export const getShopById = (shopId) => async (dispatch) => {
     dispatch({ type: GET_SHOP_BY_ID_REQUEST });
     try {
-        const response = await api.get(`/api/get-shop/${shopId}`);
+        const response = await api.get(`/shop/find/${shopId}`);
         dispatch({ type: GET_SHOP_BY_ID_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_SHOP_BY_ID_FAILURE, payload: error.message });

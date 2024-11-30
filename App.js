@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import 'react-native-gesture-handler'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView, Platform, Dimensions } from 'react-native';
@@ -52,7 +53,6 @@ import GreenBankAccount from "./screens/e-Commerce/GreenBank";
 import JoinUsScreen from "./screens/AboutApp/JoinUs";
 import DonatePoints from "./screens/GreenPoints/DonatePoints";
 import NotifScreen from "./screens/GreenPoints/PurchaseHist";
-import GreenBin from "./screens/QuickActions/greenBin";
 import AboutScreen from "./screens/AboutApp/AboutUs";
 import ReportVendorScreen from "./screens/Vendors/ReportVendor";
 import ProductScreen from "./screens/Vendors/VendorProducts";
@@ -97,7 +97,7 @@ import ProductUpload from "./screens/Vendors/VendorUpload";
 import RegisterCode from "./screens/e-Commerce/RegisterBankCode";
 import  GreenBankCodeScreen from "./screens/e-Commerce/CodeAccept";
 import IncomingCallScreen from "./screens/Vendors/IncomingCall";
-
+import SplashScreen from './screens/SplashScreen'; 
 
 import { StreamCall } from '@stream-io/video-react-native-sdk';
 import SquadMembers from "./screens/Squads/SquadMembers";
@@ -228,9 +228,15 @@ const MainTabs = () => {
 
 
 const App = () => {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(false);
+  const [isSplashScreenVisible, setSplashScreenVisible] = useState(true);
+  const navigation = useNavigation(); 
+  if (isSplashScreenVisible) {
+    return <SplashScreen onFinish={() => setSplashScreenVisible(false)} />;
+  }
 
- /* React.useEffect(() => {
+
+
+  useEffect(() => {
     // Stream SDK incoming call listener
     const listener = StreamCall.onIncomingCall((call) => {
       // Navigate to IncomingCallScreen with call details
@@ -241,7 +247,7 @@ const App = () => {
       listener.remove(); // Cleanup
     };
   }, []);
-   */
+   
 
 
   const [fontsLoaded, error] = useFonts({
@@ -299,7 +305,6 @@ const App = () => {
         <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
         <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="greenBin" component={GreenBin} options={{ headerShown: false }} />
         <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
         <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />

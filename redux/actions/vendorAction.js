@@ -18,7 +18,7 @@ import api from '../../utils/axiosConfig';
 export const createVendor = (vendorData) => async (dispatch) => {
     dispatch({ type: CREATE_VENDOR_REQUEST });
     try {
-        const response = await api.post('/api/create-vendor', vendorData);
+        const response = await api.post('/vendor/apply', vendorData);
         dispatch({ type: CREATE_VENDOR_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_VENDOR_FAILURE, payload: error.message });
@@ -29,7 +29,7 @@ export const createVendor = (vendorData) => async (dispatch) => {
 export const getAllVendors = () => async (dispatch) => {
     dispatch({ type: GET_ALL_VENDORS_REQUEST });
     try {
-        const response = await api.get('/api/get-all-vendors');
+        const response = await api.get('/user/vendors');
         dispatch({ type: GET_ALL_VENDORS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_VENDORS_FAILURE, payload: error.message });
@@ -51,7 +51,7 @@ export const updateVendor = (vendorId, vendorData) => async (dispatch) => {
 export const deleteVendor = (vendorId) => async (dispatch) => {
     dispatch({ type: DELETE_VENDOR_REQUEST });
     try {
-        await api.delete(`/api/delete-vendor/${vendorId}`);
+        await api.delete(`/user/delete/${vendorId}`);
         dispatch({ type: DELETE_VENDOR_SUCCESS, payload: vendorId });
     } catch (error) {
         dispatch({ type: DELETE_VENDOR_FAILURE, payload: error.message });

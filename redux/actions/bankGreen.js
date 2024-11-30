@@ -11,7 +11,7 @@ import {
 export const fetchBalance = () => async (dispatch) => {
     dispatch({ type: FETCH_BALANCE_REQUEST });
     try {
-      const response = await api.get('/api/balance'); // Replace with your API endpoint
+      const response = await api.get('/user/balance'); // Replace with your API endpoint
       dispatch({ type: FETCH_BALANCE_SUCCESS, payload: response.data.balance });
     } catch (error) {
       dispatch({ type: FETCH_BALANCE_FAILURE, payload: error.message });

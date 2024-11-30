@@ -17,7 +17,7 @@ import {
 export const createReport = (reportData) => async (dispatch) => {
     dispatch({ type: CREATE_REPORT_REQUEST });
     try {
-        const response = await api.post('/api/create-report', reportData);
+        const response = await api.post('/report/create', reportData);
         dispatch({ type: CREATE_REPORT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_REPORT_FAILURE, payload: error.message });
@@ -28,7 +28,7 @@ export const createReport = (reportData) => async (dispatch) => {
 export const getAllReports = () => async (dispatch) => {
     dispatch({ type: GET_ALL_REPORTS_REQUEST });
     try {
-        const response = await api.get('/api/get-all-reports');
+        const response = await api.get('/report/find/all');
         dispatch({ type: GET_ALL_REPORTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_REPORTS_FAILURE, payload: error.message });
@@ -39,7 +39,7 @@ export const getAllReports = () => async (dispatch) => {
 export const deleteReport = (reportId) => async (dispatch) => {
     dispatch({ type: DELETE_REPORT_REQUEST });
     try {
-        await api.delete(`/api/delete-report/${reportId}`);
+        await api.delete(`/report/delete/${reportId}`);
         dispatch({ type: DELETE_REPORT_SUCCESS, payload: reportId });
     } catch (error) {
         dispatch({ type: DELETE_REPORT_FAILURE, payload: error.message });

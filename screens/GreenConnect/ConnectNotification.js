@@ -12,7 +12,7 @@ import FastImage from 'react-native-fast-image';
 // Import Redux actions
 import { fetchNotifications, deleteNotification } from '../../redux/actions/notifications';
 
-const NotificationScreen = () => {
+;const NotificationScreen = () => {
   const dispatch = useDispatch();
   const notifications = useSelector((state) => state.notifications.data); // Select notifications from Redux store
   const loading = useSelector((state) => state.notifications.loading);

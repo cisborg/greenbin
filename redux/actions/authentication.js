@@ -92,7 +92,7 @@ export const sendResetPassword = ({ email, token, newPassword }) => async (dispa
     // Step 1: Request password reset email
     dispatch({ type: SEND_RESET_PASSWORD });
     try {
-      const response = await api.post("/user/reset", { email });
+      const response = await api.post("/user/reset/password/otp", { email });
 
       if (response.data.status === "success") {
         // Store the email for reference (if needed later)
@@ -120,10 +120,10 @@ export const sendResetPassword = ({ email, token, newPassword }) => async (dispa
   }
 };
 
-export const registerCode = (productId) => async (dispatch) => {
+export const registerCode = (email) => async (dispatch) => {
   dispatch({ type: REGISTER_CODE_REQUEST });
   try {
-      const response = await api.post(`/user/getcode`, { productId }); // Adjust the endpoint as needed
+      const response = await api.post(`/user/greencode`, { email }); // Adjust the endpoint as needed
       dispatch({ type: REGISTER_CODE_SUCCESS, payload: response.data });
   } catch (error) {
       dispatch({ type: REGISTER_CODE_FAILURE, payload: error.message });
@@ -135,7 +135,7 @@ export const registerCode = (productId) => async (dispatch) => {
  export const connectionRequest = (userId) => async (dispatch) => {
   dispatch({ type: CONNECTION_REQUEST });
    try {
-     const response = await api.post("/user/connect", { userId });
+     const response = await api.post("/user/connect/request", { userId });
      dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
    } catch (error) {
      dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
@@ -145,7 +145,7 @@ export const registerCode = (productId) => async (dispatch) => {
  export const connectToVendor = (userId) => async (dispatch) => {
   dispatch({ type: CONNECTION_REQUEST });
    try {
-     const response = await api.post("/user/vendor", { userId });
+     const response = await api.post("/user/connect/request", { userId });
      dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
    } catch (error) {
      dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
@@ -156,7 +156,7 @@ export const registerCode = (productId) => async (dispatch) => {
  export const getReferralCode = (userId) => async (dispatch) => {
   dispatch({ type: GET_REFERRAL_CODE_REQUEST });
   try {
-    const response = await api.get(` /user/get-referral-code/${userId}`);
+    const response = await api.get(` /user/get/reffer/${userId}`);
      dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data });
    } catch (error) {
     dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
@@ -250,7 +250,23 @@ export const acceptCode = (code) => async (dispatch) => {
  export const fetchUserData = () => async (dispatch) => {
   dispatch({ type: FETCH_USER_DATA_REQUEST });
   try {
-    const response = await api.get("/user/profile");
+    const response = await api.get("/user/info");
+
+    if (response.data.status === "success") {
+      const user = response.data.data;
+      dispatch({ type: FETCH_USER_DATA_SUCCESS, payload: user });
+    } else {
+      dispatch({ type: FETCH_USER_DATA_FAILURE, payload: response.data.message });
+    }
+  } catch (error) {
+    dispatch({ type: FETCH_USER_DATA_FAILURE, payload: error.message });
+  }
+};
+
+export const userConnections = () => async (dispatch) => {
+  dispatch({ type: FETCH_USER_DATA_REQUEST });
+  try {
+    const response = await api.get("/user/connections");
 
     if (response.data.status === "success") {
       const user = response.data.data;

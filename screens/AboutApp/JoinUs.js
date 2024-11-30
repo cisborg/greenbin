@@ -63,7 +63,7 @@ const JoinUsScreen = () => {
 
       <Animated.View style={[styles.milestoneContainer, { opacity: animationValue }]}>
         {milestonesReached ? (
-          <>
+          <View>
             <Text style={styles.milestoneText}>Congratulations! You qualify to join our NGO.</Text>
             <TouchableOpacity
               style={styles.joinButton}
@@ -71,7 +71,7 @@ const JoinUsScreen = () => {
             >
               <Text style={styles.joinButtonText}>Join Now</Text>
             </TouchableOpacity>
-          </>
+          </View>
         ) : (
           <Text style={styles.milestoneText}>
             Keep up the good work! You need to reach the following milestones to join:

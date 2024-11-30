@@ -26,7 +26,7 @@ export const createSquadActivity = (activityDetails) => async (dispatch) => {
             });
         }
 
-        const response = await api.post('/squad/activity/create', formData, {
+        const response = await api.post('/events/create', formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -49,7 +49,7 @@ export const removeSquadActivity = (id) => async (dispatch) => {
     try {
         dispatch({ type: SQUAD_ACTIVITY_LOADING });
         
-        await api.delete(`/api/squad-activities/${id}`);
+        await api.delete(`/events/delete/${id}`);
         dispatch({ type: DELETE_SQUAD_ACTIVITY, payload: id });
     } catch (error) {
         dispatch({ type: SQUAD_ACTIVITY_ERROR, payload: error.message });
@@ -75,7 +75,7 @@ export const updateSquadActivity = (activity) => async (dispatch) => {
             });
         }
 
-        const response = await api.put(`/api/squad-activities/${activity.id}`, formData, {
+        const response = await api.put(`events/update/${activity.id}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -92,7 +92,17 @@ export const fetchSquadActivities = () => async (dispatch) => {
     try {
         dispatch({ type: SQUAD_ACTIVITY_LOADING });
         
-        const response = await api.get('/api/squad-activities');
+        const response = await api.get('/events/all');
+        dispatch({ type: FETCH_SQUAD_ACTIVITIES, payload: response.data });
+    } catch (error) {
+        dispatch({ type: SQUAD_ACTIVITY_ERROR, payload: error.message });
+    }
+};
+export const fetchSquadActivity = () => async (dispatch) => {
+    try {
+        dispatch({ type: SQUAD_ACTIVITY_LOADING });
+        
+        const response = await api.get('/events/one');
         dispatch({ type: FETCH_SQUAD_ACTIVITIES, payload: response.data });
     } catch (error) {
         dispatch({ type: SQUAD_ACTIVITY_ERROR, payload: error.message });

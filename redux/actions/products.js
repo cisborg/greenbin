@@ -29,18 +29,49 @@ import {
 export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_REQUEST });
     try {
-        const response = await api.get('/api/products');
+        const response = await api.get('/product');
         dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
     }
 };
 
+
+export const fetchLatest = () => async (dispatch) => {
+    dispatch({ type: FETCH_PRODUCTS_REQUEST });
+    try {
+        const response = await api.get('/product/latest');
+        dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
+    }
+};
+
+
+export const fetchRecommended = () => async (dispatch) => {
+    dispatch({ type: FETCH_PRODUCTS_REQUEST });
+    try {
+        const response = await api.get('/product/recommended');
+        dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
+    }
+};
+
+export const fetchFlashsale = () => async (dispatch) => {
+    dispatch({ type: FETCH_PRODUCTS_REQUEST });
+    try {
+        const response = await api.get('/product/flash-sales');
+        dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
+    }
+};
 // Create product action
 export const createProduct = (productData) => async (dispatch) => {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
     try {
-        const response = await api.post('/api/products', productData);
+        const response = await api.post('/product/create', productData);
         dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
@@ -51,7 +82,7 @@ export const createProduct = (productData) => async (dispatch) => {
 export const updateProduct = (productId, updatedData) => async (dispatch) => {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
     try {
-        const response = await api.put(`/api/products/${productId}`, updatedData);
+        const response = await api.put(`/product/update/${productId}`, updatedData);
         dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
@@ -62,7 +93,7 @@ export const updateProduct = (productId, updatedData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
     try {
-        await api.delete(`/api/products/${productId}`);
+        await api.delete(`/product/${productId}`);
         dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
     } catch (error) {
         dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
@@ -73,7 +104,7 @@ export const deleteProduct = (productId) => async (dispatch) => {
 export const purchaseProduct = (productId, quantity) => async (dispatch) => {
     dispatch({ type: PURCHASE_PRODUCT_REQUEST });
     try {
-        const response = await api.post(`/api/purchase`, { productId, quantity });
+        const response = await api.post(`/product/request-payment`, { productId, quantity });
         dispatch({ type: PURCHASE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: PURCHASE_PRODUCT_FAILURE, payload: error.message });
@@ -84,7 +115,7 @@ export const purchaseProduct = (productId, quantity) => async (dispatch) => {
 export const subscribeProduct = (productId) => async (dispatch) => {
     dispatch({ type: SUBSCRIBE_PRODUCT_REQUEST });
     try {
-        const response = await api.post(`/api/subscribe`, { productId });
+        const response = await api.post(`/product/subscribe`, { productId });
         dispatch({ type: SUBSCRIBE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: SUBSCRIBE_PRODUCT_FAILURE, payload: error.message });
@@ -95,7 +126,7 @@ export const subscribeProduct = (productId) => async (dispatch) => {
 export const cancelSubscription = (productId) => async (dispatch) => {
     dispatch({ type: CANCEL_SUBSCRIPTION_REQUEST });
     try {
-        await api.delete(`/api/subscribe/${productId}`);
+        await api.delete(`/product/delete/subscription/${productId}`);
         dispatch({ type: CANCEL_SUBSCRIPTION_SUCCESS, payload: productId });
     } catch (error) {
         dispatch({ type: CANCEL_SUBSCRIPTION_FAILURE, payload: error.message });
@@ -106,7 +137,7 @@ export const cancelSubscription = (productId) => async (dispatch) => {
 export const updateProductImages = (productId, images) => async (dispatch) => {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
     try {
-        const response = await api.put(`/api/products/${productId}/images`, { images });
+        const response = await api.put(`/product/update/${productId}/images`, { images });
         dispatch({ type: UPDATE_PRODUCT_IMAGES, payload: response.data.images });
     } catch (error) {
         dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });

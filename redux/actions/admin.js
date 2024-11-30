@@ -37,13 +37,17 @@ import {
     UPDATE_USER_SUCCESS,
     UPDATE_USER_FAILURE,
     UPDATE_USER_REQUEST,
+    APPROVE_VENDOR_REQUEST,
+    APPROVE_VENDOR_SUCCESS,
+    APPROVE_VENDOR_FAILURE,
+    
 } from './actionTypes';
 
 // Fetch all admins action
 export const fetchAdmins = () => async (dispatch) => {
     dispatch({ type: FETCH_ADMINS_REQUEST });
     try {
-        const response = await api.get('/api/admins');
+        const response = await api.get('/admin/all');
         dispatch({ type: FETCH_ADMINS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_ADMINS_FAILURE, payload: error.message });
@@ -54,7 +58,7 @@ export const fetchAdmins = () => async (dispatch) => {
 export const addAdmin = (adminData) => async (dispatch) => {
     dispatch({ type: ADD_ADMIN_REQUEST });
     try {
-        const response = await api.post('/api/admins', adminData);
+        const response = await api.post('/admin/create', adminData);
         dispatch({ type: ADD_ADMIN_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: ADD_ADMIN_FAILURE, payload: error.message });
@@ -65,7 +69,7 @@ export const addAdmin = (adminData) => async (dispatch) => {
 export const deleteAdmin = (adminId) => async (dispatch) => {
     dispatch({ type: DELETE_ADMIN_REQUEST });
     try {
-        await api.delete(`/api/admins/${adminId}`);
+        await api.delete(`/admin/delete/${adminId}`);
         dispatch({ type: DELETE_ADMIN_SUCCESS, payload: adminId });
     } catch (error) {
         dispatch({ type: DELETE_ADMIN_FAILURE, payload: error.message });
@@ -76,7 +80,7 @@ export const deleteAdmin = (adminId) => async (dispatch) => {
 export const updateAdminCredentials = (adminId, adminData) => async (dispatch) => {
     dispatch({ type: UPDATE_ADMIN_CREDENTIALS_REQUEST });
     try {
-        const response = await api.put(`/api/admins/${adminId}`, adminData);
+        const response = await api.put(`/admin/update/${adminId}`, adminData);
         dispatch({ type: UPDATE_ADMIN_CREDENTIALS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_ADMIN_CREDENTIALS_FAILURE, payload: error.message });
@@ -87,7 +91,7 @@ export const updateAdminCredentials = (adminId, adminData) => async (dispatch) =
 export const updateAdminPassword = (adminId, newPassword) => async (dispatch) => {
     dispatch({ type: UPDATE_ADMIN_PASSWORD_REQUEST });
     try {
-        const response = await api.put(`/api/admins/${adminId}/password`, { password: newPassword });
+        const response = await api.put(`/admins/${adminId}/password`, { password: newPassword });
         dispatch({ type: UPDATE_ADMIN_PASSWORD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: UPDATE_ADMIN_PASSWORD_FAILURE, payload: error.message });
@@ -98,7 +102,7 @@ export const updateAdminPassword = (adminId, newPassword) => async (dispatch) =>
 export const fetchUsers = () => async (dispatch) => {
     dispatch({ type: FETCH_USERS_REQUEST });
     try {
-        const response = await api.get('/api/users');
+        const response = await api.get('/admin/users');
         dispatch({ type: FETCH_USERS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_USERS_FAILURE, payload: error.message });
@@ -109,7 +113,7 @@ export const fetchUsers = () => async (dispatch) => {
 export const deleteSquad = (squadId) => async (dispatch) => {
     dispatch({ type: DELETE_SQUAD_REQUEST });
     try {
-        await api.delete(`/api/squads/${squadId}`);
+        await api.delete(`/admin/delete/squad/${squadId}`);
         dispatch({ type: DELETE_SQUAD_SUCCESS, payload: squadId });
     } catch (error) {
         dispatch({ type: DELETE_SQUAD_FAILURE, payload: error.message });
@@ -117,10 +121,10 @@ export const deleteSquad = (squadId) => async (dispatch) => {
 };
 
 // Create product action
-export const createProduct = (productData) => async (dispatch) => {
+export const activateProduct = (productData) => async (dispatch) => {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
     try {
-        const response = await api.post('/api/products', productData);
+        const response = await api.put('/admin/activate/product', productData);
         dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
@@ -142,7 +146,7 @@ export const updateProduct = (productId, productData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
     try {
-        await api.delete(`/api/products/${productId}`);
+        await api.delete(`/admin/delete/product/${productId}`);
         dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
     } catch (error) {
         dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
@@ -154,7 +158,7 @@ export const deleteProduct = (productId) => async (dispatch) => {
  export const deleteUser = (userId) => async (dispatch) => {
     dispatch({ type: DELETE_USER_REQUEST });
     try {
-      const response = await api.delete(` api/delete-user/${userId}`);
+      const response = await api.delete(`/admin/delete/user/${userId}`);
       dispatch({ type: DELETE_USER_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: DELETE_USER_FAILURE, payload: error.message });
@@ -166,8 +170,19 @@ export const deleteProduct = (productId) => async (dispatch) => {
 export const updateUser = (userId, userData) => async (dispatch) => {
    dispatch({ type: UPDATE_USER_REQUEST });
    try {
-    const response = await api.put(`/user/update${userId}`, userData);
+    const response = await api.put(`admin/update/user/${userId}`, userData);
      dispatch({ type: UPDATE_USER_SUCCESS, payload: response.data });
   } catch (error) {
      dispatch({ type: UPDATE_USER_FAILURE, payload: error.message });   }
  };
+
+
+export const approveVendor = (vendorData) => async (dispatch) => {
+    dispatch({ type: APPROVE_VENDOR_REQUEST });
+    try {
+        const response = await api.put('/admin/approve/vendor', vendorData);
+        dispatch({ type: APPROVE_VENDOR_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: APPROVE_VENDOR_FAILURE, payload: error.message });
+    }
+};

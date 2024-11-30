@@ -12,7 +12,7 @@ export const fetchNotifications = () => async (dispatch) => {
     dispatch({ type: FETCH_NOTIFICATIONS_REQUEST });
   
     try {
-      const response = await api.get('/api/notifications'); // Fetch from your API
+      const response = await api.get('/user/notifications'); // Fetch from your API
       const notifications = response.data.map(notification => ({
         id: notification.id,
         type: notification.type,
@@ -32,7 +32,7 @@ export const fetchNotifications = () => async (dispatch) => {
 
   export const deleteNotification = (notificationId) => async (dispatch) => {
     try {
-      await api.delete(`/api/notifications/${notificationId}`); // Replace with your API endpoint
+      await api.delete(`/user/notifications/delete/${notificationId}`); // Replace with your API endpoint
       dispatch({ type: DELETE_NOTIFICATION, payload: notificationId });
     } catch (error) {
       console.error('Failed to delete notification:', error.message);
