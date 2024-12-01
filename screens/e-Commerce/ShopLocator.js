@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
-import * as Location from 'expo-location';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
-import { useDispatch,useSelector } from 'react-redux'; // Import useDispatch
-import { getNearbyShops } from '../../redux/actions/shop'; 
+import { useDispatch, useSelector } from 'react-redux';
+import * as Location from 'expo-location';
+import MapView, { Marker } from 'react-native-maps';
 import { Color } from '../../GlobalStyles';
-import FastImage from 'react-native-fast-image';
+import { getNearbyShops } from '../../redux/actions/shop'; 
 
 const { width } = Dimensions.get('window');
 
 const ConnectToShops = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
-  const shops = useSelector(state => state.shops); 
+  const [showMapView, setShowMapView] = useState(true); // Toggle between map and list
+  const shops = useSelector(state => state.shops);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const dispatch = useDispatch(); // Get the dispatch function
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -54,69 +55,89 @@ const ConnectToShops = () => {
         Alert.alert('Permission denied', 'Location permission is required to find nearby shops.');
         return;
       }
-  
+
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
       setCurrentLocation({ lat: latitude, lng: longitude });
 
-      // Dispatch the getNearbyShops action with the current location
-      dispatch(getNearbyShops({ lat: latitude, lng: longitude }));
+      dispatch(getNearbyShops({ lat: latitude, lng: longitude })); // Fetch nearby shops
     } catch (error) {
       console.error('Error getting location:', error);
       Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
     }
   };
 
+  const renderShopMarker = (shop) => (
+    <Marker
+      key={shop.id}
+      coordinate={{ latitude: shop.latitude, longitude: shop.longitude }}
+      title={shop.name}
+      description={shop.description}
+    />
+  );
+
   const renderShopCard = ({ item }) => (
     <View style={styles.shopContainer}>
-      <FastImage
-        source={typeof item.logo === 'string' ? { uri: item.logo } : item.logo} 
-        style={styles.logo} 
-        resizeMode={FastImage.resizeMode.cover}
-        onError={() => console.error('Image loading error')}
-      />
-      <View style={styles.shopDetails}>
-        <Text style={styles.shopName}>{item.name}</Text>
-        <Text style={styles.shopDescription}>{item.description}</Text>
-        <Text style={styles.shopHours}>Hours: {item.hours}</Text>
-        <Text style={styles.shopDistance}>Distance: {item.distance}</Text>
-        <View style={styles.ratingContainer}>
-          <FontAwesome name="star" size={16} color="#FFD700" />
-          <Text style={styles.ratingText}>{item.rating}</Text>
-        </View>
-        <Text style={styles.vendorsHeader}>Vendors:</Text>
-        <FlatList
-          data={item.vendors}
-          renderItem={({ item }) => <Text style={styles.vendorItem}>{item}</Text>}
-          keyExtractor={(vendor, index) => index.toString()}
-        />
-        <TouchableOpacity style={styles.connectButton} onPress={()=> navigation.goBack()}>
-          <Text style={styles.connectButtonText}>Shop Now</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.shopName}>{item.name}</Text>
+      <Text style={styles.shopDescription}>{item.description}</Text>
+      <Text style={styles.shopDistance}>Distance: {item.distance}</Text>
+      <TouchableOpacity style={styles.connectButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.connectButtonText}>Shop Now</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Connect to Local Green Shops</Text>
-      <Text style={styles.subtitle}>
-        Your current location: {currentLocation ? `${currentLocation.lat}, ${currentLocation.lng}` : 'Fetching...'}
-      </Text>
-      {shops.length > 0 ? (
-        <FlatList
-          data={shops}
-          renderItem={renderShopCard}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
-        />
+      {/* Ellipsis Button */}
+      <TouchableOpacity
+        style={styles.menuButton}
+        onPress={() => setShowMapView(!showMapView)} // Toggle view
+      >
+        <FontAwesome name="ellipsis-v" size={24} color="black" />
+      </TouchableOpacity>
+
+      {/* Map View */}
+      {showMapView ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: currentLocation ? currentLocation.lat : 0,
+            longitude: currentLocation ? currentLocation.lng : 0,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          {/* User Location Marker */}
+          {currentLocation && (
+            <Marker
+              coordinate={{ latitude: currentLocation.lat, longitude: currentLocation.lng }}
+              title="Your Location"
+              pinColor="blue"
+            />
+          )}
+          {/* Shop Markers */}
+          {shops.map(renderShopMarker)}
+        </MapView>
       ) : (
-        <Text style={styles.noShopsText}>No nearby shops found.</Text>
+        // List View
+        <>
+          <Text style={styles.title}>Nearby Shops</Text>
+          {shops.length > 0 ? (
+            <FlatList
+              data={shops}
+              renderItem={renderShopCard}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.listContainer}
+            />
+          ) : (
+            <Text style={styles.noShopsText}>No nearby shops found.</Text>
+          )}
+        </>
       )}
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -124,6 +145,15 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorWhite,
     padding: '5%', // Responsive padding
   },
+  menuButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 10,
+    padding: 10,
+  },
+  map: { flex: 1 },
+
   title: {
     fontSize: width < 400 ? 16 : 17, // Responsive font size
     fontWeight: 'bold',
@@ -150,9 +180,8 @@ const styles = StyleSheet.create({
       height: 2,
     },
   },
-  shopList: {
-    paddingBottom: 20,
-  },
+  listContainer: { paddingBottom: 20 },
+
   shopContainer: {
     flexDirection: 'row',
     padding: '5%', // Responsive padding

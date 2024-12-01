@@ -10,34 +10,36 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  Dimensions,Platform,StatusBar
+  Dimensions,
+  Platform,
+  StatusBar
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import FastImage from 'react-native-fast-image'; // Import FastImage
+import FastImage from 'react-native-fast-image';
 import { Color } from '../../GlobalStyles';
 import ItemGridScreen from '../e-Commerce/allProducts';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/actions/products';
-
+import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const ChallengePage = () => {
   const dispatch = useDispatch();
-  const { products , productsLoading } = useSelector(state => state.products);
+  const { products, productsLoading, productsError } = useSelector(state => state.products);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const categories = sidebarCategories; // Sidebar categories array
+  const categories = sidebarCategories;
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const [currentPage, setCurrentPage] = useState(1); // State for pagination
-  const [loadingMore, setLoadingMore] = useState(false); // Local loading state fo
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const totalProductsCount = products?.length || 0; // Example fallback
+  const totalProductsCount = products?.length || 0;
 
   const bannerImages = [
     { uri: "https://your-image-url.com/greenFriday.png" },
@@ -57,9 +59,8 @@ const ChallengePage = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
     }, 4000);
   
-    return () => clearInterval(interval); // Clear interval on unmount
+    return () => clearInterval(interval);
   }, [fadeAnim, bannerImages.length]);
-  
 
   const handleSidebarItemPress = (categoryName) => {
     setSelectedCategory(categoryName);
@@ -82,20 +83,19 @@ const ChallengePage = () => {
     await dispatch(fetchProducts());
     setRefreshing(false);
   };
-  
 
   const loadMoreItems = async () => {
     if (!loadingMore && filteredProducts.length < totalProductsCount) {
       setLoadingMore(true);
-      await dispatch(fetchProducts(currentPage + 1)); // Fetch next page
-      setCurrentPage(prevPage => prevPage + 1); // Increment page
+      await dispatch(fetchProducts(currentPage + 1));
+      setCurrentPage(prevPage => prevPage + 1);
       setLoadingMore(false);
     }
   };
-  
 
-  const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderProductItem = ({ item }) => (
     <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('ProductDetails', { productId: item.id })}>
@@ -104,7 +104,7 @@ const ChallengePage = () => {
     </TouchableOpacity>
   );
 
-  const renderListHeader = useMemo(() =>  (
+  const renderListHeader = useMemo(() => (
     <>
       <View style={styles.header}>
         <TextInput
@@ -148,7 +148,7 @@ const ChallengePage = () => {
               <FastImage source={require('../../assets/menu.jpg')} style={styles.homeImage} resizeMode={FastImage.resizeMode.CONTAIN} />
               <Text style={styles.homeText}>Home</Text>
             </TouchableOpacity>
-            <FlatList // Use FlatList for sidebar items
+            <FlatList
               data={categories}
               keyExtractor={(item) => item.name}
               renderItem={({ item }) => (
@@ -166,13 +166,22 @@ const ChallengePage = () => {
           <View style={styles.mainContent}>
             {renderListHeader()}
 
-            {selectedCategory ? (
+            {productsLoading ? (
+                <LottieView
+                source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+                autoPlay
+                loop
+                style={styles.lottie}
+              />
+            ) : productsError ? (
+              <Text style={styles.errorText}>No products available.</Text>
+            ) : selectedCategory ? (
               <ItemGridScreen 
                 selectedCategory={selectedCategory}
                 onRefresh={onRefresh}
                 loadMoreItems={loadMoreItems}
                 navigation={navigation}
-                onEndReached={() => handleSidebarItemPress(selectedCategory)} // Auto select category on scroll end
+                onEndReached={() => handleSidebarItemPress(selectedCategory)}
               />
             ) : (
               <FlashList
@@ -183,13 +192,12 @@ const ChallengePage = () => {
                 columnWrapperStyle={styles.row}
                 contentContainerStyle={styles.categoriesContainer}
                 ListFooterComponent={
-                  productsLoading && filteredProducts.length < totalProductsCount ? (
+                  loadingMore ? (
                     <ActivityIndicator size="small" color="green" />
                   ) : (
                     <View style={{ paddingVertical: 20 }} />
                   )
                 }
-                
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 estimatedItemSize={40}
                 onEndReached={loadMoreItems}
@@ -249,6 +257,10 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25,
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
   },
   homeText: {
     fontSize: 11,

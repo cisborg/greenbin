@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'; // Import for icons
-import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage for state persistence
+
 const CoinRewards = () => {
   const [checkedIn, setCheckedIn] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(3); // Assume today is "DAY-3" for testing
+  const [selectedDay, setSelectedDay] = useState(1); // Start at Day 1
   const [totalCoins, setTotalCoins] = useState(0);
   const [showCoinsMall, setShowCoinsMall] = useState(true);
 
   const days = [
     { day: 1, coins: 1 },
     { day: 2, coins: 6 },
-    { day: 3, coins: 18 }, // "today"
+    { day: 3, coins: 18 },
     { day: 4, coins: 20 },
     { day: 5, coins: 24 },
     { day: 6, coins: 30 },
@@ -25,16 +26,65 @@ const CoinRewards = () => {
     { id: '4', value: 'KSh 60 Off', type: 'Platform voucher', coins: 229 },
   ];
 
-  const products = [
-    { id: '1', name: 'Product 1', description: 'Ecogreen Bag', price: 'KSh 100', image: 'https://via.placeholder.com/100' },
-    { id: '2', name: 'Product 2', description: 'GreenBin Standard', price: 'KSh 200', image: 'https://via.placeholder.com/100' },
-    { id: '3', name: 'Product 3', description: 'Green Mattress', price: 'KSh 300', image: 'https://via.placeholder.com/100' },
-  ];
+  useEffect(() => {
+    const loadState = async () => {
+      try {
+        const savedCoins = await AsyncStorage.getItem('totalCoins');
+        const savedDay = await AsyncStorage.getItem('selectedDay');
+        if (savedCoins !== null) {
+          setTotalCoins(parseInt(savedCoins, 10));
+        }
+        if (savedDay !== null) {
+          setSelectedDay(parseInt(savedDay, 10));
+        }
+      } catch (e) {
+        console.error("Error loading state:", e);
+      }
+    };
 
-  const handleCheckIn = () => {
+    loadState();
+  }, []);
+
+  const handleCheckIn = async () => {
     setCheckedIn(true);
     setTotalCoins(prevTotal => prevTotal + days[selectedDay - 1].coins);
+    await AsyncStorage.setItem('totalCoins', (totalCoins + days[selectedDay - 1].coins).toString());
+    await AsyncStorage.setItem('selectedDay', selectedDay.toString());
   };
+
+  const handleVoucherRedemption = (voucher) => {
+    if (totalCoins >= voucher.coins) {
+      setTotalCoins(prevTotal => prevTotal - voucher.coins);
+      AsyncStorage.setItem('totalCoins', (totalCoins - voucher.coins).toString());
+      alert(`Voucher ${voucher.value} redeemed!`);
+    } else {
+      alert('Not enough coins to redeem this voucher.');
+    }
+  };
+
+  const handleDayReset = async () => {
+    const today = new Date().getDate(); // Get current day of the month
+    if (today !== selectedDay) {
+      setSelectedDay(1); // Reset to Day 1 if user missed a day
+      setTotalCoins(0); // Reset coins as well
+      await AsyncStorage.removeItem('totalCoins');
+      await AsyncStorage.removeItem('selectedDay');
+    }
+  };
+
+  const resetAfter7Days = async () => {
+    if (selectedDay > 7) {
+      setSelectedDay(1); // Reset back to Day 1
+      setTotalCoins(0); // Reset coins after 7 days
+      await AsyncStorage.removeItem('totalCoins');
+      await AsyncStorage.removeItem('selectedDay');
+    }
+  };
+
+  useEffect(() => {
+    handleDayReset();
+    resetAfter7Days();
+  }, [selectedDay]);
 
   return (
     <View style={styles.container}>
@@ -42,48 +92,47 @@ const CoinRewards = () => {
       <Text style={styles.totalCoins}>Total Coins: {totalCoins}</Text>
 
       <View style={styles.checkInContainer}>
-  <Text style={styles.checkInText}>Check-in today to earn {days[selectedDay - 1].coins} coins</Text>
-  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-    {days.map((day) => (
-      <TouchableOpacity
-        key={day.day}
-        style={[
-          styles.dayBox,
-          selectedDay === day.day && !checkedIn && styles.todayDay,
-          day.day < selectedDay && styles.checkedDay,
-        ]}
-        disabled={checkedIn || day.day > selectedDay} // Disable future days
-        onPress={() => {
-          setSelectedDay(day.day);
-          if (day.day === selectedDay) {
-            handleCheckIn();
-          }
-        }}
-      >
-        <Text style={styles.dayLabel}>{day.day}</Text>
-        <Text style={styles.coinValue}>
-          {day.day < selectedDay || (checkedIn && day.day === selectedDay) ? (
-            <MaterialCommunityIcons name="checkbox-marked-circle" size={20} color="green" />
-          ) : (
-            <FontAwesome5 name="coins" size={20} color="gold" />
-          )}
-          {(!checkedIn || day.day !== selectedDay) && <Text> +{day.coins}</Text>}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
-</View>
+        <Text style={styles.checkInText}>Check-in today to earn {days[selectedDay - 1].coins} coins</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {days.map((day) => (
+            <TouchableOpacity
+              key={day.day}
+              style={[
+                styles.dayBox,
+                selectedDay === day.day && !checkedIn && styles.todayDay,
+                day.day < selectedDay && styles.checkedDay,
+                day.day > selectedDay && styles.disabledDay
+              ]}
+              disabled={checkedIn || day.day > selectedDay}
+              onPress={() => {
+                setSelectedDay(day.day);
+                if (day.day === selectedDay && !checkedIn) {
+                  handleCheckIn();
+                }
+              }}
+            >
+              <Text style={styles.dayLabel}>{day.day}</Text>
+              <Text style={styles.coinValue}>
+                {day.day < selectedDay || (checkedIn && day.day === selectedDay) ? (
+                  <MaterialCommunityIcons name="checkbox-marked-circle" size={20} color="green" />
+                ) : (
+                  <FontAwesome5 name="coins" size={20} color="gold" />
+                )}
+                {(!checkedIn || day.day !== selectedDay) && <Text> +{day.coins}</Text>}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       <View style={styles.toggleContainer}>
         <TouchableOpacity onPress={() => setShowCoinsMall(true)} style={[styles.toggleButton, showCoinsMall && styles.activeToggle]}>
           <Text style={styles.toggleText}>Coins Mall</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowCoinsMall(false)} style={[styles.toggleButton, !showCoinsMall && styles.activeToggle]}>
-          <Text style={styles.toggleText}>Recommend Me</Text>
-        </TouchableOpacity>
+        
       </View>
 
-      {showCoinsMall ? (
+      {showCoinsMall && (
         <View>
           <Text style={styles.coinsMallHeader}>Coins Mall</Text>
           <FlatList
@@ -93,7 +142,7 @@ const CoinRewards = () => {
                 <Text style={styles.voucherValue}>{item.value}</Text>
                 <Text style={styles.voucherType}>{item.type}</Text>
                 <Text style={styles.voucherCoins}>{item.coins} Coins</Text>
-                <TouchableOpacity style={styles.exchangeButton}>
+                <TouchableOpacity style={styles.exchangeButton} onPress={() => handleVoucherRedemption(item)}>
                   <Text style={styles.buttonText}>Exchange</Text>
                 </TouchableOpacity>
               </View>
@@ -102,30 +151,11 @@ const CoinRewards = () => {
             numColumns={2}
           />
         </View>
-      ) : (
-        <View>
-          <Text style={styles.mayLikeHeader}>You May Also Like</Text>
-          <FlatList
-            data={products}
-            renderItem={({ item }) => (
-              <View style={styles.productCard}>
-                <FastImage source={{ uri: item.image }} style={styles.productImage} resizeMode={FastImage.resizeMode.cover}/>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productDescription}>{item.description}</Text>
-                <Text style={styles.productPrice}>{item.price}</Text>
-                <TouchableOpacity style={styles.exchangeButton}>
-                  <Text style={styles.buttonText}>Apply Voucher</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            keyExtractor={item => item.id}
-            numColumns={2}
-          />
-        </View>
-      )}
+      ) }
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

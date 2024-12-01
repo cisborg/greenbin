@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
 import 'react-native-gesture-handler'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView, Platform, Dimensions } from 'react-native';
@@ -97,10 +96,12 @@ import ProductUpload from "./screens/Vendors/VendorUpload";
 import RegisterCode from "./screens/e-Commerce/RegisterBankCode";
 import  GreenBankCodeScreen from "./screens/e-Commerce/CodeAccept";
 import IncomingCallScreen from "./screens/Vendors/IncomingCall";
-import SplashScreen from './screens/SplashScreen'; 
-
+import AssetsScreen from "./screens/e-Commerce/Assets";
+import Subscribed from "./screens/e-Commerce/SubscribedProducts";
 import { StreamCall } from '@stream-io/video-react-native-sdk';
 import SquadMembers from "./screens/Squads/SquadMembers";
+import GreenBin from "./screens/QuickActions/greenBin";
+import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
 
 
 
@@ -228,27 +229,18 @@ const MainTabs = () => {
 
 
 const App = () => {
-  const [isSplashScreenVisible, setSplashScreenVisible] = useState(true);
-  const navigation = useNavigation(); 
-  if (isSplashScreenVisible) {
-    return <SplashScreen onFinish={() => setSplashScreenVisible(false)} />;
-  }
-
-
+  const [incomingCall, setIncomingCall] = useState(null);
 
   useEffect(() => {
-    // Stream SDK incoming call listener
-    const listener = StreamCall.onIncomingCall((call) => {
-      // Navigate to IncomingCallScreen with call details
-      navigation.navigate('IncomingCall', { call });
+    const listener = StreamCall((call) => {
+      setIncomingCall(call); // Store incoming call for later use
     });
 
     return () => {
-      listener.remove(); // Cleanup
+      listener.remove(); // Cleanup listener on unmount
     };
   }, []);
-   
-
+  
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -265,97 +257,106 @@ const App = () => {
 
   return (
     <Provider store={store}>
-     <GestureHandlerRootView style={{ flex: 1 }}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
-        <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={MainTabs} />
-        <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
-        <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />
-        <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
-        <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyBundles" component={BuyScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
-        <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
-        <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
-        <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
-        <Stack.Screen name="Wifi" component={WiFiScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="WifiPlan" component={WifiPlans} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorList" component={VendorList} options={{ headerShown: false }} />
-        <Stack.Screen name="createSquad" component={CreateSquad} options={{ headerShown: false }} />
-        <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyBundleSuccessful" component={BuySuccess} options={{ headerShown: false }} />
-        <Stack.Screen name="messageUI" component={MessagesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyWifiSuccessful" component={WifiSuccess} options={{ headerShown: false }} />
-        <Stack.Screen name="Transaction" component={Transactions} options={{ headerShown: false }} />
-        <Stack.Screen name="ViewSquads" component={ViewSquadScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PostSquad" component={NewPostScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false  }} />
-        <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} options={{ headerShown: false  }} />
-        <Stack.Screen name="ProfileSettings" component={ProfileSettings} options={{ headerShown: false  }} />
-        <Stack.Screen name="ConnectNotification" component={NotificationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-        <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
-        <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
-        <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RateVendor" component={VendorRating} options={{ headerShown: false }} />
-        <Stack.Screen name="BuyGoods" component={BuyGoods} options={{ headerShown: false }} />
-        <Stack.Screen name="CarbonCalculator" component={CarbonFootprintCalculator} options={{ headerShown: false }} />
-        <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Crypto" component={WalletScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="selectTag" component={TagSelection} options={{ headerShown: false }} />
-        <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
-        <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
-        <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
-        <Stack.Screen name="paymentConfirmed" component={PaymentConfirmed} options={{ headerShown: false }} />
-        <Stack.Screen name="allProducts" component={ItemGridScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="donationConfirmed" component={DonationConfirmed} options={{ headerShown: false }} />
-        <Stack.Screen name="getPremium" component={GetPremium} options={{ headerShown: false }} />
-        <Stack.Screen name="Support" component={HelpSupportScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="FAQ" component={FAQScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorRegister" component={VendorRegister} options={{ headerShown: false }} />
-        <Stack.Screen name="HelpFull" component={HelpfulTips} options={{ headerShown: false }} />
-        <Stack.Screen name="Confirmed" component={SquadConfirmation} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadCreated" component={SquadCreated} options={{ headerShown: false }} />
-        <Stack.Screen name="AppRating" component={RatingModal} options={{ headerShown: false }} />
-        <Stack.Screen name="chatConnect" component={ChatScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="donationHist" component={HistoryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
-        <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
-        <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
-        <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
-        <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
-        <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
-        <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
-        <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
-        <Stack.Screen name="Insurance" component={Insurance} options={{ headerShown: false }} />
-        <Stack.Screen name="Tailored" component={Tailored} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterBankCode" component={RegisterCode} options={{ headerShown: false }} />
-        <Stack.Screen name="VendorUpload" component={ProductUpload} options={{ headerShown: false }} />
-        <Stack.Screen name="CodeAccept" component={GreenBankCodeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SquadMembers" component={SquadMembers} options={{ headerShown: false }} />
-
-      </Stack.Navigator>
-    </NavigationContainer>
-    </GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <AppNavigator incomingCall={incomingCall} />
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </Provider>
   );
-};
+}
+
+  const AppNavigator =({incomingCall}) => {
+    <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
+      <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
+      <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
+      <Stack.Screen name="Main" component={MainTabs} />
+      <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
+      <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={PrepaidRechargeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ProfileGCPs" component={ProfileGCPs} options={{ headerShown: false }} />
+      <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="BuyBundles" component={BuyScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
+      <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
+      <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
+      <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
+      <Stack.Screen name="Wifi" component={WiFiScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="WifiPlan" component={WifiPlans} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorList" component={VendorList} options={{ headerShown: false }} />
+      <Stack.Screen name="createSquad" component={CreateSquad} options={{ headerShown: false }} />
+      <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="BuyBundleSuccessful" component={BuySuccess} options={{ headerShown: false }} />
+      <Stack.Screen name="messageUI" component={MessagesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="BuyWifiSuccessful" component={WifiSuccess} options={{ headerShown: false }} />
+      <Stack.Screen name="Transaction" component={Transactions} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewSquads" component={ViewSquadScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="PostSquad" component={NewPostScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false  }} />
+      <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} options={{ headerShown: false  }} />
+      <Stack.Screen name="ProfileSettings" component={ProfileSettings} options={{ headerShown: false  }} />
+      <Stack.Screen name="ConnectNotification" component={NotificationScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+      <Stack.Screen name="productDetail" component={CartDetail } options={{ headerShown: false }} />
+      <Stack.Screen name="GreenBank" component={GreenBankAccount } options={{ headerShown: false }} />
+      <Stack.Screen name="JoinUs" component={JoinUsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="PurchaseHist" component={NotifScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="AboutUs" component={AboutScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ReportVendor" component={ReportVendorScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorProducts" component={ProductScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="RateVendor" component={VendorRating} options={{ headerShown: false }} />
+      <Stack.Screen name="BuyGoods" component={BuyGoods} options={{ headerShown: false }} />
+      <Stack.Screen name="CarbonCalculator" component={CarbonFootprintCalculator} options={{ headerShown: false }} />
+      <Stack.Screen name="GoGames" component={GamesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Crypto" component={WalletScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="LegalScreen" component={LegalScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SquadsAward" component={LeaderboardScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="selectTag" component={TagSelection} options={{ headerShown: false }} />
+      <Stack.Screen name="Updates" component={NotificationsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SquadComments" component={CommentsSection} options={{ headerShown: false }} />
+      <Stack.Screen name="ShopLocator" component={ConnectToShops} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorChat" component={VendorChat} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewSquads2" component={ViewSquad2Screen} options={{ headerShown: false }} />
+      <Stack.Screen name="paymentConfirmed" component={PaymentConfirmed} options={{ headerShown: false }} />
+      <Stack.Screen name="allProducts" component={ItemGridScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="donationConfirmed" component={DonationConfirmed} options={{ headerShown: false }} />
+      <Stack.Screen name="getPremium" component={GetPremium} options={{ headerShown: false }} />
+      <Stack.Screen name="Support" component={HelpSupportScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="FAQ" component={FAQScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorRegister" component={VendorRegister} options={{ headerShown: false }} />
+      <Stack.Screen name="HelpFull" component={HelpfulTips} options={{ headerShown: false }} />
+      <Stack.Screen name="Confirmed" component={SquadConfirmation} options={{ headerShown: false }} />
+      <Stack.Screen name="SquadCreated" component={SquadCreated} options={{ headerShown: false }} />
+      <Stack.Screen name="AppRating" component={RatingModal} options={{ headerShown: false }} />
+      <Stack.Screen name="chatConnect" component={ChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="donationHist" component={HistoryScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="DonatePoints" component={DonatePoints} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorsFollowed" component={FollowedVendors} options={{ headerShown: false }} />
+      <Stack.Screen name="Approved" component={Approved} options={{ headerShown: false }} />
+      <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
+      <Stack.Screen name="EventForm" component={EventForm} options={{ headerShown: false }} />
+      <Stack.Screen name="PostFeed" component={PostFeed} options={{ headerShown: false }} />
+      <Stack.Screen name="FlashSale" component={FlashSale} options={{ headerShown: false }} />
+      <Stack.Screen name="SalesList" component={SalesList} options={{ headerShown: false }} />
+      <Stack.Screen name="GreenCoins" component={CoinRewards} options={{ headerShown: false }} />
+      <Stack.Screen name="Insurance" component={Insurance} options={{ headerShown: false }} />
+      <Stack.Screen name="Tailored" component={Tailored} options={{ headerShown: false }} />
+      <Stack.Screen name="RegisterBankCode" component={RegisterCode} options={{ headerShown: false }} />
+      <Stack.Screen name="VendorUpload" component={ProductUpload} options={{ headerShown: false }} />
+      <Stack.Screen name="CodeAccept" component={GreenBankCodeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SquadMembers" component={SquadMembers} options={{ headerShown: false }} />
+      <Stack.Screen name="Assets" component={AssetsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SubscribedProducts" component={Subscribed} options={{ headerShown: false }} />
+      <Stack.Screen name="greenBin" component={GreenBin} options={{ headerShown: false }} />
+      <Stack.Screen name="GreenSurvey" component={SurveyScreen} options={{ headerShown: false }} />
+
+    </Stack.Navigator>
+    }
+
 
 export default App;

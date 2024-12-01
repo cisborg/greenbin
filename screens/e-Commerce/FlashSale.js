@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
-import { fetchProducts } from '../../redux/actions/products'; // Adjust the import based on your project structure
+import { fetchFlashsale } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 // Countdown timer function
 const CountdownTimer = () => {
@@ -59,7 +59,7 @@ const FlashSale = () => {
 
   // Fetch products when component mounts
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchFlashsale());
   }, [dispatch]);
 
   return (

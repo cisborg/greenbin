@@ -75,7 +75,7 @@ const ViewSquadScreen = () => {
   if (error) {
     return (
       <View style={styles.loadingContainer}>
-        <Lottie
+        <LottieView
           source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
           autoPlay
           loop

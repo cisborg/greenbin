@@ -7,7 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
-import { fetchProducts, purchaseProduct } from '../../redux/actions/products'; // Adjust the import based on your project structure
+import { fetchFlashsale, purchaseProduct } from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 const categories = [
     { id: '1', name: 'All' },
@@ -31,7 +31,7 @@ const SalesList = () => {
     }));
 
     useEffect(() => {
-        dispatch(fetchProducts()); // Fetch products when the component mounts
+        dispatch(fetchFlashsale()); // Fetch products when the component mounts
     }, [dispatch]);
 
     useEffect(() => {

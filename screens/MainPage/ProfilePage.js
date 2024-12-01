@@ -100,9 +100,9 @@ const ProfilePage = () => {
       screen: "Support",
     },
     {
-      name: "Profile Settings",
+      name: "Green Survey",
       icon: <MaterialIcons name="settings" size={24} color="white" />,
-      screen: "ProfileSettings",
+      screen: "GreenSurvey",
     },
     {
       name: "Logout",
@@ -176,9 +176,9 @@ const ProfilePage = () => {
 
             {/* Icons Row for Wishlist, Followed Stores, Recently Viewed */}
             <View style={styles.iconRow}>
-              <TouchableOpacity style={styles.iconItem}>
+              <TouchableOpacity style={styles.iconItem} onPress={()=> navigation.navigate('SubscribedProducts')}> 
                 <Ionicons name="heart-outline" size={22} color="white" />
-                <Text style={styles.iconText}>Milestones</Text>
+                <Text style={styles.iconText}>Subscribed</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -189,7 +189,7 @@ const ProfilePage = () => {
                 <Text style={styles.iconText}>Green Shops</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconItem}>
+              <TouchableOpacity style={styles.iconItem} onPress={()=> navigation.navigate('Assets')}> 
                 <Ionicons name="eye-outline" size={22} color="white" />
                 <Text style={styles.iconText}>My Assets</Text>
               </TouchableOpacity>
