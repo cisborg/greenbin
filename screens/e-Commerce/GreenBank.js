@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Platform, FlatList, ActivityIndicator, Alert, StyleSheet, TouchableOpacity, Animated, SafeAreaView, KeyboardAvoidingView, StatusBar } from 'react-native';
+import { View, Text,
+      TextInput,
+      Platform, FlatList,
+      ActivityIndicator, Alert,
+      StyleSheet, TouchableOpacity, 
+      Animated,
+      SafeAreaView,
+      KeyboardAvoidingView, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For Dropdown
 import { useNavigation } from '@react-navigation/native'; // For Back Navigation
 import { Color } from '../../GlobalStyles';
@@ -23,7 +30,6 @@ const GreenBankAccount = () => {
   const [showTransferInputs, setShowTransferInputs] = useState(false); // Toggle transfer inputs
   const [transferPurpose, setTransferPurpose] = useState('fees'); // Transfer purpose dropdown
   const [screenAnimation] = useState(new Animated.Value(0)); // For Screen mount animation
-  const [isRegistered, setIsRegistered] = useState(false); // State to track registration
 
   useEffect(() => {
     const fetchData = async () => {

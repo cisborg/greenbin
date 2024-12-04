@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from '
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/userTiers'; // Import actions
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Lottie from 'lottie-react-native'; // Import Lottie
+import LottieView from 'lottie-react-native'; // Import Lottie
 import FastImage from 'react-native-fast-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -93,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Lottie 
+        <LottieView
           source={require('../../assets/lottie/modernised.json')} // Adjust path to your Lottie file
           autoPlay 
           loop 
@@ -149,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.quickActionsTitle}>
         <Text style={styles.ActionText}>Quick Actions</Text>
-        <TouchableOpacity activeOpacity={0.3}>
+        <TouchableOpacity>
           <Text style={styles.ActionText1}>All Offers</Text>
         </TouchableOpacity>
       </View>
@@ -158,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Wifi')}>
             <FontAwesome name="wifi" size={24} color='green' />
-            <Text style={styles.navButtonText}>StarLink</Text>
+            <Text style={styles.navButtonText}>GreenNet</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('greenBin')}>
             <AntDesign name="creditcard" size={24} color='green' />
@@ -177,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.navigationRow}>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('getPremium')}>
             <MaterialIcons name="health-and-safety" size={24} color='green' />
-            <Text style={styles.navButtonText}>Your Shop</Text>
+            <Text style={styles.navButtonText}>HealthGreen</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Transaction')}>
             <FontAwesome name="send" size={24} color='green' />

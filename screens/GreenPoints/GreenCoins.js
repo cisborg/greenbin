@@ -143,7 +143,7 @@ const CoinRewards = () => {
                 <Text style={styles.voucherType}>{item.type}</Text>
                 <Text style={styles.voucherCoins}>{item.coins} Coins</Text>
                 <TouchableOpacity style={styles.exchangeButton} onPress={() => handleVoucherRedemption(item)}>
-                  <Text style={styles.buttonText}>Exchange</Text>
+                  <Text style={styles.buttonText}>Buy</Text>
                 </TouchableOpacity>
               </View>
             )}

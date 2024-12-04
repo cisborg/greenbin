@@ -24,7 +24,7 @@ const { width, height } = Dimensions.get('window');
 
 const CartDetail = ({route }) => {
   const navigation = useNavigation();
-  const { product } = route.params;
+  const { item } = route.params;
   const dispatch = useDispatch(); // Get the dispatch function
   const [cartCount, setCartCount] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
@@ -34,8 +34,8 @@ const CartDetail = ({route }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [loadingOrder, setLoadingOrder] = useState(false); // Loading state for the order button
 
-  const images = product.images; // Use all product images
-  const discountPercentage = ((product.originalPrice - product.price) / product.originalPrice * 100).toFixed(0);
+  const images = item.images; // Use all product images
+  const discountPercentage = ((item.originalPrice - item.price) / item.originalPrice * 100).toFixed(0);
   
   const reviewers = [
     { name: "John Doe", stars: 5, message: "Excellent product, highly recommend!", date: new Date() },
@@ -59,7 +59,7 @@ const CartDetail = ({route }) => {
     ]).start();
   
     try {
-      await dispatch(addToCart(product)); // Dispatch the action with the product
+      await dispatch(addToCart(item)); // Dispatch the action with the product
     } catch (error) {
       Alert(`${error} in adding product to cart`); // Handle any errors
     }
@@ -95,15 +95,15 @@ const CartDetail = ({route }) => {
     }, 300); // Duration for the spinner
   };
 
-  const renderReviewItem = ({ item }) => (
+  const renderReviewItem = ({ itemm }) => (
     <View style={styles.review}>
-      <Text style={styles.reviewerName}>{item.name}</Text>
+      <Text style={styles.reviewerName}>{itemm.name}</Text>
       <View style={styles.ratingContainer}>
-        {Array(item.stars).fill().map((_, i) => (
+        {Array(itemm.stars).fill().map((_, i) => (
           <Icon key={i} name="star" type="font-awesome" color="#f5c518" size={16} />
         ))}
       </View>
-      <Text style={styles.reviewMessage}>{item.message}</Text>
+      <Text style={styles.reviewMessage}>{itemm.message}</Text>
     </View>
   );
 
@@ -136,11 +136,11 @@ const CartDetail = ({route }) => {
           </View>
 
           <View style={styles.productInfoContainer}>
-            <Text style={styles.discountedPrice}>GCPs {product.price}</Text>
-            <Text style={styles.originalPrice}>GCPs {product.originalPrice}</Text>
+            <Text style={styles.discountedPrice}>GCPs {item.price}</Text>
+            <Text style={styles.originalPrice}>GCPs {item.originalPrice}</Text>
             <Text style={styles.discountPercentage}>-{discountPercentage}%</Text>    
-            <Text style={styles.productTitle}>{product.title}</Text>
-            <Text style={styles.productDescription}>{product.description}</Text>
+            <Text style={styles.productTitle}>{item.title}</Text>
+            <Text style={styles.productDescription}>{item.description}</Text>
 
             <View style={styles.ratingContainer}>
               <Icon name="star" type="font-awesome" color="#f5c518" size={16} />

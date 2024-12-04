@@ -118,6 +118,9 @@ const Checkout = ({ route }) => {
               keyboardType="email-address"
               placeholderTextColor={Color.colorGray_100}
             />
+            <TouchableOpacity style={styles.requestBtn} onPress={requestOrder} >
+              <Text style={styles.requestBtnText}>Request Now</Text>
+            </TouchableOpacity>
           </>
         );
       case 'greenPoints':
@@ -158,6 +161,17 @@ const Checkout = ({ route }) => {
   const shareOrder = async () => {
     try {
       await Share.share({
+        message: `I've sent you  my order worth GCPs ${totalPrice}. Sender: ${senderName}, Mobile: ${mobileNumber}, Email: ${emailAddress}.`,
+      });
+      Alert.alert("Request Shared!", "You've shared your order Successfully!");
+    } catch (error) {
+      Alert.alert("Error", "Failed to share the payment request.");
+    }
+  };
+
+  const requestOrder = async () => {
+    try {
+      await Share.share({
         message: `I've requested you to pay for my order worth GCPs ${totalPrice}. Sender: ${senderName}, Mobile: ${mobileNumber}, Email: ${emailAddress}.`,
       });
       Alert.alert("Request Shared!", "You've shared your payment request!");
@@ -165,7 +179,6 @@ const Checkout = ({ route }) => {
       Alert.alert("Error", "Failed to share the payment request.");
     }
   };
-
   const tierInfo = getTierInfo();
 
   return (
@@ -226,7 +239,7 @@ const Checkout = ({ route }) => {
           Share your payment request to earn green vouchers for future purchases!
         </Text>
         <TouchableOpacity style={styles.shareButton} onPress={shareOrder}>
-          <Text style={styles.shareButtonText}>Share Request</Text>
+          <Text style={styles.shareButtonText}>Share Order Now</Text>
         </TouchableOpacity>
       </View>
 
@@ -390,6 +403,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  requestBtn: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 18,
+    alignItems: 'center',
+    width: '80%',
+  },
+  requestBtnText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  
   footerText: {
     textAlign: 'center',
     marginTop: 15,

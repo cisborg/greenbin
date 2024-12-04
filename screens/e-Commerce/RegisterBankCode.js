@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { registerCode } from '../../redux/actions/authentication'; // Import your registration action
@@ -9,7 +10,7 @@ const RegisterCode = ({ isRegistered }) => {
   const bottomSheetRef = useRef(null);
   const dispatch = useDispatch();
   const snapPoints = ['50%', '90%'];
-
+  const navigation = useNavigation();
   // State for input fields
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -66,9 +67,11 @@ const RegisterCode = ({ isRegistered }) => {
     >
       <View style={styles.contentContainer}>
         {isRegistered ? (
-          <TouchableOpacity style={styles.registeredButton} disabled>
+          <TouchableOpacity style={styles.registeredButton} onPress={()=> navigation.navigate('CodeAccept')}>
             <Text style={styles.registeredText}>Already Registered</Text>
           </TouchableOpacity>
+
+
         ) : (
           <>
             <TextInput

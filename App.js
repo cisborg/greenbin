@@ -102,6 +102,7 @@ import { StreamCall } from '@stream-io/video-react-native-sdk';
 import SquadMembers from "./screens/Squads/SquadMembers";
 import GreenBin from "./screens/QuickActions/greenBin";
 import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
+import AppCarousel from "./screens/MainPage/AppCarousel";
 
 
 
@@ -267,7 +268,8 @@ const App = () => {
 }
 
   const AppNavigator =({incomingCall}) => {
-    <Stack.Navigator initialRouteName="StartPage" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="AppCarousel" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="AppCarousel" component={AppCarousel} options={{ headerShown: false }} />
       <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
       <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
       <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />

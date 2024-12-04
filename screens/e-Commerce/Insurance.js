@@ -38,7 +38,12 @@ const Insurance = () => {
       icon: 'business',
       lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
     },
-    // Add other insurance services similarly with Lottie animations and optional badges
+    {
+      title: 'Transport Insurance',
+      description: 'Support for Green Travelling and Airlifts',
+      icon: 'business',
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
+    },
   ];
 
   // Render each insurance service card with Lottie animation and optional badge
@@ -80,7 +85,7 @@ const Insurance = () => {
         </Animated.View>
 
         <View style={styles.greenInsuranceServices}>
-          <Text style={styles.sectionTitle}>Green Insurance Services</Text>
+          <Text style={styles.sectionTitle}>Green Insurance Policies</Text>
           <Carousel
             ref={carouselRef}
             data={insuranceServices}

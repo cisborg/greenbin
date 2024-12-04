@@ -19,7 +19,7 @@ import {
 const ChatScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { userName } = route.params;
+    const { username } = route.params;
     const dispatch = useDispatch();
     const messages = useSelector((state) => state.chat.messages); // Access messages from Redux state
     const currentUser = 'You';
@@ -203,7 +203,7 @@ const ChatScreen = () => {
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
                 <View style={styles.headerInfo}>
-                    <Text style={styles.headerTitle}>{userName}</Text>
+                    <Text style={styles.headerTitle}>{username}</Text>
                     <Text style={styles.headerSubtitle}>
                         {isOnline ? 'Online' : `Last seen: ${new Date().toLocaleTimeString()}`}
                     </Text>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Dimensions } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { launchImageLibrary } from 'react-native-image-picker';
-import * as Yup from 'yup';
+import * as ImagePicker from 'expo-image-picker'; // Updated importimport * as Yup from 'yup';
 import FastImage from 'react-native-fast-image';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
@@ -43,13 +42,25 @@ export default function ProductUpload() {
     setModalVisible(true); // Show success modal
   };
 
-  const pickImages = () => {
-    launchImageLibrary({ mediaType: 'photo', selectionLimit: 3 }, (response) => {
-      if (!response.didCancel && response.assets) {
-        const selectedImages = response.assets.map(asset => asset.uri);
-        setImages([...images, ...selectedImages]);
-      }
+  const pickImages = async () => {
+    // Request permission to access the media library
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    // Launch the image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsMultipleSelection: true,
     });
+
+    if (!result.cancelled) {
+      const selectedImages = result.selected.map(asset => asset.uri);
+      setImages([...images, ...selectedImages]);
+    }
   };
 
   useEffect(() => {

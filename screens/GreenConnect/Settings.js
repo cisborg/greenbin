@@ -7,13 +7,13 @@ import { Color } from '../../GlobalStyles';  // Ensure this is defined
 
 const settingsOptions = [
   { id: '1', title: 'Check Eligibility', description: 'GreenBin offers soft loan inputs to spirited entrepreneurs!', screen: 'getPremium' },
-  { id: '2', title: 'Register as Vendor', description: 'Market with us today we got you!', screen: 'VendorRegister' },
+  { id: '2', title: 'Register Idea Safari', description: 'Travel with us today we got you! Check your Eligibility', screen: 'getPremium' },
   { id: '3', title: 'Terms and Conditions', description: 'Familiarize with our app terms,policies regarding the use of our app', screen: 'LegalScreen' },
   { id: '4', title: 'Rate App', description: 'Give us feedback by rating our app', screen: 'AppRating' },
-  { id: '5', title: 'About', description: 'Learn more about the app', screen: 'AboutUs' },
+  { id: '5', title: 'Personal Savings Account', description: 'Earn more boosters green gifts on high savings!', screen: 'getPremium' },
 ];
 
-const SettingsScreen = () => {
+const SettingsScreen = () => { 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current; // For fade animation

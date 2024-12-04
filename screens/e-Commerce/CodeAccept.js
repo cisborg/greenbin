@@ -34,7 +34,7 @@ const GreenBankCodeScreen = () => {
         dispatch(acceptCode(fullCode)); // Dispatching the action with the full code
 
         // Navigate to the Green Bank screen
-        navigation.navigate('GreenBankScreen');
+        navigation.navigate('GreenBank');
     };
 
     const toggleHasCode = () => {

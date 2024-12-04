@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {  useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -33,7 +33,6 @@ const formatMessageTime = (timestamp) => {
 const MessagesScreen = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize dispatch
   const { chats, loading, error } = useSelector(state => state.chats); // Get chats, loading, and error from the Redux store
-  const [selectedUser, setSelectedUser] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

@@ -8,10 +8,6 @@ const BuySuccess = ({ route }) => {
     const navigation = useNavigation();
     const { token, valid } = route.params;
 
-    // Debugging: Check if token and valid are received correctly
-    console.log('Token:', token);
-    console.log('Valid:', valid);
-
     return (
         <View style={styles.container}>
             <View style={styles.modal}>

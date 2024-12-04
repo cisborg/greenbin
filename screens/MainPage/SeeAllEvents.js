@@ -104,7 +104,7 @@ const SeeAllEvents = () => {
       {loading ? (
         <ActivityIndicator size="large" color="green" style={{ marginTop: 20 }} />
       ) : error ? (
-        <Text style={{ color: 'red', textAlign: 'center', marginTop: 20 }}>{error}</Text>
+        <Text style={{ color: 'green', textAlign: 'center', marginTop: 20 }}>{error}</Text>
       ) : (
         <FlatList
           data={filteredEvents}

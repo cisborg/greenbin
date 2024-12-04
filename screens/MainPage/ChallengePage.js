@@ -99,7 +99,7 @@ const ChallengePage = () => {
 
   const renderProductItem = ({ item }) => (
     <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('ProductDetails', { productId: item.id })}>
-      <FastImage source={{ uri: item.image }} style={styles.productImage} resizeMode={FastImage.resizeMode.COVER} />
+      <FastImage source={{ uri: item.image }} style={styles.productImage} />
       <Text style={styles.productText}>{item.name}</Text>
     </TouchableOpacity>
   );

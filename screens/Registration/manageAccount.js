@@ -32,7 +32,7 @@ const ManageAccountScreen = () => {
       title: 'View Balance', 
       description: 'View your green bank account balance', 
       icon: <MaterialIcons name="account-balance" size={24} color="green" />,
-      screen: 'GreenBank' 
+      screen: 'CodeAccept' 
     },
     { 
       title: 'Donate Green Points', 
