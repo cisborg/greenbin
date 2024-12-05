@@ -221,7 +221,7 @@ export default function ProductUpload() {
           control={control}
           name="stock"
           render={({ field: { onChange, value } }) => (
-            <>
+            <View>
               <TextInput
                 style={styles.input}
                 placeholder="Stock"
@@ -230,7 +230,7 @@ export default function ProductUpload() {
                 value={value}
               />
               {errors.stock && <Text style={styles.error}>{errors.stock.message}</Text>}
-            </>
+            </View>
           )}
         />
 
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   submit: {
     backgroundColor: '#2196F3',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   modalContent: {
     width: 300,

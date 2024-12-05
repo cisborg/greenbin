@@ -36,6 +36,8 @@
     "axios": "^1.7.8",
     "cross-spawn": "^7.0.6",
     "dotenv": "^16.4.5",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-native": "^4.1.0",
     "expo": "^51.0.39",
     "expo-av": "~14.0.7",
     "expo-camera": "^15.0.16",
@@ -97,7 +99,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
-    "eslint": "^9.16.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react-hooks": "^5.0.0",
     "metro": "~0.80.8",
     "metro-react-native-babel-preset": "^0.77.0"
   },

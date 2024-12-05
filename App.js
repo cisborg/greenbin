@@ -264,7 +264,7 @@ const App = () => {
         </NavigationContainer>
       </GestureHandlerRootView>
     </Provider>
-  );
+  )
 }
 
   const AppNavigator =({incomingCall}) => {
