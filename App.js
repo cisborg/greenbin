@@ -267,7 +267,7 @@ const App = () => {
   )
 }
 
-  const AppNavigator =({incomingCall}) => {
+  const AppNavigator =() => {
     <Stack.Navigator initialRouteName="AppCarousel" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="AppCarousel" component={AppCarousel} options={{ headerShown: false }} />
       <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />

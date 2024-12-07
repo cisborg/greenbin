@@ -59,11 +59,10 @@ export const updateUserLeaderboard = (leaderboardData) => async (dispatch) => {
     }
 };
 
-export const fetchMoreUsers = () => async (dispatch, getState) => {
+export const fetchMoreUsers = () => async (dispatch) => {
     try {
       dispatch({ type: "FETCH_MORE_USERS_REQUEST" });
   
-      const { userLeaderboard } = getState().leaderboard;
       const response = await api.get(`/leaderboard?offset=${offset}&limit=20`);   
       dispatch({
         type: "FETCH_MORE_USERS_SUCCESS",

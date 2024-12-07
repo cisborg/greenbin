@@ -21,7 +21,6 @@ export const fetchEligibleRewards = (userId) => {
           type: FETCH_ELIGIBLE_REWARDS_FAILURE,
           error: error.message,
         });
-        console.error('Error fetching eligible rewards:', error);
       }
     };
   };

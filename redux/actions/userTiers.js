@@ -23,7 +23,6 @@ export const fetchDonationTiers = (userId) => async (dispatch) => {
         const response = await api.get(`/api/tiers/donations/${userId}`);
         dispatch({ type: FETCH_DONATION_TIERS_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error("Error fetching donation tiers:", error);
         dispatch({ type: FETCH_DONATION_TIERS_FAILURE, payload: error });
     }
 };
@@ -35,7 +34,6 @@ export const fetchPurchaseTiers = (userId) => async (dispatch) => {
         const response = await api.get(`/api/tiers/purchases/${userId}`);
         dispatch({ type: FETCH_PURCHASE_TIERS_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error("Error fetching purchase tiers:", error);
         dispatch({ type: FETCH_PURCHASE_TIERS_FAILURE, payload: error });
     }
 };
@@ -47,7 +45,6 @@ export const addDonationTier = (userId, tierData) => async (dispatch) => {
         const response = await api.post(`/api/tiers/add/${userId}`, tierData);
         dispatch({ type: ADD_DONATION_TIER_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error("Error adding donation tier:", error);
         dispatch({ type: ADD_DONATION_TIER_FAILURE, payload: error });
     }
 };
@@ -59,7 +56,6 @@ export const addPurchaseTier = (userId, tierData) => async (dispatch) => {
         const response = await api.post(`/api/tiers/purchases/add/${userId}`, tierData);
         dispatch({ type: ADD_PURCHASE_TIER_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error("Error adding purchase tier:", error);
         dispatch({ type: ADD_PURCHASE_TIER_FAILURE, payload: error });
     }
 };

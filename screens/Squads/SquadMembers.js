@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator,TextInput, FlatList, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { fetchUsers,addModerator, deleteUser } from '../../redux/actions/squads'; // Adjust the path as necessary

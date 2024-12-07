@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, PermissionsAndroid, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform,FlatList, PermissionsAndroid, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,7 +44,7 @@ const ConnectToShops = () => {
         Alert.alert('Permission denied', 'Location permission is required to find nearby shops.');
       }
     } catch (err) {
-      console.warn(err);
+      Alert.alert(err);
     }
   };
 
@@ -62,8 +62,7 @@ const ConnectToShops = () => {
 
       dispatch(getNearbyShops({ lat: latitude, lng: longitude })); // Fetch nearby shops
     } catch (error) {
-      console.error('Error getting location:', error);
-      Alert.alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
+      Alert('Error', `Unable to get location: ${error.message}. Please enable location services.`);
     }
   };
 
@@ -209,34 +208,12 @@ const styles = StyleSheet.create({
     fontSize: width < 400 ? 14 : 15, // Responsive font size
     color: '#666',
   },
-  shopHours: {
-    fontSize: width < 400 ? 12 : 14, // Responsive font size
-    color: '#888',
-    marginVertical: 4,
-  },
+ 
   shopDistance: {
     fontSize: width < 400 ? 12 : 14, // Responsive font size
     color: '#888',
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
-  },
-  ratingText: {
-    marginLeft: 4,
-    fontSize: width < 400 ? 14 : 14, // Responsive font size
-    color: '#333',
-  },
-  vendorsHeader: {
-    fontSize: width < 400 ? 14 : 15, // Responsive font size
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  vendorItem: {
-    fontSize: width < 400 ? 12 : 13, // Responsive font size
-    color: '#333',
-  },
+ 
   connectButton: {
     backgroundColor: 'green',
     padding: 10,

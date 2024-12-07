@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Dimensions, FlatList, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Dimensions,TouchableOpacity,FlatList, Text } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { postComment, getAllComments,deleteComment} from '../../redux/actions/Posts';

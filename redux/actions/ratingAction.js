@@ -10,7 +10,7 @@ import {
 } from './actionTypes';
 
 // Action to rate a product
-export const rateProduct = (productId, rating, reason) => async (dispatch) => {
+export const rateProduct = (productId, rating) => async (dispatch) => {
   dispatch({ type: RATE_PRODUCT });
 
   try {

@@ -6,6 +6,7 @@ import Lottie from 'lottie-react-native'; // Import Lottie
 import { Color } from '../../GlobalStyles';
 import { useDispatch } from'react-redux';
 import { createVendor } from '../../redux/actions/vendorAction';
+import FastImage from 'react-native-fast-image';
 
 const CustomInput = ({ placeholder, value, onChangeText, keyboardType, secureTextEntry, iconName }) => (
   <View style={styles.inputContainer}>

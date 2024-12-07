@@ -30,7 +30,7 @@ const CartScreen = ({ navigation }) => {
     dispatch(addQuantity(id));
   };
 
-  const decreaseQuantity = (id) => {
+  const reduceQuantity = (id) => {
     dispatch(decreaseQuantity(id));
   };
 
@@ -87,7 +87,7 @@ const CartScreen = ({ navigation }) => {
                   <Text style={styles.itemName}>{item.name}</Text>
                   <Text style={styles.itemPrice}>GCPs {item.price}</Text>
                   <View style={styles.quantityContainer}>
-                    <TouchableOpacity style={styles.quantityMinusButton} onPress={() => decreaseQuantity(item.id)}>
+                    <TouchableOpacity style={styles.quantityMinusButton} onPress={() => reduceQuantity(item.id)}>
                       <Text style={styles.quantityMinusText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{item.quantity}</Text>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   itemInfo: {
     flex: 1,
     padding: 10,
-    width: '100%',
+    width: width * 0.98,
   },
   sellerName: {
     fontSize: 13,
@@ -271,7 +271,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  quantityButton: {
+  
+   quantityButton: {
     backgroundColor:'green',
     padding: 5,
     paddingVertical: 2,
@@ -360,23 +361,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-    marginLeft: -55,
-  },
-  profileImage: {
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    marginLeft: -10,
-  },
-  profileText: {
-    fontSize: 12,
-    color: '#888',
-    marginLeft: 5,
-  },
+ 
   emptyCartContainer: {
     flex: 1,
     justifyContent: 'center',

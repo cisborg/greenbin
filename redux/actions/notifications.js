@@ -35,7 +35,6 @@ export const fetchNotifications = () => async (dispatch) => {
       await api.delete(`/user/notifications/delete/${notificationId}`); // Replace with your API endpoint
       dispatch({ type: DELETE_NOTIFICATION, payload: notificationId });
     } catch (error) {
-      console.error('Failed to delete notification:', error.message);
     }
   };
 

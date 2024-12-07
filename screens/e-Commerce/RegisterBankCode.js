@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -48,7 +48,7 @@ const RegisterCode = ({ isRegistered }) => {
       // Optionally close the BottomSheet after submission
       bottomSheetRef.current?.close();
     } catch (error) {
-      console.error('Registration failed:', error);
+      Alert('Registration failed:', error);
       // Optionally show an error toast
       Toast.show({
         text1: 'Registration Failed',

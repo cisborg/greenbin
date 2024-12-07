@@ -23,10 +23,12 @@ module.exports = [
 
       // React Native Rules
       'react-native/no-unused-styles': 'warn',
+      'react/react-in-jsx-scope': 'off',
       'react-native/split-platform-components': 'warn',
       'react-native/no-inline-styles': 'off',
       'react-native/no-color-literals': 'off',
       'react-native/no-single-element-style-arrays': 'off',
+      'react/prop-types': 'off',  // Disable the prop-types rule
 
       // General Rules
       'no-console': 'warn',

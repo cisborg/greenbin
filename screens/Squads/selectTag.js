@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView,  Dimensions } from 'react-native';
+import { StyleSheet, View, Text,TextInput,FlatList, TouchableOpacity, ScrollView,  Dimensions } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Color } from "../../GlobalStyles";

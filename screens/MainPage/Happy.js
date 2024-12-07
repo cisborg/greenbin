@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, Text, View,  Dimensions, Platform,StatusBar ,Animated } from "react-native";
+import { StyleSheet, Text, View, FlatList, Dimensions, Platform,StatusBar ,Animated } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LottieView from 'lottie-react-native';

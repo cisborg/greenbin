@@ -66,6 +66,7 @@ const adminReducer = (state = initialState, action) => {
         case UPDATE_ADMIN_PASSWORD_REQUEST:
         case FETCH_USERS_REQUEST:
         case DELETE_SQUAD_REQUEST:
+        
         case DELETE_PRODUCT_REQUEST:
             return {
                 ...state,
@@ -86,6 +87,14 @@ const adminReducer = (state = initialState, action) => {
                 loading: false,
                 admins: [...state.admins, action.payload],
             };
+
+        case APPROVE_VENDOR:
+            return {
+                ...state,
+                loading: false,
+                vendor: [...state.vendor, action.payload],
+            };
+
 
         case DELETE_ADMIN_SUCCESS:
             return {
