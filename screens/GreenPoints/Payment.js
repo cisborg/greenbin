@@ -33,7 +33,6 @@ const PrepaidRechargeScreen = () => {
   }, [routeAmount]);
 
   const handlePaystackSuccess = (res) => {
-    console.log("Payment successful", res);
     setGatewayMessage("Payment successful!");
     dispatch(depositRequest()); // Dispatch deposit request
 
@@ -42,17 +41,15 @@ const PrepaidRechargeScreen = () => {
     dispatch(depositSuccess({ points: pointsDeposited })); // Update the balance in Redux
 
     setModalVisible(false);
-    navigation.navigate('SuccessScreen'); // Navigate to a success screen or show a message
+    navigation.navigate('BuyBundleSuccessful'); // Navigate to a success screen or show a message
   };
 
   const handlePaystackCancel = (e) => {
-    console.log("Payment canceled", e);
     setGatewayMessage("Payment canceled!");
     setModalVisible(false);
   };
 
   const handlePaystackError = (error) => {
-    console.log("Payment failed", error);
     setGatewayMessage("Payment failed! Please try again.");
     dispatch(depositFailure(error)); // Dispatch failure action
     setLoading(false);
@@ -69,6 +66,12 @@ const PrepaidRechargeScreen = () => {
             <Text style={styles.header}>Select Payment Option</Text>
           </View>
 
+          {gatewayMessage ? (
+            <View style={styles.messageContainer}>
+              <Text style={styles.messageText}>{gatewayMessage}</Text>
+            </View>
+          ) : null}
+
           <View style={styles.contHeader}>
             <Text style={styles.title}>Prepaid Recharge for Self</Text>
             <View style={styles.amountContainer}>
@@ -79,7 +82,6 @@ const PrepaidRechargeScreen = () => {
 
           <View style={styles.paymentMethod}>
             <Text style={styles.methodHeader}>PROCEED TO PAY</Text>
-            <Text style={styles.prepaidInfo}>Jeff - PREPAID(767549104)</Text>
 
             <View style={styles.GreenBalance}>
               <Text style={styles.greenText1}>Your Equivalent KES is GCPs BALANCE/10.25!</Text>
@@ -97,7 +99,7 @@ const PrepaidRechargeScreen = () => {
 
             {/* Paystack Payment Integration */}
             <Paystack
-              paystackKey=""  // Replace with your Paystack public key
+              paystackKey="pk_test_911c928d90c6ab4337e99c30c4566d8bdf43f77f"  // Replace with your Paystack public key
               billingEmail="orachadongo@gmail.com"  // Optional email
               amount={amount * 100}  // Paystack requires amount in kobo (for KES, multiply by 100)
               onCancel={handlePaystackCancel}  // Handle cancellations
@@ -169,6 +171,12 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsSemiBold,
     color: 'green',
     marginLeft: 30,
+  },
+  messageContainer: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: '#f8d7da',
+    borderRadius: 14,
   },
   Head: {
     flexDirection: 'row',
@@ -285,10 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  prepaidInfo: {
-    fontSize: 14,
-    marginVertical: 8,
-  },
+
   GreenBalance: {
     marginVertical: 8,
   },

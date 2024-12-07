@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,
 import { useForm, Controller } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker'; // Updated importimport * as Yup from 'yup';
 import FastImage from 'react-native-fast-image';
+import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { createProduct } from '../../redux/actions/products'; 

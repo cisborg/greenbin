@@ -25,6 +25,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/actions/products';
 import LottieView from 'lottie-react-native';
 
+
+// local assets
+import greenFriday from '../../assets/greenFriday.png'
+import greenPoints from '../../assets/greenPoints.png'
+import connect from '../../assets/connect.png'
+import Bags from '../../assets/Bags.png'
+
+
 const { width, height } = Dimensions.get('window');
 
 const ChallengePage = () => {
@@ -42,10 +50,10 @@ const ChallengePage = () => {
   const totalProductsCount = products?.length || 0;
 
   const bannerImages = [
-    { uri: "https://your-image-url.com/greenFriday.png" },
-    { uri: "https://your-image-url.com/greenPoints.png" },
-    { uri: "https://your-image-url.com/Bags.png" },
-    { uri: "https://your-image-url.com/connect.png" },
+    { uri: greenFriday },
+    { uri: greenPoints },
+    { uri: connect },
+    { uri: Bags },
   ];
 
   useEffect(() => {

@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         backgroundColor: '#fff', // White background for slides
-        borderRadius: 10,
+        borderRadius: 14,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.3,
         shadowRadius: 4,
-        elevation: 5, // For Android shadow
+        elevation: 3, // For Android shadow
     },
     pagination: {
         position: 'absolute',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     dot: {
         height: 10,
         width: 10,
-        borderRadius: 5,
+        borderRadius: 8,
         backgroundColor: 'gray',
         marginHorizontal: 5,
     },
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#007BFF', // Button color
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 5,
+        borderRadius: 14,
     },
     buttonText: {
         color: '#fff',

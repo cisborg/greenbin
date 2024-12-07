@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Animated, Dimensions } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';

@@ -4,9 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Color } from '../../GlobalStyles';
 
 
-const BuySuccess = ({ route }) => {
+const BuySuccess = () => {
     const navigation = useNavigation();
-    const { token, valid } = route.params;
 
     return (
         <View style={styles.container}>
@@ -14,7 +13,7 @@ const BuySuccess = ({ route }) => {
                 <Image style={styles.imageView} source={require('../../assets/likeButton.avif')} />
                 <Text style={styles.title}> Purchase Successful!</Text>
                 <Text style={styles.message}>
-                    You have successfully purchased {token} for {valid}!
+                    You have successfully initiated deposit!
                     Enjoy and Conserve Your Environment!
                 </Text>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
