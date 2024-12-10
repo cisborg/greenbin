@@ -19,7 +19,7 @@ const { width, height } = Dimensions.get('window');
 const NotificationsScreen = () => {
   const dispatch = useDispatch();
   const notifications = useSelector((state) => state.posts.allPosts); // Assuming your reducer is set up accordingly
-  const loading = useSelector((state) => state.posts.loading); // Loading state from Redux
+  const {loading, error} = useSelector(state => state.posts); // Loading state from Redux
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -58,27 +58,38 @@ const NotificationsScreen = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? ( // Show loading indicator while fetching
-        <View style={styles.loadingContainer}>
-          <LottieView
-            source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
-            autoPlay
-            loop
-            style={styles.lottie}
-          />
-      </View>      ) : (
-        <FlashList
-          data={notifications}
-          renderItem={renderNotification}
-          keyExtractor={(item) => item.id}
-          onEndReached={() => {
-            setPage((prev) => prev + 1); // Load more notifications
-          }}
-          onEndReachedThreshold={0.5} // Load more when 50% of the list is visible
-          refreshing={refreshing}
-          onRefresh={handleRefresh} // Pull to refresh
-          estimatedItemSize={100} // Estimate item size for performance
-        />
+      {loading ? (
+                <View style={styles.loadingContainer}>
+                    <LottieView
+                      source={require('../../assets/lottie/rotateLoad.json')} 
+                      autoPlay
+                      loop
+                      style={styles.lottie}
+                    />
+                </View>    
+            ) : error ? (
+                <View style={styles.errorContainer}>
+                    <LottieView
+                      source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
+                      autoPlay
+                      loop
+                      style={styles.lottie}
+                    />
+                    <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+                </View>)
+                 : (
+            <FlashList
+              data={notifications}
+              renderItem={renderNotification}
+              keyExtractor={(item) => item.id}
+              onEndReached={() => {
+                setPage((prev) => prev + 1); // Load more notifications
+              }}
+              onEndReachedThreshold={0.5} // Load more when 50% of the list is visible
+              refreshing={refreshing}
+              onRefresh={handleRefresh} // Pull to refresh
+              estimatedItemSize={100} // Estimate item size for performance
+            />
       )}
     </View>
   );
@@ -90,10 +101,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 5,
     overflow: 'hidden',
-  },
-  
-  notificationList: {
-    paddingBottom: 20,
   },
   notificationContainer: {
     backgroundColor: '#fff', // Changed to light gray
@@ -112,6 +119,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff', // Adjust as needed
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+errorMessage: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+},
   lottie: {
     width: width * 0.3, // Adjust size as needed
     height: height * 0.3,

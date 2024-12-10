@@ -51,7 +51,7 @@ const CreateSquad = () => {
 
     try {
       const response = await dispatch(createSquad(squadData));
-      console.log('Response from creating squad:', response);
+      Alert('Response from creating squad:', response);
 
       if (response && response.status === 'success') {
         navigation.navigate('Confirmed');
@@ -59,8 +59,8 @@ const CreateSquad = () => {
         alert('Failed to create squad. Please try again.');
       }
     } catch (error) {
-      console.log('Error in creating squad:', error);
-      alert('An error occurred while creating the squad. Please try again.');
+      Alert('Error in creating squad:', error);
+      Alert('An error occurred while creating the squad. Please try again.');
     } finally {
       setLoadingLaunch(false);
     }

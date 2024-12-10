@@ -91,7 +91,7 @@ const CartDetail = ({route }) => {
     setLoadingOrder(true); // Set loading state to true
     setTimeout(() => {
       setLoadingOrder(false); // Reset loading state
-      navigation.navigate('Checkout'); // Navigate to another screen
+      navigation.navigate('Checkout', {points: item.price}); // Navigate to another screen
     }, 300); // Duration for the spinner
   };
 

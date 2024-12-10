@@ -23,7 +23,8 @@ const GreenBankAccount = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const balance = useSelector((state) => state.balance.balance);
-  const tokenBalance = useSelector((state) => state.balance.tokenBalance);  const [transactions, setTransactions] = useState([]);
+  const tokenBalance = useSelector((state) => state.balance.tokenBalance); 
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState({ deposit: false, withdraw: false, transfer: false, screen: true }); // Add screen loading state
   const [amount, setAmount] = useState('');
   const [accountNumber, setAccountNumber] = useState(''); // For Transfer

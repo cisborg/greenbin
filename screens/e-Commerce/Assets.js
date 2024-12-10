@@ -19,11 +19,14 @@ const AssetCard = ({ name, value, icon }) => (
     style={styles.card}
   >
     <FastImage source={icon} style={styles.icon} resizeMode={FastImage.resizeMode.contain} />
-    <Text style={styles.assetName}>{name}</Text>
-    <Text style={styles.assetValue}>{value}</Text>
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Trade Credits</Text>
-    </TouchableOpacity>
+    <View style={styles.assetsContainer}>
+      <Text style={styles.assetName}>{name}</Text>
+      <Text style={styles.assetValue}>{value}</Text>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Trade Credits</Text>
+      </TouchableOpacity>
+    </View>
+    
   </LinearGradient>
 );
 
@@ -80,6 +83,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
+  assetsContainer: {
+    flexDirection: 'column',
+    marginLeft: 15,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
   card: {
     borderRadius: 10,
     padding: Dimensions.get('window').width * 0.05,
@@ -105,10 +115,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 14,
-    backgroundColor: '#fff',
+    backgroundColor: 'green',
   },
   buttonText: {
-    color: '#ff6600',
+    color: 'white',
     fontWeight: 'bold',
   },
 });

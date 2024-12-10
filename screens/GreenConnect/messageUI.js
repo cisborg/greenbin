@@ -49,7 +49,6 @@ const MessagesScreen = ({ navigation }) => {
     try {
       navigation.navigate('chatConnect', { userName: user.userName });
     } catch (error) {
-      console.error("Navigation error:", error);
       alert("Navigation failed. Please try again.");
     }
   };
@@ -84,10 +83,13 @@ const MessagesScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading chats...</Text>
-      </View>
-    );
-  }
+          <LottieView
+            source={require('../../assets/lottie/rotateLoad.json')} 
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+      </View>  )}
 
   if (error) {
     return (
@@ -133,26 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  activeNowText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    paddingHorizontal: 10,
-    marginVertical: 10,
-  },
-  userScrollView: {
-    paddingHorizontal: 10,
-  },
-  activeUser: {
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  userProfileImg: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: 'green',
-  },
+  
   userName: {
     fontSize: 12,
     marginTop: 5,
@@ -236,11 +219,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-  noActiveUsers: {
-    fontSize: 14,
-    color: 'gray',
-    padding: 10,
-  },
+ 
 });
 
 export default MessagesScreen;

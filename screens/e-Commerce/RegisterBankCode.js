@@ -19,10 +19,10 @@ const RegisterCode = ({ isRegistered }) => {
     // Validate input fields
     if (!email || !phoneNumber) {
       Toast.show({
-        text1: 'Input Error',
+        text1: 'Sorry',
         text2: 'Please fill in all fields.',
         type: 'error',
-        position: 'bottom',
+        position: 'top',
       });
       return;
     }
@@ -42,7 +42,7 @@ const RegisterCode = ({ isRegistered }) => {
         text1: 'Registration Successful',
         text2: `Your bank code is: ${bankCode}`,
         type: 'success',
-        position: 'bottom',
+        position: 'top',
       });
 
       // Optionally close the BottomSheet after submission
@@ -54,7 +54,7 @@ const RegisterCode = ({ isRegistered }) => {
         text1: 'Registration Failed',
         text2: error.message,
         type: 'error',
-        position: 'bottom',
+        position: 'top',
       });
     }
   };

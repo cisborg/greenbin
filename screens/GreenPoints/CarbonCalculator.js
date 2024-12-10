@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, SafeAreaView, Animated, ScrollView } from 'react-native';
-import { PieChart, BarChart } from 'react-native-chart-kit';
+import { PieChart, BarChart } from 'react-native-gifted-charts'; // Updated import
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -114,7 +114,7 @@ const CarbonFootprintCalculator = ({ route }) => {
             </View>
 
             <View style={styles.pieChartContainer}>
-              <PieChart
+            <PieChart
                 data={currentData}
                 width={screenWidth - 40}
                 height={150}

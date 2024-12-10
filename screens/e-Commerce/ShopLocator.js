@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform,FlatList, PermissionsAndroid, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert,ActivityIndicator, Platform,FlatList, PermissionsAndroid, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/core';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
+import FastImage from 'react-native-fast-image';
 import { Color } from '../../GlobalStyles';
 import { getNearbyShops } from '../../redux/actions/shop'; 
+import Toast from '../../helpers/Toast'
 
 const { width } = Dimensions.get('window');
 
@@ -14,8 +15,9 @@ const ConnectToShops = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showMapView, setShowMapView] = useState(true); // Toggle between map and list
   const shops = useSelector(state => state.shops);
+  const [connectedShops, setConnectedShops] = useState({});
+  const [pendingConnection, setPendingConnection] = useState(null);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -75,20 +77,55 @@ const ConnectToShops = () => {
     />
   );
 
+  const handleConnect = (shop) => {
+    setPendingConnection(shop.id);
+
+    // Show the activity indicator
+    setTimeout(() => {
+      setConnectedShops((prev) => ({ ...prev, [shop.id]: true }));
+      setPendingConnection(null);
+
+      // Show the Toast message
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: `You've connected to the ${shop.name} eco-network. We've sent you the shop ID for your next order.`,
+      });
+    }, 5000); // Simulate a 5-second delay to fetch the shop ID
+  };
   const renderShopCard = ({ item }) => (
     <View style={styles.shopContainer}>
-      <Text style={styles.shopName}>{item.name}</Text>
-      <Text style={styles.shopDescription}>{item.description}</Text>
-      <Text style={styles.shopDistance}>Distance: {item.distance}</Text>
-      <TouchableOpacity style={styles.connectButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.connectButtonText}>Shop Now</Text>
-      </TouchableOpacity>
+      <FastImage source={item.image} style={styles.logo} resizeMode={FastImage.resizeMode.cover} />
+      <View style={styles.shopOrder}>
+        <Text style={styles.shopName}>{item.name}</Text>
+        <Text style={styles.shopDescription}>{item.description}</Text>
+        <Text style={styles.shopDistance}>Distance: {item.distance}</Text>
+        <TouchableOpacity
+          style={[
+            styles.connectButton,
+            connectedShops[item.id] ? styles.connectedButton : {},
+          ]}
+          onPress={() => handleConnect(item)}
+          disabled={connectedShops[item.id] || pendingConnection === item.id}
+        >
+          {pendingConnection === item.id ? (
+            <>
+              <ActivityIndicator size="small" color="#fff" />
+              <Text style={styles.connectButtonText}>Connecting...</Text>
+            </>
+          ) : connectedShops[item.id] ? (
+            <Text style={styles.connectButtonText}>Connected</Text>
+          ) : (
+            <Text style={styles.connectButtonText}>Shop Now</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+     
     </View>
   );
 
   return (
     <View style={styles.container}>
-      {/* Ellipsis Button */}
       <TouchableOpacity
         style={styles.menuButton}
         onPress={() => setShowMapView(!showMapView)} // Toggle view
@@ -121,7 +158,8 @@ const ConnectToShops = () => {
       ) : (
         // List View
         <>
-          <Text style={styles.title}>Nearby Shops</Text>
+          <Text style={styles.title}>Nearby EcoGreen Shops</Text>
+          <Text style={styles.subtitle}>Tap on a shop to connect with them and grab your deliveries!</Text>
           {shops.length > 0 ? (
             <FlatList
               data={shops}
@@ -163,40 +201,50 @@ const styles = StyleSheet.create({
     fontSize: width < 400 ? 12 : 14, // Responsive font size
     marginBottom: 20,
   },
-  returnButton: {
-    position: 'absolute',
-    bottom: 20,
-    elevation: 1,
-    left: 20,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 1,
-      height: 2,
-    },
+  connectButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 13,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
+  connectedButton: {
+    backgroundColor: 'orange',
+  },
+  connectButtonText: {
+    color: '#fff',
+    fontSize: width < 400 ? 12 : 14, // Responsive font size
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  
   listContainer: { paddingBottom: 20 },
 
   shopContainer: {
     flexDirection: 'row',
-    padding: '5%', // Responsive padding
+    padding: '3%', // Responsive padding
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 18,
     marginBottom: 10,
+    elevation: 2,
+    shadowRadius: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 1, height: 2 },
     backgroundColor: '#f9f9f9',
   },
-  shopDetails: {
-    flex: 1,
+  shopOrder: {
+    flexDirection: 'column',
     marginLeft: 10,
+    
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: '20%',
+    height: '20%',
     borderRadius: 20,
     borderWidth: 1,
   },
@@ -212,18 +260,6 @@ const styles = StyleSheet.create({
   shopDistance: {
     fontSize: width < 400 ? 12 : 14, // Responsive font size
     color: '#888',
-  },
- 
-  connectButton: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 14,
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  connectButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
   noShopsText: {
     fontSize: width < 400 ? 16 : 17, // Responsive font size

@@ -309,11 +309,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     backgroundColor: '#f9f9f9',
   },
-  coverImage: {
-    width: '100%',
-    height: 80,
-    borderRadius: 8,
-  },
   profileImageContainer: {
     alignItems: 'center',
     marginTop: 5,

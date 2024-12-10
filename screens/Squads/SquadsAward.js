@@ -1,75 +1,124 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator,Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
-import { requestJoinSquad } from '../../redux/actions/squads'
-import { fetchSquadLeaderboard } from '../../redux/actions/leaderboard'; // Adjust the path as necessary
+import { useDispatch, useSelector } from 'react-redux';
+import { requestJoinSquad } from '../../redux/actions/squads';
+import LottieView from 'lottie-react-native';
+import { fetchSquadLeaderboard } from '../../redux/actions/leaderboard';
+
+const { width } = Dimensions.get('window');
+
 
 const LeaderboardScreen = () => {
   const dispatch = useDispatch();
   const [animValue] = useState(new Animated.Value(0));
-  const [pendingSquads, setPendingSquads] = useState({}); // Track pending states for each squad
-  const squadsLeaderboard = useSelector((state) => state.squad.leaderboard); // Adjust according to your state structure
-  const loading = useSelector((state) => state.squad.loading); // Loading state from Redux
-  const userId = useSelector((state) => state.user.id); // Get user ID from Redux state
+  const [pendingSquads, setPendingSquads] = useState({});
+  const {squadsLeaderboard, loading, error} = useSelector((state) => state.squad);
+  const userId = useSelector((state) => state.user.id);
 
   useEffect(() => {
-    // Start animation on mount
     Animated.timing(animValue, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
 
-    // Fetch squad leaderboard data
     dispatch(fetchSquadLeaderboard());
   }, [dispatch]);
 
   const handleJoin = (id) => {
     setPendingSquads((prev) => ({ ...prev, [id]: true }));
-
-    // Dispatch the request to join the squad using the dynamic user ID
     dispatch(requestJoinSquad(id, userId)).then(() => {
       setPendingSquads((prev) => ({ ...prev, [id]: 'pending' }));
     });
   };
 
-  const renderSquadItem = ({ item, index }) => (
-    <View style={styles.squadCard}>
-      <Text style={styles.rank}>{index + 1}</Text>
-      <FastImage source={item.logo} style={styles.logo} resizeMode={FastImage.resizeMode.cover} />
-      <View style={styles.squadInfo}>
-        <Text style={styles.squadName}>{item.name}</Text>
-        <Text style={styles.points}>Total Tiers: {item.points}</Text>
-        <Text style={styles.activities}>Activities: {item.activitiesCompleted}</Text>
-        <Text style={styles.members}>Members: {item.memberCount}</Text>
-        <Text style={styles.rank}>{item.rank}</Text>
+  const renderSquadItem = ({ item, index }) => {
+    const activitiesCompleted = item.activitiesCompleted;
+    const maxActivities = 12;
+    const progressPercentage = (activitiesCompleted / maxActivities) * 100;
+    let statusText = 'Fair';
+    if (activitiesCompleted >= 8) {
+      statusText = 'Commendable';
+    } else if (activitiesCompleted >= 6) {
+      statusText = 'Good';
+    }
+
+    return (
+      <View style={styles.squadCard}>
+        <View style={styles.squadHeader}>
+          <FastImage source={item.logo} style={styles.logo} resizeMode={FastImage.resizeMode.cover} />
+          <View style={styles.squadInfo}>
+            <Text style={styles.squadName}>{item.name}</Text>
+            <Text style={styles.squadDescription}>{item.description}</Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.joinButton, pendingSquads[item.id] === 'pending' ? styles.pendingButton : {}]}
+            onPress={() => handleJoin(item.id)}
+            disabled={pendingSquads[item.id] === 'pending'}
+          >
+            {pendingSquads[item.id] === 'pending' ? (
+              <Text style={styles.joinButtonText}>Pending</Text>
+            ) : (
+              <>
+                {pendingSquads[item.id] && <ActivityIndicator size="small" color="#fff" />}
+                <Text style={styles.joinButtonText}>Join 🚀</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+        <View style={styles.progressBar}>
+          <View style={styles.progressBarContainer}>
+            <Animated.View
+              style={[
+                styles.progressBarFill,
+                {
+                  width: `${progressPercentage}%`,
+                  backgroundColor: progressPercentage >= 66 ? '#4CAF50' : progressPercentage >= 33 ? 'orange' : 'red',
+                },
+              ]}
+            />
+          </View>
+        </View>
+        <View style={styles.tiersContainer}>
+          <Text style={styles.tiers}>Premium: {item.points}</Text>
+        </View>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.rankContainer}>
+            <Text style={styles.rank}>Rank: {index + 1}</Text>
+          </TouchableOpacity>
+          <Text style={styles.award}>Award: {item.award}</Text>
+          <Text style={styles.status}>{statusText}</Text>
+        </View>
       </View>
-      <TouchableOpacity
-        style={[styles.followButton, pendingSquads[item.id] === 'pending' ? styles.pendingButton : {}]}
-        onPress={() => handleJoin(item.id)}
-        disabled={pendingSquads[item.id] === 'pending'} // Disable button when pending
-      >
-        {pendingSquads[item.id] === 'pending' ? (
-          <Text style={styles.followButtonText}>Pending</Text>
-        ) : (
-          <>
-            {pendingSquads[item.id] && <ActivityIndicator size="small" color="#fff" />}
-            <Text style={styles.followButtonText}>Join 🚀</Text>
-          </>
-        )}
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ opacity: animValue }}>
         {loading ? (
-          <ActivityIndicator size="large" color="#000" />
-        ) : (
+                <View style={styles.loadingContainer}>
+                    <LottieView
+                      source={require('../../assets/lottie/rotateLoad.json')} 
+                      autoPlay
+                      loop
+                      style={styles.lottie}
+                    />
+                </View>    
+            ) : error ? (
+                <View style={styles.errorContainer}>
+                    <LottieView
+                      source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
+                      autoPlay
+                      loop
+                      style={styles.lottie}
+                    />
+                    <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+                </View>
+            ) : (
           <FlatList
             data={squadsLeaderboard}
             renderItem={renderSquadItem}
@@ -86,7 +135,6 @@ const LeaderboardScreen = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -108,6 +156,28 @@ const styles = StyleSheet.create({
     position: "absolute",
     overflow: "hidden",
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+errorMessage: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+},
+loadingContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#fff', // Adjust as needed
+},
+lottie: {
+  width: width * 0.3, // Adjust size as needed
+  height: height * 0.3,
+},
   squadCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -121,11 +191,44 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  tiersContainer:{
+    alignItems: 'flex-end'
+  },
   rank: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: 'white',
     width: 40,
+  },
+  rankContainer: {
+    padding: 5,
+    backgroundColor: 'orange',
+    borderWidth: 1,
+    borderRadius: 13,
+    marginHorizontal: 5,
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    marginRight: 15,
+  },
+  squadName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+  rank: {
+    fontSize: 11,
+    color: '#777',
+    marginTop: 5,
+  },
+  
+  squadHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+
   },
   logo: {
     width: 50,
@@ -134,41 +237,68 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   squadInfo: {
-    flex: 1,
+    flexDirection: 'column',
   },
   squadName: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
     color: '#333',
   },
-  points: {
-    fontSize: 13,
-    color: '#555',
-  },
-  activities: {
+  squadDescription: {
     fontSize: 12,
     color: '#555',
   },
-  members: {
-    fontSize: 11,
-    color: '#555',
+  progressBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   rank: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#777',
-    marginTop: 5,
+    marginRight: 10,
   },
-  followButton: {
+  progressBarContainer: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  award: {
+    fontSize: 12,
+    color: '#777',
+    marginLeft: 10,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  tiers: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  status: {
+    fontSize: 14,
+    color: '#777',
+  },
+  joinButton: {
     backgroundColor: '#4CAF50',
-    borderRadius: 10,
+    borderRadius: 12,
     paddingVertical: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
+    alignSelf: 'flex-end'
   },
   pendingButton: {
     backgroundColor: 'orange',
   },
-  followButtonText: {
+  joinButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },

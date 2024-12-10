@@ -114,13 +114,18 @@ const CartScreen = ({ navigation }) => {
     </View>
   );
 
-  const handleCheckout = () => {
-    setLoading(true);
-    setTimeout(() => {
-      navigation.navigate('Checkout', { totalPrice: getNetTotalPrice() + 5 + getDeliveryFee() });
-      setLoading(false);
-    }, 300);
-  };
+  const handleCheckout = async () => {
+    setLoading(true); // Set loading state to true
+    try {
+        const netPrice = getNetTotalPrice() + 5 + getDeliveryFee();
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        navigation.navigate('Checkout', { points: netPrice });
+    } catch (error) {
+        Alert("Error during checkout process:", error);
+    } finally {
+        setLoading(false); // Reset loading state
+    }
+};
 
   const voucherInfo = getVoucherInfo();
 

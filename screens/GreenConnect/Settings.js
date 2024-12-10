@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Switch, FlatList, Animated } from 'react-native';
+import React, {  useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';  // For handling safe areas
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,6 @@ const settingsOptions = [
 ];
 
 const SettingsScreen = () => { 
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current; // For fade animation
 
@@ -45,16 +44,7 @@ const SettingsScreen = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-        {/* Notification Toggle */}
-        <View style={styles.notificationToggle}>
-          <Text style={styles.toggleLabel}>Enable Notifications</Text>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={() => setNotificationsEnabled(previousState => !previousState)}
-          />
-        </View>
-
-        {/* Settings List */}
+        
         <FlatList
           data={settingsOptions}
           renderItem={renderSettingItem}
@@ -74,27 +64,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
-  },
-  notificationToggle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    color: '#333',
   },
   settingsList: {
     marginBottom: 10,

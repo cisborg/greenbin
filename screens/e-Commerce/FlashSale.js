@@ -52,9 +52,10 @@ const FlashSale = () => {
   const dispatch = useDispatch(); // Initialize dispatch
 
   // Get products and loading state from Redux
-  const { products, loading } = useSelector(state => ({
+  const { products, loading,error } = useSelector(state => ({
     products: state.product.products, // Adjust based on your state structure
     loading: state.product.loading,
+    error: state.product.error,
   }));
 
   // Fetch products when component mounts
@@ -64,32 +65,42 @@ const FlashSale = () => {
 
   return (
     <View style={styles.container}>
-      {/* Flash Sale Header */}
-      <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('SalesList')}>
-        <Text style={styles.flashSaleText}> Fl⚡sh Sale Granary</Text>
-        <CountdownTimer />
-        <AntDesign name="right" size={24} color="green" />
-      </TouchableOpacity>
+        {/* Flash Sale Header */}
+        <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('SalesList')}>
+            <Text style={styles.flashSaleText}>Fl⚡sh Sale Granary</Text>
+            <CountdownTimer />
+            <AntDesign name="right" size={24} color="green" />
+        </TouchableOpacity>
 
-      {/* Loading Indicator */}
-      {loading ? (
-          <LottieView
-          source={require('../../assets/lottie/gift.json')} // Replace with your Lottie file path
-          autoPlay
-          loop
-          style={styles.loadingAnimation}
-          />      ) : (
-        // Horizontal Scrollable List
-        <FlatList
-          data={products}
-          renderItem={({ item }) => <ProductItem item={item} />}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-      )}
+        {/* Conditional Rendering for Loading, Error, and Products */}
+        {loading ? (
+            <LottieView
+                source={require('../../assets/lottie/gift.json')} // Replace with your Lottie file path
+                autoPlay
+                loop
+                style={styles.loadingAnimation}
+            />
+        ) : error ? ( // Check for the error state
+            <View style={styles.errorContainer}>
+                <LottieView
+                    source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error Lottie file path
+                    autoPlay
+                    loop
+                    style={styles.loadingAnimation}
+                />
+                <Text style={styles.errorMessage}>Oops! Something went wrong!</Text>
+            </View>
+        ) : (
+            <FlatList
+                data={products}
+                renderItem={({ item }) => <ProductItem item={item} />}
+                keyExtractor={(item) => item.id.toString()} // Ensure id is a string
+                horizontal
+                showsHorizontalScrollIndicator={false}
+            />
+        )}
     </View>
-  );
+)
 };
 
 
@@ -114,6 +125,17 @@ const styles = StyleSheet.create({
     width: 40, // Adjust width as needed
     height: 40, // Adjust height as needed
     alignSelf: 'center',
+  },
+  errorContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+  errorMessage: {
+      color: 'red',
+      fontSize: 16,
+      textAlign: 'center',
+      marginTop: 10,
   },
   flashSaleText: {
     fontSize: 14,

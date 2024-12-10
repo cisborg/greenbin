@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar, ActivityIndicator } from 'react-native';
 import { Color } from '../../GlobalStyles';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from'react-redux';
 import { fetchTiers } from '../../redux/actions/userTiers';
 
-const Checkout = ({ route }) => {
+const Checkout = () => {
   const navigation = useNavigation();
+  const route = useRoute(); // Access the route prop
   const [paymentMethod, setPaymentMethod] = React.useState('requestFriend');
-  const [points, setPoints] = React.useState(20000); // Example available points
+  const { points: initialPoints } = route.params; // Get points from params
+  const [points, setPoints] = React.useState(initialPoints); // Example available points
   const [amountToUse, setAmountToUse] = React.useState('');
   const [greenBankCode, setGreenBankCode] = React.useState('');
   const [senderName, setSenderName] = React.useState('');
@@ -17,7 +19,7 @@ const Checkout = ({ route }) => {
   const dispatch = useDispatch();
   const { tiers } = useSelector((state) => state.tiers);
   const [loading, setLoading] = React.useState(false);
-  const [totalPrice, setTotalPrice] = React.useState(18960); // Example total price
+  const [totalPrice, setTotalPrice] = React.useState(''); // Example total price
 
   // Determine tier based on points
 
@@ -34,31 +36,31 @@ const Checkout = ({ route }) => {
     // Validate user input based on the selected payment method
     if (paymentMethod === 'requestFriend') {
       if (!/^[a-zA-Z ]+$/.test(senderName)) {
-        Alert.alert('Invalid Name', 'Please enter a valid name with letters only.');
+        Alert('Invalid Name', 'Please enter a valid name with letters only.');
         return;
       }
       if (!/^\d{10}$/.test(mobileNumber)) {
-        Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
+        Alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
         return;
       }
       if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailAddress)) {
-        Alert.alert('Invalid Email', 'Please enter a valid email address.');
+        Alert('Invalid Email', 'Please enter a valid email address.');
         return;
       }
     } else if (paymentMethod === 'greenPoints') {
       const amount = parseInt(amountToUse, 10);
       if (isNaN(amount) || amount > points || amount <= 0) {
-        Alert.alert('Invalid Amount', 'Please enter a valid amount of points to use.');
+        Alert('Invalid Amount', 'Please enter a valid amount of points to use.');
         return;
       }
       if (amount > totalPrice) {
-        Alert.alert('Points Exceeded', 'The amount of points exceeds the total price.');
+        Alert('Points Exceeded', 'The amount of points exceeds the total price.');
         return;
       }
       setPoints(points - amount); // Deduct used points
     } else if (paymentMethod === 'greenBank') {
       if (!/^\d{10}$/.test(greenBankCode)) {
-        Alert.alert('Invalid Code', 'Please enter a valid 10-digit Green Bank code.');
+        Alert('Invalid Code', 'Please enter a valid 10-digit Green Bank code.');
         return;
       }
     }
@@ -92,7 +94,7 @@ const Checkout = ({ route }) => {
       case 'requestFriend':
         return (
           <>
-            <Text style={styles.label}>Sender's Name</Text>
+            <Text style={styles.label}>Sender Name</Text>
             <TextInput
               style={styles.inputField}
               value={senderName}
@@ -165,7 +167,7 @@ const Checkout = ({ route }) => {
       });
       Alert.alert("Request Shared!", "You've shared your order Successfully!");
     } catch (error) {
-      Alert.alert("Error", "Failed to share the payment request.");
+      Alert("Error", "Failed to share the payment request.");
     }
   };
 
@@ -174,9 +176,9 @@ const Checkout = ({ route }) => {
       await Share.share({
         message: `I've requested you to pay for my order worth GCPs ${totalPrice}. Sender: ${senderName}, Mobile: ${mobileNumber}, Email: ${emailAddress}.`,
       });
-      Alert.alert("Request Shared!", "You've shared your payment request!");
+      Alert("Request Shared!", "You've shared your payment request!");
     } catch (error) {
-      Alert.alert("Error", "Failed to share the payment request.");
+      Alert("Error", "Failed to share the payment request.");
     }
   };
   const tierInfo = getTierInfo();
@@ -197,7 +199,7 @@ const Checkout = ({ route }) => {
       <View style={styles.tierContainer}>
         <Text style={styles.tierName}>{tierInfo.name}</Text>
         <Text style={styles.tierMessage}>
-          Congratulations, you've earned the {tierInfo.name} tier worth {tierInfo.value} points. Shop more goods to earn higher points.
+          Congratulations, you have earned the {tierInfo.name} tier worth {tierInfo.value} points. Shop more goods to earn higher points.
         </Text>
       </View>
 
@@ -350,14 +352,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 7,
   },
-  expiryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  expiryInputContainer: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
+
   payButton: {
     backgroundColor: '#4CAF50',
     padding: 10,

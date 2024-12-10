@@ -129,7 +129,6 @@ const RegisterPage = () => {
       Alert.alert('Registration Successful!', 'You can now log in to your account.');
       navigation.navigate('SignInPage');
     } catch (error) {
-      console.error(error);
       setErrorMessage('Failed to register. Please try again.');
     } finally {
       setLoading(false);
@@ -263,12 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: height * 0.052,
   },
-  dontHaveAnContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-    alignSelf: 'center',
-  },
+ 
   phoneInput: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -311,22 +305,7 @@ const styles = StyleSheet.create({
   promoCodeContainer: {
     marginTop: verticalScale(5),
   },
-  promoCodeInput: {
-    height: verticalScale(30),
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    borderRadius: Border.br_base,
-    padding: scale(8),
-    fontSize: scale(14),
-  },
-  promoCodeButton: {
-    marginTop: verticalScale(5),
-    backgroundColor: 'lightgray',
-    borderRadius: Border.br_base,
-    paddingVertical: verticalScale(8),
-    paddingHorizontal: scale(15),
-    alignSelf: 'flex-start',
-  },
+ 
   promoCodeText: {
     fontSize: scale(12),
     color: 'green',
@@ -345,22 +324,13 @@ const styles = StyleSheet.create({
     fontSize: scale(12),
     marginTop: verticalScale(5),
   },
-  label: {
-    fontSize: scale(14),
-    marginBottom: verticalScale(5),
-    fontWeight: '600',
-    color: 'green'
-  },
+ 
   cardText: {
     color: Color.colorWhite,
     fontSize: scale(14),
     fontWeight: 'bold',
   },
-  register: {
-    color: 'green',
-    fontWeight: 'bold',
-    marginLeft: scale(5),
-  },
+  
 });
 
 export default RegisterPage;

@@ -38,9 +38,10 @@ const VendorList = () => {
   const [isScreenLoading, setIsScreenLoading] = useState(true);
 
   // Get vendors and loading state from Redux store
-  const { vendors, loading: apiLoading } = useSelector(state => ({
+  const { vendors, loading: apiLoading,error } = useSelector(state => ({
     vendors: state.vendor.vendors,
     loading: state.vendor.loading,
+    error: state.vendor.error
   }));
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const VendorList = () => {
             };
         });
     } catch (error) {
-        console.error('Error connecting to vendor:', error);
+        Alert('Error connecting to vendor:', error);
     } finally {
         setLoading(prev => ({ ...prev, [id]: false }));
     }
@@ -155,10 +156,21 @@ const VendorList = () => {
             source={require('../../assets/lottie/bouncing_check.json')}
             autoPlay
             loop
-            style={styles.loadingAnimation}
+            style={styles.lottie}
           />
         </View>
-      ) : (
+        
+      ) : error ? (
+        <View style={styles.errorContainer}>
+            <LottieView
+              source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
+              autoPlay
+              loop
+              style={styles.lottie}
+            />
+            <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+        </View>
+    ) : (
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -207,10 +219,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  loadingAnimation: {
-    width: 200,
-    height: 200,
-  },
   list: {
     paddingBottom: 20,
     paddingRight: 5,
@@ -229,15 +237,6 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     justifyContent:'center',
     alignContent: 'center',
-  },
-  coverImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    marginTop: 5,
-    left: 5,
   },
   infoContainer: {
     flex: 1,
@@ -263,12 +262,28 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginLeft: 60,
   },
-  followers: {
-    fontSize: 11,
-    color: '#666666',
-    marginVertical: 3,
-    marginLeft: 60,
-  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+errorMessage: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+},
+loadingContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#fff', // Adjust as needed
+},
+lottie: {
+  width: width * 0.3, // Adjust size as needed
+  height: height * 0.3,
+},
   followButton: {
     shadowColor: '#000',
     marginTop: 10,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import { StyleSheet, View, Platform,StatusBar, Text, TouchableOpacity, ScrollView, Animated, SafeAreaView, Dimensions, Modal } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { Ionicons } from '@expo/vector-icons';
@@ -76,7 +76,7 @@ const ViewSquadScreen = () => {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          source={require('../../assets/lottie/errorLottie.json')} // Adjust the path to your Lottie file
           autoPlay
           loop
           style={styles.lottie}

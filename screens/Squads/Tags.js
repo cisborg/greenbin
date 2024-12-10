@@ -104,10 +104,7 @@ const styles = StyleSheet.create({
     width: width * 0.3, // Adjust size as needed
     height: height * 0.3,
   },
-  cardText: {
-    color: 'green',
-    fontWeight: 'bold',
-  },
+  
   list: {
     marginBottom: 20,
   },

@@ -79,7 +79,6 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
-      console.log("Login credentials", { email, password });
       const response = await dispatch(loginUser({ email, password }));
 
       if (response?.token) {
@@ -91,9 +90,8 @@ const SignInPage = () => {
         throw new Error("Login failed");
       }
     } catch (error) {
-      console.log("Login error", error);
 
-      showToast('error', 'Login failed', 'Failed to log in. Please try again.');
+      showToast(`${error}, 'Login failed', 'Failed to log in. Please try again.`);
 
     } finally {
       setIsLoading(false);
@@ -169,7 +167,7 @@ const SignInPage = () => {
             </View>
 
             <View style={styles.dontHaveAnContainer}>
-              <Text style={{ fontSize: 12 }}>Don't Have an account?</Text>
+              <Text style={{ fontSize: 12 }}>Not Registered Yet?</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate("RegisterPage")}
               >
@@ -260,12 +258,7 @@ const styles = StyleSheet.create({
     height: height * 0.051,
     shadowColor: "#000",
   },
-  label: {
-    fontSize: width * 0.04,
-    color: "green",
-    fontFamily: FontFamily.poppinsBold,
-    marginBottom: 5,
-  },
+ 
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",

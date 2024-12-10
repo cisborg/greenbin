@@ -80,7 +80,7 @@ const ViewSquad2Screen = () => {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Adjust the path to your Lottie file
+          source={require('../../assets/lottie/errorLottie.json')} // Adjust the path to your Lottie file
           autoPlay
           loop
           style={styles.lottie}

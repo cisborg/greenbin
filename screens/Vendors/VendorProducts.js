@@ -9,6 +9,8 @@ import FastImage from 'react-native-fast-image';
 import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
+
 import { fetchProducts, followVendor, unfollowVendor, addFavorite, addToCart } from '../../redux/actions/products';
 
 const StoreHeader = ({ vendor }) => {
@@ -75,18 +77,27 @@ const StoreHeader = ({ vendor }) => {
     );
 };
 
-const ProductCard = ({ item, addToFavorites, addToCart }) => {
+const ProductCard = ({ item }) => {
     const swipeableRef = useRef(null);
+    const dispatch = useDispatch(); // Get the dispatch function from Redux
+
+    const handleAddToFavorites = () => {
+      dispatch(addFavorite(item)); // Dispatch add to favorites action
+    };
+  
+    const handleAddToCart = () => {
+      dispatch(addToCart(item)); // Dispatch add to cart action
+    };
 
     return (
         <Swipeable
             ref={swipeableRef}
             renderRightActions={() => (
                 <View style={styles.swipeActions}>
-                    <TouchableOpacity onPress={() => addToCart(item)}>
+                    <TouchableOpacity onPress={ handleAddToCart}>
                         <Ionicons name="cart-outline" size={24} color="orange" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => addToFavorites(item)}>
+                    <TouchableOpacity onPress={ handleAddToFavorites}>
                         <Ionicons name="heart-outline" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
@@ -166,43 +177,46 @@ const Products = () => {
     };
 
     const filterProducts = () => {
-        // Filtering logic using products from Redux
-        let filteredProducts = products;
+      let filteredProducts = products;
+  
+      // Filter by brands
+      const selectedBrands = Object.keys(brandFilters).filter(brand => brandFilters[brand]);
+      if (selectedBrands.length > 0) {
+        filteredProducts = filteredProducts.filter(product => selectedBrands.includes(product.brand));
+      }
+  
+      // Filter by price ranges
+      if (priceRanges.low) {
+        filteredProducts = filteredProducts.filter(product => product.price < 1000);
+      }
+      if (priceRanges.medium) {
+        filteredProducts = filteredProducts.filter(product => product.price >= 1000 && product.price < 1500);
+      }
+      if (priceRanges.high) {
+        filteredProducts = filteredProducts.filter(product => product.price >= 1500);
+      }
+      
+      setShowFilterModal(false);
 
-        // Filter by brands
-        const selectedBrands = Object.keys(brandFilters).filter(brand => brandFilters[brand]);
-        if (selectedBrands.length > 0) {
-            filteredProducts = filteredProducts.filter(product => selectedBrands.includes(product.brand));
-        }
+      return filteredProducts;
 
-        // Filter by price ranges
-        if (priceRanges.low) {
-            filteredProducts = filteredProducts.filter(product => product.price < 1000);
-        }
-        if (priceRanges.medium) {
-            filteredProducts = filteredProducts.filter(product => product.price >= 1000 && product.price < 1500);
-        }
-        if (priceRanges.high) {
-            filteredProducts = filteredProducts.filter(product => product.price >= 1500);
-        }
-
-        // Update the filtered products in the UI
-        // This could be handled by setting a local state if you want to display filtered results
-        // setFilteredProducts(filteredProducts); // Uncomment if you want to manage local filtered state
-        setShowFilterModal(false);
     };
-
     const renderFooter = () => {
         if (!loading) return null;
-        return <ActivityIndicator size="large" color="#388e3c" style={{ margin: 10 }} />;
+        return <ActivityIndicator size="large" color="#388e3c" style={styles.loadingIndicator} />;
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
             {isScreenLoading ? (
                 <View style={styles.loadingContainer}>
-                    {/* Add your loading animation here */}
-                </View>
+                <LottieView
+                  source={require('../../assets/lottie/rotateLoad.json')} 
+                  autoPlay
+                  loop
+                  style={styles.lottie}
+                />
+          </View>  
             ) : (
                 <Animated.View style={[styles.container, { opacity: animation }]}>
                     <View style={styles.header}>
@@ -234,16 +248,26 @@ const Products = () => {
                             <Ionicons name="filter-outline" size={28} color="black" />
                         </TouchableOpacity>
                     </View>
-
-                    <FlatList
-                        data={products}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />}
-                        numColumns={2}
-                        onEndReachedThreshold={0.5}
-                        ListFooterComponent={renderFooter}
-                        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshProducts} />}
-                    />
+                    {error ? (
+            <View style={styles.errorContainer}>
+              <LottieView
+                source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error animation file
+                autoPlay
+                loop
+                style={styles.lottie}
+              />
+              <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+            </View>
+              ) : (
+                  <FlatList
+                      data={products}
+                      keyExtractor={(item) => item.id}
+                      renderItem={({ item }) => <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />}
+                      numColumns={2}
+                      onEndReachedThreshold={0.5}
+                      ListFooterComponent={renderFooter}
+                      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshProducts} />}
+                  />)}
 
                     <Modal visible={showFilterModal} animationType="fade" transparent>
                         <View style={styles.modalOverlay}>
@@ -303,9 +327,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   loadingIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: width * 0.1,
+    height: height * 0.1,
   },
   loadingContainer: {
     flex: 1,
@@ -313,9 +336,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  loadingAnimation: {
-    width: 150,
-    height: 150,
+ 
+  errorContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+  errorMessage: {
+      color: 'red',
+      fontSize: 16,
+      textAlign: 'center',
+      marginTop: 10,
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
   },
   container: {
     flex: 1,

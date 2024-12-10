@@ -4,7 +4,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 
-const { width, height } = Dimensions.get('window'); // Get screen dimensions
+const { width } = Dimensions.get('window'); // Get screen dimensions
 
 const SquadConfirmation = () => {
     const navigation = useNavigation();
@@ -35,10 +35,10 @@ const SquadConfirmation = () => {
             />
             <Text style={styles.title}> Squad Created Successfully!</Text>
             <Text style={styles.message}>
-                You've just launched an EcoGreen Squad focused on making our planet greener.
+                Successfully launched an EcoGreen Squad focused on making our planet greener.
                 Together, we can take action for a sustainable future!
             </Text>
-            <Text style={styles.subtitle}>What's Next?</Text>
+            <Text style={styles.subtitle}>What is Next?</Text>
             <Text style={styles.nextSteps}>
                 Start by inviting your friends to join your squad and participate in impactful eco-friendly activities.
             </Text>

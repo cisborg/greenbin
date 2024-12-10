@@ -8,7 +8,6 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-  Modal,
   Animated,
   Platform,StatusBar
 } from 'react-native';
@@ -224,34 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalText: {
-    fontSize: 14,
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  okButton: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 10,
-  },
-  okButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
+ 
 });
 
 export default EventForm;

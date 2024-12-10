@@ -6,17 +6,16 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Swipeable } from 'react-native-gesture-handler';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Color } from "../../GlobalStyles";
+import LottieView from 'lottie-react-native';
 
 import FastImage from 'react-native-fast-image';
-
-// Import Redux actions
 import { fetchNotifications, deleteNotification } from '../../redux/actions/notifications';
 
-;const NotificationScreen = () => {
-  const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.notifications.data); // Select notifications from Redux store
-  const loading = useSelector((state) => state.notifications.loading);
+const { width } = Dimensions.get('window');
 
+const NotificationScreen = () => {
+  const dispatch = useDispatch();
+  const {notifications,loading, error} = useSelector((state) => state.notifications);
   const [selectedNotification, setSelectedNotification] = React.useState(null);
   const sheetRef = useRef(null);
 
@@ -93,8 +92,25 @@ import { fetchNotifications, deleteNotification } from '../../redux/actions/noti
   return (
     <View style={styles.container}>
       {loading ? (
-        <Text>Loading...</Text>
-      ) : (
+        <View style={styles.loadingContainer}>
+          <LottieView
+              source={require('../../assets/lottie/rotateLoad.json')} 
+              autoPlay
+              loop
+              style={styles.lottie}
+            />
+      </View>
+       ) : error ? (
+        <View style={styles.errorContainer}>
+            <LottieView
+              source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
+              autoPlay
+              loop
+              style={styles.lottie}
+            />
+            <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+        </View> ) : (
+
         <FlatList
           data={notifications}
           renderItem={renderNotification}
@@ -113,6 +129,9 @@ import { fetchNotifications, deleteNotification } from '../../redux/actions/noti
           <Text style={styles.modalTitle}>Notification Details</Text>
           <Text style={styles.modalContent}>{selectedNotification?.content}</Text>
           <Text style={styles.modalTime}>{selectedNotification?.time}</Text>
+          <TouchableOpacity onPress={closeBottomSheet} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
         </View>
       </BottomSheet>
     </View>
@@ -140,18 +159,37 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
+  },
   swipeAction: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 100,
     height: '100%',
   },
-  markAsRead: {
-    backgroundColor: 'green',
-  },
   delete: {
     backgroundColor: 'red',
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+errorMessage: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+},
   swipeActionText: {
     color: 'white',
     fontSize: 16,
@@ -161,6 +199,17 @@ const styles = StyleSheet.create({
   },
   bottomSheetHandle: {
     backgroundColor: '#ccc',
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 14,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   bottomSheetContent: {
     flex: 1,
@@ -197,17 +246,7 @@ const styles = StyleSheet.create({
   readNotification: {
     backgroundColor: '#f0f0f0',
   },
-  modalView: {
-    marginTop: 'auto',
-    backgroundColor: 'white',
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
+ 
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',

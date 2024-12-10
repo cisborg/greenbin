@@ -7,13 +7,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
-import { fetchFlashsale, purchaseProduct } from '../../redux/actions/products'; // Adjust the import based on your project structure
+import { fetchFlashsale, purchaseProduct} from '../../redux/actions/products'; // Adjust the import based on your project structure
 
 const categories = [
     { id: '1', name: 'All' },
     { id: '2', name: 'Computers & Accessories' },
     { id: '3', name: 'Phones & Accessories' },
 ];
+
+const { width, height } = Dimensions.get('window');
 
 const SalesList = () => {
     const [countdown, setCountdown] = useState(75 * 60);
@@ -25,9 +27,10 @@ const SalesList = () => {
     const dispatch = useDispatch();
 
     // Get products and loading state from Redux
-    const { products, loading: productsLoading } = useSelector(state => ({
-        products: state.product.products, // Adjust based on your state structure
-        loading: state.product.loading,
+    const { products, productsLoading, error } = useSelector(state => ({
+        products: state.products, // Adjust based on your state structure
+        productsLoading: state.productsLoading,
+        error: state.error
     }));
 
     useEffect(() => {
@@ -95,6 +98,19 @@ const SalesList = () => {
         }, 300);
     };
 
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <LottieView
+                    source={require('../../assets/lottie/error.json')} // Update with your error Lottie file path
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+                <Text style={styles.errorMessage}>Oops! Something went wrong!</Text>
+            </View>
+        );
+    }
     // Show Lottie loading animation if products are loading
     if (productsLoading) {
         return (
@@ -205,8 +221,6 @@ const styles = StyleSheet.create({
     container: { flex: 1,  backgroundColor: '#f9f9f9' },
     header: { flexDirection: 'row', alignItems: 'center',justifyContent: 'flex-start', padding: 16, backgroundColor: 'green' },
     heading: { fontSize: 24, fontWeight: 'bold', color: 'white', marginLeft: 100 },
-    timeSlots: { flexDirection: 'row' },
-    timeSlot: { color: 'white', marginHorizontal: 6 },
     timer: { fontSize: 16, color: 'orange', textAlign: 'center', marginVertical: 10 },
     categoryContainer: { 
         height: '9%', // Set height to 10% of the screen
@@ -214,6 +228,18 @@ const styles = StyleSheet.create({
     },
     categoryScroll: {
         alignItems: 'center', // Center the category buttons
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    errorMessage: {
+        marginTop: 20,
+        fontSize: 16,
+        color: 'red',
+        textAlign: 'center',
     },
     loadingContainer: {
         flex: 1,
@@ -225,7 +251,10 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
     },
-    
+    lottie: {
+        width: width * 0.3, // Adjust size as needed
+        height: height * 0.3,
+      },
     categoryButton: { 
         paddingHorizontal: 12, 
         paddingVertical: 5, 

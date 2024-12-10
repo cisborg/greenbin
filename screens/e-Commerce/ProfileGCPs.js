@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView,ActivityIndicator, Animated } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/userTiers'; // Import actions
+import { fetchBalance } from '../../redux/actions/bankGreen'; // Import actions
+import { withdraw } from '../../redux/actions/payments';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import LottieView from 'lottie-react-native'; // Import Lottie
 import FastImage from 'react-native-fast-image';
@@ -9,12 +11,19 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from "../../GlobalStyles";
 
+
 const CardScroll = () => {
+  const greenFriday = require('../../assets/greenFriday.png');
+  const greenPoints = require('../../assets/greenPoints.png');
+  const bags = require('../../assets/Bags.png');
+  const connect = require('../../assets/connect.png');
+
+  
   const cards = [
-    { id: 1, image: { uri: 'https://your-image-url.com/greenFriday.png' } },
-    { id: 2, image: { uri: 'https://your-image-url.com/greenPoints.png' } },
-    { id: 3, image: { uri: 'https://your-image-url.com/Bags.png' } },
-    { id: 4, image: { uri: 'https://your-image-url.com/connect.png' } },
+    { id: 1, image: { uri: greenFriday } },
+    { id: 2, image: { uri: greenPoints } },
+    { id: 3, image: { uri: bags } },
+    { id: 4, image: { uri: connect } },
   ];
 
   const [randomCards, setRandomCards] = useState([]);
@@ -61,7 +70,7 @@ const CardScroll = () => {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardScrollContainer}>
       {randomCards.map(card => (
-        <TouchableOpacity key={card.id} onPress={() => console.log(`Card ${card.id} pressed`)}>
+        <TouchableOpacity key={card.id} >
           <Animated.View style={[styles.cardContainer, animatedStyle]}>
             <FastImage source={card.image} style={styles.cardImage} resizeMode={FastImage.resizeMode.cover} />
           </Animated.View>
@@ -74,21 +83,33 @@ const CardScroll = () => {
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const mobiTiers = useSelector((state) => state.balance.mobiTiers);
+  const balance = useSelector((state) => state.balance);
   const donationTiers = useSelector((state) => state.balance.donationTiers);
   const airtimeBought = useSelector((state) => state.balance.airtimeBought);
-  
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchMobiTiers());
       await dispatch(fetchDonationTiers());
+      await dispatch(fetchBalance()); // Fetch balance after fetching tiers and airtime bought status
       await dispatch(fetchAirtimeBought());
       setLoading(false);
     };
 
     fetchData();
   }, [dispatch]);
+
+  const handleWithdraw = () => {
+    setIsWithdrawing(true);
+
+    setTimeout(() => {
+      setIsWithdrawing(false);
+      dispatch(withdraw());
+
+    }, 3000);
+  };
 
   if (loading) {
     return (
@@ -124,15 +145,15 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.separator} />
 
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Mobi Tiers</Text>
           <Text style={styles.statNumber}>{mobiTiers}</Text>
+          <Text style={styles.statLabel}>Mobi Tiers</Text>
         </View>
 
         <View style={styles.separator} />
 
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Donation Tiers</Text>
           <Text style={styles.statNumber}>{donationTiers}</Text>
+          <Text style={styles.statLabel}>Donation Tiers</Text>
         </View>
       </View>
 
@@ -143,6 +164,50 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DialPad')}>
           <Text style={styles.buttonText}>Self Recharge</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.statsContainer}>
+        <Text style={styles.welcome}>Welcome to GreenPay, Earn more GCPs!</Text>
+      <View style={[styles.statBox, { flex: 2, backgroundColor: '#008000', borderRadius: 8 }]}>
+        <View style={styles.greenPay}>
+          <Text style={[styles.statLabel, { color: 'green' }]}>GreenPay</Text>
+          <TouchableOpacity style={styles.wallet} onPress={()=>navigation.navigate('CodeAccept')}>
+            <Text style={styles.walletText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+          <Text style={[styles.statNumber, { fontSize: 24, fontWeight: 'bold', color: '#fff' }]}>GCPs {balance}</Text>
+          <TouchableOpacity
+            style={[styles.withdrawButton, { backgroundColor: isWithdrawing ? '#FFA500' : '#008000' }]}
+            onPress={handleWithdraw}
+            disabled={isWithdrawing}
+          >
+            {isWithdrawing ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={[styles.withdrawButtonText, { color: isWithdrawing ? '#fff' : '#008000' }]}>Withdraw</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={[styles.separator, { height: '80%' }]} />
+
+        <View style={[styles.statBox, { flex: 1 }]}>
+          <View style={styles.statLabelContainer}>
+            <FontAwesome name="arrow-up" size={18} color="#008000" />
+            <Text style={[styles.statNumber, { fontSize: 18, fontWeight: 'bold' }]}>GCPs 1,180</Text>
+          </View>
+          <Text style={styles.statLabel}>Money In</Text>
+        </View>
+
+        <View style={[styles.separator, { height: '80%' }]} />
+
+        <View style={[styles.statBox, { flex: 1 }]}>
+          <View style={styles.statLabelContainer}>
+            <MaterialIcons name="arrow-downward" size={18} color="#FF0000" />
+            <Text style={[styles.statNumber, { fontSize: 18, fontWeight: 'bold' }]}>GCPs 360</Text>
+          </View>
+          <Text style={styles.statLabel}>Money Out</Text>
+        </View>
       </View>
 
       <CardScroll />
@@ -221,6 +286,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color:'green'
   },
+  greenPay:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  wallet: {
+    backgroundColor: 'green',
+    padding: 3,
+    width: 25,
+    height: 20,
+    alignSelf: 'flex-end',
+    borderRadius: 12,
+  },
+  walletText:{
+    color: 'white',
+    fontSize: 7,
+    textAlign: 'center',
+  },
+  welcome:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    padding: 10,
+    color: 'green'
+  },
   statsContainer: {
     alignItems: 'flex-start',
     justifyContent: 'space-around',
@@ -230,7 +322,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    elevation: 5,
+    elevation: 3,
     shadowColor: '#000',
   },
   statBox: {
@@ -254,33 +346,53 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: '#D8D8D8', // Grey divider
   },
-  
-  balanceBox1: {
-    alignItems: 'flex-start',
-    borderRadius: 15,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    elevation: 1, 
-    marginTop: 10,
-    shadowColor: '#000',
-  },
-  Container: {
+  statsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginVertical: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
-  balanceAmount: {
+  statBox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  statLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 4,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  separator: {
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+  },
+  withdrawButton: {
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  withdrawButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
-    marginTop: 10
-  },
-  balanceLabel: {
-    fontSize: 14,
-    color: 'green',
-    marginTop: 5
   },
   button1: {
     backgroundColor: '#f5f5f5',
@@ -299,12 +411,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  balanceType: {
-    fontSize: 12,
-    fontWeight: '500',
-
-    color: 'black',
-  },
+ 
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -328,23 +435,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 14,
     fontWeight: '600',
-  },
-  greenMoney: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'black',
-    marginLeft: 10
-  },
-  moneyBalance: {
-    fontSize: 14,
-    color:'green',
-    fontWeight: '500',
-    marginBottom: 5,
-  },
-  moneyBalance1: {
-    fontSize: 12,
-    color: Color.colorGray_100,
-    marginBottom: 10,
   },
   quickActionsTitle: {
     flexDirection: "row",

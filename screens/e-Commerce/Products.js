@@ -8,38 +8,53 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+
+const { width, height } = Dimensions.get('window');
+
 import { fetchProducts, fetchBrands, addFavorite, addToCart } from '../../redux/actions/products'; // Import necessary actions
 
-const ProductCard = ({ item, addToFavorites, addToCart }) => {
-  return (
-    <View style={styles.card}>
-      <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
-      <View style={styles.infoContainer}>
-        <Text style={styles.productTitle}>{item.title}</Text>
-        {item.originalPrice && (
-          <View style={styles.priceContainer}>
-            <Text style={styles.originalPrice}>{item.originalPrice} GCP</Text>
-            <Text style={styles.discountedPrice}>{item.price} GCP</Text>
-            <Text style={styles.discountBadge}>{Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF</Text>
-          </View>
-        )}
-        <TouchableOpacity onPress={() => addToFavorites(item)}>
-          <Ionicons name="heart-outline" size={24} color="red" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => addToCart(item)}>
-          <Ionicons name="cart-outline" size={24} color="orange" />
-        </TouchableOpacity>
-      </View>
+const ProductCard = ({ item }) => {
+  const handleAddToFavorites = () => {
+    dispatch(addFavorite(item)); // Dispatch add to favorites action
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(item)); // Dispatch add to cart action
+  };
+  const renderRightActions = () => (
+    <View style={styles.swipeActions}>
+      <TouchableOpacity onPress={handleAddToFavorites} style={styles.actionButton}>
+        <Ionicons name="heart-outline" size={24} color="red" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleAddToCart} style={styles.actionButton}>
+        <Ionicons name="cart-outline" size={24} color="orange" />
+      </TouchableOpacity>
     </View>
+  );
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <View style={styles.card}>
+        <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
+        <View style={styles.infoContainer}>
+          <Text style={styles.productTitle}>{item.title}</Text>
+          {item.originalPrice && (
+            <View style={styles.priceContainer}>
+              <Text style={styles.originalPrice}>{item.originalPrice} GCP</Text>
+              <Text style={styles.discountedPrice}>{item.price} GCP</Text>
+              <Text style={styles.discountBadge}>{Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF</Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </Swipeable>
   );
 };
 
 const Products = () => {
   const dispatch = useDispatch();
-  const products = useSelector(state => state.products.products);
-  const loading = useSelector(state => state.products.loading);
-  const error = useSelector(state => state.products.error);
-  const brands = useSelector(state => state.products.brands); // Fetch brands from Redux store
+  const { products, loading,error,brands }= useSelector(state => state.products);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Best Match');
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,8 +157,13 @@ const Products = () => {
     <SafeAreaView style={styles.safeArea}>
       {isScreenLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#388e3c" />
-        </View>
+          <LottieView
+            source={require('../../assets/lottie/rotateLoad.json')} 
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+    </View>  
       ) : (
         <Animated.View style={[styles.container, { opacity: animation }]}>
           {/* Header Section */}
@@ -178,8 +198,14 @@ const Products = () => {
 
           {error ? (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>Error fetching products: {error}</Text>
-            </View>
+            <LottieView
+              source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error animation file
+              autoPlay
+              loop
+              style={styles.lottie}
+            />
+            <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+        </View>
           ) : (
             <FlatList
               data={filterProducts()} // Apply filtering here
@@ -254,20 +280,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  loadingIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+ 
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  loadingAnimation: {
-    width: 150,
-    height: 150,
+  actionButton: {
+    width: width * 0.1,
+    height: height * 0.1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white', // Background color for action buttons
+  },
+  errorContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+},
+  errorMessage: {
+      color: 'red',
+      fontSize: 16,
+      textAlign: 'center',
+      marginTop: 10,
+  },
+  lottie: {
+    width: width * 0.3, // Adjust size as needed
+    height: height * 0.3,
   },
   container: {
     flex: 1,
@@ -308,57 +348,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     width: 25,
     fontSize: 11,
-  },
-  storeHeaderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  storeImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  storeInfoContainer: {
-    flex: 1,
-  },
-  storeName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  storeDetails: {
-    fontSize: 14,
-    color: '#888',
-    marginTop: 2,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  storeScore: {
-    fontSize: 14,
-    color: '#FF9800',
-    marginRight: 4,
-  },
-  ratingsCount: {
-    fontSize: 14,
-    color: '#888',
-  },
-  followButton: {
-    backgroundColor: '#FF5722',
-    borderRadius: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-  },
-  followText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
   sortFilterRow: {
     flexDirection: 'row',
@@ -450,31 +439,6 @@ const styles = StyleSheet.create({
   discountedPrice: {
     fontSize: 10,
     color: 'green',
-  },
-  productPrice: {
-    fontSize: 14,
-    color: 'green',
-  },
-  productBrand: {
-    fontSize: 12,
-    color: 'grey',
-  },
-  officialBadge: {
-    fontSize: 10,
-    color: 'blue',
-    backgroundColor: '#e0f7fa',
-    paddingHorizontal: 5,
-    borderRadius: 5,
-    marginTop: 5,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  ratingText: {
-    fontSize: 12,
-    marginLeft: 5,
   },
   discountBadge: {
     fontSize: 12,

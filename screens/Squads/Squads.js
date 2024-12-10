@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text,Dimensions, FlatList, TextInput, TouchableOpacity, SafeAreaView, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text,Dimensions, FlatList, TextInput, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllSquads } from '../../redux/actions/squads'; // Import the action
@@ -45,14 +45,14 @@ const JoinSquads = () => {
           source={{ uri: item.cover }} 
           style={styles.coverImage} 
           resizeMode={FastImage.resizeMode.cover}
-          onError={() => console.error('Cover image failed to load')} 
+          onError={() => Alert('Cover image failed to load')} 
         />
         <View style={styles.squadDetails}>
           <FastImage
             source={{ uri: item.avatar }} 
             style={styles.avatar} 
             resizeMode={FastImage.resizeMode.cover}
-            onError={() => console.error('Avatar image failed to load')} 
+            onError={() => Alert('Avatar image failed to load')} 
           />
           <TouchableOpacity 
             style={styles.viewButton} 
@@ -131,9 +131,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 5,
   },
-  scrollView: {
-    paddingBottom: 130,
-  },
   squadCard: {
     backgroundColor: '#ffff',
     borderRadius: 15,
@@ -151,9 +148,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: 'lightgray'
-  },
-  header: {
-    marginBottom: 20,
   },
   searchInput: {
     borderRadius: 12,
@@ -213,31 +207,6 @@ const styles = StyleSheet.create({
   viewButtonText: {
     color: 'green',
     fontWeight: 'bold',
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: '19%',
-    alignSelf: 'flex-end',
-    backgroundColor: 'white',
-    borderRadius: 30,
-    elevation: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 50,
-    height: 50,
-  },
-  connectionsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  connectorImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: '#fff',
-    position: 'absolute',
   },
   connectionsCount: {
     marginLeft: 30,
