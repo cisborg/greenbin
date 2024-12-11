@@ -27,7 +27,7 @@ export const cashDeposit = (amount) => async (dispatch) => {
     const depositAmount = parseFloat(amount);
     try {
         // Assuming you have an API endpoint to handle cash deposits
-        await api.post('/api/cash-deposit', { amount: depositAmount });
+        await api.post('/pay/init', { amount: depositAmount });
 
         // Dispatch actions to update both total balance and Green Bank balance
         dispatch({ type: DEPOSIT_SUCCESS, payload: depositAmount });
@@ -39,10 +39,10 @@ export const cashDeposit = (amount) => async (dispatch) => {
 
 
 // Deposit action
-export const deposit = (amount) => async (dispatch) => {
+export const greenBankDeposit = (amount) => async (dispatch) => {
     dispatch({ type: DEPOSIT_REQUEST });
     try {
-        const response = await api.post('/pay/init', { amount });
+        const response = await api.post('/greenBank/transfer/balance-to-greenbank', { amount });
         dispatch({ type: DEPOSIT_SUCCESS, payload: response.data });
     } catch (error) {
         const errorMessage = error.response?.data?.message || error.message;
@@ -110,3 +110,12 @@ export const buyAirtime = (amount) => async (dispatch) => {
     }
   };
   
+  export const greenBankWithdraw = (amount) => async (dispatch) => {
+    dispatch({ type: WITHDRAW_REQUEST });
+    try {
+        const response = await api.post('/greenBank/transfer/balance-to-greenbank', { amount });
+        dispatch({ type: WITHDRAW_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: WITHDRAW_FAILURE, payload: error.message });
+    }
+};

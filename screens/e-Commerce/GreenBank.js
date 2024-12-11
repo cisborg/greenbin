@@ -13,9 +13,8 @@ import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux';
-import { updateBalance, updateTokenBalance } from '../../redux/actions/bankGreen'; 
-import { deposit, withdraw } from '../../redux/actions/payments';
-import { fetchBalance, fetchTokenBalance } from '../../redux/actions/bankGreen'; // Import the actions
+import { greenBankDeposit,greenBankWithdraw } from '../../redux/actions/payments';
+import { updateBalance, updateTokenBalance } from '../../redux/actions/bankGreen'; // Import the actions
 import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
 
 const TOKEN_RATE = 1.0042; // Token rate for paying green tax 
@@ -35,8 +34,8 @@ const GreenBankAccount = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await dispatch(fetchBalance());
-      await dispatch(fetchTokenBalance());
+      await dispatch(updateBalance());
+      await dispatch(updateTokenBalance());
       setLoading(false);
     };
 
@@ -71,7 +70,7 @@ const GreenBankAccount = () => {
         addTransaction('Deposit', depositAmount, 'Approved', 'green-points');
         
         // Dispatch deposit action
-        dispatch(deposit(depositAmount));
+        dispatch(greenBankDeposit(depositAmount));
         
         setLoading({ ...loading, deposit: false });
         setAmount('');
@@ -93,7 +92,7 @@ const GreenBankAccount = () => {
         } else {
           // Deduct from both bank balance and green points
           const remaining = withdrawAmount - balance;
-          dispatch(withdraw(balance)); // Withdraw available balance
+          dispatch(greenBankWithdraw(balance)); // Withdraw available balance
           const newTokenBalance = tokenBalance - remaining / TOKEN_RATE; // Deduct remaining from green points
           dispatch(updateTokenBalance(newTokenBalance)); // Update token balance in Redux
         }

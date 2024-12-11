@@ -15,6 +15,7 @@ import FastImage from 'react-native-fast-image';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import NotificationScreen from '../GreenConnect/ConnectNotification';
+import FriendScreen from '../GreenConnect/Friends';
 import MessagesScreen from '../GreenConnect/messageUI'; // Ensure this is your chat page
 import SettingsScreen from '../GreenConnect/Settings';
 import { SafeAreaView } from 'react-native-safe-area-context'; // SafeAreaView for screen edges
@@ -225,13 +226,16 @@ const GreenConnect = () => {
             let icon;
             if (route.name === 'Connections') {
               icon = <AntDesign name="plussquare" size={size} color={color} />;
-            } else if (route.name === 'Notifications') {
+            } else if (route.name === 'Friends') {
+              icon = <AntDesign name="addusergroup" size={size} color={color} />;
+            }
+             else if (route.name === 'Notifications') {
               icon = <Ionicons name="notifications" size={size} color={color} />;
             } else if (route.name === 'Messages') {
               icon = <FontAwesome6 name="facebook-messenger" size={size} color={color} />;
             } else if (route.name === 'Settings') {
               icon = <AntDesign name="setting" size={size} color={color} />;
-            }
+            } 
             return icon;
           },
           tabBarBadge: route.name === 'Messages' ? unreadMessages :
@@ -240,6 +244,7 @@ const GreenConnect = () => {
         })}
       >
         <Tab.Screen name="Connections" component={GreenConnectMain} />
+        <Tab.Screen name="Friends" component={FriendScreen} />
         <Tab.Screen name="Messages" component={MessagesScreen} />
         <Tab.Screen name="Notifications" component={NotificationScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />

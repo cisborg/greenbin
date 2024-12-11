@@ -12,6 +12,7 @@ import VendorsProfilePage from "./screens/Vendors/VendorsProfilePage";
 import HomePageExistingUser from "./screens/MainPage/HomePageExistingUser";
 import EventForm from "./screens/Squads/EventForm";
 import Insurance from "./screens/e-Commerce/Insurance";
+import FriendScreen from "./screens/GreenConnect/Friends";
 import ChallengePage from "./screens/MainPage/ChallengePage";
 import SeeAllEvents from "./screens/MainPage/SeeAllEvents";
 import SignInPage from "./screens/Registration/SignInPage";
@@ -274,6 +275,7 @@ const App = () => {
       <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
       <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={MainTabs} />
+      <Stack.Screen name="Friends" component={FriendScreen} options={{ headerShown: false }} />
       <Stack.Screen name="GreenConnect" component={GreenConnect} options={{ headerShown: false }} />
       <Stack.Screen name="Squads" component={YourSquads} options={{ headerShown: false }} />
       <Stack.Screen name="VendorsProfilePage" component={VendorsProfilePage} options={{ headerShown: false }} />

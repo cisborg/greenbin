@@ -8,17 +8,17 @@ import {
     FETCH_TOKEN_BALANCE_FAILURE,
   
 } from './actionTypes'
-export const fetchBalance = () => async (dispatch) => {
+export const updateBalance = () => async (dispatch) => {
     dispatch({ type: FETCH_BALANCE_REQUEST });
     try {
-      const response = await api.get('/user/balance'); // Replace with your API endpoint
+      const response = await api.get('/greenBank/balance'); // Replace with your API endpoint
       dispatch({ type: FETCH_BALANCE_SUCCESS, payload: response.data.balance });
     } catch (error) {
       dispatch({ type: FETCH_BALANCE_FAILURE, payload: error.message });
     }
   };
   
-  export const fetchTokenBalance = () => async (dispatch) => {
+  export const updateTokenBalance = () => async (dispatch) => {
     dispatch({ type: FETCH_TOKEN_BALANCE_REQUEST });
     try {
       const response = await api.get('/api/token-balance'); // Replace with your API endpoint
@@ -27,3 +27,13 @@ export const fetchBalance = () => async (dispatch) => {
       dispatch({ type: FETCH_TOKEN_BALANCE_FAILURE, payload: error.message });
     }
   };
+
+export const fetchBalance = () => async (dispatch) => {
+  dispatch({ type: FETCH_BALANCE_REQUEST });
+  try {
+    const response = await api.get('/user/balance'); // Replace with your API endpoint
+    dispatch({ type: FETCH_BALANCE_SUCCESS, payload: response.data.balance });
+  } catch (error) {
+    dispatch({ type: FETCH_BALANCE_FAILURE, payload: error.message });
+  }
+};

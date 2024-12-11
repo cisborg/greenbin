@@ -33,9 +33,6 @@ import { Alert } from "react-native";
 export const registerUser = (userData) => async (dispatch) => {
   dispatch({ type: REGISTER_USER });
   try {
-    console.log("Sending registration request with data:", userData);
-    // Alert.alert('Sending registration request with data:', userData.email);
-
     const response = await api.post("/user/signup", userData);
 
     if (response.data.status === "success") {

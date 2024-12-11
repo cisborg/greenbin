@@ -107,7 +107,6 @@ const HomeScreen = ({ navigation }) => {
     setTimeout(() => {
       setIsWithdrawing(false);
       dispatch(withdraw());
-
     }, 3000);
   };
 
