@@ -25,7 +25,7 @@ import FastImage from 'react-native-fast-image';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { connectToVendor} from '../../redux/actions/authentication'
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 
 const VendorList = () => {
   const navigation = useNavigation();

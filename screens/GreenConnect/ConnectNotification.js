@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity,Dimensions, StyleSheet } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -11,7 +11,7 @@ import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import { fetchNotifications, deleteNotification } from '../../redux/actions/notifications';
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 
 const NotificationScreen = () => {
   const dispatch = useDispatch();

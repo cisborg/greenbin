@@ -8,7 +8,7 @@ import { requestJoinSquad } from '../../redux/actions/squads';
 import LottieView from 'lottie-react-native';
 import { fetchSquadLeaderboard } from '../../redux/actions/leaderboard';
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 
 
 const LeaderboardScreen = () => {

@@ -83,7 +83,7 @@ const FlashSale = () => {
         ) : error ? ( // Check for the error state
             <View style={styles.errorContainer}>
                 <LottieView
-                    source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error Lottie file path
+                    source={require('../../assets/lottie/errorLottie.json')} // Replace with your error Lottie file path
                     autoPlay
                     loop
                     style={styles.loadingAnimation}

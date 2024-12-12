@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated,Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -102,7 +102,7 @@ const SalesList = () => {
         return (
             <View style={styles.errorContainer}>
                 <LottieView
-                    source={require('../../assets/lottie/error.json')} // Update with your error Lottie file path
+                    source={require('../../assets/lottie/errorLottie.json')} // Update with your error Lottie file path
                     autoPlay
                     loop
                     style={styles.lottie}

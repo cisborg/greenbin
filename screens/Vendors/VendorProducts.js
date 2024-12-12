@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator,Dimensions, Animated, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,8 +10,10 @@ import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import LottieView from 'lottie-react-native';
-
 import { fetchProducts, followVendor, unfollowVendor, addFavorite, addToCart } from '../../redux/actions/products';
+
+
+const { width, height } = Dimensions.get('window');
 
 const StoreHeader = ({ vendor }) => {
     const [isFollowing, setIsFollowing] = useState(false);
@@ -251,7 +253,7 @@ const Products = () => {
                     {error ? (
             <View style={styles.errorContainer}>
               <LottieView
-                source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error animation file
+                source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
                 autoPlay
                 loop
                 style={styles.lottie}

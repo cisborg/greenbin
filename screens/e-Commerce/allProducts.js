@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/actions/products'; 
 import LottieView from 'lottie-react-native';
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 
 const ItemGridScreen = ({ navigation }) => {
     const dispatch = useDispatch(); 

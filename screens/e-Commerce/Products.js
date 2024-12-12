@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity,Dimensions, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import FastImage from 'react-native-fast-image';
@@ -199,7 +199,7 @@ const Products = () => {
           {error ? (
             <View style={styles.errorContainer}>
             <LottieView
-              source={require('../../assets/lottie/errorAnimation.json')} // Replace with your error animation file
+              source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
               autoPlay
               loop
               style={styles.lottie}
