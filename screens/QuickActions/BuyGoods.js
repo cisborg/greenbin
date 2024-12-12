@@ -4,18 +4,20 @@ import {
     KeyboardAvoidingView, Platform, SafeAreaView, Modal, ActivityIndicator, Alert,
 } from 'react-native';
 import LottieView from 'lottie-react-native'; // Import LottieView
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native'; // Import useRoute
 import { Color } from '../../GlobalStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image'; // Import FastImage
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { purchaseProduct } from '../../redux/actions/products'; 
+import {  requestPayment } from '../../redux/actions/payments';
 
 const paymentMethods = ['Green Bank', 'Request a Friend', 'GCPs Wallet'];
 const presetAmounts = [2000, 5000, 8000, 12000];
 
 const BuyGoods = () => {
     const navigation = useNavigation();
+    const route = useRoute(); // Use route to get parameters
     const dispatch = useDispatch(); // Initialize dispatch
     const [loading, setLoading] = useState(true);
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -25,7 +27,7 @@ const BuyGoods = () => {
     const [voucherApplied, setVoucherApplied] = useState(false);
     const [totalCost, setTotalCost] = useState(0);
     const [greenBankCode, setGreenBankCode] = useState('');
-    const [availablePoints, setAvailablePoints] = useState(12000);
+    const availablePoints = route.params; // Directly use availablePoints from route params
     const [friendPhoneNumber, setFriendPhoneNumber] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -64,6 +66,24 @@ const BuyGoods = () => {
         );
     }
 
+    const handleRequestFriendToPay = () => {
+        const isValidFriendPhone = friendPhoneNumber.length === 10 && /^\d+$/.test(friendPhoneNumber);
+        
+        if (!isValidFriendPhone) {
+            Alert.alert("Invalid Friend's Phone Number", "Please enter a valid 10-digit friend's phone number.");
+            return;
+        }
+
+        // Dispatch action to send payment request
+        dispatch(requestPayment(friendPhoneNumber, totalCost))
+            .then(() => {
+                Alert.alert("Request Sent", `Payment request of GCPs ${totalCost} sent to ${friendPhoneNumber}.`);
+                setFriendPhoneNumber(''); // Clear input after sending the request
+            })
+            .catch((error) => {
+                Alert.alert(`${error}, "Failed to send payment request. Please try again.`);
+            });
+    };
     const validateInputs = () => {
         const amount = parseFloat(customAmount) || selectedAmount;
         const isValidPhoneNumber = phoneNumber.length === 6 && /^\d+$/.test(phoneNumber);
@@ -71,7 +91,7 @@ const BuyGoods = () => {
         const isValidFriendPhone = friendPhoneNumber.length === 10 && /^\d+$/.test(friendPhoneNumber);
 
         if (!isValidPhoneNumber) {
-            Alert.alert("Invalid Account Number", "Please enter a valid account number.");
+            Alert.alert("Invalid codePay", "Please enter a valid codePay number.");
             return false;
         }
 
@@ -85,8 +105,8 @@ const BuyGoods = () => {
             return false;
         }
 
-        if (selectedPaymentMethod === 'GCPs Wallet' && availablePoints < totalCost) {
-            Alert.alert("Insufficient GCP Points", `You only have GCPs ${availablePoints}, but you need GCPs ${totalCost}`);
+        if (amount > availablePoints) { // Check if amount exceeds available points
+            Alert.alert("Insufficient GCP Points", `You only have GCPs ${availablePoints}, but you need GCPs ${amount}`);
             return false;
         }
 
@@ -104,7 +124,7 @@ const BuyGoods = () => {
         setIsProcessing(true);
 
         // Dispatch the purchase action
-        dispatch(purchaseProduct(1, totalCost)); // Assuming productId is 1 and quantity is totalCost for demonstration
+        dispatch(purchaseProduct(totalCost)); // Assuming productId is 1 and quantity is totalCost for demonstration
 
         // Simulate a 300ms process for payment
         setTimeout(() => {
@@ -153,7 +173,7 @@ const BuyGoods = () => {
                             />
                             <TextInput
                                 style={styles.input1}
-                                placeholder="Enter Paybill/Pochi/Account"
+                                placeholder="Enter shop code pay"
                                 placeholderTextColor={Color.colorGray_100}
                                 value={phoneNumber}
                                 onChangeText={setPhoneNumber}
@@ -216,6 +236,7 @@ const BuyGoods = () => {
 
                         {/* Friend's Phone Number Input for Request a Friend */}
                         {selectedPaymentMethod === 'Request a Friend' && (
+                            <>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Enter Friend's Phone Number"
@@ -224,6 +245,14 @@ const BuyGoods = () => {
                                 value={friendPhoneNumber}
                                 onChangeText={setFriendPhoneNumber}
                             />
+                            <TouchableOpacity
+                            style={styles.confirmButton}
+                            onPress={handleRequestFriendToPay}
+                        >
+                            <Text style={styles.confirmButtonText}>Request Payment</Text>
+                        </TouchableOpacity>
+                            </>
+                            
                         )}
 
                         {/* Green Bank Code Input */}
@@ -278,7 +307,7 @@ const BuyGoods = () => {
                         <View style={styles.modalOverlay}>
                             <View style={styles.modalContainer}>
                                 <Text style={styles.modalText}>Goods Purchased Successfully!</Text>
-                                <Text style={styles.modalSubText}>Continue to conserve your environment!</Text>
+                                <Text style={styles.modalSubText}>Continue to conserve your environment with codePay!</Text>
                                 <TouchableOpacity
                                     style={styles.okButton}
                                     onPress={() => {

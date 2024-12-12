@@ -7,6 +7,7 @@ import { withdraw } from '../../redux/actions/payments';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import LottieView from 'lottie-react-native'; // Import Lottie
 import FastImage from 'react-native-fast-image';
+import { useRoute } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Color } from "../../GlobalStyles";
@@ -87,7 +88,9 @@ const HomeScreen = ({ navigation }) => {
   const donationTiers = useSelector((state) => state.balance.donationTiers);
   const airtimeBought = useSelector((state) => state.balance.airtimeBought);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const route = useRoute()
   const [loading, setLoading] = useState(true); // Loading state
+  const {username, amount } =  route.params;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,7 +132,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity>
           <AntDesign name="leftcircle" size={23} color="black" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Welcome, User</Text>
+        <Text style={styles.headerText}>Welcome, {username}</Text>
         <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('manageAccount')}>
           <Text style={styles.button1Text}>Account</Text>
         </TouchableOpacity>
@@ -203,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={[styles.statBox, { flex: 1 }]}>
           <View style={styles.statLabelContainer}>
             <MaterialIcons name="arrow-downward" size={18} color="#FF0000" />
-            <Text style={[styles.statNumber, { fontSize: 18, fontWeight: 'bold' }]}>GCPs 360</Text>
+            <Text style={[styles.statNumber, { fontSize: 18, fontWeight: 'bold' }]}>GCPs {amount}</Text>
           </View>
           <Text style={styles.statLabel}>Money Out</Text>
         </View>
@@ -232,7 +235,7 @@ const HomeScreen = ({ navigation }) => {
             <FontAwesome name="bitcoin" size={24} color='green' />
             <Text style={styles.navButtonText}>Insurance</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods')}>
+          <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('BuyGoods', {availablePoints: {balance}})}>
             <FontAwesome name="shopping-cart" size={24} color='green' />
             <Text style={styles.navButtonText}>Buy Goods</Text>
           </TouchableOpacity>

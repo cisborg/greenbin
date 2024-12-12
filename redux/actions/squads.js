@@ -143,3 +143,13 @@ export const updateSquad = (squadId, squadData) => async (dispatch) => {
         dispatch({ type: UPDATE_SQUAD_FAILURE, payload: error.message });
     }
 };
+
+export const submitActive = (squadId, squadName) => async (dispatch) => {
+    dispatch({ type: SUBMIT_ACTIVE_REQUEST }); // Action type for initiating the request
+    try {
+        const response = await api.post('/squad/active', { squadId,squadName }); // Adjust the endpoint as necessary
+        dispatch({ type: SUBMIT_ACTIVE_SUCCESS, payload: response.data }); // Dispatch success action with response data
+    } catch (error) {
+        dispatch({ type: SUBMIT_ACTIVE_FAILURE, payload: error.message }); // Dispatch failure action with error message
+    }
+};

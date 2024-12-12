@@ -63,7 +63,7 @@ const DonatePoints = () => {
     dispatch(addDonationTier(userId, { amount: donationAmount }))
       .then(() => {
         setDonateLoading(false);
-        navigation.navigate('donationConfirmed');
+        navigation.navigate('donationConfirmed', {amount: donationAmount});
       })
       .catch(error => {
         setDonateLoading(false);

@@ -4,11 +4,13 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView, Anima
 import { Swipeable } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getAllPurchases, deletePurchase, clearAllPurchases } from '../../redux/actions/purchases';
+import { useNavigation } from '@react-navigation/native';
 
-const NotifScreen = ({ navigation }) => {
+const NotifScreen = () => {
   const dispatch = useDispatch();
   const purchases = useSelector(state => state.purchases); // Selector for purchases state
   const [fadeAnim] = useState(new Animated.Value(0));
+  const navigation = useNavigation(); // Use navigation
 
   useEffect(() => {
     dispatch(getAllPurchases()); // Fetch all purchases
@@ -28,6 +30,10 @@ const NotifScreen = ({ navigation }) => {
     dispatch(deletePurchase(id)); // Dispatch single delete
   };
 
+  const handleQRCodeScan = (orderId) => {
+    navigation.navigate('QRCodeScanner', { orderId }); // Navigate to QR code scanner
+  };
+
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={() => (
@@ -41,6 +47,16 @@ const NotifScreen = ({ navigation }) => {
           <Text style={styles.dateText}>{item.date}</Text>
         </View>
         <Text style={styles.messageText}>{item.message}</Text>
+        <TouchableOpacity
+          style={item.status === 'delivered' ? styles.deliveredButton : styles.confirmButton}
+          onPress={() => {
+            if (item.status === 'confirmed') {
+              handleQRCodeScan(item.id);
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>{item.status === 'delivered' ? 'Delivered' : 'Confirm'}</Text>
+        </TouchableOpacity>
       </View>
     </Swipeable>
   );
@@ -68,9 +84,6 @@ const NotifScreen = ({ navigation }) => {
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -90,22 +103,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'orange'
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#333',
-  },
+ 
   clearAllText: {
     color: '#007BFF',
     fontSize: 16,
   },
   listContainer: {
     padding: 10,
+  },
+  confirmButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+  },
+  deliveredButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
   },
   listContent: {
     paddingBottom: 10,

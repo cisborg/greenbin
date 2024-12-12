@@ -111,7 +111,7 @@ const PrepaidRechargeScreen = () => {
             {/* Pay button to initiate the transaction */}
             <TouchableOpacity onPress={() => paystackWebViewRef.current.startTransaction()}>
               <View style={styles.proceedButton}>
-                <Text style={styles.proceedButtonText}>Pay Green</Text>
+                <Text style={styles.proceedButtonText}>Green Pay</Text>
               </View>
             </TouchableOpacity>
 
@@ -212,19 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 16, // Font size of the text
     color: 'black', // Text color
   },  
-  pics: {
-    width: 35,
-    height: 25,
-    margin: 4,
-  },
-  fit: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  Pics: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
+ 
   title: {
     fontSize: 18,
     marginBottom: 15,
@@ -349,30 +337,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 15,
   },
-  mpesaContainer: {
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: Color.colorGray_100,
-    borderRadius: 15,
-    padding: 12,
-  },
-  mpesaHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'green',
-    fontFamily: FontFamily.poppinsSemiBold,
-  },
-  mpesaInput: {
-    height: 40,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    marginTop: 8,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-    marginBottom: 5,
-  },
+ 
+  
   emailInput: {
     height: 40,
     borderRadius: 12,

@@ -13,7 +13,7 @@ const FAQScreen = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 400,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
@@ -27,18 +27,18 @@ const FAQScreen = () => {
       Squads: [
         "You can join a squad through the app by selecting 'Join Squad' in the Squad section.",
         "Yes, you can create your own squad by going to the 'Create Squad' section.",
-        "Benefits include exclusive offers and rewards ,including ranking and actvities procurement for squad members.",
+        "Benefits include exclusive offers and rewards ,including ranking and actvities,employment contracts procurement and tours for squad members.",
         "You can leave a squad by selecting 'Leave Squad' in your squad settings.",
-        "Yes, you can switch squads, but it may affect your accumulated points.",
-        "Squad points are calculated based on participation and activity and purchases of each user within the squad."
+        "Yes, you can switch squads by selecting the squad you want to actively participate in for a given month",
+        "Squad points are calculated based on total tiers on participating on activities and events, donations and purchases of each user within the squad."
       ],
       Greenpoints: [
         "Greenpoints are rewards you earn for eco-friendly actions i.e purchase,activities and donations}.",
-        "You can earn Greenpoints by making sustainable purchases,donations(donation bonus) and participating in events.",
+        "You can earn Greenpoints by making sustainable purchases,donations(donation bonus), participating in events, doing referrals, active insurance securities acquisition",
         "Yes, you can convert Greenpoints to cash through the app's withdrawal section.",
-        "Greenpoints expire after  2 months of inactivity on your account.",
+        "Greenpoints expire after  4 months of inactivity on your account.However, we give prior notification!",
         "Yes, you can transfer Greenpoints to another user through the app and outside the app by going to send points/transfer .",
-        "You can redeem Greenpoints by  exchanging to cash -- go to GreenBank section and select withdraw/transfer or you can redeem more products.",
+        "You can redeem Greenpoints by  exchanging to cash -- go to GreenBank section and select withdraw/transfer or you can redeem more products by reusing the points from tier awards",
         "Yes, there is a little fees on deposits 10% for saving to your greenBank and 2% for each deposit  for using Greenpoints.",
         "You can earn Greenpoints by referring friends who sign up for the app.",
         "You can use Greenpoints for discounts, vouchers and donation bonuses  on eco-friendly products and services even outside the app!",
@@ -78,7 +78,7 @@ const FAQScreen = () => {
         "Educate others by sharing information and leading by example in your community."
       ],
       'App Features': [
-        "The app offers features like data tracking,product and services, maturated token bundles, rewards, and community engagement.",
+        "The app offers features like data tracking,product and services, maturated token bundles,insurance policies, rewards, and community engagement(squads), banking services",
         "You can navigate the app using the bottom navigation menu.Workflow from registration, to squads to purchases and environmental participation to withdrawal of points as cash",
         "Yes, you can customize your profile by adding your interests and goals.",
         "You will receive notifications for events and new offers in the app.",
@@ -90,7 +90,7 @@ const FAQScreen = () => {
         "Yes, your data is secure and encrypted within the app. We recommend you enable two authentication strategy for more security of your funds and your reputation.Read our app developer policies on matters of data infringement!"
       ],
       'Rewards and Incentives': [
-        "You can earn rewards(ecogreen tiers ) for completing eco-friendly actions and participating in events donation bonuses/tiers and aggregated tiers on purchases.",
+        "You can earn rewards(ecogreen tiers,gifts,vouchers,coins) for completing eco-friendly actions and participating in events donation bonuses/tiers and aggregated tiers on purchases.",
         "Donation  bonuses are given in credit category based modules  which you earn bronze, diamond, gold, silver.",
         "Yes, we have seasonal promotions that offer extra rewards.",
         "Yes, you can donate your rewards to partnered environmental charities.",

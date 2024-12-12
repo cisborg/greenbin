@@ -8,31 +8,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
-  const username = "Josh";
-  const cash = 1400;
+  const route = useRoute();  
+  const { username,cash } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const [user, setUser] = useState({});
 
-  useEffect(() => {
-    const fetchStoredUser = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error("Error fetching stored user:", error);
-      }
-    };
-
-    fetchStoredUser();
-    return () => {};
-  }, []);
-
+  
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -155,7 +138,7 @@ const ProfilePage = () => {
              source={require("../../assets/anotherMan.avif")}
              resizeMode={FastImage.resizeMode.contain}
              />   
-             <Text style={styles.username}>Brad John</Text>
+             <Text style={styles.username}>{username}</Text>
 
 
             </View>

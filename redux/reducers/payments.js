@@ -9,6 +9,9 @@ import {
     SEND_POINTS_REQUEST,
     SEND_POINTS_SUCCESS,
     SEND_POINTS_FAILURE,
+    REQUEST_PAYMENT_REQUEST,
+    REQUEST_PAYMENT_SUCCESS,
+    REQUEST_PAYMENT_FAILURE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -24,6 +27,7 @@ const paymentReducer = (state = initialState, action) => {
     switch (action.type) {
         case DEPOSIT_REQUEST:
         case WITHDRAW_REQUEST:
+        case REQUEST_PAYMENT_REQUEST:
         case SEND_POINTS_REQUEST:
             return {
                 ...state,
@@ -43,7 +47,14 @@ const paymentReducer = (state = initialState, action) => {
                 loading: false,
                 greenBalance: state.greenBalance - action.payload.points,
             };
+        case REQUEST_PAYMENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+            };
 
+            
+        case SEND_POINTS_REQUEST:
         case SEND_POINTS_SUCCESS:
             return {
                 ...state,
@@ -54,6 +65,7 @@ const paymentReducer = (state = initialState, action) => {
 
         case DEPOSIT_FAILURE:
         case WITHDRAW_FAILURE:
+        case REQUEST_PAYMENT_FAILURE:
         case SEND_POINTS_FAILURE:
             return {
                 ...state,

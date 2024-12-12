@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text,Dimensions, FlatList, TextInput, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
+import { StyleSheet, View, Text,Dimensions, FlatList, TextInput,ActivityIndicator,TouchableOpacity, SafeAreaView, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllSquads } from '../../redux/actions/squads'; // Import the action
+import { getAllSquads, submitActive } from '../../redux/actions/squads'; // Import the action
+
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native'; // Import Lottie
 
@@ -13,6 +14,7 @@ const JoinSquads = () => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const animatedValue = new Animated.Value(0);
+  const [activeSquads, setActiveSquads] = useState({}); // Track active status of each squad
 
   // Fetch squads when the component mounts
   useEffect(() => {
@@ -39,6 +41,23 @@ const JoinSquads = () => {
   );
 
   const renderSquadItem = ({ item }) => {
+    const isActive = activeSquads[item.name] || false;
+
+    const handleActiveToggle = () => {
+      setActiveSquads(prev => ({
+          ...prev,
+          [item.name]: !isActive // Toggle active state
+      }));
+      dispatch(submitActive(item.name)); 
+      if (!isActive) {
+          setTimeout(() => {
+              setActiveSquads(prev => ({
+                  ...prev,
+                  [item.name]: true // Set as active
+              }));
+          }, 2000);
+      }
+  };
     return (
       <View style={styles.squadCard}>
         <FastImage
@@ -73,6 +92,21 @@ const JoinSquads = () => {
           </Text>
           <Text style={styles.connectionsCount}>{item.connections} connections</Text>
         </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 10, right: 10 }}>
+            <TouchableOpacity 
+              style={[styles.activeButton, { backgroundColor: isActive ? 'orange' : 'green' }]} 
+              onPress={handleActiveToggle}
+            >
+              {isActive ? (
+                <Text style={styles.activeButtonText}>Activated</Text>
+              ) : (
+                <>
+                  <ActivityIndicator size="small" color="white" style={isActive ? { display: 'none' } : {}} />
+                  <Text style={styles.activeButtonText}>Activate</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
       </View>
     );
   };
@@ -161,6 +195,17 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginVertical: 10
   },
+  activeButton: {
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 80,
+},
+activeButtonText: {
+    color: 'white',
+    fontSize: 12,
+},
   avatar: {
     width: 60,
     height: 60,

@@ -103,7 +103,9 @@ import { StreamCall } from '@stream-io/video-react-native-sdk';
 import SquadMembers from "./screens/Squads/SquadMembers";
 import GreenBin from "./screens/QuickActions/greenBin";
 import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
+import ProductRating from "./screens/e-Commerce/ProductRating"
 import AppCarousel from "./screens/MainPage/AppCarousel";
+import QRCodeScanner from "./screens/GreenPoints/QRCodeScanner";
 
 
 
@@ -358,6 +360,10 @@ const App = () => {
       <Stack.Screen name="SubscribedProducts" component={Subscribed} options={{ headerShown: false }} />
       <Stack.Screen name="greenBin" component={GreenBin} options={{ headerShown: false }} />
       <Stack.Screen name="GreenSurvey" component={SurveyScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ProductRating" component={ProductRating} options={{ headerShown: false }} />
+      <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: false }} />
+
+
 
     </Stack.Navigator>
     }

@@ -4,6 +4,7 @@ import { Color } from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from'react-redux';
 import { fetchTiers } from '../../redux/actions/userTiers';
+import { requestPayment } from '../../redux/actions/payments';
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -35,44 +36,52 @@ const Checkout = () => {
   const handlePayment = () => {
     // Validate user input based on the selected payment method
     if (paymentMethod === 'requestFriend') {
-      if (!/^[a-zA-Z ]+$/.test(senderName)) {
-        Alert('Invalid Name', 'Please enter a valid name with letters only.');
-        return;
-      }
-      if (!/^\d{10}$/.test(mobileNumber)) {
-        Alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
-        return;
-      }
-      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailAddress)) {
-        Alert('Invalid Email', 'Please enter a valid email address.');
-        return;
-      }
+        if (!/^[a-zA-Z ]+$/.test(senderName)) {
+            Alert.alert('Invalid Name', 'Please enter a valid name with letters only.');
+            return;
+        }
+        if (!/^\d{10}$/.test(mobileNumber)) {
+            Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
+            return;
+        }
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailAddress)) {
+            Alert.alert('Invalid Email', 'Please enter a valid email address.');
+            return;
+        }
     } else if (paymentMethod === 'greenPoints') {
-      const amount = parseInt(amountToUse, 10);
-      if (isNaN(amount) || amount > points || amount <= 0) {
-        Alert('Invalid Amount', 'Please enter a valid amount of points to use.');
-        return;
-      }
-      if (amount > totalPrice) {
-        Alert('Points Exceeded', 'The amount of points exceeds the total price.');
-        return;
-      }
-      setPoints(points - amount); // Deduct used points
+        const amount = parseInt(amountToUse, 10);
+        if (isNaN(amount) || amount > points || amount <= 0) {
+            Alert.alert('Invalid Amount', 'Please enter a valid amount of points to use.');
+            return;
+        }
+        if (amount > totalPrice) {
+            Alert.alert('Points Exceeded', 'The amount of points exceeds the total price.');
+            return;
+        }
+        setPoints(points - amount); // Deduct used points
     } else if (paymentMethod === 'greenBank') {
-      if (!/^\d{10}$/.test(greenBankCode)) {
-        Alert('Invalid Code', 'Please enter a valid 10-digit Green Bank code.');
-        return;
-      }
+        if (!/^\d{10}$/.test(greenBankCode)) {
+            Alert.alert('Invalid Code', 'Please enter a valid 10-digit Green Bank code.');
+            return;
+        }
     }
+
     setLoading(true); // Start loading
-    
-    // Timeout to simulate a loading period
-    setTimeout(() => {
-      // Navigate to the payment confirmation screen
-      navigation.navigate('paymentConfirmed');
-      setLoading(false); // Stop loading
-    }, 400); // 400ms timeout
-  };
+
+    // Dispatch the payment action
+    dispatch(requestPayment(totalPrice))
+        .then(() => {
+            // Navigate to the payment confirmation screen with the amount
+            navigation.navigate('paymentConfirmed', { amount: totalPrice });
+        })
+        .catch((error) => {
+            Alert.alert("Payment Error", error.message || "Failed to process payment.");
+        })
+        .finally(() => {
+            setLoading(false); // Stop loading
+        });
+};
+
 
   const togglePaymentMethod = (method) => {
     setPaymentMethod(method);

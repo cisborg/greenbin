@@ -18,6 +18,9 @@ import {
     BUY_AIRTIME_REQUEST,
     BUY_AIRTIME_SUCCESS,
     BUY_AIRTIME_FAILURE,
+    REQUEST_PAYMENT_REQUEST,
+    REQUEST_PAYMENT_SUCCESS,
+    REQUEST_PAYMENT_FAILURE,
 } from './actionTypes';
 import api from "../../utils/axiosConfig";
 
@@ -117,5 +120,20 @@ export const buyAirtime = (amount) => async (dispatch) => {
         dispatch({ type: WITHDRAW_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: WITHDRAW_FAILURE, payload: error.message });
+    }
+};
+export const requestPayment = (friendPhoneNumber, amount) => async (dispatch) => {
+    dispatch({ type: REQUEST_PAYMENT_REQUEST });
+    try {
+        // Assume you have an API endpoint for requesting payment
+        const response = await api.post('/payment/request', { friendPhoneNumber, amount });
+        if (response.data.status === 'success') {
+            dispatch({ type: REQUEST_PAYMENT_SUCCESS, payload: response.data });
+        } else {
+            // Handle any other response status that indicates failure
+            dispatch({ type: REQUEST_PAYMENT_FAILURE, payload: response.data.message });
+        }
+    } catch (error) {
+        dispatch({ type: REQUEST_PAYMENT_FAILURE, payload: error.message });
     }
 };

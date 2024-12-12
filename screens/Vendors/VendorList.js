@@ -22,6 +22,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { connectToVendor} from '../../redux/actions/authentication'
 
 const { width } = Dimensions.get('window');
@@ -125,7 +126,10 @@ const VendorList = () => {
       <View style={styles.card}>
         <View style={styles.infoContainer}>
           <FastImage source={{ uri: item.image }} style={styles.profileImage} resizeMode={FastImage.resizeMode.cover} />
-          <Text style={styles.name}>{item.name}</Text>
+          <View style={styles.userInfo}>
+            <Text style={styles.name}>{item.name}</Text>
+            <AntDesign name="checkcircle" size={10} color="green" />
+          </View>
           <Text style={styles.job}>{item.job}</Text>
           <Text style={styles.description}>{item.description}</Text>
           {renderConnections(item.connections)}
@@ -219,6 +223,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
+  userInfo:{
+    flexDirection: 'row',
+    justifyContent:'center',
+    marginTop: 10,
+  },
   list: {
     paddingBottom: 20,
     paddingRight: 5,
@@ -249,7 +258,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333333',
     marginTop: 20,
-    marginLeft: 60,
+    marginLeft: 10,
+    marginRight: 10,
   },
   job: {
     fontSize: 13,

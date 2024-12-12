@@ -42,7 +42,10 @@ import {
     REMOVE_SQUAD_LEADER,
     UPDATE_SQUAD_LEADER,
     FETCH_SQUAD_NOTIFICATIONS,
-    REMOVE_SQUAD_NOTIFICATION
+    REMOVE_SQUAD_NOTIFICATION,
+    SUBMIT_ACTIVE_REQUEST,
+    SUBMIT_ACTIVE_SUCCESS,
+    SUBMIT_ACTIVE_FAILURE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -86,6 +89,7 @@ const initialState = {
         },
     ],
     loading: false,
+    activeSquad:null,
     error: null,
 };
 
@@ -93,6 +97,7 @@ const squadReducer = (state = initialState, action) => {
     switch (action.type) {
         // Squad Management
         case CREATE_SQUAD_REQUEST:
+        case SUBMIT_ACTIVE_REQUEST:
             return { ...state, loading: true, error: null };
 
         case CREATE_SQUAD_SUCCESS:
@@ -100,6 +105,13 @@ const squadReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 squads: [...state.squads, action.payload], // Add the new squad
+                error: null,
+            };
+        case SUBMIT_ACTIVE_SUCCESS:
+            return {
+                ...state,
+                loading: false, // Request completed
+                activeSquad: action.payload, // Store the active squad data from the response
                 error: null,
             };
         case CREATE_SQUAD_FAILURE:
@@ -152,6 +164,7 @@ const squadReducer = (state = initialState, action) => {
         case LEAVE_SQUAD_FAILURE:
         case DELETE_SQUAD_FAILURE:
         case GET_ALL_SQUADS_FAILURE:
+        case SUBMIT_ACTIVE_FAILURE:
         case UPDATE_SQUAD_FAILURE:
             return {
                 ...state,

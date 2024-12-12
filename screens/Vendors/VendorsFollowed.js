@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native'; 
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { fetchFollowedVendors, unfollowVendor } from '../../redux/actions/vendorAction'; // Adjust the import path
 
 const { width } = Dimensions.get('window');
@@ -13,7 +14,10 @@ const VendorCard = ({ vendor, onUnfollow, isLoading }) => (
     <TouchableOpacity style={styles.vendorInfo}>
       <FastImage source={{ uri: vendor.profilePic }} style={styles.profilePic} resizeMode={FastImage.resizeMode.cover} />
       <View style={styles.details}>
-        <Text style={styles.vendorName}>{vendor.name}</Text>
+        <View style={styles.userInfo}>
+          <Text style={styles.vendorName}>{item.name}</Text>
+          <AntDesign name="checkcircle" size={10} color="green" />
+        </View>
         <Text style={styles.vendorProfession}>{vendor.profession}</Text>
         <Text style={styles.vendorDescription}>{vendor.description}</Text>
       </View>
@@ -140,6 +144,11 @@ const styles = StyleSheet.create({
   buttonLottie: {
     width: 20,
     height: 20,
+  },
+  userInfo:{
+    flexDirection: 'row',
+    justifyContent:'center',
+    marginTop: 10,
   },
   searchInput: {
     flex: 1,

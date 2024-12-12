@@ -97,7 +97,7 @@ const ProfileSettings = () => {
     
     dispatch(updateUser(userId, userData));
     Alert.alert("Profile Updated", "Your profile settings have been saved.");
-    navigation.goBack();
+    navigation.navigate('ProfilePage', {username: username});
   };
 
   const handleDeleteAccount = () => {
