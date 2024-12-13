@@ -12,16 +12,20 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-  donations: [],
+  donations: [
+    {
+    donationId: null,
+    userPoints: 0,
+    date: null,              // Date of the most recent donation
+    totalAmountDonated: 0,   // Total amount donated by the user
+    currentDonation: 0,      // Amount of the current donation
+    currentTier: null,       // Current tier based on total donations
+    message: null,           // Custom message based on donation tier
+    }
+  ],
   loading: false,
   error: null,
-  userPoints: 0,
-  date: null,              // Date of the most recent donation
-  totalAmountDonated: 0,   // Total amount donated by the user
-  currentDonation: 0,      // Amount of the current donation
-  currentTier: null,       // Current tier based on total donations
-  message: null,           // Custom message based on donation tier
-  donationId: null         // ID of the most recent donation
+           // ID of the most recent donation
 };
 
 const donationTiers = [
@@ -34,9 +38,9 @@ const donationTiers = [
 ];
 
 // Function to determine the current tier based on total donations
-const getCurrentTier = (totalDonated) => {
+const getCurrentTier = (totalAmountDonated) => {
   for (let i = donationTiers.length - 1; i >= 0; i--) {
-    if (totalDonated >= donationTiers[i].minAmount) {
+    if ( totalAmountDonated >= donationTiers[i].minAmount) {
       return donationTiers[i].name;
     }
   }

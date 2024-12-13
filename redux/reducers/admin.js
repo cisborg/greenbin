@@ -31,24 +31,26 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    admins: [],
-    admin: {
-        id: null,
-        username: '',
-        email: '',
-        phoneNumber: null,
-        profilePicture: null,
-    },
-    users: [],
-    user: {
-        id: null,
-        username:'',
-        email:'',
-        about:'',
-        phoneNumber: null,
-        twoStepVerification: false,
-        profilePicture: null,
-    },
+    admins: [
+        {
+            id: null,
+            username: '',
+            email: '',
+            phoneNumber: null,
+            profilePicture: null,
+        },
+    ],
+    users: [
+        {
+            id: null,
+            username:'',
+            email:'',
+            about:'',
+            phoneNumber: null,
+            twoStepVerification: false,
+            profilePicture: null,
+        },
+    ], 
     products: [],
 
     squads: [],

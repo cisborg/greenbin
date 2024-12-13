@@ -47,15 +47,16 @@ const initialState = {
     currentPage: 1,
     totalPages: 0,
     hasMore: true,
-    messages: [],
-    messageDetails: {
-        id: null,
-        text: '',
-        senderMessage: '',
-        createdAt: null,
-        receiverMessage: '',
-        status: false,
-    },
+    messages: [
+        {
+            id: null,
+            text: '',
+            senderMessage: '',
+            createdAt: null,
+            receiverMessage: '',
+            status: false,
+        },
+    ],
 };
 
 const chatReducer = (state = initialState, action) => {

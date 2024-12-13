@@ -8,17 +8,18 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    activities: [],
-    activityDetails: {
-        id: null,
-        name: '',
-        description: '',
-        startDate: null,
-        endDate: null,
-        squadId: null,
-        squadName: '',
-        milestone: null,
-    },
+    activities: [
+        {
+            id: null,
+            name: '',
+            description: '',
+            startDate: null,
+            endDate: null,
+            squadId: null,
+            squadName: '',
+            milestone: null,
+        },
+    ],
     loading: false,
     error: null,
     currentPage: 1,

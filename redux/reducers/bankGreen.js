@@ -21,9 +21,9 @@ import {
       case FETCH_TOKEN_BALANCE_REQUEST:
         return { ...state, loading: true };
       case FETCH_BALANCE_SUCCESS:
-        return { ...state, loading: false, balance: action.payload };
+        return { ...state, loading: false, balance: action.payload.balance };
       case FETCH_TOKEN_BALANCE_SUCCESS:
-        return { ...state, loading: false, tokenBalance: action.payload };
+        return { ...state, loading: false, tokenBalance: action.payload.tokenBalance };
       case FETCH_BALANCE_FAILURE:
       case FETCH_TOKEN_BALANCE_FAILURE:
         return { ...state, loading: false, error: action.payload };

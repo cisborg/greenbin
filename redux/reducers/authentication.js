@@ -104,7 +104,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         user: action.payload.user,
-        token: action.payload.greenBankCode,
+        greenBankCode: action.payload.greenBankCode,
       };
 
     // Grouping failure cases

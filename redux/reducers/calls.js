@@ -12,6 +12,7 @@ import {
     isCalling: false,
     callInProgress: false,
     callDetails: null,
+    token:'',
     loading: false,
     error: null,
   };
@@ -28,7 +29,7 @@ import {
           loading: false,
           isCalling: true,
           callInProgress: true,
-          callDetails: action.payload, // e.g., call ID, participants
+          token: action.payload.token, // e.g., call ID, participants
         };
   
       case END_CALL_SUCCESS:

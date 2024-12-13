@@ -60,14 +60,14 @@ const leaderboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                squadLeaderboard: action.payload,
+                squadLeaderboard: action.payload.squadLeaderboard,
             };
 
         case FETCH_USER_LEADERBOARD_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                userLeaderboard: action.payload,
+                userLeaderboard: action.payload.userLeaderboard,
             };
 
         // Update success actions (successfully updated leaderboard)
@@ -75,14 +75,14 @@ const leaderboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                squadLeaderboard: action.payload, // Update squad leaderboard after update
+                squadLeaderboard: action.payload.squadLeaderboard, // Update squad leaderboard after update
             };
 
         case UPDATE_USER_LEADERBOARD_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                userLeaderboard: action.payload, // Update user leaderboard after update
+                userLeaderboard: action.payload.userLeaderboard, // Update user leaderboard after update
             };
 
         // Failure actions (error handling)
