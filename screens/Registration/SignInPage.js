@@ -129,7 +129,7 @@ const SignInPage = () => {
             <Image
               style={styles.loginImage}
               resizeMode="cover"
-              source={require("../../assets/connect.webp")}
+              source={require("../../assets/chartered.jpg")}
             />
             <CustomInput
               icon="envelope"
