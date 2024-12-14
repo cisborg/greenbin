@@ -42,7 +42,7 @@ const VendorsProfilePage = () => {
 
   const actionButtons = [
     {
-      onPress: () => handleNavigation("callPage"),
+      onPress: () => handleNavigation("getPremium"),
       iconSource: require("../../assets/phone-fill.png"),
       text: "Call Vendor",
     },
@@ -92,7 +92,7 @@ const VendorsProfilePage = () => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back-circle-outline" size={25} color="green" />
           </TouchableOpacity>
-          <Text style={styles.heading}>{username}'s Profile</Text>
+          <Text style={styles.heading}>{username} Profile</Text>
         </View>
 
         <View style={styles.container}>

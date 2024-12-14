@@ -7,7 +7,12 @@
       "eas": {
         "projectId": "b497faf5-533b-484f-9fa4-ac655f5d6503"
       }
+    },
+    "android": {
+      "package": "com.cisborg.greenbin_app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.greenbinapp"
     }
-   
   }
 }

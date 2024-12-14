@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.cisborg.greenbinapp</string>
+          <string>com.greenbinapp</string>
         </array>
       </dict>
       <dict>

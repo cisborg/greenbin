@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import 'react-native-gesture-handler'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView, Platform, Dimensions } from 'react-native';
@@ -99,7 +98,6 @@ import  GreenBankCodeScreen from "./screens/e-Commerce/CodeAccept";
 import IncomingCallScreen from "./screens/Vendors/IncomingCall";
 import AssetsScreen from "./screens/e-Commerce/Assets";
 import Subscribed from "./screens/e-Commerce/SubscribedProducts";
-import { StreamCall } from '@stream-io/video-react-native-sdk';
 import SquadMembers from "./screens/Squads/SquadMembers";
 import GreenBin from "./screens/QuickActions/greenBin";
 import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
@@ -233,18 +231,7 @@ const MainTabs = () => {
 
 
 const App = () => {
-  const [incomingCall, setIncomingCall] = useState(null);
-
-  useEffect(() => {
-    const listener = StreamCall((call) => {
-      setIncomingCall(call); // Store incoming call for later use
-    });
-
-    return () => {
-      listener.remove(); // Cleanup listener on unmount
-    };
-  }, []);
-  
+ 
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -263,7 +250,7 @@ const App = () => {
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
-          <AppNavigator incomingCall={incomingCall} />
+          <AppNavigator />
         </NavigationContainer>
       </GestureHandlerRootView>
     </Provider>
