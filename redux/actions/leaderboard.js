@@ -13,7 +13,7 @@ import api from "../../utils/axiosConfig";
 export const fetchSquadLeaderboard = () => async (dispatch) => {
     dispatch({ type: FETCH_SQUAD_LEADERBOARD_REQUEST });
     try {
-        const response = await api.get('/leaderboard/squad/donations'); // API call to fetch squad leaderboard
+        const response = await api.get('/leaderboard/squads'); // API call to fetch squad leaderboard
         dispatch({ type: FETCH_SQUAD_LEADERBOARD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_SQUAD_LEADERBOARD_FAILURE, payload: error.message });
@@ -26,7 +26,7 @@ export const fetchSquadLeaderboard = () => async (dispatch) => {
 export const fetchUserLeaderboard = () => async (dispatch) => {
     dispatch({ type: FETCH_USER_LEADERBOARD_REQUEST });
     try {
-        const response = await api.get('/leaderboard/users/donations'); // API call to fetch user leaderboard
+        const response = await api.get('/leaderboard/users'); // API call to fetch user leaderboard
         dispatch({ type: FETCH_USER_LEADERBOARD_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_USER_LEADERBOARD_FAILURE, payload: error.message });

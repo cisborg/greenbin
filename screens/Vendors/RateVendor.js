@@ -13,7 +13,7 @@ const VendorRating = ({ vendorId, visible, onClose }) => {
   const navigation = useNavigation();
 
   // Accessing state from Redux
-  const { loading, error, vendorRatings } = useSelector(state => state.vendor);
+  const { loading, vendorRatings } = useSelector(state => state.vendor);
 
   useEffect(() => {
     // Reset state when modal is closed

@@ -331,11 +331,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 18,
     borderTopLeftRadius: 18,
   },
-  userdescript: {
-    fontSize: 12,
-    color: "#fff",
-    marginTop: 5,
-  },
   checkInText: {
     color: "white",
     fontSize: 16,

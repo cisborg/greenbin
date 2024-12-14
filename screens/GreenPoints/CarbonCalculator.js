@@ -181,7 +181,7 @@ const CarbonFootprintCalculator = ({ route }) => {
                 height={210}
                 fromZero={true}
                 chartConfig={{
-                  backgroundColor: 'yellow',
+                  backgroundColor: 'green',
                   backgroundGradientFrom: '#fff',
                   backgroundGradientTo: '#f5f5f5',
                   decimalPlaces: 0,

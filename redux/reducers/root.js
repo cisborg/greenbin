@@ -20,6 +20,8 @@ import authReducer from "./authentication"
 import ratingsReducer from "./ratings";
 import  purchasesReducer from "./purchases";
 import notificationReducer from "./notification";
+import wasteReducer from "./greenSurvey";
+
 const rootReducer = combineReducers({
     chat: chatReducer,
     product: productReducer,
@@ -42,7 +44,8 @@ const rootReducer = combineReducers({
     rating: ratingsReducer,
     products: productReducer,
     notification: notificationReducer,
-    purchases: purchasesReducer
+    purchases: purchasesReducer,
+    waste: wasteReducer,  
 
 });
 

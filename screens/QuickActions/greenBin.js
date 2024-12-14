@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
-import Toast from 'react-native-toast-message';
+import Toast from '../../helpers/Toast';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Camera, useCodeScanner } from 'react-native-vision-camera';
@@ -105,7 +105,7 @@ const GreenBin = () => {
     Toast.show({
       type: 'success',
       text1: 'Payment Success',
-      text2: `Payment of $${amount} for bin ${binID} completed successfully.`,
+      text2: `Payment of GCPs ${amount} for bin ${binID} completed successfully.`,
     });
   };
   
@@ -114,7 +114,7 @@ const GreenBin = () => {
     <View style={styles.qrDataContainer}>
       <Text>Bin ID: {qrData.binID}</Text>
       <Text>User ID: {qrData.userID}</Text>
-      <Text>Amount: ${qrData.amount}</Text>
+      <Text>Amount: GCPs{qrData.amount}</Text>
     </View>
   )}
   
@@ -122,7 +122,6 @@ const GreenBin = () => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (codes) => {
       if (codes.length) {
-        console.log(`Scanned ${codes.length} codes:`, codes);
         setScanVisible(false);
         onScanSuccess(codes[0].data); // Pass scanned code data
       }
@@ -159,7 +158,7 @@ const GreenBin = () => {
       />
 
       <Text style={styles.binDetails}>
-      {`Selected Bin: ${binType.toUpperCase()} - Price: $${binOptions.find(b => b.type === binType)?.price ?? ''}, Rewards: ${binOptions.find(b => b.type === binType)?.gcpReward ?? ''} GCPs`}
+      {`Selected Bin: ${binType.toUpperCase()} - Price: ${binOptions.find(b => b.type === binType)?.price ?? ''}, Rewards: ${binOptions.find(b => b.type === binType)?.gcpReward ?? ''} GCPs`}
       </Text>
 
       <View style={styles.toggleSection}>
@@ -191,13 +190,13 @@ const GreenBin = () => {
         <>
           <Text style={styles.leasingHeader}>Leasing Options</Text>
           <Text style={styles.leasingDetails}>
-            {`Down Payment: $${binOptions.find(b => b.type === binType).downPayment}`}
+            {`Down Payment: GCPs ${binOptions.find(b => b.type === binType).downPayment}`}
           </Text>
           <View style={styles.subscriptionSection}>
             {subscriptionOptions.map((sub) => (
               <TouchableOpacity key={sub.type} onPress={() => setSelectedSubscription(sub.type)} style={[styles.subscriptionCard, selectedSubscription === sub.type && styles.selectedSubscription]}>
                 <Text style={styles.subscriptionText}>{sub.type}</Text>
-                <Text style={styles.subscriptionPrice}>${sub.price}</Text>
+                <Text style={styles.subscriptionPrice}>GCPs {sub.price}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -265,7 +264,6 @@ const GreenBin = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f7', paddingHorizontal: 15 },
   header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: '#2e7d32', marginVertical: 15 },
-  binSection: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
   binOption: { alignItems: 'center', padding: 10 },
   selectedOption: { borderWidth: 2, borderColor: '#2e7d32', borderRadius: 23 },
   binImage: { width: 60, height: 60, marginBottom: 5 },
@@ -294,7 +292,6 @@ const styles = StyleSheet.create({
     borderRadius: 15, 
     alignItems: 'center' 
   },
-  rewardText: { fontSize: 16, textAlign: 'center', color: '#388e3c', marginVertical: 10 },
   confirmButton: { 
     backgroundColor: '#2e7d32', 
     marginVertical: 15, 
@@ -302,7 +299,6 @@ const styles = StyleSheet.create({
     borderRadius: 15 
   },
   scanText: { fontSize: 16, color: 'white', textAlign: 'center', padding: 10 },
-  cancelButton: { backgroundColor: 'red', margin: 10, alignItems: 'center', borderRadius: 15 },
   leasingHeader: { color: 'green', fontSize: 14, marginBottom: 5 },
   loadingContainer: {
     flex: 1,

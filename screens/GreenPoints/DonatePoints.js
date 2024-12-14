@@ -7,7 +7,8 @@ import Lottie from 'lottie-react-native';
 import { Color } from '../../GlobalStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDonationTier } from '../../redux/actions/userTiers';
-import { createDonation } from '../../redux/actions/donations'; // Import necessary actions
+import { createDonation } from '../../redux/actions/donations'; 
+import Toast from '../../helpers/Toast';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,7 +21,7 @@ const donationCategories = [
 const DonatePoints = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { userPoints, totalAmountDonated, currentDonation, currentTier, loading } = useSelector(state => state.donation);
+  const { totalAmountDonated, currentTier, loading } = useSelector(state => state.donation);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [donationAmount, setDonationAmount] = useState(100);
   const [isRecurring, setIsRecurring] = useState(false);
@@ -54,21 +55,29 @@ const DonatePoints = () => {
     const donationData = {
       amount: donationAmount,
       categories: selectedCategories,
+      isRecurring, // Include recurring status in donation data
     };
 
-    // Dispatch the create donation action
     dispatch(createDonation(donationData));
 
-    // Add donation tier based on the donation amount
-    dispatch(addDonationTier(userId, { amount: donationAmount }))
+    dispatch(addDonationTier({ amount: donationAmount }))
       .then(() => {
         setDonateLoading(false);
-        navigation.navigate('donationConfirmed', {amount: donationAmount});
+        navigation.navigate('donationConfirmed', { amount: donationAmount });
       })
       .catch(error => {
         setDonateLoading(false);
         Alert.alert("Error", "Failed to add donation tier. Please try again.");
       });
+  };
+
+  const handleRecurringToggle = () => {
+    if (!isRecurring) {
+      Toast.show(`You have successfully enabled recurring donation of ${donationAmount} for every week`);
+    } else {
+      Toast.show('You have successfully disabled your weekly recurring donation');
+    }
+    setIsRecurring(!isRecurring);
   };
 
   const shareDonation = () => {
@@ -147,6 +156,11 @@ const DonatePoints = () => {
             value={donationAmount}
             onValueChange={setDonationAmount}
             style={styles.slider}
+            onSlidingComplete={() => {
+              if (donationAmount >= 100) {
+                setIsRecurring(false); // Reset recurring switch when amount is adjusted
+              }
+            }}
           />
 
           <TouchableOpacity style={styles.donateButton} onPress={handleDonation} disabled={donateLoading}>
@@ -184,17 +198,12 @@ const DonatePoints = () => {
             <Text style={styles.recurringText}>Enable Recurring Donations</Text>
             <Switch
               value={isRecurring}
-              onValueChange={() => setIsRecurring(!isRecurring)}
+              onValueChange={handleRecurringToggle}
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={isRecurring ? "#f5dd4b" : "#f4f3f4"}
+              disabled={selectedCategories.length === 0 || donationAmount < 100} // Disable switch by default
             />
           </View>
-
-          {isRecurring && (
-            <View style={styles.recurringInfo}>
-              <Text style={styles.recurringText}>Recurring donations will be processed every month.</Text>
-            </View>
-          )}
         </>
       )}
     </View>

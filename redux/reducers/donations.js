@@ -15,10 +15,8 @@ const initialState = {
   donations: [
     {
     donationId: null,
-    userPoints: 0,
     date: null,              // Date of the most recent donation
     totalAmountDonated: 0,   // Total amount donated by the user
-    currentDonation: 0,      // Amount of the current donation
     currentTier: null,       // Current tier based on total donations
     message: null,           // Custom message based on donation tier
     }
@@ -75,7 +73,6 @@ const donationReducer = (state = initialState, action) => {
         loading: false,
         donations: [...state.donations, action.payload],
         totalAmountDonated: newTotalAmountDonated,
-        currentDonation: amount,
         currentTier: currentTier,
         message: customMessage,               // Update message
         donationId: id,                       // Store the current donation ID

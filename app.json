@@ -3,70 +3,16 @@
     "name": "greenbin_app",
     "slug": "greenbin_app",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/greenBin.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.cisborg.greenbinapp",
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to scan QR codes.",
-        "NSLocationWhenInUseUsageDescription": "This app requires access to your location.",
-        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library."
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.cisborg.greenbin_app"
-    },
-    "web": {
-      "favicon": "./assets/404.png"
-    },
     "extra": {
       "eas": {
         "projectId": "b497faf5-533b-484f-9fa4-ac655f5d6503"
       }
     },
-    "plugins": [
-      [
-        "react-native-permissions",
-        {
-          "ios": {
-            "permissions": [
-              "Camera",
-              "Location"
-            ]
-          },
-          "android": {
-            "permissions": [
-              "CAMERA",
-              "ACCESS_FINE_LOCATION",
-              "READ_EXTERNAL_STORAGE",
-              "WRITE_EXTERNAL_STORAGE"
-            ]
-          }
-        }
-      ],
-      [
-        "react-native-vision-camera",
-        {
-          "enableCodeScanner": true
-        }
-      ]
-    ]
+    "android": {
+      "package": "com.cisborg.greenbin_app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.cisborg.greenbinapp"
+    }
   }
 }

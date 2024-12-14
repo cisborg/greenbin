@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useDispatch, useSelector } from 'react-redux'; 
+import { submitWasteCollection } from '../../redux/actions/greenSurvey';
 
 const SurveyScreen = () => {
+  const dispatch = useDispatch(); // Initialize dispatch
+  const { loading, error } = useSelector((state) => state.waste); 
   const [weight, setWeight] = useState('');
   const [numberOfWastes, setNumberOfWastes] = useState('');
   const [squad, setSquad] = useState('');
   const [points, setPoints] = useState('');
-  const [loading, setLoading] = useState(false);
   const [receipt, setReceipt] = useState(null);
 
-  const calculatePoints = () => {
-    setLoading(true);
+  const calculatePoints = async () => {
     setPoints('');
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const weightInKg = parseFloat(weight);
       const numberOfItems = parseInt(numberOfWastes, 10);
       let earnedPoints = 0;
@@ -32,9 +34,23 @@ const SurveyScreen = () => {
           earnedPoints = Math.min(3, Math.floor(weightInKg * 6));
           setPoints(`You earned ${earnedPoints} points as "Waste Wizard"!`);
         }
-      }
 
-      setLoading(false);
+        // Prepare the data to dispatch
+        const data = {
+          weight: weightInKg,
+          numberOfWastes: numberOfItems,
+          squad,
+          receipt, // Include the receipt URI here
+        };
+
+        // Dispatch the action to submit waste collection
+        try {
+          await dispatch(submitWasteCollection(data));
+          setPoints("Waste collection submitted successfully!");
+        } catch (error) {
+          setPoints("Failed to submit waste collection.");
+        }
+      }
     }, 2000);
   };
 
@@ -86,6 +102,7 @@ const SurveyScreen = () => {
       {receipt && <Image source={{ uri: receipt }} style={styles.receiptImage} />}
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
       {points ? <Text style={styles.result}>{points}</Text> : null}
+      {error && <Text style={styles.error}>{error}</Text>} {/* Display error message */}
       <Text style={styles.footnote}>
         *Please ensure you have received a stamped receipt of your personal collections before inputting the weight.
       </Text>

@@ -12,7 +12,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        
     }
     dependencies {
         classpath('com.android.tools.build:gradle:8.2.1') // Specify Gradle plugin version
@@ -40,3 +39,5 @@ allprojects {
 def expoCameraMavenPath = new File(["node", "--print", "require.resolve('expo-camera/package.json')"].execute(null, rootDir).text.trim(), "../android/maven")
 allprojects { repositories { maven { url(expoCameraMavenPath) } } }
 // @generated end expo-camera-import
+
+
