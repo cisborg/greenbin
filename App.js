@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView, Platform, Dimensions } from 'react-native';
+import { SafeAreaView, Platform,StatusBar, Dimensions } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { View, Text } from "react-native";
@@ -25,7 +25,6 @@ import BuyScreen from "./screens/QuickActions/BuyBundles";
 import LeaderBoard from "./screens/MainPage/Happy";
 import GreenConnect from "./screens/MainPage/GreenConnect";
 import YourSquads from "./screens/Squads/Squads";
-import CallScreen from "./screens/Vendors/callPage";
 import JoinSquads from "./screens/Squads/JoinSquads";
 import TagList from "./screens/Squads/Tags";
 import DialPad from "./screens/GreenPoints/DialPad";
@@ -95,7 +94,6 @@ import Tailored from "./screens/e-Commerce/Tailored";
 import ProductUpload from "./screens/Vendors/VendorUpload";
 import RegisterCode from "./screens/e-Commerce/RegisterBankCode";
 import  GreenBankCodeScreen from "./screens/e-Commerce/CodeAccept";
-import IncomingCallScreen from "./screens/Vendors/IncomingCall";
 import AssetsScreen from "./screens/e-Commerce/Assets";
 import Subscribed from "./screens/e-Commerce/SubscribedProducts";
 import SquadMembers from "./screens/Squads/SquadMembers";
@@ -104,6 +102,9 @@ import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
 import ProductRating from "./screens/e-Commerce/ProductRating"
 import AppCarousel from "./screens/MainPage/AppCarousel";
 import QRCodeScanner from "./screens/GreenPoints/QRCodeScanner";
+import CallScreen from './screens/Vendors/CallPage';
+import IncomingCallScreen from './screens/Vendors/IncomingCall';
+import { useState } from 'react';
 
 
 
@@ -231,7 +232,7 @@ const MainTabs = () => {
 
 
 const App = () => {
- 
+  const [incomingCall, setIncomingCall] = useState(null);
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -242,20 +243,29 @@ const App = () => {
     "Manrope-Bold": require("./assets/fonts/Manrope-Bold.ttf"),
   });
 
+  // Check if fonts are loaded or there's an error
   if (!fontsLoaded || error) {
     return null;
   }
 
   return (
-    <Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </GestureHandlerRootView>
-    </Provider>
-  )
-}
+    <View style={styles.container}>
+      <StatusBar backgroundColor={Color.colorBlack} barStyle="light-content" />
+      {incomingCall ? (
+        <IncomingCallScreen call={incomingCall} onClose={() => setIncomingCall(null)} />
+      ) : (
+        <Provider store={store}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </Provider>
+      )}
+    </View>
+  );
+};
+
 
   const AppNavigator =() => {
     <Stack.Navigator initialRouteName="AppCarousel" screenOptions={{ headerShown: false }}>
@@ -273,7 +283,6 @@ const App = () => {
       <Stack.Screen name="manageAccount" component={ManageAccountScreen} options={{ headerShown: false }} />
       <Stack.Screen name="BuyBundles" component={BuyScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Happy" component={LeaderBoard} options={{ headerShown: false }} />
-      <Stack.Screen name="callPage" component={CallScreen} options={{ headerShown: false }} />
       <Stack.Screen name="JoinSquads" component={JoinSquads} options={{ headerShown: false }} />
       <Stack.Screen name="TagList" component={TagList} options={{ headerShown: false }} />
       <Stack.Screen name="DialPad" component={DialPad} options={{ headerShown: false }} />
@@ -341,7 +350,6 @@ const App = () => {
       <Stack.Screen name="RegisterBankCode" component={RegisterCode} options={{ headerShown: false }} />
       <Stack.Screen name="VendorUpload" component={ProductUpload} options={{ headerShown: false }} />
       <Stack.Screen name="CodeAccept" component={GreenBankCodeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SquadMembers" component={SquadMembers} options={{ headerShown: false }} />
       <Stack.Screen name="Assets" component={AssetsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SubscribedProducts" component={Subscribed} options={{ headerShown: false }} />
@@ -349,6 +357,9 @@ const App = () => {
       <Stack.Screen name="GreenSurvey" component={SurveyScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ProductRating" component={ProductRating} options={{ headerShown: false }} />
       <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: false }} />
+      <Stack.Screen name="CallPage" component={CallScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
+
 
 
 
@@ -357,3 +368,15 @@ const App = () => {
 
 
 export default App;
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Color.colorWhite, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20, // Adjust padding if needed
+  },
+});
+

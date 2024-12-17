@@ -68,9 +68,9 @@ const ProfilePage = () => {
 
   const cardData = [
     {
-      name: "Become Vendor",
+      name: "Upload Product",
       icon: <FontAwesome name="user" size={24} color="white" />,
-      screen: "VendorRegister",
+      screen: "VendorUpload",
     },
     {
       name: "Refer & Earn",
@@ -90,7 +90,7 @@ const ProfilePage = () => {
     {
       name: "Logout",
       icon: <MaterialIcons name="logout" size={24} color="white" />,
-      screen: "SignInPage",
+      screen: "AppCarousel",
     },
   ];
 

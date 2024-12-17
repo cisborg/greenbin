@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
+import {  Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Color } from '../../GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 
-const { width, height } = Dimensions.get('window'); // Get screen dimensions
+const { width } = Dimensions.get('window'); // Get screen dimensions
 
 const DonationConfirmed = () => {
     const navigation = useNavigation();

@@ -10,7 +10,9 @@ const settingsOptions = [
   { id: '2', title: 'Register Idea Safari', description: 'Travel with us today we got you! Check your Eligibility', screen: 'getPremium' },
   { id: '3', title: 'Terms and Conditions', description: 'Familiarize with our app terms,policies regarding the use of our app', screen: 'LegalScreen' },
   { id: '4', title: 'Rate App', description: 'Give us feedback by rating our app', screen: 'AppRating' },
-  { id: '5', title: 'Personal Savings Account', description: 'Earn more boosters green gifts on high savings!', screen: 'getPremium' },
+  { id: '5', title: 'Register as Vendor', description: 'Earn more boosters green gifts once you are vendor!', screen: 'VendorRegister' },
+  { id: '6', title: 'Get to Know Nature Diversity GreenBin', description: 'Learn about our niche', screen: 'AboutUs' },
+
 ];
 
 const SettingsScreen = () => { 

@@ -188,15 +188,13 @@ const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
     connections = 0,
   } = post;
 
-  
-
   return (
     <View style={styles.postCard}>
       <View style={styles.header}>
         <FastImage
           source={require('../../assets/anotherWoman.avif')}
           style={styles.profilePic}
-          onError={() => Alert('Image failed to load')}
+          onError={() => Alert.alert('Image failed to load')}
         />
         <View style={styles.authorInfo}>
           <Text style={styles.postAuthor}>

@@ -42,7 +42,7 @@ const VendorsProfilePage = () => {
 
   const actionButtons = [
     {
-      onPress: () => handleNavigation("getPremium"),
+      onPress: () => handleNavigation("CallPage"),
       iconSource: require("../../assets/phone-fill.png"),
       text: "Call Vendor",
     },
