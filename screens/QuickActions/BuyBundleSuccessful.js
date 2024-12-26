@@ -13,7 +13,7 @@ const BuySuccess = () => {
                 <Image style={styles.imageView} source={require('../../assets/likeButton.avif')} />
                 <Text style={styles.title}> Purchase Successful!</Text>
                 <Text style={styles.message}>
-                    You have successfully initiated deposit!
+                    You have successfully initiated payment!Go Green &
                     Enjoy and Conserve Your Environment!
                 </Text>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>

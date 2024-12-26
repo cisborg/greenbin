@@ -8,7 +8,7 @@ import LottieView from 'lottie-react-native';
 const assets = [
   { name: 'Vouchers', value: 10, icon: require('../../assets/voucher.jpeg' ) },
   { name: 'Tiers', value: 5, icon: require('../../assets/tiers.jpeg') },
-  { name: 'Gifts', value: 3, icon: require('../../assets/gifts.jpeg') },
+  { name: 'Coupon Gifts', value: 3, icon: require('../../assets/gifts.jpeg') },
   { name: 'Awards', value: 2, icon: require('../../assets/awards.jpeg') },
   { name: 'Coins', value: 1000, icon: require('../../assets/circular_economy.png') },
 ];
