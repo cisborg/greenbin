@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VendorsProfilePage from "./screens/Vendors/VendorsProfilePage";
 import HomePageExistingUser from "./screens/MainPage/HomePageExistingUser";
 import EventForm from "./screens/Squads/EventForm";
+import Splash from './Splashscreen';
 import Insurance from "./screens/e-Commerce/Insurance";
 import FriendScreen from "./screens/GreenConnect/Friends";
 import ChallengePage from "./screens/MainPage/ChallengePage";
@@ -233,6 +234,7 @@ const MainTabs = () => {
 
 const App = () => {
   const [incomingCall, setIncomingCall] = useState(null);
+  const [isSplashVisible, setSplashVisible] = useState(true)
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -243,10 +245,18 @@ const App = () => {
     "Manrope-Bold": require("./assets/fonts/Manrope-Bold.ttf"),
   });
 
+  const handleSplashFinish = () => {
+    setSplashVisible(false);
+  };
+
+  if (isSplashVisible) {
+    return <Splash onFinish={handleSplashFinish} />;
+  }
   // Check if fonts are loaded or there's an error
   if (!fontsLoaded || error) {
     return null;
   }
+
 
   return (
     <View style={styles.container}>
