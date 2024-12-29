@@ -11,9 +11,9 @@ const { width,height } = Dimensions.get('window');
 const ItemGridScreen = ({ navigation }) => {
     const dispatch = useDispatch(); 
     const { products, loading, error } = useSelector(state => ({
-        products: state.products, 
-        loading: state.loading,
-        error: state.error
+        products: state.products.products, 
+        loading: state.products.loading,
+        error: state.products.error
     }));
 
     useEffect(() => {

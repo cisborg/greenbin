@@ -21,7 +21,7 @@ const TOKEN_RATE = 1.0042; // Token rate for paying green tax
 const GreenBankAccount = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const balance = useSelector((state) => state.balance.balance);
+  const balance = useSelector((state) => state.greenPay.greenBankBalance);
   const tokenBalance = useSelector((state) => state.balance.tokenBalance); 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState({ deposit: false, withdraw: false, transfer: false, screen: true }); // Add screen loading state

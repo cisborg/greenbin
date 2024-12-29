@@ -24,7 +24,8 @@ const { width, height } = Dimensions.get('window');
 
 const TransactionScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { greenBalance, greenBankBalance } = useSelector(state => state.payment);
+  const { greenBalance, greenBankBalance } = useSelector(state => ({ 
+    greenBalance: state.greenPay.greenBalance, greenBankBalance: state.greenPay.greenBankBalance  }));
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [recipientNumber, setRecipientNumber] = useState('');
   const [amountToSend, setAmountToSend] = useState('');

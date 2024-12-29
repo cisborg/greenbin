@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView,ActivityIndicator, Animated } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/userTiers'; // Import actions
+import { fetchMobiTiers, fetchDonationTiers, fetchAirtimeBought } from '../../redux/actions/rewards'; // Import actions
 import { fetchBalance } from '../../redux/actions/bankGreen'; // Import actions
 import { withdraw } from '../../redux/actions/payments';
 import AntDesign from '@expo/vector-icons/AntDesign';

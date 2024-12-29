@@ -15,8 +15,12 @@ const LeaderboardScreen = () => {
   const dispatch = useDispatch();
   const [animValue] = useState(new Animated.Value(0));
   const [pendingSquads, setPendingSquads] = useState({});
-  const {squadsLeaderboard, loading, error} = useSelector((state) => state.squad);
-  const userId = useSelector((state) => state.user.id);
+  const {squadsLeaderboard, loading, error} = useSelector((state) => ({
+    squadsLeaderboard: state.leaderboard.squadLeaderboard,
+    loading: state.leaderboard.loading,
+    error: state.leaderboard.error,
+  }));
+  const userId = useSelector((state) => state.auth.id);
 
   useEffect(() => {
     Animated.timing(animValue, {

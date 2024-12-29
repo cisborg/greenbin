@@ -5,7 +5,7 @@ import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { fetchFollowedVendors, unfollowVendor } from '../../redux/actions/vendorAction'; // Adjust the import path
+import { fetchFollowedVendors, deleteVendor } from '../../redux/actions/vendorAction'; // Adjust the import path
 
 const { width } = Dimensions.get('window');
 
@@ -42,8 +42,9 @@ const VendorCard = ({ vendor, onUnfollow, isLoading }) => (
 
 const FollowedVendorsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { followedVendors, loading, error } = useSelector(state => state.vendors); // Adjust according to your state structure
-  const userId = useSelector(state => state.user.id);
+  const { followedVendors, loading, error } = useSelector(state => ({ 
+  followedVendors: state.vendor.followedVendors, loading: state.vendor.loading, error: state.vendor.error })); // Adjust according to your state structure
+  const userId = useSelector(state => state.auth.id);
   const [searchTerm, setSearchTerm] = React.useState("");
 
   useEffect(() => {
@@ -51,7 +52,7 @@ const FollowedVendorsScreen = ({ navigation }) => {
   }, [dispatch, userId]);
 
   const handleUnfollow = (vendorId) => {
-    dispatch(unfollowVendor(vendorId)); // Dispatch unfollow action
+    dispatch(deleteVendor(vendorId)); // Dispatch unfollow action
   };
 
   const filteredVendors = followedVendors.filter(vendor => 

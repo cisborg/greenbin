@@ -70,6 +70,7 @@ const initialState = {
   trendingTags: [],
   popularTags: [],
   error: null,
+  notifications: [],
   page: 1
 };
 

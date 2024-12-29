@@ -7,7 +7,7 @@ import { getAllDonations, deleteDonation, clearAllDonations } from '../../redux/
 
 const HistoryScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const donations = useSelector(state => state.donations.donations);
+  const donations = useSelector(state => state.donation.donations);
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {

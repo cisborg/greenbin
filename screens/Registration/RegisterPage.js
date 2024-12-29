@@ -3,7 +3,7 @@ import { TextInput, Alert, TouchableOpacity, ActivityIndicator, Dimensions, Anim
 import { StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { registerUser,validateReferralCode  } from '../../redux/actions/authentication'; 
 import { FontSize, Color, Border } from "../../GlobalStyles";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,7 +21,6 @@ const countryCodes = [
   { code: '+254', name: 'Kenya' },
   { code: '+255', name: 'Tanzania' },
   { code: '+256', name: 'Uganda' },
-  { code: '+252', name: 'Somalia' },
   { code: '+250', name: 'Rwanda' },
 ];
 
@@ -50,13 +49,15 @@ const RegisterPage = () => {
   const [password, setPassword] = React.useState('');
   const [contact, setContact] = React.useState('');
   const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCodes[0].code);
-  const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [promoCode, setPromoCode] = React.useState('');
   const [showPromoCodeInput, setShowPromoCodeInput] = React.useState(false);
   const [promoCodeError, setPromoCodeError] = React.useState('');
-  const { validatedCode, error } = useSelector((state) => state.referral);
-
+  
+  const referralCode = useSelector((state) => state.auth.selectedUser?.referralCode);
+  const loading = useSelector((state) => state.auth.loading);
+  const error = useSelector((state) => state.auth.error);
+ 
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -66,6 +67,12 @@ const RegisterPage = () => {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
+
+  React.useEffect(() => {
+    if (error) {
+      setPromoCodeError('Invalid referral code.');
+    }
+  }, [error]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -78,63 +85,45 @@ const RegisterPage = () => {
   };
 
   const handleRegister = async () => {
-    setLoading(true);
     setErrorMessage('');
     setPromoCodeError('');
     
     if (!validateEmail(email)) {
       setErrorMessage('Invalid email address. Please enter a valid email.');
-      setLoading(false);
       return;
     }
 
     if (!validateContact(contact)) {
       setErrorMessage('Invalid phone number. Please enter a valid phone number.');
-      setLoading(false);
       return;
     }
 
-    const handleValidateReferral = async () => {
-      if (!promoCode) {
-        setPromoCodeError('Please enter a referral code.');
+    if (showPromoCodeInput && promoCode) {
+      try {
+        await dispatch(validateReferralCode(promoCode));
+        // No need to check error here, handled in useEffect
+        if (referralCode) {
+          Toast.show({
+            type: 'success',
+            text1: 'Referral Code Valid!',
+            text2: 'You have been awarded 500 points! 🎉',
+          });
+        }
+      } catch (err) {
+        setPromoCodeError('Error validating referral code. Please try again.');
+        Alert.alert('Referral code validation failed:', err.message || 'Unknown error');
         return;
       }
-    
-      dispatch(validateReferralCode(promoCode));
-    
-    
-      if (error) {
-        setPromoCodeError('Invalid referral code.');
-        return;
-      }
-    
-      if (validatedCode) {
-        Toast.show({
-          type: 'success',
-          text1: 'Referral Code Valid!',
-          text2: 'You have been awarded 500 points! 🎉',
-        });
-      }
-    };
-
-     const promoCodeValid = showPromoCodeInput ? await handleValidateReferral() : true;
-    if (!promoCodeValid) {
-      setLoading(false);
-      return;
     }
-    
-
+  
     try {
-      dispatch(registerUser({ name, email, password, contact: selectedCountryCode + contact }));
+      await dispatch(registerUser({ name, email, password, contact: selectedCountryCode + contact }));
       Alert.alert('Registration Successful!', 'You can now log in to your account.');
       navigation.navigate('SignInPage');
     } catch (error) {
       setErrorMessage('Failed to register. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.registerPage}>
@@ -178,7 +167,6 @@ const RegisterPage = () => {
               onChangeText={setContact}
               secureTextEntry={false}
             />
-             
           </View>
 
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
@@ -186,7 +174,7 @@ const RegisterPage = () => {
           <TouchableOpacity
             onPress={() => setShowPromoCodeInput(!showPromoCodeInput)}
             accessibilityLabel="Promo Code Input"
-            accessibilityHint="Press to enter a promo code"
+            accessibilityHint="Press to enter referral code"
           >
             <Text style={styles.promoCodeText}>Have a referral Code?</Text>
           </TouchableOpacity>
@@ -221,7 +209,6 @@ const RegisterPage = () => {
               <Text style={styles.cardText}>Register</Text>
             )}
           </TouchableOpacity>
-          
         </View>
       </Animated.View>
     </SafeAreaView>

@@ -28,8 +28,8 @@ const EventForm = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
-  const loading = useSelector(state => state.squadActivities.loading);
-  const error = useSelector(state => state.squadActivities.error);
+  const loading = useSelector(state => state.events.loading);
+  const error = useSelector(state => state.events.error);
 
   useEffect(() => {
     // Simulate loading during initialization

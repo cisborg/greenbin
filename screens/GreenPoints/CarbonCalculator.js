@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Lottie from 'lottie-react-native'; // Import Lottie
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPurchaseTiers, fetchDonationTiers } from '../../redux/actions/userTiers'; // Adjust the path to your actions
+import { fetchPurchaseTiers, fetchDonationTiers } from '../../redux/actions/rewards'; // Adjust the path to your actions
 
 const screenWidth = Dimensions.get('window').width;
 

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator, Alert } from 'react-native';
 import Paystack from 'react-native-paystack-webview';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Color, FontFamily} from '../../GlobalStyles'
+import { Color, FontFamily } from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { depositRequest, depositSuccess, depositFailure } from '../../redux/actions/payments'; // Import your action creators
+import { cashDeposit } from '../../redux/actions/payments'; // Import your action creators
 
 const PrepaidRechargeScreen = () => {
   const [amount, setAmount] = useState(0);
@@ -20,8 +20,8 @@ const PrepaidRechargeScreen = () => {
   const animation = useRef(new Animated.Value(0)).current;
 
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.payment.loading); // Get loading state from Redux
-  const error = useSelector((state) => state.payment.error); // Get error state from Redux
+  const loading = useSelector((state) => state.greenPay.loading); // Get loading state from Redux
+  const error = useSelector((state) => state.greenPay.error); // Get error state from Redux
 
   useEffect(() => {
     setAmount(routeAmount);
@@ -32,27 +32,31 @@ const PrepaidRechargeScreen = () => {
     }).start();
   }, [routeAmount]);
 
-  const handlePaystackSuccess = (res) => {
+  const handlePaystackSuccess = () => {
     setGatewayMessage("Payment successful!");
-    dispatch(depositRequest()); // Dispatch deposit request
+    // Dispatch cash deposit action with the amount
+    dispatch(cashDeposit(amount))
+      .then(() => {
+        // Navigate to success screen or show a message
+        navigation.navigate('BuyBundleSuccessful');
+      })
+      .catch((err) => {
+        setGatewayMessage("Error processing cash deposit.");
+        Alert.alert(err); // Log the error for debugging
 
-    // Simulate API call to update balance
-    const pointsDeposited = amount; // Amount deposited in points
-    dispatch(depositSuccess({ points: pointsDeposited })); // Update the balance in Redux
-
+      });
+    
     setModalVisible(false);
-    navigation.navigate('BuyBundleSuccessful'); // Navigate to a success screen or show a message
   };
 
-  const handlePaystackCancel = (e) => {
+  const handlePaystackCancel = () => {
     setGatewayMessage("Payment canceled!");
     setModalVisible(false);
   };
 
   const handlePaystackError = (error) => {
     setGatewayMessage("Payment failed! Please try again.");
-    dispatch(depositFailure(error)); // Dispatch failure action
-    setLoading(false);
+    Alert.alert(error); // Log the error for debugging
   };
 
   return (
@@ -86,7 +90,7 @@ const PrepaidRechargeScreen = () => {
             <View style={styles.GreenBalance}>
               <Text style={styles.greenText1}>Your Equivalent KES is GCPs BALANCE/10.25!</Text>
               <View style={styles.fit}>
-                <Text style={styles.greenText}>GCPs Balance: </Text>
+                <Text style={styles.greenText}>GCPs Balance: {amount}</Text>
               </View>
               <Text style={styles.airtimeInfo}>
                 Get <Text style={styles.text}>25% extra Airtime</Text> on Recharge using Green Money
@@ -149,7 +153,6 @@ const PrepaidRechargeScreen = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   safeArea: {

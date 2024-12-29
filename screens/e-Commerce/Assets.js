@@ -1,50 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet,Dimensions } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
+import {
+  fetchVouchers,
+  fetchTiers,
+  fetchCouponGifts,
+  fetchGreenCarbonPoints,
+  fetchCoins,
+} from '../../redux/actions/rewards'; // Adjust the import as necessary
 
 const assets = [
-  { name: 'Vouchers', value: 10, icon: require('../../assets/voucher.jpeg' ) },
-  { name: 'Tiers', value: 5, icon: require('../../assets/tiers.jpeg') },
-  { name: 'Coupon Gifts', value: 3, icon: require('../../assets/gifts.jpeg') },
-  { name: 'Awards', value: 2, icon: require('../../assets/awards.jpeg') },
-  { name: 'Coins', value: 1000, icon: require('../../assets/circular_economy.png') },
+  { name: 'Vouchers', action: fetchVouchers, icon: require('../../assets/voucher.jpeg') },
+  { name: 'Tiers', action: fetchTiers, icon: require('../../assets/tiers.jpeg') },
+  { name: 'Coupon Gifts', action: fetchCouponGifts, icon: require('../../assets/gifts.jpeg') },
+  { name: 'Green Carbon Points', action: fetchGreenCarbonPoints, icon: require('../../assets/awards.jpeg') },
+  { name: 'Coins', action: fetchCoins, icon: require('../../assets/circular_economy.png') },
 ];
 
-const AssetCard = ({ name, value, icon }) => (
-  <LinearGradient
-    colors={['#ffcc00', '#ff6600', '#ff0000']}
-    style={styles.card}
-  >
+const AssetCard = ({ name, icon, value }) => (
+  <LinearGradient colors={['#ffcc00', '#ff6600', '#ff0000']} style={styles.card}>
     <FastImage source={icon} style={styles.icon} resizeMode={FastImage.resizeMode.contain} />
     <View style={styles.assetsContainer}>
       <Text style={styles.assetName}>{name}</Text>
-      <Text style={styles.assetValue}>{value}</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Trade Credits</Text>
-      </TouchableOpacity>
+      <Text style={styles.assetValue}>{value}</Text> {/* Display the fetched value */}
     </View>
-    
   </LinearGradient>
 );
 
 const AssetsScreen = () => {
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  // Select asset counts from the Redux store
+  const vouchersCount = useSelector((state) => state.rewards.vouchers);
+  const tiersCount = useSelector((state) => state.rewards.totalTiers);
+  const couponGiftsCount = useSelector((state) => state.rewards.couponGifts);
+  const greenCarbonPointsCount = useSelector((state) => state.greenCarbonPoints);
+  const coinsCount = useSelector((state) => state.rewards.coins);
+  const loading = useSelector((state) => state.rewards.loading);
+  const error = useSelector((state) => state.rewards.error);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Simulate loading for 2 seconds
-    return () => clearTimeout(timer);
-  }, []);
+    const fetchData = async () => {
+      await dispatch(fetchVouchers());
+      await dispatch(fetchTiers());
+      await dispatch(fetchCouponGifts());
+      await dispatch(fetchGreenCarbonPoints());
+      await dispatch(fetchCoins());
+     
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Add your Lottie animation file here
+          source={require('../../assets/lottie/boxLoading.json')}
           autoPlay
           loop
           style={styles.loadingAnimation}
@@ -53,19 +69,35 @@ const AssetsScreen = () => {
     );
   }
 
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorMessage}>{error.message || 'An error occurred while fetching data.'}</Text>
+      </View>
+    );
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
       {assets.map((asset, index) => (
         <AssetCard
           key={index}
           name={asset.name}
-          value={asset.value}
           icon={asset.icon}
+          value={
+            asset.name === 'Vouchers' ? vouchersCount :
+            asset.name === 'Tiers' ? tiersCount :
+            asset.name === 'Coupon Gifts' ? couponGiftsCount :
+            asset.name === 'Green Carbon Points' ? greenCarbonPointsCount :
+            coinsCount
+          } // Display the corresponding count
         />
       ))}
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -82,6 +114,17 @@ const styles = StyleSheet.create({
   loadingAnimation: {
     width: 40,
     height: 40,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorMessage: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
   },
   assetsContainer: {
     flexDirection: 'column',
@@ -106,21 +149,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  assetValue: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  button: {
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 14,
-    backgroundColor: 'green',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+  
+
 });
 
 export default AssetsScreen;

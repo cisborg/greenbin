@@ -35,13 +35,14 @@ const initialState = {
             images: [], // Updated: Changed from a single image to an array of images
             rating: null, 
             reviewCount: 0, 
-            brand: '', 
+            brands: [], 
             isBrandOfficial: false, 
             isLocalDispatch: false, 
             description: '',
             quantity: 0,
             category: '',
             itemsIncluded: [],
+            subscriptions: false,
             vendor: {
                 id: null,
                 name: '',
@@ -54,13 +55,7 @@ const initialState = {
     loading: false,
     error: null,
     cart: [],
-    subscriptions: [],
-    categories: {
-        Daily: [],
-        Weekly: [],
-        BiWeekly: [],
-        Monthly: [],
-    },
+   
 };
 
 const productReducer = (state = initialState, action) => {

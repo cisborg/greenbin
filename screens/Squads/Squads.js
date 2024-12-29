@@ -25,7 +25,10 @@ const JoinSquads = () => {
     dispatch(fetchSquadData());
   };
   // Get squads from Redux state
-  const { squads, loading, error } = useSelector((state) => state.squadReducer);
+  const { squads } = useSelector((state) => state.squads.squads);
+  const {  loading } = useSelector((state) => state.squads.loading);
+  const { error } = useSelector((state) => state.squads.error);
+
 
   // Start the animation
   Animated.timing(animatedValue, {
@@ -98,7 +101,7 @@ const JoinSquads = () => {
               onPress={handleActiveToggle}
             >
               {isActive ? (
-                <Text style={styles.activeButtonText}>Activated</Text>
+                <Text style={styles.activeButtonText}>Active</Text>
               ) : (
                 <>
                   <ActivityIndicator size="small" color="white" style={isActive ? { display: 'none' } : {}} />

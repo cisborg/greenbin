@@ -5,9 +5,7 @@ import {
     GET_ALL_VENDORS_REQUEST,
     GET_ALL_VENDORS_SUCCESS,
     GET_ALL_VENDORS_FAILURE,
-    UPDATE_VENDOR_REQUEST,
-    UPDATE_VENDOR_SUCCESS,
-    UPDATE_VENDOR_FAILURE,
+    FETCH_FOLLOWED_VENDORS_SUCCESS,
     DELETE_VENDOR_REQUEST,
     DELETE_VENDOR_SUCCESS,
     DELETE_VENDOR_FAILURE,
@@ -36,22 +34,21 @@ export const getAllVendors = () => async (dispatch) => {
     }
 };
 
-// Update Vendor action
-export const updateVendor = (vendorId, vendorData) => async (dispatch) => {
-    dispatch({ type: UPDATE_VENDOR_REQUEST });
-    try {
-        const response = await api.put(`/api/update-vendor/${vendorId}`, vendorData);
-        dispatch({ type: UPDATE_VENDOR_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_VENDOR_FAILURE, payload: error.message });
-    }
-};
+export const fetchFollowedVendors = () => (dispatch, getState) => {
+    const { vendors } = getState().vendor; // Access the current state
+    const followedVendors = vendors.filter(vendor => vendor.followed);
+    
+    dispatch({
+      type: FETCH_FOLLOWED_VENDORS_SUCCESS,
+      payload: followedVendors,
+    });
+  };
 
 // Delete Vendor action
 export const deleteVendor = (vendorId) => async (dispatch) => {
     dispatch({ type: DELETE_VENDOR_REQUEST });
     try {
-        await api.delete(`/user/delete/${vendorId}`);
+        await api.delete(`/user/connect/delete/${vendorId}`);
         dispatch({ type: DELETE_VENDOR_SUCCESS, payload: vendorId });
     } catch (error) {
         dispatch({ type: DELETE_VENDOR_FAILURE, payload: error.message });

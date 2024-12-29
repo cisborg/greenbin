@@ -48,7 +48,7 @@ const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }
 const ProfileSettings = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.id);
+  const userId = useSelector((state) => state.auth.id);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");

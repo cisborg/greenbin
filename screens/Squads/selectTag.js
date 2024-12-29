@@ -10,8 +10,9 @@ const { width, height } = Dimensions.get('window');
 
 const TagSelection = () => {
   const dispatch = useDispatch();
-  const { tags, loading, error } = useSelector((state) => state.tags);
-
+  const { tags } = useSelector((state) =>  state.posts.posts.tags );
+  const {  loading } = useSelector((state) =>  state.posts.loading );
+  const { error } = useSelector((state) =>  state.posts.error );
   const [selectedTags, setSelectedTags] = useState([]);
   const [feedName, setFeedName] = useState('');
 
@@ -146,24 +147,7 @@ const styles = StyleSheet.create({
   tagText: {
     color: 'green',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: 'white',
-    borderRadius: 14,
-    padding: 15,
-    flex: 1,
-    marginHorizontal: 5,
-    alignItems: 'center',
-    margin: 15,
-  },
-  buttonText: {
-    color: 'green',
-    fontWeight: 'bold',
-  },
+  
 });
 
 export default TagSelection;

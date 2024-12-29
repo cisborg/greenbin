@@ -10,7 +10,13 @@ const { width, height } = Dimensions.get('window');
 
 const TagList = () => {
   const dispatch = useDispatch();
-  const { trendingTags, popularTags, trendingLoading, popularLoading, error } = useSelector((state) => state.tags);
+  const { trendingTags } = useSelector((state) =>  state.posts.trendingTags );
+  const {  popularTags } = useSelector((state) =>  state.posts.popularTags );
+  const {  trendingLoading} = useSelector((state) =>  state.posts.trendingLoading );
+  const {  popularLoading } = useSelector((state) =>  state.posts.popularLoading );
+  const { error } = useSelector((state) =>  state.posts.error );
+
+
 
   useEffect(() => {
     dispatch(fetchTrendingTags());

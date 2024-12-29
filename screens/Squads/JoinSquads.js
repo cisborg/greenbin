@@ -14,9 +14,11 @@ const JoinSquads = () => {
   const [loadingStates, setLoadingStates] = useState({});
 
   // Get userId from Redux state
-  const { userId } = useSelector((state) => state.userReducer); // Adjust according to your state structure
-  const { squads, loading, error } = useSelector((state) => state.squadReducer);
-
+  const { userId } = useSelector((state) => state.auth.id); // Adjust according to your state structure
+  // Get posts from Redux state
+   const { squads } = useSelector((state) => state.squads.squads);
+   const {  loading } = useSelector((state) => state.squads.loading);
+   const {  error } = useSelector((state) => state.squads.error);
   useEffect(() => {
     dispatch(getAllSquads());
   }, [dispatch]);
@@ -51,14 +53,12 @@ const JoinSquads = () => {
           source={{ uri: item.cover }} 
           style={styles.coverImage} 
           resizeMode={FastImage.resizeMode.cover}
-          onError={() => console.error('Cover image failed to load')} 
         />
         <View style={styles.squadDetails}>
           <FastImage 
             source={{ uri: item.avatar }} 
             style={styles.avatar} 
             resizeMode={FastImage.resizeMode.cover}
-            onError={() => console.error('Avatar image failed to load')} 
           />
           <Text style={styles.squadName}>{item.name}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -73,7 +73,6 @@ const JoinSquads = () => {
                 source={{ uri: item.avatar }} 
                 resizeMode={FastImage.resizeMode.cover}
                 style={[styles.connectorImage, { zIndex: 3 - index }]} 
-                onError={() => console.error('Connector image failed to load')} 
               />
             ))}
             <Text style={styles.connectionsCount}>{item.connections} connections</Text>
@@ -151,11 +150,7 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingBottom: 10,
   },
-  heading: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+ 
   squadCard: {
     backgroundColor: '#ffff',
     borderRadius: 15,
@@ -174,16 +169,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
   },
-  header: {
-    marginBottom: 15,
-    padding: 5,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'green',
-    marginBottom: 5,
-  },
+ 
   description: {
     color: '#666666',
     marginBottom: 5,
@@ -259,17 +245,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  loadingButton: {
-    backgroundColor: 'orange', // Change button color to orange after loading
-  },
+ 
   joinButtonText: {
     color: '#FFF',
     fontWeight: 'bold',
     marginLeft: 5,
   },
-  spinner: {
-    marginRight: 5,
-  },
+ 
 });
 
 export default JoinSquads;

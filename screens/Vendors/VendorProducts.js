@@ -18,7 +18,7 @@ const { width, height } = Dimensions.get('window');
 const StoreHeader = ({ vendor }) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [followText, setFollowText] = useState('Follow');
-    const [followers, setFollowers] = useState(vendor.followers || 0);
+    const [followers, setFollowers] = useSelector((state) => state.vendor.vendors.followers || 0);
     const dispatch = useDispatch();
 
     useEffect(() => {

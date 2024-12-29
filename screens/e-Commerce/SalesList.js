@@ -28,9 +28,9 @@ const SalesList = () => {
 
     // Get products and loading state from Redux
     const { products, productsLoading, error } = useSelector(state => ({
-        products: state.products, // Adjust based on your state structure
-        productsLoading: state.productsLoading,
-        error: state.error
+        products: state.products.products, // Adjust based on your state structure
+        productsLoading: state.products.loading,
+        error: state.products.error
     }));
 
     useEffect(() => {

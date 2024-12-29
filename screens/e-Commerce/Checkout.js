@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, S
 import { Color } from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from'react-redux';
-import { fetchTiers } from '../../redux/actions/userTiers';
+import { fetchTiers } from '../../redux/actions/rewards';
 import { requestPayment } from '../../redux/actions/payments';
 
 const Checkout = () => {

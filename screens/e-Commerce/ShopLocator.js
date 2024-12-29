@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 const ConnectToShops = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showMapView, setShowMapView] = useState(true); // Toggle between map and list
-  const shops = useSelector(state => state.shops);
+  const shops = useSelector(state => state.shops.shops);
   const [connectedShops, setConnectedShops] = useState({});
   const [pendingConnection, setPendingConnection] = useState(null);
   const dispatch = useDispatch();

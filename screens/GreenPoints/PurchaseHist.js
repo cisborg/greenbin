@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const NotifScreen = () => {
   const dispatch = useDispatch();
-  const purchases = useSelector(state => state.purchases); // Selector for purchases state
+  const purchases = useSelector(state => state.purchases.purchases); // Selector for purchases state
   const [fadeAnim] = useState(new Animated.Value(0));
   const navigation = useNavigation(); // Use navigation
 

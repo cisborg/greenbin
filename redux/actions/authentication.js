@@ -17,6 +17,9 @@ import {
   GET_REFERRAL_CODE_REQUEST,
   GET_REFERRAL_CODE_SUCCESS,
   GET_REFERRAL_CODE_FAILURE,
+  VALIDATE_REFERRAL_CODE_REQUEST,
+  VALIDATE_REFERRAL_CODE_SUCCESS,
+  VALIDATE_REFERRAL_CODE_FAILURE,
   LOGIN_USER,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -153,7 +156,7 @@ export const registerCode = (email) => async (dispatch) => {
  export const getReferralCode = (userId) => async (dispatch) => {
   dispatch({ type: GET_REFERRAL_CODE_REQUEST });
   try {
-    const response = await api.get(` /user/get/reffer/${userId}`);
+    const response = await api.get(`/user/get/reffer/${userId}`);
      dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data });
    } catch (error) {
     dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
@@ -162,13 +165,16 @@ export const registerCode = (email) => async (dispatch) => {
 
 
  export const validateReferralCode = (referralCode) => async (dispatch) => {
-  dispatch({ type: 'VALIDATE_REFERRAL_CODE_REQUEST' });
+  dispatch({ type: VALIDATE_REFERRAL_CODE_REQUEST });
   try {
     const response = await api.get(`/user/validate-referral-code/${referralCode}`);
-    dispatch({ type: 'VALIDATE_REFERRAL_CODE_SUCCESS', payload: response.data });
+    dispatch({ type: VALIDATE_REFERRAL_CODE_SUCCESS, payload: response.data });
   } catch (error) {
-    dispatch({ type: 'VALIDATE_REFERRAL_CODE_FAILURE', payload: error.message });
+    const errorMessage =
+      error.response?.data?.message || error.message || "An error occurred";
+    dispatch({ type: VALIDATE_REFERRAL_CODE_FAILURE, payload: errorMessage });
   }
+  
 };
 
 

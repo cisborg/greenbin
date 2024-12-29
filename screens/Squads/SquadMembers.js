@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ActivityIndicator,TextInput, FlatList, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { fetchUsers,addModerator, deleteUser } from '../../redux/actions/squads'; // Adjust the path as necessary
+import { fetchUsers,addModerator, deleteUser } from '../../redux/actions/admin'; // Adjust the path as necessary
 import { Swipeable } from 'react-native-gesture-handler';
 
 const SquadMembers = ({ setConnects }) => {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users);
+  const users = useSelector((state) => state.squads.squadMembers);
   const [loadingId, setLoadingId] = useState(null);
   const [ searchTerm, setSearchTerm] = useState('');
 

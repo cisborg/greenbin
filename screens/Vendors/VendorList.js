@@ -11,49 +11,46 @@ import {
   Animated,
   Dimensions,
   RefreshControl,
-  Platform,
-  StatusBar
+  Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { getAllVendors } from '../../redux/actions/vendorAction'; // Adjust the path
+import { getAllVendors } from '../../redux/actions/vendorAction';
 import { Color } from '../../GlobalStyles';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { connectToVendor} from '../../redux/actions/authentication'
+import { connectToVendor } from '../../redux/actions/authentication';
 
-const { width,height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const VendorList = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [approvedVendors, setApprovedVendors] = useState({});
-  const [loading, setLoading] = useState({});
+  const [loading, setLoading] = useState({}); // Local loading state for button
   const [fadeAnim] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
-  const [isScreenLoading, setIsScreenLoading] = useState(true);
+  const { vendors} = useSelector((state) => state.vendor.vendors);
+  const { loading:apiLoading } = useSelector((state) => state.vendor.loading);
+  const { error} = useSelector((state) => state.vendor.error); 
+  const currentUserProfile = useSelector((state) => state.auth.selectedUser);
 
-  // Get vendors and loading state from Redux store
-  const { vendors, loading: apiLoading,error } = useSelector(state => ({
-    vendors: state.vendor.vendors,
-    loading: state.vendor.loading,
-    error: state.vendor.error
-  }));
 
   useEffect(() => {
-    dispatch(getAllVendors()).then(() => {
-      setIsScreenLoading(false);
+    const fetchVendors = async () => {
+      await dispatch(getAllVendors());
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 1000,
         useNativeDriver: true,
       }).start();
-    });
+    };
+    fetchVendors();
   }, [dispatch]);
 
   const handleRefresh = () => {
@@ -70,38 +67,32 @@ const VendorList = () => {
   );
 
   const handleConnect = async (id) => {
-    setLoading(prev => ({ ...prev, [id]: true }));
+    setLoading(prev => ({ ...prev, [id]: true })); // Set loading for the specific vendor
     try {
-        // Dispatch the connect action
-        await dispatch(connectToVendor(id)); // Assuming this updates the backend
-        
-        // Fetch the current user's profile from the Redux store
-        const currentUserProfile = useSelector((state) => state.user.profile); // Adjust according to your state structure
+      await dispatch(connectToVendor(id));
 
-        // Update the approved vendors state
-        setApprovedVendors(prev => {
-            const currentConnections = prev[id]?.connections || [];
-            // Add the new connection and keep only the last 3
-            const updatedConnections = [
-                { image: currentUserProfile.image, name: currentUserProfile.name }, 
-                ...currentConnections
-            ].slice(0, 3);
+      setApprovedVendors(prev => {
+        const currentConnections = prev[id]?.connections || [];
+        const updatedConnections = [
+          { image: currentUserProfile.image, name: currentUserProfile.name },
+          ...currentConnections
+        ].slice(0, 3);
 
-            return {
-                ...prev,
-                [id]: {
-                    ...prev[id],
-                    connections: updatedConnections,
-                    connectionsCount: updatedConnections.length, // Update count
-                },
-            };
-        });
+        return {
+          ...prev,
+          [id]: {
+            ...prev[id],
+            connections: updatedConnections,
+            connectionsCount: updatedConnections.length,
+          },
+        };
+      });
     } catch (error) {
-        Alert('Error connecting to vendor:', error);
+      Alert.alert('Error connecting to vendor:', error);
     } finally {
-        setLoading(prev => ({ ...prev, [id]: false }));
+      setLoading(prev => ({ ...prev, [id]: false })); // Reset loading for the specific vendor
     }
-};
+  };
 
   const handleProfileNavigation = (id) => {
     navigation.navigate('VendorsProfilePage', { vendorId: id });
@@ -109,19 +100,19 @@ const VendorList = () => {
 
   const renderConnections = (connections) => (
     <View style={styles.connectionsContainer}>
-        {connections.map((connection, index) => (
-            <FastImage
-                key={index}
-                source={{ uri: connection.image }}
-                style={[styles.connectionImage, { zIndex: connections.length - index }]}
-            />
-        ))}
-        <Text style={styles.connectionsCount}>{connections.length} connectors</Text>
+      {connections.map((connection, index) => (
+        <FastImage
+          key={index}
+          source={{ uri: connection.image }}
+          style={[styles.connectionImage, { zIndex: connections.length - index }]}
+        />
+      ))}
+      <Text style={styles.connectionsCount}>{connections.length} connectors</Text>
     </View>
-);
+  );
 
   const renderItem = ({ item }) => {
-    const isLoading = loading[item.id];
+    const isLoading = loading[item.id]; // Check if the specific vendor is loading
     return (
       <View style={styles.card}>
         <View style={styles.infoContainer}>
@@ -133,11 +124,11 @@ const VendorList = () => {
           <Text style={styles.job}>{item.job}</Text>
           <Text style={styles.description}>{item.description}</Text>
           {renderConnections(item.connections)}
-          
+
           <TouchableOpacity
             style={[styles.followButton, approvedVendors[item.id] ? styles.approvedButton : styles.connectButton]}
             onPress={() => approvedVendors[item.id] ? handleProfileNavigation(item.id) : handleConnect(item.id)}
-            disabled={isLoading}
+            disabled={isLoading} // Disable button while loading
           >
             {isLoading ? (
               <ActivityIndicator size="small" color="white" style={styles.spinner} />
@@ -154,7 +145,7 @@ const VendorList = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {isScreenLoading || apiLoading ? (
+      {apiLoading ? (
         <View style={styles.loadingContainer}>
           <LottieView
             source={require('../../assets/lottie/bouncing_check.json')}
@@ -163,18 +154,17 @@ const VendorList = () => {
             style={styles.lottie}
           />
         </View>
-        
       ) : error ? (
         <View style={styles.errorContainer}>
-            <LottieView
-              source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
-              autoPlay
-              loop
-              style={styles.lottie}
-            />
-            <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+          <LottieView
+            source={require('../../assets/lottie/errorLottie.json')}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+          <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
         </View>
-    ) : (
+      ) : (
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>

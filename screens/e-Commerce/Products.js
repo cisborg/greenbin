@@ -54,7 +54,12 @@ const ProductCard = ({ item }) => {
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, loading,error,brands }= useSelector(state => state.products);
+  const { products, loading,error,brands }= useSelector(state => ({
+    products: state.products.products,
+    loading: state.products.loading,
+    error: state.products.error,
+    brands: state.products.products.brands,
+  }));
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Best Match');
   const [searchQuery, setSearchQuery] = useState('');

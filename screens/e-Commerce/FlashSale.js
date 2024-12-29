@@ -53,9 +53,9 @@ const FlashSale = () => {
 
   // Get products and loading state from Redux
   const { products, loading,error } = useSelector(state => ({
-    products: state.product.products, // Adjust based on your state structure
-    loading: state.product.loading,
-    error: state.product.error,
+    products: state.products.products, // Adjust based on your state structure
+    loading: state.products.loading,
+    error: state.products.error,
   }));
 
   // Fetch products when component mounts

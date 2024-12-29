@@ -24,6 +24,9 @@ import {
     GET_ALL_SQUADS_REQUEST,
     GET_ALL_SQUADS_SUCCESS,
     GET_ALL_SQUADS_FAILURE,
+    FETCH_SQUAD_DATA_REQUEST,
+    FETCH_SQUAD_DATA_SUCCESS,
+    FETCH_SQUAD_DATA_FAILURE,
     UPDATE_SQUAD_REQUEST,
     UPDATE_SQUAD_SUCCESS,
     UPDATE_SQUAD_FAILURE,
@@ -49,78 +52,23 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    squads: [
-        {
-        
-            id: 1,
-            name: '',
-            handle: '',
-            status: ['moderated', 'add post'],
-            description: '',
-            likes: 0,
-            comments: 0,
-            posts: 0,
-            avatarPhoto: null,
-            coverPhoto: null,
-            connections: 0,
-            createdDate: null,
-            moderators: [
-                {
-                    id: null,
-                    name: '',
-                    avatar: '',
-                },
-            ],
-            members: [
-                {
-                    id: null,
-                    name: '',
-                    avatar: '',
-                },
-                
-            ],
-            activities: [],
-            invitations: 0,
-            activitiesCompleted: 0,
-            notifications: 0,
-            activeMembers: 0,
-    
-                
-        },
-    ],
+    squads: [],
     loading: false,
-    activeSquad:null,
+    activeSquad: null,
+    selectedSquad: null,
+    squadChallenges: [],
+    squadInvitations: [],
+    squadMembers: [],
+    squadLeaders: [],
+    squadNotifications: [],
     error: null,
 };
 
 const squadReducer = (state = initialState, action) => {
     switch (action.type) {
-        // Squad Management
+        // Common request actions
         case CREATE_SQUAD_REQUEST:
         case SUBMIT_ACTIVE_REQUEST:
-            return { ...state, loading: true, error: null };
-
-        case CREATE_SQUAD_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                squads: [...state.squads, action.payload], // Add the new squad
-                error: null,
-            };
-        case SUBMIT_ACTIVE_SUCCESS:
-            return {
-                ...state,
-                loading: false, // Request completed
-                activeSquad: action.payload, // Store the active squad data from the response
-                error: null,
-            };
-        case CREATE_SQUAD_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload,
-            };
-
         case REQUEST_JOIN_SQUAD_REQUEST:
         case APPROVE_JOIN_REQUEST_REQUEST:
         case REMOVE_MEMBER_REQUEST:
@@ -128,11 +76,23 @@ const squadReducer = (state = initialState, action) => {
         case LEAVE_SQUAD_REQUEST:
         case DELETE_SQUAD_REQUEST:
         case GET_ALL_SQUADS_REQUEST:
+        case FETCH_SQUAD_DATA_REQUEST:
         case UPDATE_SQUAD_REQUEST:
+            return { ...state, loading: true, error: null };
+
+        // Success actions
+        case CREATE_SQUAD_SUCCESS:
             return {
                 ...state,
-                loading: true,
-                error: null,
+                loading: false,
+                squads: [...state.squads, action.payload],
+            };
+
+        case SUBMIT_ACTIVE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                activeSquad: action.payload,
             };
 
         case REQUEST_JOIN_SQUAD_SUCCESS:
@@ -151,12 +111,11 @@ const squadReducer = (state = initialState, action) => {
             };
 
         case GET_ALL_SQUADS_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                squads: action.payload || [],
-            };
+            return { ...state, loading: false, squads: action.payload || [] };
 
+        // Failure actions
+        case CREATE_SQUAD_FAILURE:
+        case SUBMIT_ACTIVE_FAILURE:
         case REQUEST_JOIN_SQUAD_FAILURE:
         case APPROVE_JOIN_REQUEST_FAILURE:
         case REMOVE_MEMBER_FAILURE:
@@ -164,21 +123,22 @@ const squadReducer = (state = initialState, action) => {
         case LEAVE_SQUAD_FAILURE:
         case DELETE_SQUAD_FAILURE:
         case GET_ALL_SQUADS_FAILURE:
-        case SUBMIT_ACTIVE_FAILURE:
         case UPDATE_SQUAD_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload,
-            };
+            return { ...state, loading: false, error: action.payload };
 
         // Squad Challenges
         case FETCH_SQUAD_CHALLENGES:
             return { ...state, squadChallenges: action.payload };
+
         case ADD_SQUAD_CHALLENGE:
             return { ...state, squadChallenges: [...state.squadChallenges, action.payload] };
+
         case REMOVE_SQUAD_CHALLENGE:
-            return { ...state, squadChallenges: state.squadChallenges.filter(challenge => challenge.id !== action.payload) };
+            return {
+                ...state,
+                squadChallenges: state.squadChallenges.filter(challenge => challenge.id !== action.payload),
+            };
+
         case UPDATE_SQUAD_CHALLENGE:
             return {
                 ...state,
@@ -187,34 +147,43 @@ const squadReducer = (state = initialState, action) => {
                 ),
             };
 
+        case FETCH_SQUAD_DATA_SUCCESS:
+            return { ...state, loading: false, selectedSquad: action.payload };
+
         // Squad Invitations
         case FETCH_SQUAD_INVITATIONS:
             return { ...state, squadInvitations: action.payload };
+
         case SEND_SQUAD_INVITATION:
             return { ...state, squadInvitations: [...state.squadInvitations, action.payload] };
+
         case ACCEPT_SQUAD_INVITATION:
+        case DECLINE_SQUAD_INVITATION:
             return {
                 ...state,
-                squadInvitations: state.squadInvitations.map(invitation =>
-                    invitation.id === action.payload.id ? action.payload : invitation
-                ),
+                squadInvitations: state.squadInvitations.filter(invitation => invitation.id !== action.payload),
             };
-        case DECLINE_SQUAD_INVITATION:
-            return { ...state, squadInvitations: state.squadInvitations.filter(invitation => invitation.id !== action.payload) };
 
         // Squad Members
         case FETCH_SQUAD_MEMBERS:
             return { ...state, squadMembers: action.payload };
+
         case ADD_SQUAD_MEMBER:
             return { ...state, squadMembers: [...state.squadMembers, action.payload] };
+
         case REMOVE_SQUAD_MEMBER:
             return { ...state, squadMembers: state.squadMembers.filter(member => member.id !== action.payload) };
 
         // Squad Leaders
         case ADD_SQUAD_LEADER:
             return { ...state, squadLeaders: [...state.squadLeaders, action.payload] };
+
         case REMOVE_SQUAD_LEADER:
-            return { ...state, squadLeaders: state.squadLeaders.filter(leader => leader.id !== action.payload) };
+            return {
+                ...state,
+                squadLeaders: state.squadLeaders.filter(leader => leader.id !== action.payload),
+            };
+
         case UPDATE_SQUAD_LEADER:
             return {
                 ...state,
@@ -226,8 +195,15 @@ const squadReducer = (state = initialState, action) => {
         // Squad Notifications
         case FETCH_SQUAD_NOTIFICATIONS:
             return { ...state, squadNotifications: action.payload };
+
         case REMOVE_SQUAD_NOTIFICATION:
-            return { ...state, squadNotifications: state.squadNotifications.filter(notification => notification.id !== action.payload) };
+            return {
+                ...state,
+                squadNotifications: state.squadNotifications.filter(notification => notification.id !== action.payload),
+            };
+        
+        case FETCH_SQUAD_DATA_FAILURE:
+            return { ...state, loading: false, error: action.payload };
 
         default:
             return state;

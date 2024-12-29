@@ -4,7 +4,6 @@ import Carousel from 'react-native-reanimated-carousel';
 import LottieView from 'lottie-react-native';
 
 // Import your existing screen components
-import StartPage from './StartPage'; // Adjust the path as needed
 import RegisterPage from '../Registration/RegisterPage'; // Adjust the path as needed
 import SignInPage from '../Registration/SignInPage'; // Adjust the path as needed
 
@@ -12,7 +11,6 @@ const { width: screenWidth } = Dimensions.get('window');
 
 // Define the screens array referencing your imported components
 const screens = [
-    { component: StartPage },
     { component: RegisterPage },
     { component: SignInPage },
 ];

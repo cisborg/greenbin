@@ -6,14 +6,14 @@ import { Color } from '../../GlobalStyles';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 import { addQuantity, decreaseQuantity, removeFromCart } from '../../redux/actions/cart';
-import { fetchVouchers } from '../../redux/actions/rewardsActions'; // Import your fetch vouchers action
+import { fetchVouchers } from '../../redux/actions/rewards'; // Import your fetch vouchers action
 
 const { width } = Dimensions.get('window');
 
 const CartScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
-  const vouchers = useSelector((state) => state.vouchers.items); // Assuming you have a vouchers slice in your Redux store
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const vouchers = useSelector((state) => state.voucher.items); // Assuming you have a vouchers slice in your Redux store
   const [loading, setLoading] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
 

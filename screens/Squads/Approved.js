@@ -11,7 +11,8 @@ const { width } = Dimensions.get('window');
 
 const Approved = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { users, loading, error } = useSelector((state) => state.users); // Adjust the state structure as needed
+  const { users, loading, error } = useSelector((state) => ({ 
+    users: state.auth.users, loading: state.auth.loading, error: state.auth.error})); // Adjust the state structure as needed
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -177,10 +178,7 @@ const styles = StyleSheet.create({
   details: {
     flexDirection: 'column',
   },
-user: {
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
+
   userProfession: {
     fontSize: 13,
     color: 'gray',

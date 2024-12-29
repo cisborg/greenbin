@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView, Platform,StatusBar, Dimensions } from 'react-native';
+import { SafeAreaView, Platform,StatusBar, Dimensions, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { View, Text } from "react-native";
@@ -17,7 +17,6 @@ import ChallengePage from "./screens/MainPage/ChallengePage";
 import SeeAllEvents from "./screens/MainPage/SeeAllEvents";
 import SignInPage from "./screens/Registration/SignInPage";
 import RegisterPage from "./screens/Registration/RegisterPage";
-import StartPage from "./screens/MainPage/StartPage";
 import ManageAccountScreen from "./screens/Registration/manageAccount";
 import PrepaidRechargeScreen from "./screens/GreenPoints/Payment";
 import ProfileGCPs from "./screens/e-Commerce/ProfileGCPs";
@@ -254,7 +253,11 @@ const App = () => {
   }
   // Check if fonts are loaded or there's an error
   if (!fontsLoaded || error) {
-    return null;
+    return (
+      <View style={styles.container}>
+        <Text>Loading Fonts...</Text> {/* You can show a spinner or loading message */}
+      </View>
+    );
   }
 
 
@@ -278,9 +281,9 @@ const App = () => {
 
 
   const AppNavigator =() => {
+    return (
     <Stack.Navigator initialRouteName="AppCarousel" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="AppCarousel" component={AppCarousel} options={{ headerShown: false }} />
-      <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown: false }} />
       <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
       <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={MainTabs} />
@@ -374,7 +377,9 @@ const App = () => {
 
 
     </Stack.Navigator>
-    }
+    );
+
+   };
 
 
 export default App;

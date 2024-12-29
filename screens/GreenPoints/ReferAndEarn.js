@@ -18,7 +18,7 @@ import * as Clipboard from 'expo-clipboard';
 import Lottie from 'lottie-react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReferralCode } from '../../redux/actions/authentication';
-import { fetchEligibleRewards } from '../../redux/actions/rewardsActions'; // Import the new action
+import { fetchCouponGifts } from '../../redux/actions/rewards'; // Import the new action
 
 const ReferAndEarn = () => {
   const [processing, setProcessing] = useState(true);
@@ -27,10 +27,10 @@ const ReferAndEarn = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   
-  const userId = useSelector(state => state.users.userId); 
-  const referralCode = useSelector(state => state.authReducer.referralCode);
-  const referralCount = useSelector(state => state.rewardsReducer.referralCount);
-  const eligibleRewards = useSelector(state => state.rewardsReducer.eligibleRewards); // Get eligible rewards from state
+  const userId = useSelector(state => state.auth.userId); 
+  const referralCode = useSelector(state => state.auth.selectedUser.referralCode);
+  const referralCount = useSelector(state => state.rewards.referralCount);
+  const eligibleRewards = useSelector(state => state.rewards.couponGifts); // Get eligible rewards from state
 
   const rewards = [
     { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 30 friends!', threshold: 30 },
@@ -42,7 +42,7 @@ const ReferAndEarn = () => {
   useEffect(() => {
     if (userId) {
       dispatch(getReferralCode(userId));
-      dispatch(fetchEligibleRewards(userId)); // Fetch eligible rewards via dispatch
+      dispatch(fetchCouponGifts(userId)); // Fetch eligible rewards via dispatch
     }
     
     const timer = setTimeout(() => {
@@ -64,13 +64,12 @@ const ReferAndEarn = () => {
       const result = await Share.share({ message });
 
       if (result.action === Share.sharedAction) {
-        console.log('Shared successfully!');
+        Alert.alert('Shared successfully!');
       } else if (result.action === Share.dismissedAction) {
-        console.log('Share dismissed');
+        Alert.alert('Share dismissed');
       }
     } catch (error) {
-      console.error('Error sharing referral:', error.message);
-      Alert.alert('Error', 'Failed to share the referral. Please try again.');
+      Alert.alert('Error sharing referral:', error.message);
     }
   }, [referralCode]);
 

@@ -10,7 +10,7 @@ const JoinUsScreen = () => {
   const dispatch = useDispatch(); // Initialize dispatch
 
   // Fetch user information from Redux
-  const userInfo = useSelector((state) => state.user); // Access user state directly
+  const userInfo = useSelector((state) => state.auth); // Access user state directly
   const [animationValue, setAnimationValue] = useState(new Animated.Value(0));
 
   // Fetch user data when component mounts

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import Lottie from 'lottie-react-native';
 import { Color } from '../../GlobalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { addDonationTier } from '../../redux/actions/userTiers';
+import { addDonationTier } from '../../redux/actions/rewards';
 import { createDonation } from '../../redux/actions/donations'; 
 import Toast from '../../helpers/Toast';
 
@@ -21,7 +21,11 @@ const donationCategories = [
 const DonatePoints = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { totalAmountDonated, currentTier, loading } = useSelector(state => state.donation);
+  const { totalAmountDonated, currentTier, loading } = useSelector(state => ({
+    totalAmountDonated: state.donation.donations.totalAmountDonated,
+    currentTier:state.donation.donations.currentTier,
+    loading: state.donation.loading,
+  }));
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [donationAmount, setDonationAmount] = useState(100);
   const [isRecurring, setIsRecurring] = useState(false);

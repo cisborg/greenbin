@@ -35,10 +35,10 @@ const ReportVendorScreen = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
+  const { loading: reportLoading } = useSelector((state) => state.reports.loading  )
+  const { error } = useSelector(state => state.reports.error )
 
-  // Redux state
-  const reportState = useSelector(state => state.report);
-  const { loading: reportLoading, error } = reportState;
+  error:state.reports.error
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -248,13 +248,7 @@ const styles = StyleSheet.create({
   vendorInfo: {
     marginBottom: 20,
   },
-  vendorImage: {
-    width: 100,
-    height: 100,
-    marginVertical: 10,
-    borderRadius: 20,
-    alignSelf: 'center',
-  },
+ 
   label: {
     fontSize: 16,
     fontWeight: '600',
