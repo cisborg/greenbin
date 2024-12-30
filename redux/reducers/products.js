@@ -14,8 +14,6 @@ import {
     PURCHASE_PRODUCT_REQUEST,
     PURCHASE_PRODUCT_SUCCESS,
     PURCHASE_PRODUCT_FAILURE,
-    ADD_TO_CART,
-    REMOVE_FROM_CART,
     SUBSCRIBE_BUNDLE_REQUEST,
     SUBSCRIBE_BUNDLE_SUCCESS,
     SUBSCRIBE_BUNDLE_FAILURE,
@@ -53,9 +51,7 @@ const initialState = {
         },
     ],
     loading: false,
-    error: null,
-    cart: [],
-   
+    error: null,   
 };
 
 const productReducer = (state = initialState, action) => {
@@ -108,18 +104,6 @@ const productReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-            };
-
-        case ADD_TO_CART:
-            return {
-                ...state,
-                cart: [...state.cart, action.payload],
-            };
-
-        case REMOVE_FROM_CART:
-            return {
-                ...state,
-                cart: state.cart.filter(item => item.product.id !== action.payload),
             };
 
         case SUBSCRIBE_BUNDLE_SUCCESS:

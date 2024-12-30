@@ -6,9 +6,6 @@ import {
     GET_ALL_DONATIONS_REQUEST,
     GET_ALL_DONATIONS_SUCCESS,
     GET_ALL_DONATIONS_FAILURE,
-    UPDATE_DONATION_REQUEST,
-    UPDATE_DONATION_SUCCESS,
-    UPDATE_DONATION_FAILURE,
     DELETE_DONATION_REQUEST,
     DELETE_DONATION_SUCCESS,
     DELETE_DONATION_FAILURE,
@@ -38,17 +35,6 @@ export const getAllDonations = (userId) => async (dispatch) => {
         dispatch({ type: GET_ALL_DONATIONS_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: GET_ALL_DONATIONS_FAILURE, payload: error.message });
-    }
-};
-
-// Update Donation action
-export const updateDonation = (donationId, donationData) => async (dispatch) => {
-    dispatch({ type: UPDATE_DONATION_REQUEST });
-    try {
-        const response = await api.put(`/donations/update/${donationId}`, donationData);
-        dispatch({ type: UPDATE_DONATION_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_DONATION_FAILURE, payload: error.message });
     }
 };
 

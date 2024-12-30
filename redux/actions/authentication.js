@@ -29,6 +29,7 @@ import {
   REGISTER_CODE_REQUEST,
   REGISTER_CODE_SUCCESS,
   REGISTER_CODE_FAILURE,
+ 
 } from "./actionTypes";
 import { Alert } from "react-native";
 
@@ -123,45 +124,52 @@ export const sendResetPassword = ({ email, token, newPassword }) => async (dispa
 export const registerCode = (email) => async (dispatch) => {
   dispatch({ type: REGISTER_CODE_REQUEST });
   try {
-      const response = await api.post(`/user/greencode`, { email }); // Adjust the endpoint as needed
-      dispatch({ type: REGISTER_CODE_SUCCESS, payload: response.data });
+      const response = await api.post(`/user/greencode`, { email });
+
+      if (response.data.status === 'success') {
+          dispatch({ type: REGISTER_CODE_SUCCESS, payload: response.data.data }); // Use response.data.data for the actual code and ID
+      } else {
+          dispatch({ type: REGISTER_CODE_FAILURE, payload: response.data.message });
+      }
   } catch (error) {
       dispatch({ type: REGISTER_CODE_FAILURE, payload: error.message });
   }
 };
 
 
-// Connection Request action
- export const connectionRequest = (userId) => async (dispatch) => {
-  dispatch({ type: CONNECTION_REQUEST });
-   try {
-     const response = await api.post("/user/connect/request", { userId });
-     dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
-   } catch (error) {
-     dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
-   }
- };
 
- export const connectToVendor = (userId) => async (dispatch) => {
+// Connection Request action
+export const connectionRequest = (userId) => async (dispatch) => {
   dispatch({ type: CONNECTION_REQUEST });
-   try {
-     const response = await api.post("/user/connect/request", { userId });
-     dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data });
-   } catch (error) {
-     dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
-   }
- };
+  try {
+      const response = await api.post("/user/connect/request", { userId });
+
+      if (response.data.status === 'success') {
+          dispatch({ type: CONNECTION_REQUEST_SUCCESS, payload: response.data.message });
+      } else {
+          dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: response.data.message });
+      }
+  } catch (error) {
+      dispatch({ type: CONNECTION_REQUEST_FAILURE, payload: error.message });
+  }
+};
 
  // Get Referral Code action
  export const getReferralCode = (userId) => async (dispatch) => {
   dispatch({ type: GET_REFERRAL_CODE_REQUEST });
   try {
-    const response = await api.get(`/user/get/reffer/${userId}`);
-     dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data });
-   } catch (error) {
-    dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
-   }
- };
+      const response = await api.get(`/user/get/reffer/${userId}`);
+
+      if (response.data.status === 'success') {
+          dispatch({ type: GET_REFERRAL_CODE_SUCCESS, payload: response.data.data }); // Use response.data.data for the referral code
+      } else {
+          dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: response.data.message });
+      }
+  } catch (error) {
+      dispatch({ type: GET_REFERRAL_CODE_FAILURE, payload: error.message });
+  }
+};
+
 
 
  export const validateReferralCode = (referralCode) => async (dispatch) => {
@@ -269,15 +277,15 @@ export const acceptCode = (code) => async (dispatch) => {
 export const userConnections = () => async (dispatch) => {
   dispatch({ type: FETCH_USER_DATA_REQUEST });
   try {
-    const response = await api.get("/user/connections");
+      const response = await api.get("/user/connections");
 
-    if (response.data.status === "success") {
-      const user = response.data.data;
-      dispatch({ type: FETCH_USER_DATA_SUCCESS, payload: user });
-    } else {
-      dispatch({ type: FETCH_USER_DATA_FAILURE, payload: response.data.message });
-    }
+      if (response.data.status === "success") {
+          const connections = response.data.data; // Renamed for clarity
+          dispatch({ type: FETCH_USER_DATA_SUCCESS, payload: connections });
+      } else {
+          dispatch({ type: FETCH_USER_DATA_FAILURE, payload: response.data.message });
+      }
   } catch (error) {
-    dispatch({ type: FETCH_USER_DATA_FAILURE, payload: error.message });
+      dispatch({ type: FETCH_USER_DATA_FAILURE, payload: error.message });
   }
 };

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ActivityIndicator,TextInput, FlatList, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { fetchUsers,addModerator, deleteUser } from '../../redux/actions/admin'; // Adjust the path as necessary
+import { fetchUsers,addModerator } from '../../redux/actions/admin'; 
+import { removeMember } from '../../redux/actions/squads';
 import { Swipeable } from 'react-native-gesture-handler';
 
 const SquadMembers = ({ setConnects }) => {
@@ -24,7 +25,7 @@ const SquadMembers = ({ setConnects }) => {
   };
 
   const handleDeleteUser = (userId) => {
-    dispatch(deleteUser(userId)); // Dispatch deleteUser action
+    dispatch(removeMember(userId)); // Dispatch deleteUser action
     setConnects(prev => prev - 1); // Decrement connects
   };
 

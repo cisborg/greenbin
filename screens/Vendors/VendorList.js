@@ -11,6 +11,8 @@ import {
   Animated,
   Dimensions,
   RefreshControl,
+  Platform,
+  StatusBar,
   Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';

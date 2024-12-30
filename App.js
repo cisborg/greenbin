@@ -255,28 +255,32 @@ const App = () => {
   if (!fontsLoaded || error) {
     return (
       <View style={styles.container}>
-        <Text>Loading Fonts...</Text> {/* You can show a spinner or loading message */}
+        <Text>Loading Fonts...</Text> 
       </View>
     );
   }
 
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={Color.colorBlack} barStyle="light-content" />
-      {incomingCall ? (
-        <IncomingCallScreen call={incomingCall} onClose={() => setIncomingCall(null)} />
-      ) : (
-        <Provider store={store}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </GestureHandlerRootView>
-        </Provider>
-      )}
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+    <StatusBar backgroundColor={Color.colorLimegreen_200} barStyle="light-content" />
+    {isSplashVisible ? (
+      <Splash onFinish={handleSplashFinish} />
+    ) : (
+      <Provider store={store}>
+        {incomingCall ? (
+          <IncomingCallScreen call={incomingCall} onClose={() => setIncomingCall(null)} />
+        ) : (
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        )}
+      </Provider>
+    )}
+  </GestureHandlerRootView>
+  
   );
+  
 };
 
 
@@ -373,14 +377,9 @@ const App = () => {
       <Stack.Screen name="CallPage" component={CallScreen} options={{ headerShown: false }} />
       <Stack.Screen name="IncomingCall" component={IncomingCallScreen} options={{ headerShown: false }} />
 
-
-
-
     </Stack.Navigator>
     );
-
    };
-
 
 export default App;
 

@@ -6,6 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 
+
+const { width } = Dimensions.get('window');
+
 const PaymentConfirmed = () => {
     const navigation = useNavigation();
     const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity value
@@ -30,7 +33,6 @@ const PaymentConfirmed = () => {
     }, [fadeAnim]);
 
     // Get device dimensions
-    const { width } = Dimensions.get('window');
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -71,8 +73,8 @@ const styles = StyleSheet.create({
         width: '100%', // Full width
     },
     image: {
-        width: 250,
-        height: 250,
+        width: width * 0.2,
+        height: width * 0.2,
         marginBottom: 25,
     },
     title: {

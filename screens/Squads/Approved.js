@@ -11,8 +11,9 @@ const { width } = Dimensions.get('window');
 
 const Approved = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { users, loading, error } = useSelector((state) => ({ 
-    users: state.auth.users, loading: state.auth.loading, error: state.auth.error})); // Adjust the state structure as needed
+  const { users } = useSelector((state) => state.auth.users); 
+  const {  loading } = useSelector((state) => state.auth.loading); 
+  const {  error } = useSelector((state) => state.auth.error); 
 
   useEffect(() => {
     dispatch(fetchUsers());

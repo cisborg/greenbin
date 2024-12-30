@@ -16,11 +16,10 @@ const { width, height } = Dimensions.get('window');
 const ViewSquadScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { squadData, loading, error } = useSelector(state => ({
-    squadData: state.squads.squadData,
-    loading: state.squads.loading,
-    error: state.squads.error,
-  })); // Adjust based on your state structure
+  const { squadData } = useSelector(state => state.squads.squadData ); // Adjust based on your state structure
+  const { loading } = useSelector(state => state.squads.loading ); // Adjust based on your state structure
+  const { error } = useSelector(state => state.squads.error ); // Adjust based on your state structure
+
   const [isModalVisible, setModalVisible] = useState(false);
   const userId = useSelector(state => state.auth.id); //
 

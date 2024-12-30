@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import FlashSale from "../e-Commerce/FlashSale";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from 'react-redux'; 
-import { connectToVendor } from "../../redux/actions/authentication";
+import { followVendor } from "../../redux/actions/authentication";
 import { getAllVendors } from '../../redux/actions/vendorAction'; // Import the action
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Color, FontFamily } from "../../GlobalStyles"; // Assuming your GlobalStyles file has required styles
@@ -42,7 +42,7 @@ const banners = [
   { uri: "https://your-image-url.com/connect.png" },
 ];
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 export default function HomePageExistingUser() {
   const navigation = useNavigation();
@@ -53,7 +53,12 @@ export default function HomePageExistingUser() {
   const [loading, setLoading] = React.useState(true); // Loading state
   const dispatch = useDispatch();
 
-  const { vendors, loading: vendorsLoading } = useSelector(state => state.vendor);
+  const { vendors,  } = useSelector(state => state.vendor.vendors);
+  const {  vendorsLoading } = useSelector(state => state.vendor.loading);
+  const {  error } = useSelector(state => state.vendor.error);
+
+
+
 
   React.useEffect(() => {
     dispatch(getAllVendors());
@@ -81,7 +86,7 @@ export default function HomePageExistingUser() {
     }));
 
     // Dispatch the connectToVendor action
-    dispatch(connectToVendor(vendorId));
+    dispatch(followVendor(vendorId));
 
     // Simulate connection success
     setTimeout(() => {
@@ -131,11 +136,24 @@ export default function HomePageExistingUser() {
     </View>
   );
 
-  if (loading) {
+  if (vendorsLoading) {
     return (
       <View style={styles.loadingContainer}>
         <Lottie 
           source={require('../../assets/lottie/homy.json')} // Adjust path to your Lottie file
+          autoPlay 
+          loop 
+          style={styles.lottie} // Optional: add styles if needed
+        />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Lottie 
+          source={require('../../assets/lottie/errorLottie.json')} // Adjust path to your Lottie file
           autoPlay 
           loop 
           style={styles.lottie} // Optional: add styles if needed

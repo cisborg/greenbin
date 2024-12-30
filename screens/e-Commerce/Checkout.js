@@ -2,8 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet, Alert, Share, StatusBar, ActivityIndicator } from 'react-native';
 import { Color } from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useDispatch, useSelector } from'react-redux';
-import { fetchTiers } from '../../redux/actions/rewards';
+import { useDispatch  } from'react-redux';
 import { requestPayment } from '../../redux/actions/payments';
 
 const Checkout = () => {
@@ -18,20 +17,8 @@ const Checkout = () => {
   const [mobileNumber, setMobileNumber] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
   const dispatch = useDispatch();
-  const { tiers } = useSelector((state) => state.tiers);
   const [loading, setLoading] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState(''); // Example total price
-
-  // Determine tier based on points
-
-  useEffect(() => {
-    dispatch(fetchTiers());
-  }, [dispatch]);
-
-  const getTierInfo = () => {
-    const tier = tiers.find(t => totalPrice >= t.min && totalPrice < t.max);
-    return tier ? { name: tier.name, value: tier.value } : { name: "Unknown", value: 0 };
-  };
 
   const handlePayment = () => {
     // Validate user input based on the selected payment method
@@ -190,7 +177,6 @@ const Checkout = () => {
       Alert("Error", "Failed to share the payment request.");
     }
   };
-  const tierInfo = getTierInfo();
 
   return (
     <View style={styles.container}>
@@ -203,14 +189,6 @@ const Checkout = () => {
       </View>
 
       <Text style={styles.totalPrice}>Total: GCPs {totalPrice}</Text>
-
-      {/* Tier Container */}
-      <View style={styles.tierContainer}>
-        <Text style={styles.tierName}>{tierInfo.name}</Text>
-        <Text style={styles.tierMessage}>
-          Congratulations, you have earned the {tierInfo.name} tier worth {tierInfo.value} points. Shop more goods to earn higher points.
-        </Text>
-      </View>
 
       <Text style={styles.label}>Select Payment Method</Text>
       <View style={styles.paymentOptions}>
@@ -285,21 +263,7 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     marginBottom: 15,
   },
-  tierContainer: {
-    padding: 15,
-    backgroundColor: '#f0f8ff',
-    borderRadius: 8,
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  tierName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  tierMessage: {
-    textAlign: 'center',
-    marginTop: 5,
-  },
+ 
   label: {
     fontSize: 14,
     marginBottom: 8,

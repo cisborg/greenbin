@@ -10,44 +10,40 @@ import { RefreshControl } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import LottieView from 'lottie-react-native';
-import { fetchProducts, followVendor, unfollowVendor, addFavorite, addToCart } from '../../redux/actions/products';
+import { fetchProducts, subscribeProduct } from '../../redux/actions/products';
+import { followVendor, unfollowVendor } from '../../redux/actions/vendorAction';
+import { addToCart } from '../../redux/actions/cart'; // Import necessary actions
+
 
 
 const { width, height } = Dimensions.get('window');
 
 const StoreHeader = ({ vendor }) => {
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [followText, setFollowText] = useState('Follow');
-    const [followers, setFollowers] = useSelector((state) => state.vendor.vendors.followers || 0);
-    const dispatch = useDispatch();
+  const isFollowing = vendor.followed; // Get the followed status directly from the vendor   
+  const followers = vendor.followers || 0;
+  const [followText, setFollowText] = useState(isFollowing ? 'Connected' : 'Follow');
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setFollowers(vendor.followers);
     }, [vendor.followers]);
 
     const handleFollow = () => {
-        setIsFollowing(true);
-        dispatch(followVendor(vendor.id)); // Dispatch follow action
-        setTimeout(() => {
-            setIsFollowing(false);
-            setFollowers(prevFollowers => {
-                setFollowText('Connected');
-                return prevFollowers + 1;
-            });
-        }, 300);
-    };
+      if (loading) return; // Prevent multiple clicks
+      setLoading(true);
+      dispatch(followVendor(vendor.id)); // Dispatch follow action
+      setFollowText('Connected'); // Update follow text immediately
+      setLoading(false);
+  };
 
-    const handleUnfollow = () => {
-        setIsFollowing(true);
-        dispatch(unfollowVendor(vendor.id)); // Dispatch unfollow action
-        setTimeout(() => {
-            setIsFollowing(false);
-            setFollowers(prevFollowers => {
-                setFollowText('Follow');
-                return prevFollowers - 1;
-            });
-        }, 300);
-    };
+  const handleUnfollow = () => {
+    if (loading) return; // Prevent multiple clicks
+    setLoading(true);
+    dispatch(unfollowVendor(vendor.id)); // Dispatch unfollow action
+    setFollowText('Follow'); // Update follow text immediately
+    setLoading(false);
+};
 
     return (
         <View style={styles.storeHeaderContainer}>
@@ -58,10 +54,9 @@ const StoreHeader = ({ vendor }) => {
             />
             <View style={styles.storeInfoContainer}>
                 <Text style={styles.storeName}>{vendor.name}</Text>
-                <Text style={styles.storeDetails}>Total {vendor.productsCount} products | {followers} followers</Text>
+                <Text style={styles.storeDetails}>Total {vendor.totalProducts} products | {followers} followers</Text>
                 <View style={styles.ratingContainer}>
-                    <Text style={styles.storeScore}>Score: {vendor.score}</Text>
-                    <Text style={styles.ratingsCount}>({vendor.ratingsCount} Ratings)</Text>
+                    <Text style={styles.ratingsCount}>({vendor.totalRatings} Ratings)</Text>
                 </View>
             </View>
             <TouchableOpacity 
@@ -83,13 +78,15 @@ const ProductCard = ({ item }) => {
     const swipeableRef = useRef(null);
     const dispatch = useDispatch(); // Get the dispatch function from Redux
 
-    const handleAddToFavorites = () => {
-      dispatch(addFavorite(item)); // Dispatch add to favorites action
-    };
-  
-    const handleAddToCart = () => {
-      dispatch(addToCart(item)); // Dispatch add to cart action
-    };
+   const subscribed = () => {
+       dispatch(subscribeProduct(item)); // Dispatch add to favorites action
+     };
+   
+     const handleAddToCart = () => {
+       dispatch(addToCart(item)); // Dispatch add to cart action
+   
+     };
+     
 
     return (
         <Swipeable
@@ -99,15 +96,19 @@ const ProductCard = ({ item }) => {
                     <TouchableOpacity onPress={ handleAddToCart}>
                         <Ionicons name="cart-outline" size={24} color="orange" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={ handleAddToFavorites}>
+                    <TouchableOpacity onPress={subscribed}>
                         <Ionicons name="heart-outline" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
             )}
         >
             <TouchableOpacity style={styles.card}>
-                <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
-                <View style={styles.infoContainer}>
+                  <FastImage 
+                      source={{ uri: item.images[0] }} // Use the first image (ensure the array is not empty)
+                      style={styles.productImage} 
+                      resizeMode={FastImage.resizeMode.cover} 
+                  />         
+                   <View style={styles.infoContainer}>
                     <Text style={styles.productTitle}>{item.title}</Text>
                     {item.originalPrice && (
                         <View style={styles.priceContainer}>
@@ -117,14 +118,13 @@ const ProductCard = ({ item }) => {
                         </View>
                     )}
                     {!item.originalPrice && <Text style={styles.productPrice}>{item.price} GCP</Text>}
-                    <Text style={styles.productBrand}>{item.brand}</Text>
-                    {item.isBrandOfficial && <Text style={styles.officialBadge}>Brand Official</Text>}
-                    <Text style={styles.ratingText}>{item.rating} ({item.reviewCount} reviews)</Text>
+                    <Text style={styles.productBrand}>{item.brands.join(', ')}</Text>                    {item.isBrandOfficial && <Text style={styles.officialBadge}>Brand Official</Text>}
+                    <Text style={styles.ratingText}>{item.reviewCount} ({item.reviewCount} reviews)</Text>
                     <View style={styles.ratingContainer}>
                         {[...Array(Math.floor(item.rating))].map((_, index) => (
                             <Ionicons key={index} name="star" size={16} color="#FFD700" />
                         ))}
-                        {item.rating % 1 !== 0 && <Ionicons name="star-half" size={16} color="#FFD700" />}
+                        {item.reviewCount % 1 !== 0 && <Ionicons name="star-half" size={16} color="#FFD700" />}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -137,14 +137,14 @@ const Products = () => {
     const products = useSelector(state => state.products.products);
     const loading = useSelector(state => state.products.loading);
     const error = useSelector(state => state.products.error);
-    const brands = useSelector(state => state.products.brands); // Fetch brands from Redux
+    const brands = useSelector(state => state.products.products.brands); // Fetch brands from Redux
     const vendor = useSelector(state => state.vendor.currentVendor);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [selectedSort, setSelectedSort] = useState('Best Match');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [isScreenLoading, setIsScreenLoading] = useState(true);
-    const [cartCount, setCartCount] = useState(0);
+    const cartCount = useSelector(state => state.cart.count);
     const [brandFilters, setBrandFilters] = useState({});
     const [priceRanges, setPriceRanges] = useState({ low: false, medium: false, high: false });
     const animation = useRef(new Animated.Value(0)).current;
@@ -164,15 +164,7 @@ const Products = () => {
         setIsRefreshing(false);
     };
 
-    const addToFavorites = (item) => {
-        dispatch(addFavorite(item)); // Dispatch add favorite action
-    };
-
-    const addToCart = (item) => {
-        dispatch(addToCart(item)); // Dispatch add to cart action
-        setCartCount(cartCount + 1);
-    };
-
+   
     const handleSortChange = (value) => {
         setSelectedSort(value);
         // Sorting logic can remain localized
@@ -264,7 +256,7 @@ const Products = () => {
                   <FlatList
                       data={products}
                       keyExtractor={(item) => item.id}
-                      renderItem={({ item }) => <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />}
+                      renderItem={({ item }) => <ProductCard item={item}  />}
                       numColumns={2}
                       onEndReachedThreshold={0.5}
                       ListFooterComponent={renderFooter}
@@ -426,11 +418,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 2,
   },
-  storeScore: {
-    fontSize: 14,
-    color: '#FF9800',
-    marginRight: 4,
-  },
+ 
   ratingsCount: {
     fontSize: 14,
     color: '#888',

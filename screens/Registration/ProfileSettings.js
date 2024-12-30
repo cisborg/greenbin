@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../redux/actions/admin'; 
 import { deleteUser } from '../../redux/actions/admin'; // Import the deleteUser action
 import { Color } from "../../GlobalStyles";
+import Toast from "../../helpers/Toast";
 
 const CustomInput = ({ icon, placeholder, value, onChangeText, secureTextEntry }) => (
   <View style={styles.inputContainer}>
@@ -56,6 +57,9 @@ const ProfileSettings = () => {
   const [twoStepVerification, setTwoStepVerification] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -72,17 +76,23 @@ const ProfileSettings = () => {
 
   const handleSaveProfile = () => {
     if (!validateName(username)) {
-      Alert.alert("Invalid Username", "Username should only contain letters and numbers.");
+      setToastMessage("Invalid Username", "Username should only contain letters and numbers.");
+      setToastType("error");
+      setToastVisible(true);
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      setToastMessage("Invalid Email", "Please enter a valid email address.");
+      setToastType("error");
+      setToastVisible(true);
       return;
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
+      setToastMessage("Invalid Phone Number", "Please enter a valid 10-digit phone number.");
+      setToastType("error");
+      setToastVisible(true);
       return;
     }
 
@@ -95,9 +105,18 @@ const ProfileSettings = () => {
       profilePicture,
     };
     
-    dispatch(updateUser(userId, userData));
-    Alert.alert("Profile Updated", "Your profile settings have been saved.");
-    navigation.navigate('ProfilePage', {username: username});
+    dispatch(updateUser(userId, userData))
+    .then(() => {
+      setToastMessage("Profile updated successfully!");
+      setToastType("success");
+      setToastVisible(true);
+      navigation.navigate('ProfilePage', { username });
+    })
+    .catch((error) => {
+      setToastMessage("Failed to update profile. Please try again.");
+      setToastType(error);
+      setToastVisible(true);
+    });
   };
 
   const handleDeleteAccount = () => {
@@ -109,9 +128,18 @@ const ProfileSettings = () => {
         {
           text: "Delete",
           onPress: () => {
-            dispatch(deleteUser(userId)); // Dispatch the deleteUser action
-            Alert.alert("Account Deleted", "Your account has been deleted.");
-            navigation.navigate("Start"); // Navigate to start page after deletion
+            dispatch(deleteUser(userId))
+            .then(() => {
+              setToastMessage("Account deleted successfully.");
+              setToastType("success");
+              setToastVisible(true);
+              navigation.navigate("Start");
+            })
+            .catch((error) => {
+              setToastMessage("Failed to delete account. Please try again.");
+              setToastType(error);
+              setToastVisible(true);
+            });
           },
         },
       ]
@@ -229,6 +257,14 @@ const ProfileSettings = () => {
           >
             <Text style={styles.buttonText}>Delete Account</Text>
           </TouchableOpacity>
+
+          {toastVisible && (
+          <Toast
+            message={toastMessage}
+            type={toastType}
+            onClose={() => setToastVisible(false)}
+          />
+        )}
         </ScrollView>
       </Animated.View>
     </SafeAreaView>

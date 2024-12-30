@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity,Dimensions, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, ActivityIndicator, Animated, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import FastImage from 'react-native-fast-image';
@@ -13,19 +13,23 @@ import { Swipeable } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('window');
 
-import { fetchProducts, fetchBrands, addFavorite, addToCart } from '../../redux/actions/products'; // Import necessary actions
+import { fetchProducts, subscribeProduct } from '../../redux/actions/products'; // Import necessary actions
+import { addToCart } from '../../redux/actions/cart'; // Import necessary actions
 
 const ProductCard = ({ item }) => {
-  const handleAddToFavorites = () => {
-    dispatch(addFavorite(item)); // Dispatch add to favorites action
+  const dispatch = useDispatch(); // Use useDispatch to access Redux actions
+
+  const subscribed = () => {
+    dispatch(subscribeProduct(item)); // Dispatch add to favorites action
   };
 
   const handleAddToCart = () => {
     dispatch(addToCart(item)); // Dispatch add to cart action
+
   };
   const renderRightActions = () => (
     <View style={styles.swipeActions}>
-      <TouchableOpacity onPress={handleAddToFavorites} style={styles.actionButton}>
+      <TouchableOpacity onPress={subscribed} style={styles.actionButton}>
         <Ionicons name="heart-outline" size={24} color="red" />
       </TouchableOpacity>
       <TouchableOpacity onPress={handleAddToCart} style={styles.actionButton}>
@@ -33,11 +37,16 @@ const ProductCard = ({ item }) => {
       </TouchableOpacity>
     </View>
   );
+
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <View style={styles.card}>
-        <FastImage source={item.image} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
-        <View style={styles.infoContainer}>
+          <FastImage 
+            source={{ uri: item.images[0] }} // Use the first image (ensure the array is not empty)
+            style={styles.productImage} 
+            resizeMode={FastImage.resizeMode.cover} 
+        />          
+      <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
           {item.originalPrice && (
             <View style={styles.priceContainer}>
@@ -54,21 +63,19 @@ const ProductCard = ({ item }) => {
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, loading,error,brands }= useSelector(state => ({
-    products: state.products.products,
-    loading: state.products.loading,
-    error: state.products.error,
-    brands: state.products.products.brands,
-  }));
+  const { products } = useSelector(state => state.products.products);
+  const { brands } = useSelector(state => state.products.products.brands);
+  const { loading } = useSelector(state => state.products.loading);
+  const { error } = useSelector(state => state.products.error);
+  const cartCount = useSelector(state => state.cart.count);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Best Match');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isScreenLoading, setIsScreenLoading] = useState(true);
-  const [favorites, setFavorites] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
   const [brandFilters, setBrandFilters] = useState({});
   const [priceRanges, setPriceRanges] = useState({ low: false, medium: false, high: false });
+  const [filteredProducts, setFilteredProducts] = useState(products); // State for filtered products
   const animation = useRef(new Animated.Value(0)).current;
 
   const navigation = useNavigation();
@@ -76,7 +83,6 @@ const Products = () => {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchProducts()); // Fetch products from the backend
-      await dispatch(fetchBrands()); // Fetch brands from the backend
       setIsScreenLoading(false);
     };
     fetchData();
@@ -90,67 +96,57 @@ const Products = () => {
     }).start();
   }, []);
 
+  useEffect(() => {
+    // Update filtered products whenever searchQuery or products change
+    const filtered = products.filter(product => 
+      product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchQuery, products]);
+
   const refreshProducts = () => {
     setIsRefreshing(true);
     dispatch(fetchProducts()); // Refresh products from the backend
     setIsRefreshing(false);
   };
 
-  const addToFavorites = (item) => {
-    dispatch(addFavorite(item)); // Dispatch add favorite action
-    setFavorites([...favorites, item]);
-  };
-
-  const addToCart = (item) => {
-    dispatch(addToCart(item)); // Dispatch add to cart action
-    setCartCount(cartCount + 1);
-  };
-
   const sortProducts = (sortOrder) => {
     let sortedProducts;
     if (sortOrder === 'PriceLowHigh') {
-      sortedProducts = [...products].sort((a, b) => a.price - b.price);
+      sortedProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
     } else if (sortOrder === 'PriceHighLow') {
-      sortedProducts = [...products].sort((a, b) => b.price - a.price);
+      sortedProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
     }
-    return sortedProducts;
+    setFilteredProducts(sortedProducts); // Update filtered products
   };
 
   const filterProducts = () => {
-    let filteredProducts = products;
+    let filtered = products;
 
     // Filter by brands
     const selectedBrands = Object.keys(brandFilters).filter(brand => brandFilters[brand]);
     if (selectedBrands.length > 0) {
-      filteredProducts = filteredProducts.filter(product => selectedBrands.includes(product.brand));
+      filtered = filtered.filter(product => selectedBrands.includes(product.brand));
     }
 
     // Filter by price ranges
     if (priceRanges.low) {
-      filteredProducts = filteredProducts.filter(product => product.price < 1000);
+      filtered = filtered.filter(product => product.price < 1000);
     }
     if (priceRanges.medium) {
-      filteredProducts = filteredProducts.filter(product => product.price >= 1000 && product.price < 1500);
+      filtered = filtered.filter(product => product.price >= 1000 && product.price < 1500);
     }
     if (priceRanges.high) {
-      filteredProducts = filteredProducts.filter(product => product.price >= 1500);
+      filtered = filtered.filter(product => product.price >= 1500);
     }
 
-    return filteredProducts;
+    setFilteredProducts(filtered); // Update filtered products
+    setShowFilterModal(false); // Close modal after applying filters
   };
 
   const handleSortChange = (value) => {
     setSelectedSort(value);
-    const sortedProducts = sortProducts(value);
-    setProducts(sortedProducts); // Update products with sorted results
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filteredProducts = products.filter(product => 
-      product.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setProducts(filteredProducts);
+    sortProducts(value);
   };
 
   const renderFooter = () => {
@@ -168,7 +164,7 @@ const Products = () => {
             loop
             style={styles.lottie}
           />
-    </View>  
+        </View>  
       ) : (
         <Animated.View style={[styles.container, { opacity: animation }]}>
           {/* Header Section */}
@@ -180,7 +176,7 @@ const Products = () => {
               style={styles.searchBar} 
               placeholder="Search products..." 
               value={searchQuery} 
-              onChangeText={handleSearch} 
+              onChangeText={setSearchQuery} // Directly update search query
             />
             <TouchableOpacity onPress={() => navigation.navigate('cart')}>
               <FontAwesome5 name="cart-plus" size={24} color="black" />
@@ -203,20 +199,20 @@ const Products = () => {
 
           {error ? (
             <View style={styles.errorContainer}>
-            <LottieView
-              source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
-              autoPlay
-              loop
-              style={styles.lottie}
-            />
-            <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
-        </View>
+              <LottieView
+                source={require('../../assets/lottie/errorLottie.json')} // Replace with your error animation file
+                autoPlay
+                loop
+                style={styles.lottie}
+              />
+              <Text style={styles.errorMessage}>Oops! Something went wrong.</Text>
+            </View>
           ) : (
             <FlatList
-              data={filterProducts()} // Apply filtering here
+              data={filteredProducts} // Use filtered products here
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <ProductCard item={item} addToFavorites={addToFavorites} addToCart={addToCart} />
+                <ProductCard item={item} />
               )}
               numColumns={2}
               onEndReachedThreshold={0.5}

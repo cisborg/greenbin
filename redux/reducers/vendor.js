@@ -9,6 +9,9 @@ import {
   UNFOLLOW_VENDOR_REQUEST,
   UNFOLLOW_VENDOR_SUCCESS,
   UNFOLLOW_VENDOR_FAILURE,
+  FOLLOW_VENDOR_REQUEST,
+  FOLLOW_VENDOR_SUCCESS,
+  FOLLOW_VENDOR_FAILURE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -20,7 +23,6 @@ const initialState = {
       location: '',
       description: '',
       followers: 0,
-      connections: [],
       image: null,
       products: '',
       totalRatings: 0,
@@ -29,7 +31,7 @@ const initialState = {
       followed: false,
     },
   ],
-  followedVendors: [], // Optional: You can keep a separate list if needed
+  followedVendors: [],
   loading: false,
   error: null,
 };
@@ -61,12 +63,11 @@ const vendorReducer = (state = initialState, action) => {
         error: null,
       };
     case GET_ALL_VENDORS_SUCCESS:
-      // Assuming action.payload contains vendors with the followed status
       return {
         ...state,
         vendors: action.payload.map(vendor => ({
           ...vendor,
-          followed: vendor.followed || false, // Ensure followed is a boolean
+          followed: vendor.followed || false,
         })),
         loading: false,
       };
@@ -76,12 +77,12 @@ const vendorReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
-      case FETCH_FOLLOWED_VENDORS_SUCCESS:
-        const followedVendors = state.vendors.filter(vendor => vendor.followed);
-        return {
-          ...state,
-          followedVendors: followedVendors, // Populate followed vendors from the existing vendors
-        };
+    case FETCH_FOLLOWED_VENDORS_SUCCESS:
+      const followedVendors = state.vendors.filter(vendor => vendor.followed);
+      return {
+        ...state,
+        followedVendors: followedVendors,
+      };
     case UNFOLLOW_VENDOR_REQUEST:
       return {
         ...state,
@@ -94,10 +95,31 @@ const vendorReducer = (state = initialState, action) => {
         vendors: state.vendors.map(vendor =>
           vendor.id === action.payload ? { ...vendor, followed: false } : vendor
         ),
-        followedVendors: state.followedVendors.filter(vendor => vendor.id !== action.payload), // Remove from followed vendors
+        followedVendors: state.followedVendors.filter(vendor => vendor.id !== action.payload),
         loading: false,
       };
     case UNFOLLOW_VENDOR_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case FOLLOW_VENDOR_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FOLLOW_VENDOR_SUCCESS:
+      return {
+        ...state,
+        vendors: state.vendors.map(vendor =>
+          vendor.id === action.payload ? { ...vendor, followed: true, followers: vendor.followers + 1 } : vendor
+        ),
+        followedVendors: [...state.followedVendors, state.vendors.find(vendor => vendor.id === action.payload)],
+        loading: false,
+      };
+    case FOLLOW_VENDOR_FAILURE:
       return {
         ...state,
         loading: false,
