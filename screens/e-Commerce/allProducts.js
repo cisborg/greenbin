@@ -3,22 +3,30 @@ import { View, Text, StyleSheet, SectionList, FlatList, TouchableOpacity, Dimens
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux'; 
-import { fetchProducts } from '../../redux/actions/products'; 
+import { fetchRecommended, fetchLatest, fetchPopular } from '../../redux/actions/products'; 
 import LottieView from 'lottie-react-native';
 
 const { width,height } = Dimensions.get('window');
 
 const ItemGridScreen = ({ navigation }) => {
     const dispatch = useDispatch(); 
-    const { products, loading, error } = useSelector(state => ({
-        products: state.products.products, 
-        loading: state.products.loading,
-        error: state.products.error
-    }));
+    const recommended  = useSelector(state =>  state.products.recommended );
+    const  latest = useSelector(state =>  state.products.latest);
+    const  popular = useSelector(state =>  state.products.popular);
+    const  loading = useSelector(state => state.products.loading);
+    const  error = useSelector(state => state.products.error);
 
-    useEffect(() => {
-        dispatch(fetchProducts());
-    }, [dispatch]);
+  
+
+  useEffect(() => {
+    Promise.all([
+        dispatch(fetchRecommended()),
+        dispatch(fetchLatest()),
+        dispatch(fetchPopular())
+    ]);
+}, [dispatch]);
+
+  
 
     const handleProductClick = (item) => {
         navigation.navigate('productDetail', { product: item });
@@ -59,21 +67,13 @@ const ItemGridScreen = ({ navigation }) => {
     );
 
     const prepareData = () => {
-        return [
-            {
-                title: "Recommended",
-                data: products.filter(product => product.category === 'recommended'), 
-            },
-            {
-                title: "Latest in Store",
-                data: products.filter(product => product.category === 'latest'), 
-            },
-            {
-                title: 'Mostly Purchased',
-                data: products.filter(product => product.category === 'popular'), 
-            },
-        ];
-    };
+      return [
+          { title: "Recommended", data: recommended ||  []},
+          { title: "Latest in Store", data: latest ||  []},
+          { title: 'Mostly Purchased', data: popular ||  []},
+      ];
+  };
+  
 
     return (
         <View style={styles.container}>
@@ -101,7 +101,7 @@ const ItemGridScreen = ({ navigation }) => {
                     sections={prepareData()}
                     keyExtractor={(item, index) => `${item.title}-${index}`}  
                     renderSectionHeader={({ section }) => renderSection({ section })}
-                    renderItem={() => null} 
+                    renderItem={renderItem} 
                     stickySectionHeadersEnabled={false}
                 />
             )}

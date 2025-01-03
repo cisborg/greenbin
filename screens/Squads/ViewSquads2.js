@@ -17,9 +17,9 @@ const { width, height } = Dimensions.get('window');
 const ViewSquad2Screen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-const { squadData } = useSelector(state => state.squads.squadData ); // Adjust based on your state structure
-  const { loading } = useSelector(state => state.squads.loading ); // Adjust based on your state structure
-  const { error } = useSelector(state => state.squads.error ); // Adjust based on your state structure  const [isModalVisible, setModalVisible] = useState(false);
+const squadData  = useSelector(state => state.squads.squadData ); // Adjust based on your state structure
+  const  loading  = useSelector(state => state.squads.loading ); // Adjust based on your state structure
+  const error  = useSelector(state => state.squads.error ); // Adjust based on your state structure  const [isModalVisible, setModalVisible] = useState(false);
   const userId = useSelector(state => state.auth.id); //
 
   // Animation for blinking description

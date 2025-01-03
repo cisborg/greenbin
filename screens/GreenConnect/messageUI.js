@@ -32,7 +32,10 @@ const formatMessageTime = (timestamp) => {
 
 const MessagesScreen = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize dispatch
-  const { chats, loading, error } = useSelector(state => state.chats); // Get chats, loading, and error from the Redux store
+  const chats = useSelector((state) => state.chat.chats) || [];
+  const  loading = useSelector(state => state.chatloading); // Get chats, loading, and error from the Redux store
+  const  error  = useSelector(state => state.chat.error); // Get chats, loading, and error from the Redux store
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const MessagesScreen = ({ navigation }) => {
 
   const handleNavigateToChat = (user) => {
     try {
-      navigation.navigate('chatConnect', { userName: user.userName });
+      navigation.navigate('chatConnect', { userName: user?.userName });
     } catch (error) {
       alert("Navigation failed. Please try again.");
     }
@@ -95,7 +98,7 @@ const MessagesScreen = ({ navigation }) => {
     return (
       <View style={styles.errorContainer}>
         <LottieView
-          source={require('../../assets/lottie/flashed.json')} // Adjust the path to your Lottie file
+          source={require('../../assets/lottie/gift.json')} // Adjust the path to your Lottie file
           autoPlay
           loop
           style={styles.lottie}
@@ -159,13 +162,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   lottie: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   errorText: {
     marginTop: 10,
     textAlign: 'center',
-    color: '#ff0000',
+    color: 'green',
+    fontSize: 14,
   },
   card: {
     flexDirection: 'row',

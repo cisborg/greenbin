@@ -11,9 +11,9 @@ const PostFeed = () => {
   const fadeAnim = useState(new Animated.Value(0))[0];
 
   // Get posts from Redux state
-  const { posts } = useSelector((state) => state.posts.posts);
-  const {  loading } = useSelector((state) => state.posts.loading);
-  const {  error } = useSelector((state) => state.posts.error);
+  const posts  = useSelector((state) => state.posts.posts);
+  const loading  = useSelector((state) => state.posts.loading);
+  const error = useSelector((state) => state.posts.error);
 
 
   useEffect(() => {

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'; // Import useDispatch and useSelector
 import FastImage from 'react-native-fast-image';
 import { Color } from '../../GlobalStyles'; // Adjust the import path as necessary
-import Animated, { Easing } from 'react-native-reanimated';
+import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { fetchUserData } from '../../redux/actions/authentication'; // Adjust the import path as necessary
 
 const JoinUsScreen = () => {
@@ -11,8 +11,11 @@ const JoinUsScreen = () => {
 
   // Fetch user information from Redux
   const userInfo = useSelector((state) => state.auth); // Access user state directly
-  const [animationValue, setAnimationValue] = useState(new Animated.Value(0));
+  const animationValue = useSharedValue(0);
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: animationValue.value,
+  }));
   // Fetch user data when component mounts
   useEffect(() => {
     dispatch(fetchUserData());
@@ -21,17 +24,12 @@ const JoinUsScreen = () => {
   // Start animation when userInfo changes
   useEffect(() => {
     if (userInfo.userId) {
-      Animated.timing(animationValue, {
-        toValue: 1,
-        duration: 4000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start();
+      animationValue.value = withTiming(1, { duration: 4000 });
     }
   }, [userInfo]);
 
   // Milestone criteria
-  const milestonesReached = userInfo.balance >= 1000 && userInfo.totalTiers >= 200;
+  const milestonesReached = userInfo?.points >= 1000 && userInfo?.totalTiers >= 200;
 
   return (
     <ScrollView style={styles.container}>
@@ -50,18 +48,22 @@ const JoinUsScreen = () => {
           resizeMode={FastImage.resizeMode.cover}
           style={styles.profileIcon}
         />
-        <Text style={styles.profileId}>User ID: {userInfo.userId}</Text>
+        <Text style={styles.profileId}>User ID: {userInfo?.userId}</Text>
       </View>
 
-      <Text style={styles.ecoPoints}>Your Eco Points: {userInfo.ecoPoints}</Text>
-      <Text style={styles.balance}>Personal Green Bank Balance: GCPS {userInfo.balance.toFixed(2)}</Text>
-      <Text style={styles.productsPurchased}>Purchases Tiers Earned: {userInfo.totalTiers}</Text>
+      <Text style={styles.ecoPoints}>Your Eco Points: {userInfo?.ecoPoints}</Text>
+      <Text style={styles.balance}>
+        Personal Green Bank Balance: GCPS {userInfo?.balance ? userInfo.balance.toFixed(2) : "0.00"}
+      </Text>
+      <Text style={styles.productsPurchased}>Purchases Tiers Earned: {userInfo?.totalTiers}</Text>
 
       <Text style={styles.description}>
         You are making a significant impact on the environment! Based on your achievements, you can join our NGO.
       </Text>
 
-      <Animated.View style={[styles.milestoneContainer, { opacity: animationValue }]}>
+      <View style={[styles.milestoneContainer, animatedStyle]}>
+        
+        
         {milestonesReached ? (
           <View>
             <Text style={styles.milestoneText}>Congratulations! You qualify to join our NGO.</Text>
@@ -77,7 +79,7 @@ const JoinUsScreen = () => {
             Keep up the good work! You need to reach the following milestones to join:
           </Text>
         )}
-      </Animated.View>
+      </View>
 
       <View style={styles.milestonesList}>
         <Text style={styles.milestone}>✔️ Squad Registration Fee: GPs 2500</Text>

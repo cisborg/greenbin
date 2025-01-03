@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo } from 'react';
 import { View, Text, TextInput,  FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,9 +7,12 @@ const BuyScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false); 
 
+
   const handleToggleSearch = () => {
-    setIsSearchVisible(!isSearchVisible); // Toggle search bar visibility
+    if (isSearchVisible) setSearchQuery(''); // Clear search when hiding
+    setIsSearchVisible(!isSearchVisible);
   };
+  
   
   // Jack's stats
   const jackStats = {
@@ -32,19 +35,25 @@ const BuyScreen = () => {
     navigation.navigate('SubscribedProducts'); // Navigate to Products.js
   };
 
+  const filteredShoppingLists = useMemo(() => {
+    return shoppingLists.filter(list => 
+      list.owner.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [shoppingLists, searchQuery]);
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.profileSection}>
         <Image source={{ uri: 'profile_picture_url' }} style={styles.profilePic} />
         <TouchableOpacity onPress={handleToggleSearch}>
-            <Text style={styles.icon}>🔍</Text>
+            <Text style={styles.icon}>search</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('ListCodeNotification')}>
-            <Text style={styles.icon}>🔔</Text>
+            <Text style={styles.icon}>note</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Products')}>
-            <Text style={styles.icon}>➕</Text> {/* Add icon */}
+            <Text style={styles.icon}>add</Text> {/* Add icon */}
         </TouchableOpacity>
     </View>
 
@@ -79,7 +88,7 @@ const BuyScreen = () => {
       )}
 
       <FlatList
-        data={shoppingLists.filter(list => list.owner.toLowerCase().includes(searchQuery.toLowerCase()))}
+        data={filteredShoppingLists}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card} onPress={() => handleJoinList(item.id)}>

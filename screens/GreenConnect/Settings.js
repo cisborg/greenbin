@@ -11,7 +11,9 @@ const settingsOptions = [
   { id: '3', title: 'Terms and Conditions', description: 'Familiarize with our app terms,policies regarding the use of our app', screen: 'LegalScreen' },
   { id: '4', title: 'Rate App', description: 'Give us feedback by rating our app', screen: 'AppRating' },
   { id: '5', title: 'Register as Vendor', description: 'Earn more boosters green gifts once you are vendor!', screen: 'VendorRegister' },
-  { id: '6', title: 'Get to Know Nature Diversity GreenBin', description: 'Learn about our niche', screen: 'AboutUs' },
+  { id: '6', title: 'Visit Nature Diversity', description: 'Learn about our niche', screen: 'AboutUs' },
+  { id: '7', title: 'Personal Savings Account ', description: 'Get Your Savings Account  Now', screen: 'AboutUs' },
+
 
 ];
 
@@ -78,22 +80,23 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
     backgroundColor: '#fff',
     borderRadius: 14,
-    marginBottom: 15,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 1,
+    marginHorizontal: 3
   },
   settingContent: {
     flex: 1,
   },
   settingTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   settingDescription: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#777',
   },
 });

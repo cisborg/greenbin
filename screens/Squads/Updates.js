@@ -18,11 +18,11 @@ const { width, height } = Dimensions.get('window');
 
 const NotificationsScreen = () => {
   const dispatch = useDispatch();
-  const {notifications,loading, error} = useSelector(state => ({
-    notifications: state.posts.notifications,
-    loading: state.posts.loading,
-    error: state.posts.error,
-  })); // Loading state from Redux
+ 
+    const notifications  = useSelector((state) =>  state.posts.notifications );
+    const loading  = useSelector((state) =>  state.posts.loading );
+    const error  = useSelector((state) =>  state.posts.error );
+  
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 

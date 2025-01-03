@@ -1,135 +1,112 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { StreamCall, StreamVideo, StreamVideoClient, useCallStateHooks } from '@stream-io/video-react-native-sdk';
 import Feather from '@expo/vector-icons/Feather';
-import Octicons from '@expo/vector-icons/Octicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import LottieView from 'lottie-react-native';
-import { StreamCall } from '@stream-io/video-react-native-sdk';
-import {
-  setUserStatus,
-  incrementTalkTime,
-  toggleMute,
-  toggleScreenSize,
-  resetCallState,
-} from '../../redux/actions/calls';
+import Config from 'react-native-config';
+import { initiateCall } from '../../redux/actions/calls'; // Import your action
 
-const fetchUserStatus = async () => 'On another call';
-const subscribeToUserStatus = (callback) => {
-  const interval = setInterval(() => callback('Available'), 10000);
-  return () => clearInterval(interval);
+// User Setup (JavaScript)
+const user = {
+  id: 1,
+  name: 'Dave',
+  image: 'https://getstream.io/random_svg/?id=cecilia&name=Cecilia',
 };
 
+const apiKey = Config.API_KEY;
+
 const CallScreen = () => {
+  const [callDetails, setCallDetails] = useState(null);
+  const [client, setClient] = useState(null); // State to store StreamVideoClient instance
+  const { useCallCallingState, useParticipantCount } = useCallStateHooks();
+  const callingState = useCallCallingState();
+  const participantCount = useParticipantCount();
+
   const dispatch = useDispatch();
-  const {
-    callStatus,
-    userStatus,
-    talkTime,
-    isMuted,
-    isSmallScreen,
-  } = useSelector((state) => state.call);
-
-  const [callDetails, setCallDetails] = useState(null); // For storing call details
-  const timerRef = useRef(null);
-
-  // Dummy token and streamId should be replaced  with actual data from the backend
-
-  const streamId = 'my-stream-id'; // This should come from Stream's API
-  const token = 'my_stream_token_here'; // Replace with your token from Stream API
+  const callData = useSelector((state) => state.calls); // Replace with actual state slice
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      const status = await fetchUserStatus();
-      dispatch(setUserStatus(status));
+    const fetchCallDetails = async () => {
+      try {
+        // Ensure token is available before dispatching
+        if (callData?.token && callData?.streamId) {
+          const details = { callId: 'default_9733eae8-2b03-4b6b-8154-4709a3ccf2ca', user, token: callData.token };
+          dispatch(initiateCall(details)); // Dispatch the action to initiate the call
+          setCallDetails(details); // Set the call details when available
+        } else {
+          console.error('Token or Stream ID is not available yet');
+        }
+      } catch (error) {
+        console.error('Error fetching call details:', error);
+      }
     };
-    fetchStatus();
 
-    const unsubscribe = subscribeToUserStatus((newStatus) => {
-      dispatch(setUserStatus(newStatus));
-    });
+    fetchCallDetails();
+  }, [dispatch, callData?.token]);
 
-    timerRef.current = setInterval(() => dispatch(incrementTalkTime()), 1000);
+  useEffect(() => {
+    // Set the client after call details are available
+    if (callDetails?.token && callDetails?.streamId) {
+      setClient(new StreamVideoClient({
+        apiKey,
+        user,
+        token: callDetails.token,
+      }));
+    }
+  }, [callDetails]);
 
-    //  set up voice call details should  come from the Stream API)
-    setCallDetails({
-      streamId,
-      token,
-      isAudioOnly: true, // Audio-only call
-    });
-
-    return () => {
-      clearInterval(timerRef.current);
-      unsubscribe();
-    };
-  }, [dispatch]);
+  useEffect(() => {
+    // Ensure the token and streamId are available before setting call details
+    if (callData?.streamId && callData?.token) {
+      setCallDetails({
+        streamId: callData.streamId,
+        token: callData.token,
+        isAudioOnly: true, // Adjust as needed
+      });
+    }
+  }, [callData]);
 
   const handleEndCall = () => {
     Alert.alert('End Call', 'Are you sure you want to end this call?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'End Call', onPress: () => dispatch(resetCallState()) },
+      { text: 'End Call', onPress: () => Alert.alert('Call ended') },
     ]);
   };
 
-  const formatTalkTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  };
+  if (!client) {
+    return <Text>Loading...</Text>; // Wait for the client to be initialized
+  }
 
+  // Only render StreamCall if the client is initialized and the token is available
   return (
-    <View style={[styles.container, isSmallScreen && styles.smallScreenContainer]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => dispatch(toggleScreenSize())}>
-          <MaterialCommunityIcons name="arrow-collapse" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.userName}>Cecilia Jessica</Text>
-        <TouchableOpacity onPress={() => Alert.alert('Group Call', 'Group call initiated!')}>
-          <Ionicons name="person-add-sharp" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+    <StreamVideo client={client}>
+      {/* StreamCall component wrapping the part where useCallStateHooks are used */}
+      <StreamCall call={client.call('default', callDetails.streamId)}>
+        <View style={styles.container}>
+          <Text style={styles.userName}>Cecilia Jessica</Text>
+          <Text style={styles.participantCount}>Participants: {participantCount}</Text>
 
-      <Text style={styles.callDuration}>
-        {callStatus || formatTalkTime(talkTime)}
-      </Text>
-      <Text style={styles.userStatus}>{userStatus}</Text>
+          {/* Stream Video */}
+          <View style={styles.streamContainer}>
+            <Text>Call {callDetails.streamId}</Text>
+          </View>
 
-      {!isSmallScreen && (
-        <LottieView
-          source={require('../../assets/lottie/rotateLoad.json')} // Add your Lottie file path
-          autoPlay
-          loop
-          style={styles.lottieAnimation}
-        />
-      )}
-
-      {/* Stream Video for Voice Call */}
-      {callDetails && (
-        <StreamCall
-          streamId={callDetails.streamId}
-          token={callDetails.token}
-          audioOnly={callDetails.isAudioOnly}  // Set to true for audio-only
-          style={styles.streamVideo}
-        />
-      )}
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => dispatch(toggleMute())}>
-          <Octicons name={isMuted ? 'mute' : 'unmute'} size={24} color="green" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Feather name="video" size={24} color="green" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <MaterialCommunityIcons name="microphone-off" size={24} color="green" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.endCallButton} onPress={handleEndCall}>
-          <MaterialIcons name="call-end" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-    </View>
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => {}}>
+              <Feather name="video" size={24} color="green" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Ionicons name="person-add-sharp" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.endCallButton} onPress={handleEndCall}>
+              <MaterialIcons name="call-end" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </StreamCall>
+    </StreamVideo>
   );
 };
 
@@ -142,51 +119,14 @@ const CallScreen = () => {
       padding: 20,
       overflow: 'hidden',
     },
-    smallScreenContainer: {
-      width: '85%', // Slightly adjusted for more content space
-      height: '50%', // Increased height for visibility
-      position: 'absolute',
-      top: 25,
-      right: 20,
-      borderRadius: 20,
-      borderColor: '#ddd', // Subtle border for elegance
-      borderWidth: 1,
-      backgroundColor: '#f9f9f9', // Softer background
-      padding: 15,
-      shadowColor: '#000',
-      shadowOpacity: 0.15,
-      shadowRadius: 12,
-      shadowOffset: { width: 0, height: 4 },
-      elevation: 5, // Enhanced for Android devices
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-      paddingHorizontal: 20,
-      marginTop: 20,
-      borderBottomWidth: 0.5,
-      borderBottomColor: '#ccc', // Added a divider for better structure
-      paddingBottom: 10,
-    },
+    
     userName: {
       fontSize: 20,
       color: '#333', // Neutral dark text for better contrast
       marginTop: 10,
       fontWeight: '600',
     },
-    userStatus: {
-      fontSize: 16,
-      color: '#555', // Slightly darker for readability
-      marginTop: 8,
-    },
-    callDuration: {
-      fontSize: 18,
-      color: '#666',
-      marginVertical: 8,
-      fontStyle: 'italic', // Stylized for emphasis
-    },
+   
    
     buttonsContainer: {
       flexDirection: 'row',

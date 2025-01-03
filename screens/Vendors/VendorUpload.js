@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   reviewCount: Yup.number().typeError('Review count must be a number').min(0, 'Review count must be at least 0').required('Review count is required'),
   isBrandOfficial: Yup.boolean(),
   isLocalDispatch: Yup.boolean(),
-  stock: Yup.number().typeError('Stock must be a number').integer('Stock must be an integer').min(0, 'Stock must be at least 0').required('Stock is required'),
+  quantity: Yup.number().typeError('Quantity must be a number').integer('Quantity must be an integer').min(0, 'Quantity must be at least 0').required('Quantity is required'),
 });
 
 export default function ProductUpload() {
@@ -220,17 +220,17 @@ export default function ProductUpload() {
 
         <Controller
           control={control}
-          name="stock"
+          name="quantity"
           render={({ field: { onChange, value } }) => (
             <View>
               <TextInput
                 style={styles.input}
-                placeholder="Stock"
+                placeholder="Quantity"
                 keyboardType="numeric"
                 onChangeText={onChange}
                 value={value}
               />
-              {errors.stock && <Text style={styles.error}>{errors.stock.message}</Text>}
+              {errors.quantity && <Text style={styles.error}>{errors.quantity.message}</Text>}
             </View>
           )}
         />
@@ -240,12 +240,26 @@ export default function ProductUpload() {
         </TouchableOpacity>
 
         <View style={styles.imagePreviewContainer}>
-          {images.map((uri, index) => (
-            <FastImage key={index} source={{ uri }} style={styles.imagePreview} />
-          ))}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {images.map((uri, index) => (
+                    <View key={index} style={styles.imagePreview}>
+                        <FastImage
+                            source={{
+                                uri,
+                                priority: FastImage.priority.normal, // Set priority if needed
+                            }}
+                            style={styles.image}
+                            resizeMode={FastImage.resizeMode.cover} // Use FastImage's resizeMode
+                        />
+                    </View>
+                ))}
+            </ScrollView>
         </View>
 
-        <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit)}>
+        <TouchableOpacity 
+          style={[styles.submit, loading && styles.disabledButton]} 
+          onPress={loading ? null : handleSubmit(onSubmit)}
+          disabled={loading} >
           {loading ? (
             <Lottie source={require('../../assets/lottie/bouncing_check.json')} autoPlay loop style={styles.loadingIndicator} />
           ) : (
@@ -316,14 +330,24 @@ const styles = StyleSheet.create({
   },
   imagePreviewContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 20,
-  },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    margin: 5,
-  },
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    // Optional: Add background color or border
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+},
+imagePreview: {
+    width: width * 0.3, // 30% of the screen width
+    height: width * 0.3, // Maintain square aspect ratio
+    marginRight: 10, // Space between images
+    borderRadius: 8, // Optional: rounded corners
+    overflow: 'hidden', // Ensures images do not overflow
+},
+image: {
+    width: '100%', // Make the image fill the container
+    height: '100%', // Maintain aspect ratio
+    resizeMode: 'cover', // Cover the area without distortion
+},
   submit: {
     backgroundColor: '#2196F3',
     padding: 10,

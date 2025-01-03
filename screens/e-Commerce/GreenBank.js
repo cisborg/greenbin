@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { greenBankDeposit,greenBankWithdraw } from '../../redux/actions/payments';
 import { updateBalance, updateTokenBalance } from '../../redux/actions/bankGreen'; // Import the actions
 import { Swipeable } from 'react-native-gesture-handler'; // For swipe functionality
+import Toast from '../../helpers/Toast';
 
 const TOKEN_RATE = 1.0042; // Token rate for paying green tax 
 const GreenBankAccount = () => {
@@ -30,6 +31,9 @@ const GreenBankAccount = () => {
   const [showTransferInputs, setShowTransferInputs] = useState(false); // Toggle transfer inputs
   const [transferPurpose, setTransferPurpose] = useState('fees'); // Transfer purpose dropdown
   const [screenAnimation] = useState(new Animated.Value(0)); // For Screen mount animation
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +82,14 @@ const GreenBankAccount = () => {
     }
   };
 
+
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
+  };
+
   // 4. Handle Withdraw (to M-Pesa or Bank)
   const handleWithdraw = () => {
     const totalPoints = calculateTotalPoints();
@@ -101,7 +113,7 @@ const GreenBankAccount = () => {
         setAmount('');
       }, 1000); // Simulate delay for processing
     } else {
-      Alert.alert('Invalid Withdraw Amount', 'Amount exceeds available balance or is invalid.');
+      showToast('Invalid Withdraw Amount', 'Amount exceeds available balance or is invalid.');
     }
   };
 
@@ -128,7 +140,7 @@ const GreenBankAccount = () => {
         setAccountNumber('');
       }, 1000); // Simulate delay for processing
     } else {
-      Alert.alert('Invalid Transfer', 'Please enter a valid account number and amount.');
+      showToast('Invalid Transfer', 'Please enter a valid account number and amount.');
     }
   };
 
@@ -150,7 +162,7 @@ const GreenBankAccount = () => {
   const validateAmount = () => {
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      Alert.alert('Invalid Amount', 'Please enter a valid positive number.');
+      showToast('Invalid Amount', 'Please enter a valid positive number.');
       return false;
     }
     return true;
@@ -197,6 +209,8 @@ const GreenBankAccount = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
+
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
         {loading.screen ? (
           <View style={styles.loadingContainer}>

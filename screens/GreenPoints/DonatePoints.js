@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, Switch, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, Switch, Dimensions, ActivityIndicator } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Lottie from 'lottie-react-native';
 import { Color } from '../../GlobalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { addDonationTier } from '../../redux/actions/rewards';
 import { createDonation } from '../../redux/actions/donations'; 
 import Toast from '../../helpers/Toast';
 
@@ -16,20 +15,24 @@ const donationCategories = [
   { id: '1', name: 'Tree Planting', impact: '1000 points = 1 tree planted', pointsRequired: 1000 },
   { id: '2', name: 'Waste Management', impact: '20000 points = 1 community clean-up', pointsRequired: 20000 },
   { id: '3', name: 'Community Support', impact: '5500 points = support for 1 individual', pointsRequired: 5500 },
+  { id: '4', name: 'Fight Hunger Strike', impact: '8000 points = support for 10 individual', pointsRequired: 8000 },
+
 ];
 
 const DonatePoints = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { totalAmountDonated, currentTier, loading } = useSelector(state => ({
-    totalAmountDonated: state.donation.donations.totalAmountDonated,
-    currentTier:state.donation.donations.currentTier,
-    loading: state.donation.loading,
-  }));
+  const  totalAmountDonated = useSelector(state => state.donation.donations.totalAmountDonated );
+  const  currentTier = useSelector(state =>  state.donation.donations.currentTier );
+  const  loading = useSelector(state =>  state.donation.loading );
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [donationAmount, setDonationAmount] = useState(100);
   const [isRecurring, setIsRecurring] = useState(false);
   const [donateLoading, setDonateLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -46,12 +49,12 @@ const DonatePoints = () => {
     const totalPointsRequired = getTotalPointsRequired();
 
     if (selectedCategories.length === 0) {
-      Alert.alert("Error", "Please select at least one donation category.");
+      showToast( "Please select at least one donation category.", 'error');
       return;
     }
 
     if (donationAmount < totalPointsRequired) {
-      Alert.alert("Error", `Please donate at least ${totalPointsRequired} points for the selected categories.`);
+      showToast(`Please donate at least ${totalPointsRequired} points for the selected categories.`, 'error');
       return;
     }
 
@@ -64,22 +67,14 @@ const DonatePoints = () => {
 
     dispatch(createDonation(donationData));
 
-    dispatch(addDonationTier({ amount: donationAmount }))
-      .then(() => {
-        setDonateLoading(false);
-        navigation.navigate('donationConfirmed', { amount: donationAmount });
-      })
-      .catch(error => {
-        setDonateLoading(false);
-        Alert.alert("Error", "Failed to add donation tier. Please try again.");
-      });
+  
   };
 
   const handleRecurringToggle = () => {
     if (!isRecurring) {
-      Toast.show(`You have successfully enabled recurring donation of ${donationAmount} for every week`);
+      showToast(`Successfully enabled recurring donation of ${donationAmount}`,'success');
     } else {
-      Toast.show('You have successfully disabled your weekly recurring donation');
+      showToast('You have successfully disabled your weekly recurring donation', 'success');
     }
     setIsRecurring(!isRecurring);
   };
@@ -87,7 +82,7 @@ const DonatePoints = () => {
   const shareDonation = () => {
     const totalPointsRequired = getTotalPointsRequired();
     if (donationAmount < totalPointsRequired) {
-      Alert.alert("Error", `Please donate at least ${totalPointsRequired} points to share.`);
+      showToast(`Please donate at least ${totalPointsRequired} points to share.`, 'info');
       return;
     }
 
@@ -106,12 +101,22 @@ const DonatePoints = () => {
       setSelectedCategories(selectedCategories.filter(cat => cat.id !== category.id));
     } else {
       if (selectedCategories.length >= 3) {
-        Alert.alert("Error", "You can donate to a maximum of 3 categories.");
+        showToast("You can donate to a maximum of 3 categories.", 'info');
       } else {
         setSelectedCategories([...selectedCategories, category]);
       }
     }
   };
+
+
+  const showToast = (message, type = 'info') => {
+    setToastMessage(message);
+    setToastType(type); // Dynamically update the type
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000); // Auto-hide after 3 seconds
+  };
+  
+
 
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
@@ -134,6 +139,8 @@ const DonatePoints = () => {
         </View>
       ) : (
         <>
+       {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
+
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Icon name="arrow-back" size={22} color="#FFF" />
@@ -330,17 +337,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.035, // Reduced font size
     color: '#333',
   },
-  recurringInfo: {
-    marginTop: height * 0.005, // Reduced margin
-    padding: height * 0.015, // Reduced padding
-    borderColor: '#FFC107',
-    borderWidth: 1,
-    borderRadius: 12, // Reduced border radius
-    backgroundColor: '#fff3cd',
-  },
-  activityIndicator: {
-    marginTop: height * 0.015, // Reduced margin
-  },
+ 
 });
 
 export default DonatePoints;

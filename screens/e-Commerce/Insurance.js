@@ -1,66 +1,71 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Card, Title, Paragraph, Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Carousel from 'react-native-reanimated-carousel';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import LottieView from 'lottie-react-native';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const Insurance = () => {
   const carouselRef = useRef(null);
-  
+  const navigation = useNavigation(); // Get navigation object
+
   // Sample data for Green Insurance Services
   const insuranceServices = [
     {
       title: 'Green Health Insurance',
       description: 'Eco-conscious health coverage for sustainable lifestyles.',
       icon: 'health-and-safety',
-      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
-      badge: 'Popular'
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),
+      badge: 'Popular',
     },
     {
       title: 'Renewable Energy',
       description: 'Insurance for renewable energy projects and installations.',
       icon: 'solar-power',
-      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
-      badge: 'Featured'
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),
+      badge: 'Featured',
     },
     {
       title: 'Property Insurance',
       description: 'Sustainable property insurance for green buildings.',
       icon: 'home',
-      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),
+      badge: 'Featured',
     },
     {
       title: 'Entrepreneurial Startups',
       description: 'Support for eco-friendly startups.',
       icon: 'business',
-      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),
+      badge: 'Latest',
     },
     {
       title: 'Transport Insurance',
       description: 'Support for Green Travelling and Airlifts',
-      icon: 'business',
-      lottieFile: require('../../assets/lottie/bouncing_check.json'),  // Update path to your Lottie file
+      icon: 'commute',
+      lottieFile: require('../../assets/lottie/bouncing_check.json'),
     },
   ];
 
-  // Render each insurance service card with Lottie animation and optional badge
-  const renderInsuranceCard = ({ item }) => (
-    <Card style={styles.insuranceCard}>
-      <Card.Content>
-        <View style={styles.iconRow}>
-          {/* Badge for highlighted services */}
-          {item.badge && <Badge style={styles.badge}>{item.badge}</Badge>}
-          
-          {/* Icon with animated Lottie icon */}
-          <LottieView source={item.lottieFile} autoPlay loop style={styles.lottieIcon} />
-          <Title style={styles.cardTitle}>{item.title}</Title>
-        </View>
-        <Paragraph>{item.description}</Paragraph>
-      </Card.Content>
-    </Card>
+  // Render each insurance service card
+  const renderInsuranceCard = ({ item, index }) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('RegisterPage', { insurance: item })} // Navigate to RegisterPage
+    >
+      <Card style={styles.insuranceCard} key={index}>
+        <Card.Content>
+          <View style={styles.iconRow}>
+            {item.badge && <Badge>{item.badge}</Badge>}
+            <LottieView source={item.lottieFile} style={styles.lottieIcon} />
+            <Title style={styles.cardTitle}>{item.title}</Title>
+          </View>
+          <Paragraph>{item.description}</Paragraph>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 
   return (
@@ -72,7 +77,7 @@ const Insurance = () => {
         </View>
 
         <Animated.View entering={FadeInUp} style={styles.recentTrips}>
-          <Text style={styles.sectionTitle}>Recent Trips</Text>
+          <Text style={styles.sectionTitle}>Recent Policy</Text>
           <Card style={styles.tripCard}>
             <Card.Content>
               <View style={styles.tripHeader}>
@@ -90,9 +95,10 @@ const Insurance = () => {
             ref={carouselRef}
             data={insuranceServices}
             renderItem={renderInsuranceCard}
-            sliderWidth={300}
-            itemWidth={250}
-            layout="default"
+            width={300}
+            height={200}
+            autoPlay={true}
+            autoPlayInterval={3000}
           />
         </View>
       </ScrollView>
@@ -110,15 +116,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#3B82F6',
-    paddingVertical: 20,
+    backgroundColor: 'green',
+    paddingVertical: 15,
     paddingHorizontal: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 20,
   },
   greeting: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   recentTrips: {
@@ -131,7 +137,7 @@ const styles = StyleSheet.create({
   },
   tripCard: {
     backgroundColor: '#fff',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 15,
   },
   tripHeader: {
@@ -158,28 +164,22 @@ const styles = StyleSheet.create({
   },
   insuranceCard: {
     backgroundColor: '#fff',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 15,
-    elevation: 3,
+    elevation: 2,
+    alignItems: 'center',
     marginHorizontal: 10,
+    maxWidth: '100%'
   },
   iconRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 10,
   },
-  badge: {
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    fontSize: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    marginRight: 5,
-  },
+
   lottieIcon: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
+    width: 30,
+    height: 30,
   },
   cardTitle: {
     fontSize: 16,

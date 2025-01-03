@@ -13,9 +13,9 @@ const CommentBottomSheet = ({ isVisible, onClose, postId }) => {
   const [comment, setComment] = useState('');
   const bottomSheetRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const { comments } = useSelector((state) => state.posts.posts.comments,);
-  const {  loading: commentsLoading } = useSelector((state) => state.posts.comments.loading )
-  const { error } = useSelector((state) => state.posts.posts.error);
+  const comments  = useSelector((state) => state.posts.posts.comments,);
+  const commentsLoading = useSelector((state) => state.posts?.comments?.loading || false);
+  const  error  = useSelector((state) => state.posts.posts.error);
 
 
   useEffect(() => {

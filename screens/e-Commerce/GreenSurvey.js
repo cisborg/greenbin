@@ -1,69 +1,109 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useDispatch, useSelector } from 'react-redux'; 
-import { submitWasteCollection } from '../../redux/actions/greenSurvey';
+import Toast from 'react-native-toast-message';
+import { submitWasteCollection } from '../../redux/actions/greenSurvey'; // Assuming this is still needed for submission
 
 const SurveyScreen = () => {
-  const dispatch = useDispatch(); // Initialize dispatch
-  const { loading, error } = useSelector((state) => state.waste); 
   const [weight, setWeight] = useState('');
   const [numberOfWastes, setNumberOfWastes] = useState('');
   const [squad, setSquad] = useState('');
-  const [points, setPoints] = useState('');
+  const [points, setPoints] = useState(null);
   const [receipt, setReceipt] = useState(null);
+  const [loading, setLoading] = useState(false); // Local loading state
+  const [error, setError] = useState(null); // Local error state
+
+  const showToast = (type, message) => {
+    Toast.show({
+      type,
+      text1: message,
+      visibilityTime: 4000,
+    });
+  };
+
+  const validateInputs = () => {
+    const weightInKg = parseFloat(weight);
+    const numberOfItems = parseInt(numberOfWastes, 10);
+
+    if (isNaN(weightInKg) || weightInKg <= 0) {
+      showToast('error', 'Please enter a valid weight in kilograms.');
+      return false;
+    }
+
+    if (isNaN(numberOfItems) || numberOfItems <= 0 || numberOfItems > 3) {
+      showToast('error', 'Number of items must be between 1 and 3.');
+      return false;
+    }
+
+    if (!squad.trim()) {
+      showToast('error', 'Please enter your squad name.');
+      return false;
+    }
+
+    return true;
+  };
 
   const calculatePoints = async () => {
-    setPoints('');
+    if (!validateInputs()) return;
 
-    setTimeout(async () => {
-      const weightInKg = parseFloat(weight);
-      const numberOfItems = parseInt(numberOfWastes, 10);
-      let earnedPoints = 0;
+    const weightInKg = parseFloat(weight);
+    const numberOfItems = parseInt(numberOfWastes, 10);
+    let earnedPoints = Math.min(3, Math.floor(weightInKg * 6));
+    let tier = '';
 
-      if (numberOfItems > 3) {
-        setPoints("You can only submit a maximum of 3 items.");
-      } else {
-        if (weightInKg < 0.5) {
-          earnedPoints = Math.min(3, Math.floor(weightInKg * 6));
-          setPoints(`You earned ${earnedPoints} points as "Eco Champion"!`);
-        } else if (weightInKg >= 0.5 && weightInKg <= 1) {
-          earnedPoints = Math.min(3, Math.floor(weightInKg * 6));
-          setPoints(`You earned ${earnedPoints} points as "Green Guardian"!`);
-        } else if (weightInKg > 1) {
-          earnedPoints = Math.min(3, Math.floor(weightInKg * 6));
-          setPoints(`You earned ${earnedPoints} points as "Waste Wizard"!`);
-        }
+    if (weightInKg < 0.5) {
+      tier = 'Eco Champion';
+    } else if (weightInKg >= 0.5 && weightInKg <= 1) {
+      tier = 'Green Guardian';
+    } else {
+      tier = 'Waste Wizard';
+    }
 
-        // Prepare the data to dispatch
-        const data = {
-          weight: weightInKg,
-          numberOfWastes: numberOfItems,
-          squad,
-          receipt, // Include the receipt URI here
-        };
+    setLoading(true); // Set loading to true
+    setError(null); // Reset error state
 
-        // Dispatch the action to submit waste collection
-        try {
-          await dispatch(submitWasteCollection(data));
-          setPoints("Waste collection submitted successfully!");
-        } catch (error) {
-          setPoints("Failed to submit waste collection.");
-        }
-      }
-    }, 2000);
+    try {
+      const data = {
+        weight: weightInKg,
+        numberOfWastes: numberOfItems,
+        squad,
+        receipt,
+      };
+
+      await submitWasteCollection(data); // Assuming this is an async action
+      setPoints(`You earned ${earnedPoints} points as "${tier}"!`);
+      showToast('success', `Points Calculated: ${earnedPoints}, Tier: ${tier}`);
+    } catch (err) {
+      setError('Failed to submit waste collection. Please try again.'); // Set error message
+      showToast('error', 'Failed to submit waste collection. Please try again.');
+    } finally {
+      setLoading(false); // Reset loading state
+    }
   };
 
   const uploadReceipt = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setReceipt(result.assets[0].uri);
+      if (!result.canceled) {
+        setReceipt(result.assets[0].uri);
+        showToast('success', 'Receipt uploaded successfully!');
+      }
+    } catch (err) {
+      showToast('error', 'Could not upload the receipt. Please try again.');
     }
   };
 
@@ -89,7 +129,7 @@ const SurveyScreen = () => {
       <Text style={styles.label}>Enter the squad you are currently active in:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter squad names"
+        placeholder="Enter squad name"
         value={squad}
         onChangeText={setSquad}
       />
@@ -100,15 +140,20 @@ const SurveyScreen = () => {
         <Text style={styles.buttonText}>Upload Receipt</Text>
       </TouchableOpacity>
       {receipt && <Image source={{ uri: receipt }} style={styles.receiptImage} />}
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {points ? <Text style={styles.result}>{points}</Text> : null}
-      {error && <Text style={styles.error}>{error}</Text>} {/* Display error message */}
+      {loading && <ActivityIndicator size="small" color="#0000ff" />}
+      {points && <TouchableOpacity style={styles.resultBtn}>
+            <Text style={styles.result}>{points}</Text>
+        </TouchableOpacity>}
+      {error && <Text style={styles.error}>Error: {error}</Text>}
+      <Text style={styles.footer}>Thank you for your participation!</Text>
       <Text style={styles.footnote}>
         *Please ensure you have received a stamped receipt of your personal collections before inputting the weight.
       </Text>
+      <Toast />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -117,9 +162,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: 'green',
+    alignSelf: 'center',
   },
   label: {
     fontSize: 16,
@@ -127,35 +174,49 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'green',
     borderWidth: 1,
     marginBottom: 20,
+    borderRadius: 12,
     paddingHorizontal: 10,
   },
   button: {
     backgroundColor: '#4CAF50',
     padding: 10,
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 12,
     marginBottom: 10,
   },
   uploadButton: {
     backgroundColor: '#2196F3',
     padding: 10,
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 12,
     marginBottom: 10,
   },
   receiptImage: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     marginTop: 10,
-    borderRadius: 10,
+    borderRadius: 14,
+  },
+  resultBtn: {
+    backgroundColor: '#f3f3f3',
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    borderColor: 'green', 
+    marginBottom: 10
   },
   result: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: 'green'
   },
   footnote: {
     marginTop: 20,

@@ -1,22 +1,62 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Animated, Modal, ActivityIndicator, Alert } from 'react-native';
-import Paystack from 'react-native-paystack-webview';
+import { StyleSheet, Text, View, ScrollView,FlatList, TouchableOpacity, SafeAreaView, Animated, Modal, Alert } from 'react-native';
+import {Paystack} from 'react-native-paystack-webview';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Color, FontFamily } from '../../GlobalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { cashDeposit } from '../../redux/actions/payments'; // Import your action creators
+import Toast from '../../helpers/Toast'; // Adjust the import path
+import Config from 'react-native-config';
+import LottieView from 'lottie-react-native';
 
+// images importation
+
+// Import your images
+import mpesa from '../../assets/mpesa.png'; // Adjust the path as necessary
+import airtelMoney from '../../assets/airtel.png'; // Adjust the path as necessary
+import kcb from '../../assets/kcb.jpg'; // Adjust the path as necessary
+import ncba from '../../assets/ncba.jpg'; // Adjust the path as necessary
+import equity from '../../assets/equity.jpg'; // Adjust the path as necessary
+import dtb from '../../assets/dtb.png'; // Adjust the path as necessary
+import bitcoin from '../../assets/binance.png'; // Adjust the path as necessary
+import standard from '../../assets/chartered.jpg'; // Adjust the path as necessary
+import cooperative from '../../assets/cop.jpeg'; // Adjust the path as necessary
+import paypal from '../../assets/paypa.png'; // Adjust the path as necessary
+import visa from '../../assets/visa.png'; // Adjust the path as necessary
+import mastercard from '../../assets/mastercard.jpeg'; // Adjust the path as necessary
+
+
+
+
+import FastImage from 'react-native-fast-image';
+
+const banks = [
+  { id: '1', name: 'KCB', logo: kcb },
+  { id: '2', name: 'NCBA', logo: ncba },
+  { id: '3', name: 'Equity', logo: equity },
+  { id: '4', name: 'DTB', logo: dtb },
+  { id: '5', name: 'Standard', logo: standard },
+  { id: '6', name: 'Cooperative', logo: cooperative },
+];
+
+const globalpay = [
+  { id: '1', name: 'Paypal', logo: paypal },
+  { id: '2', name: 'Visa', logo: visa },
+  { id: '3', name: 'Mastercard', logo: mastercard },
+  { id: '4', name: 'Bitcoin', logo: bitcoin },
+
+];
 const PrepaidRechargeScreen = () => {
-  const [amount, setAmount] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [gatewayMessage, setGatewayMessage] = useState('');
-
-  const navigation = useNavigation();
   const route = useRoute();
-  const { amount: routeAmount } = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const { amount: routeAmount = 0 } = route.params || {};
+  const [amount, setAmount] = useState(routeAmount);
+  const navigation = useNavigation();
   const paystackWebViewRef = useRef();  // Paystack ref
-
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
   const animation = useRef(new Animated.Value(0)).current;
 
   const dispatch = useDispatch();
@@ -32,8 +72,13 @@ const PrepaidRechargeScreen = () => {
     }).start();
   }, [routeAmount]);
 
+  const multiplyBy100 = (amount) => {
+    return amount * 10.25;
+  };
+  const newAmount = multiplyBy100(amount);
+
   const handlePaystackSuccess = () => {
-    setGatewayMessage("Payment successful!");
+    showToast("Payment successful!", 'success');
     // Dispatch cash deposit action with the amount
     dispatch(cashDeposit(amount))
       .then(() => {
@@ -41,26 +86,63 @@ const PrepaidRechargeScreen = () => {
         navigation.navigate('BuyBundleSuccessful');
       })
       .catch((err) => {
-        setGatewayMessage("Error processing cash deposit.");
+        showToast("Error processing cash deposit.",'error');
         Alert.alert(err); // Log the error for debugging
 
       });
     
-    setModalVisible(false);
   };
+
+
+  const handlePayButtonPress = () => {
+    setModalVisible(true); // Show the modal
+    // Start Paystack transaction after a short delay
+    setTimeout(() => {
+      paystackWebViewRef.current.startTransaction(); // Start Paystack transaction
+    }, 3000); // Adjust the delay as needed
+  };
+
+  const renderBankItem = ({ item }) => (
+    <View style={styles.bankItem}>
+        <FastImage 
+            source={item.logo} 
+            style={styles.paymentImage} 
+            priority={FastImage.priority.high} 
+        />
+        <Text style={styles.paymentLabel}>{item.name}</Text>
+    </View>
+);
+const renderGlobalItem = ({ item }) => (
+  <View style={styles.bankItem}>
+      <FastImage 
+          source={item.logo} 
+          style={styles.paymentImage} 
+          priority={FastImage.priority.high} 
+      />
+      <Text style={styles.paymentLabel}>{item.name}</Text>
+  </View>
+);
+const showToast = (message, type = 'info') => {
+  setToastMessage(message);
+  setToastType(type); // Dynamically update the type
+  setToastVisible(true);
+  setTimeout(() => setToastVisible(false), 3000); // Auto-hide after 3 seconds
+};
 
   const handlePaystackCancel = () => {
-    setGatewayMessage("Payment canceled!");
-    setModalVisible(false);
+    showToast("Payment canceled!", 'info');
+    setModalVisible(true); // Show the modal
+
   };
 
-  const handlePaystackError = (error) => {
-    setGatewayMessage("Payment failed! Please try again.");
-    Alert.alert(error); // Log the error for debugging
+  const handlePaystackError = () => {
+    showToast("Payment failed! Please try again.",'error');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+    {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
+
       <Animated.View style={{ ...styles.container, opacity: animation }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.Head}>
@@ -70,18 +152,16 @@ const PrepaidRechargeScreen = () => {
             <Text style={styles.header}>Select Payment Option</Text>
           </View>
 
-          {gatewayMessage ? (
-            <View style={styles.messageContainer}>
-              <Text style={styles.messageText}>{gatewayMessage}</Text>
-            </View>
-          ) : null}
-
           <View style={styles.contHeader}>
-            <Text style={styles.title}>Prepaid Recharge for Self</Text>
+            <Text style={styles.title}>Green Money Recharge 🎊</Text>
+            <Text style={styles.payableAmount}>Hey, David</Text>
+
             <View style={styles.amountContainer}>
               <Text style={styles.payableAmount}>Deposit Amount</Text>
               <Text style={styles.amount}>KES {amount}</Text>
             </View>
+            <Text style={styles.smallpay}>Earn more GCPs on deposits, purchases and more!</Text>
+
           </View>
 
           <View style={styles.paymentMethod}>
@@ -90,44 +170,110 @@ const PrepaidRechargeScreen = () => {
             <View style={styles.GreenBalance}>
               <Text style={styles.greenText1}>Your Equivalent KES is GCPs BALANCE/10.25!</Text>
               <View style={styles.fit}>
-                <Text style={styles.greenText}>GCPs Balance: {amount}</Text>
+                <Text style={styles.greenText}>GCPs Balance: {newAmount}</Text>
               </View>
               <Text style={styles.airtimeInfo}>
                 Get <Text style={styles.text}>25% extra Airtime</Text> on Recharge using Green Money
               </Text>
-              <Text style={styles.extraAirtime}>Extra green points of 10.5 KES will be credited to 767549104.</Text>
-              <Text style={styles.extraAirtime}>Dial *256*2# to check bonus balance</Text>
+              <Text style={styles.extraAirtime}>Extra green points of 10.5 KES will be credited to your green wallet.</Text>
+              <Text style={styles.extraAirtime}>Dial *344*2# to check bonus balance</Text>
             </View>
 
             <Text style={styles.additionalPaymentMethod}>CHOOSE PAYMENT METHOD</Text>
+            <Text style={styles.descriptionText}>
+              To use the Paystack payment option, select your preferred payment method from the options available In Paystack menu. You can choose M-Pesa, Airtel Money, any Kenyan bank, Bitcoin, or various global banks. Once selected, initiate deposit.If successful, you will receive a notification confirming your transaction.
+           </Text>
 
-            {/* Paystack Payment Integration */}
-            <Paystack
-              paystackKey="pk_test_911c928d90c6ab4337e99c30c4566d8bdf43f77f"  // Replace with your Paystack public key
-              billingEmail="orachadongo@gmail.com"  // Optional email
-              amount={amount * 100}  // Paystack requires amount in kobo (for KES, multiply by 100)
-              onCancel={handlePaystackCancel}  // Handle cancellations
-              onSuccess={handlePaystackSuccess}  // Handle successful transactions
-              onError={handlePaystackError}  // Handle failed transactions
-              ref={paystackWebViewRef}  // Ref for initiating payment
-            />
+             {/* Mobile Money Section */}
+             <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Mobile Money 💸</Text>
+                <View style={styles.paymentOptions}>
+                  <View>
+                    <FastImage 
+                          source={mpesa} 
+                          style={styles.paymentImage} 
+                          priority={FastImage.priority.high} 
+                      />
+                      <Text style={styles.paymentLabel}>M-Pesa</Text>
+                  </View>
+                    <View style={styles.mobile}>
+                      <FastImage 
+                          source={airtelMoney} 
+                          style={styles.paymentImage} 
+                          priority={FastImage.priority.high} 
+                      />
+                      <Text style={styles.paymentLabel}>Airtel Money</Text>
+                    </View>
+                   
+                </View>
+            </View>
+
+
+            {/* Banks Section */}
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Ecogreen Bank Deposits 🪴</Text>
+                <FlatList
+                    data={banks}
+                    renderItem={renderBankItem}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.flatListContainer}
+                />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Crypto and Global Pay 🍀</Text>
+                <FlatList
+                    data={globalpay}
+                    renderItem={renderGlobalItem}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.flatListContainer}
+                />
+            </View>
+           
+
+          
+            <View >
+             <Paystack
+                paystackKey={Config.PAYSTACK_PUBLIC_KEY} 
+                buttonText="Green Pay" 
+                billingEmail="orachadongo@gmail.com"  // Optional email
+                amount={amount * 100}
+                onCancel={handlePaystackCancel}  // Handle cancellations
+                onSuccess={handlePaystackSuccess}  // Handle successful transactions
+                onError={handlePaystackError}  // Handle failed transactions
+                ref={paystackWebViewRef}  // Ref for initiating payment
+              />
+            </View>
+           
             
             {/* Pay button to initiate the transaction */}
-            <TouchableOpacity onPress={() => paystackWebViewRef.current.startTransaction()}>
-              <View style={styles.proceedButton}>
+            <TouchableOpacity style={styles.proceedButton} onPress={handlePayButtonPress}>
                 <Text style={styles.proceedButtonText}>Green Pay</Text>
-              </View>
             </TouchableOpacity>
 
             {loading && (
-              <Modal transparent={true} animationType="fade">
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <ActivityIndicator size="small" color="green" />
-                    <Text style={styles.modalText}>Processing payment...</Text>
-                  </View>
+              <Modal visible={modalVisible} transparent={true} animationType="fade">
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <LottieView
+                    source={require('../../assets/lottie/burst.json')}
+                    autoPlay
+                    loop
+                    style={styles.lottieAnimation}
+                  />
+                  <Text style={styles.title}>
+                    Processing your payment....
+                  </Text>
+                  <Text style={styles.modalText}>
+                    Thank you for supporting our efforts in making a greener planet through Paystack!
+                  </Text>
                 </View>
-              </Modal>
+              </View>
+            </Modal>
             )}
 
             {error && (
@@ -142,14 +288,7 @@ const PrepaidRechargeScreen = () => {
         </ScrollView>
       </Animated.View>
 
-      <Modal transparent={true} animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <ActivityIndicator size="small" color="green" />
-            <Text style={styles.modalText}>Initiating payment of KES {amount}...</Text>
-          </View>
-        </View>
-      </Modal>
+      
     </SafeAreaView>
   );
 };
@@ -167,19 +306,60 @@ const styles = StyleSheet.create({
     padding: 5,
 
   },
+  descriptionText: {
+    marginVertical: 5,
+    fontSize: 11,
+    color: 'gray',
+    textAlign: 'left',
+},
+section: {
+    marginVertical: 15,
+},
+sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+},
+paymentOptions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap', // Allow wrapping for better layout
+},
+lottieAnimation: {
+  width: 200,
+  height: 200,
+},
 
+modalText: {
+  fontSize: 14,
+  textAlign: 'center',
+  color: '#333',
+  marginBottom: 10,
+},
+
+flatListContainer: {
+    paddingVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+},
+
+paymentImage: {
+    width: 30,
+    height: 30,
+    marginBottom: 5,
+    borderRadius: 10,
+},
+paymentLabel: {
+    fontSize: 12,
+    textAlign: 'center',
+},
   header: {
     fontSize: 18,
     marginBottom: 8,
     fontFamily: FontFamily.poppinsSemiBold,
     color: 'green',
     marginLeft: 30,
-  },
-  messageContainer: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: '#f8d7da',
-    borderRadius: 14,
   },
   Head: {
     flexDirection: 'row',
@@ -188,19 +368,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: '3%'
   },
+  mobile: {
+    marginLeft: 10,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+
+smallpay: {
+  fontSize: 11,
+  color: 'blue'
+},
+bankItem: {
+  marginRight: 37,
+},
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: 'white', // Black background with 50% transparency
+    alignSelf: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: '50%',
-    marginTop: -140, // Adjust as needed
-    width: '80%', // Width of the modal
-    borderRadius: 14, // Rounded corners
-    left: 30
+    width: '100%', 
+    height: '50%'
   },
   modalContent: {
-    backgroundColor: 'white', // Background color of the content
     borderRadius: 14, // Rounded corners for the content
     padding: 20, // Padding inside the content
     alignItems: 'center', // Center items horizontally
@@ -208,26 +399,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 }, // Shadow offset
     shadowOpacity: 0.25, // Shadow opacity
     shadowRadius: 3, // Shadow radius
-    elevation: 3, // Shadow for Android
   },
   modalText: {
     marginTop: 10, // Space above the text
-    fontSize: 16, // Font size of the text
+    fontSize: 12, // Font size of the text
     color: 'black', // Text color
   },  
  
   title: {
     fontSize: 18,
-    marginBottom: 15,
+    marginBottom: 10,
     fontFamily: FontFamily.poppinsSemiBold,
+    color: 'green',
   },
-  gatewayStatus: {
-    color : 'orange',
-    left: '5%',
-    marginTop: 4,
-    marginBottom: 8,
-    fontWeight: 'bold'
-  },
+ 
   amountContainer: {
     marginBottom: 15,
     flexDirection: 'row',
@@ -240,23 +425,22 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 22,
-    color: 'green',
+    color: 'orange',
     fontWeight: 'bold',
     marginLeft: 30,
     marginTop: -2,
   },
   contHeader: {
     marginBottom: 15,
-    borderRadius: 14,
+    borderRadius: 16,
     padding: 12,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 2,
+    elevation: 1,
   },
   text: {
     color: 'green',
@@ -314,7 +498,7 @@ const styles = StyleSheet.create({
    shadowColor: '#000',
    shadowOpacity: 0.25,
    shadowRadius: 3,
-   elevation: 1,
+   elevation: 2,
    width: '35%',
    left: '30%'
  
@@ -338,36 +522,9 @@ const styles = StyleSheet.create({
   additionalPaymentMethod: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 15,
+    marginTop: 14,
   },
  
-  
-  emailInput: {
-    height: 40,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    marginTop: 8,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-    marginBottom: 5,
-  },
-  gatewayContainer: {
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: Color.colorGray_100,
-    borderRadius: 15,
-    padding: 12,
-    marginTop: 10
-  },
-  gatewayHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'green',
-    fontFamily: FontFamily.poppinsSemiBold,
-    marginBottom: 12,
-  },
 });
 
 export default PrepaidRechargeScreen;

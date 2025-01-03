@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions, Animated,Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions, Animated, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Color } from "../../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';

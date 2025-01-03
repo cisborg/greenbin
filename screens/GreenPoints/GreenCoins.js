@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'; // Import for icons
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage for state persistence
+import Toast from '../../helpers/Toast';
+
 
 const CoinRewards = () => {
   const [checkedIn, setCheckedIn] = useState(false);
   const [selectedDay, setSelectedDay] = useState(1); // Start at Day 1
   const [totalCoins, setTotalCoins] = useState(0);
   const [showCoinsMall, setShowCoinsMall] = useState(true);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
 
   const days = [
     { day: 1, coins: 1 },
@@ -20,10 +25,14 @@ const CoinRewards = () => {
   ];
 
   const vouchers = [
-    { id: '1', value: 'KSh 15 Off', type: 'Shipping voucher', coins: 70 },
-    { id: '2', value: 'KSh 15 Off', type: 'Platform voucher', coins: 70 },
-    { id: '3', value: 'KSh 55 Off', type: 'Shipping voucher', coins: 230 },
-    { id: '4', value: 'KSh 60 Off', type: 'Platform voucher', coins: 229 },
+    { id: '1', value: 'KSh 15 Off', type: 'Champion coupon', coins: 70 },
+    { id: '2', value: 'KSh 15 Off', type: 'Canopy coupons', coins: 70 },
+    { id: '3', value: 'KSh 55 Off', type: 'Ecowarrior coupon', coins: 230 },
+    { id: '4', value: 'KSh 60 Off', type: 'EcoGreen voucher', coins: 229 },
+    { id: '5', value: 'KSh 15 Off', type: 'Champion coupon', coins: 70 },
+    { id: '6', value: 'KSh 15 Off', type: 'Canopy coupons', coins: 70 },
+    { id: '7', value: 'KSh 55 Off', type: 'Ecowarrior coupon', coins: 230 },
+    { id: '8', value: 'KSh 60 Off', type: 'EcoGreen voucher', coins: 229 },
   ];
 
   useEffect(() => {
@@ -38,7 +47,7 @@ const CoinRewards = () => {
           setSelectedDay(parseInt(savedDay, 10));
         }
       } catch (e) {
-        console.error("Error loading state:", e);
+        showToast("Error loading state:", e);
       }
     };
 
@@ -52,13 +61,21 @@ const CoinRewards = () => {
     await AsyncStorage.setItem('selectedDay', selectedDay.toString());
   };
 
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
+  };
+
+
   const handleVoucherRedemption = (voucher) => {
     if (totalCoins >= voucher.coins) {
       setTotalCoins(prevTotal => prevTotal - voucher.coins);
       AsyncStorage.setItem('totalCoins', (totalCoins - voucher.coins).toString());
-      alert(`Voucher ${voucher.value} redeemed!`);
+      showToast(`Coupons ${voucher.value} redeemed!`);
     } else {
-      alert('Not enough coins to redeem this voucher.');
+      showToast('Not enough coins to redeem this coupons.');
     }
   };
 
@@ -88,7 +105,9 @@ const CoinRewards = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daily Coin Rewards</Text>
+     {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
+
+      <Text style={styles.header}>Daily Green Coin Rewards</Text>
       <Text style={styles.totalCoins}>Total Coins: {totalCoins}</Text>
 
       <View style={styles.checkInContainer}>
@@ -127,7 +146,7 @@ const CoinRewards = () => {
 
       <View style={styles.toggleContainer}>
         <TouchableOpacity onPress={() => setShowCoinsMall(true)} style={[styles.toggleButton, showCoinsMall && styles.activeToggle]}>
-          <Text style={styles.toggleText}>Coins Mall</Text>
+          <Text style={styles.toggleText}>Buy Coupons</Text>
         </TouchableOpacity>
         
       </View>
@@ -164,26 +183,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   header: {
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#343a40',
+    color: 'orange',
   },
   totalCoins: {
     fontSize: 18,
     marginBottom: 16,
-    color: '#6c757d',
+    color: 'green',
+    fontWeight: 'bold',
   },
   checkInContainer: {
     marginBottom: 16,
     padding: 16,
     backgroundColor: '#ffffff',
-    borderRadius: 8,
+    borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
-    elevation: 3,
+    elevation: 2,
   },
   checkInText: {
     fontSize: 16,
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
   dayBox: {
     padding: 10,
     backgroundColor: '#e9ecef',
-    borderRadius: 8,
+    borderRadius: 15,
     marginRight: 8,
     alignItems: 'center',
   },
@@ -239,7 +259,7 @@ const styles = StyleSheet.create({
   voucherCard: {
     backgroundColor: '#ffffff',
     padding: 16,
-    borderRadius: 15,
+    borderRadius: 13,
     margin: 8,
     flex: 1,
     alignItems: 'center',
@@ -247,7 +267,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
-    elevation: 3,
+    elevation: 2,
   },
   voucherValue: {
     fontSize: 16,
@@ -271,42 +291,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
   },
-  mayLikeHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#343a40',
-  },
-  productCard: {
-    backgroundColor: '#ffffff',
-    padding: 16,
-    borderRadius: 8,
-    margin: 8,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.5,
-    elevation: 2,
-  },
-  productImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 8,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  productDescription: {
-    fontSize: 14,
-    color: '#6c757d',
-  },
-  productPrice: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: '#28a745',
-  },
+ 
 });
 
 export default CoinRewards;

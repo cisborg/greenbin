@@ -37,9 +37,9 @@ const VendorList = () => {
   const [loading, setLoading] = useState({}); // Local loading state for button
   const [fadeAnim] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
-  const { vendors} = useSelector((state) => state.vendor.vendors);
-  const { loading:apiLoading } = useSelector((state) => state.vendor.loading);
-  const { error} = useSelector((state) => state.vendor.error); 
+  const  vendors= useSelector((state) => state.vendor.vendors);
+  const  apiLoading = useSelector((state) => state.vendor.loading);
+  const error = useSelector((state) => state.vendor.error); 
   const currentUserProfile = useSelector((state) => state.auth.selectedUser);
 
 

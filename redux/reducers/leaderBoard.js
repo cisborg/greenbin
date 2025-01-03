@@ -40,6 +40,7 @@ const initialState = {
     ],
     loading: false,
     error: null,
+    isfetchingMore: false
 };
 
 const leaderboardReducer = (state = initialState, action) => {

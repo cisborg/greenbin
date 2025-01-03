@@ -15,8 +15,11 @@ const { width,height } = Dimensions.get('window');
 
 const NotificationScreen = () => {
   const dispatch = useDispatch();
-  const {notifications,loading, error} = useSelector((state) => state.notifications);
-  const [selectedNotification, setSelectedNotification] = React.useState(null);
+  const notifications = useSelector((state) => state.notification.notifications || []);
+  const loading = useSelector((state) => state.notification.loading);
+  const  error = useSelector((state) => state.notification.error);
+
+  const [selectedNotification, setSelectedNotification] = React.useState(notifications);
   const sheetRef = useRef(null);
 
   // Snap points for the bottom sheet

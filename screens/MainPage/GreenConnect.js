@@ -98,7 +98,7 @@ const GreenConnectMain = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // For screen animation
 
   const dispatch = useDispatch(); // Get the dispatch function
-  const users = useSelector(state => state.users); // Access users from Redux state
+  const users = useSelector(state => state.auth.users); // Access users from Redux state
 
   useEffect(() => {
     dispatch(fetchUsers()); // Fetch users when the component mounts

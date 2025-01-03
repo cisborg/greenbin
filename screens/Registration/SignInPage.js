@@ -21,7 +21,7 @@ import { loginUser } from "../../redux/actions/authentication";
 import { FontFamily, Color } from "../../GlobalStyles";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Toast from '../../helpers/Toast'; // Import your custom Toast component
+import Toast from '../../helpers/Toast';
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,7 +35,7 @@ const CustomInput = ({
   <View style={styles.inputContainer}>
     <Icon name={icon} size={20} color="green" style={styles.icon} />
     <TextInput
-      style={styles.textInput} // Added style for TextInput
+      style={styles.textInput}
       value={value}
       onChangeText={onChangeText}
       placeholder={placeholder}
@@ -55,7 +55,6 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('info');
@@ -70,9 +69,7 @@ const SignInPage = () => {
 
   const handleLogin = async () => {
     if (password.trim() === "" || email.trim() === "") {
-
-      showToast('error', 'Login Failed', 'Please enter both email and password.');
-
+      showToast('Both Email and Password Required! ', 'error');
       return;
     }
 
@@ -82,31 +79,23 @@ const SignInPage = () => {
       const response = await dispatch(loginUser({ email, password }));
 
       if (response?.token) {
-
-        showToast('success', 'Login Successful', 'Welcome back! Enjoy GreenBin App');
-
+        showToast('Welcome!, Enjoy GreenBin App', 'success');
         navigation.navigate("Main");
       } else {
         throw new Error("Login failed");
       }
     } catch (error) {
-
-      showToast(`${error}, 'Login failed', 'Failed to log in. Please try again.`);
-
+      showToast('Failed to login', 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const showToast = (type, title, message) => {
-    setToastType(type);
+  const showToast = (message, type = 'info') => {
     setToastMessage(message);
+    setToastType(type); // Dynamically update the type
     setToastVisible(true);
-
-    // Hide toast after duration
-    setTimeout(() => {
-      setToastVisible(false);
-    }, 3000);
+    setTimeout(() => setToastVisible(false), 3000); // Auto-hide after 3 seconds
   };
 
   return (
@@ -123,7 +112,7 @@ const SignInPage = () => {
           <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
             <View style={styles.topContainer}>
               <Text style={styles.welcomeText}>
-                Ecodigital Solutions for Greener Future!
+                Promote Green Circular Economy 
               </Text>
             </View>
             <Image
@@ -137,20 +126,14 @@ const SignInPage = () => {
               value={email}
               onChangeText={setEmail}
             />
-            <View style={styles.passwordContainer}>
               <CustomInput
                 icon="lock"
                 placeholder="Login with password..."
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry={!showPassword}
+                secureTextEntry={true}
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Text style={styles.togglePasswordText}>
-                  {showPassword ? "Hide" : "Show"}
-                </Text>
-              </TouchableOpacity>
-            </View>
+
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -180,12 +163,9 @@ const SignInPage = () => {
               onPress={() => navigation.navigate("ChangePassword")}
               disabled={isLoading}
             >
-              <Text style={[styles.forgotPasswordText, { color: "green" }]}>
-                Forgot Password?
-              </Text>
+              <Text style={[styles.forgotPasswordText, { color: "green" }]}>Forgot Password?</Text>
             </TouchableOpacity>
 
-            {/* Display Toast */}
             {toastVisible && (
               <Toast 
                 message={toastMessage} 
@@ -199,6 +179,7 @@ const SignInPage = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -221,6 +202,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: height * 0.02,
   },
+ 
   icon: {
     marginRight: height * 0.02,
   },
@@ -232,7 +214,7 @@ const styles = StyleSheet.create({
 
   welcomeText: {
     fontSize: width * 0.05,
-    color: Color.colorGray_600,
+    color: 'green',
     fontFamily: FontFamily.poppinsRegular,
     textAlign: "center",
     fontWeight: "900",
@@ -247,22 +229,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     justifyContent: "center",
     paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
+    paddingVertical: height * 0.03,
     flexDirection: "row",
     backgroundColor: "#f5f5f5",
     marginBottom: height * 0.02,
     marginHorizontal: "4%",
     borderRadius: 13,
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    height: height * 0.051,
-    shadowColor: "#000",
-  },
- 
-  passwordContainer: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+    height: height * 0.050,
+    shadowColor: "#000",
   },
 
   dontHaveAnContainer: {
@@ -271,10 +247,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: "center",
   },
-  togglePasswordText: {
-    color: "green",
-    marginLeft: 10,
-  },
+ 
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",

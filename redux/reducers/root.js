@@ -22,6 +22,7 @@ import notificationReducer from "./notification";
 import wasteReducer from "./greenSurvey";
 import shoppingReducer from "./shoppingReducer";
 import squadActivitiesReducer from "./events";
+import callReducer from "./calls";
 
 const rootReducer = combineReducers({
     chat: chatReducer,
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
     notification: notificationReducer,
     purchases: purchasesReducer,
     waste: wasteReducer,  
+    calls: callReducer,
     shopping: shoppingReducer,  // Adjust according to your state structure
 
 });

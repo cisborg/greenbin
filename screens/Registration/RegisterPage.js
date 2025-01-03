@@ -209,6 +209,20 @@ const RegisterPage = () => {
               <Text style={styles.cardText}>Register</Text>
             )}
           </TouchableOpacity>
+
+         
+     
+          <View style={styles.loginTextContainer}>
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('SignInPage')}
+                accessibilityLabel="Login Navigation"
+                accessibilityHint="Press to navigate to the login screen"
+            >
+                <Text style={styles.loginLink}>Login</Text>
+            </TouchableOpacity>
+        </View>
+
         </View>
       </Animated.View>
     </SafeAreaView>
@@ -236,6 +250,25 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(20),
     top: verticalScale(110)
   },
+  loginTextContainer:{
+    marginBottom: 20,
+    flexDirection: 'row',
+    marginTop: 15,
+    justifyContent: 'center',
+  },
+  loginText: {
+    fontSize: FontSize.size_sm,
+    textAlign: 'center',
+    color: Color.colorGray_100,
+  },
+  loginLink: {
+    color: 'green',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    marginLeft: 10,
+
+  },
+  
   inputContainer: {
     justifyContent: "center",
     paddingHorizontal: width * 0.03,

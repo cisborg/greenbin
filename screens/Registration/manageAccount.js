@@ -48,7 +48,7 @@ const ManageAccountScreen = () => {
     },
     { 
       title: 'About Us', 
-      description: 'Review the features and documentation of green app!', 
+      description: 'Review features in documentation of green app!', 
       icon: <MaterialIcons name="miscellaneous-services" size={24} color="green" />,
       screen: 'AboutUs' 
     },
@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   lottieAnimation: {
-    width: 150,
-    height: 150,
+    width: 40,
+    height: 40,
   },
   headerText: {
     fontSize: 24,

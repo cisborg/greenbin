@@ -9,7 +9,6 @@ import {
   Alert,
   SafeAreaView,
   Share,
-  Modal,
 } from "react-native";
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 import { Color } from "../../GlobalStyles";
@@ -22,7 +21,6 @@ import { fetchCouponGifts } from '../../redux/actions/rewards'; // Import the ne
 
 const ReferAndEarn = () => {
   const [processing, setProcessing] = useState(true);
-  const [isModalVisible, setModalVisible] = useState(false);
   
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -30,7 +28,6 @@ const ReferAndEarn = () => {
   const userId = useSelector(state => state.auth.userId); 
   const referralCode = useSelector(state => state.auth.selectedUser.referralCode);
   const referralCount = useSelector(state => state.rewards.referralCount);
-  const eligibleRewards = useSelector(state => state.rewards.couponGifts); // Get eligible rewards from state
 
   const rewards = [
     { id: '1', title: 'Pizza Gift', description: 'Get a delicious pizza gift after referring 30 friends!', threshold: 30 },
@@ -52,12 +49,7 @@ const ReferAndEarn = () => {
     return () => clearTimeout(timer);
   }, [dispatch, userId]);
 
-  useEffect(() => {
-    if (eligibleRewards.length > 0) {
-      setModalVisible(true); // Show modal if there are eligible rewards
-    }
-  }, [eligibleRewards]);
-
+  
   const handleRefer = useCallback(async () => {
     try {
       const message = `Join GreenBin and earn rewards! Use my promo code: ${referralCode} to get 500 points award on your first registration. Check out more rewards in the app!`;
@@ -148,22 +140,7 @@ const ReferAndEarn = () => {
         </View>
       )}
 
-      {/* Reward Modal */}
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Congratulations!</Text>
-          {eligibleRewards.map(reward => (
-            <Text key={reward.id} style={styles.rewardText}>{reward.title}</Text>
-          ))}
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <Text style={styles.closeButton}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+     
     </SafeAreaView>
   );
 };
@@ -176,7 +153,7 @@ const styles = StyleSheet.create({
   },
   lottie: {
     width: '100%',
-    height: 200,
+    height: 100,
     marginBottom: 20,
   },
   header: {
@@ -314,28 +291,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 10,
-  },
-  rewardText: {
-    fontSize: 16,
-    color: '#fff',
-    marginVertical: 5,
-  },
-  closeButton: {
-    marginTop: 20,
-    color: 'blue',
-    fontSize: 16,
-  },
+ 
 });
 
 export default ReferAndEarn;

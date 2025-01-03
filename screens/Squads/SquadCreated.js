@@ -1,6 +1,6 @@
 import React, { useState, useEffect , useRef} from 'react';
 import { useNavigation } from '@react-navigation/core';
-import { StyleSheet, View, Text, TouchableOpacity, Platform, StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Platform,ImageBackground,StatusBar, ScrollView, Animated, SafeAreaView, Dimensions, ActivityIndicator, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -18,7 +18,9 @@ const SquadCreated = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const bottomSheetRef = useRef(null);
-  const { squadData, loading: squadLoading, error } = useSelector(state => state.squad); // Adjust based on your state structure
+  const  squadData = useSelector(state => state.squads.squads); // Adjust based on your state structure
+  const  squadLoading = useSelector(state => state.squads.squadLoding); // Adjust based on your state structure
+  const  error  = useSelector(state => state.squads.error); // Adjust based on your state structure
   const [loading, setLoading] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState(false);
@@ -116,45 +118,44 @@ const SquadCreated = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {/* Cover Profile */}
-        <View style={styles.coverContainer}>
-          <FastImage 
-            source={{ uri: 'https://example.com/cover.jpg' }} 
-            resizeMode={FastImage.resizeMode.cover}
-            style={styles.coverImage} 
-          />
-          <FastImage
-            source={{ uri: squadData.moderator.avatar }} 
-            style={styles.squadAvatar} 
+      <View style={styles.coverContainer}>
+          <ImageBackground
+            source={{ uri: 'https://example.com/cover.jpg' }}
+            resizeMode="cover"
+            style={styles.coverImage}
+          >
+            <FastImage
+            source={{ uri: squadData.moderator.avatar }}
+            style={styles.squadAvatar}
             resizeMode={FastImage.resizeMode.cover}
             accessibilityLabel={`${squadData.moderator.name}'s avatar`}
           />
-        </View>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>{squadData.name}</Text>
+              <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <TouchableOpacity style={styles.feature} onPress={handleFeaturedClick}>
+                  <Text style={styles.featuredSquad}>Featured EcoGreen</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('EventForm')}>
+                  <Ionicons name="add-circle-outline" size={37} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
+                </TouchableOpacity>
+              </View>
 
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{squadData.name}</Text>
-          <Text style={styles.headerHandle}>{squadData.handle} • Created {squadData.createdDate}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableOpacity style={styles.feature} onPress={handleFeaturedClick}>
-              <Text style={styles.featuredSquad}>Featured EcoGreen</Text>
-            </TouchableOpacity>   
-            <TouchableOpacity onPress={() => navigation.navigate('EventForm')}>
-              <Ionicons name="add-circle-outline" size={37} color="orange" style={styles.addIcon} accessibilityLabel="Add activity" />
-            </TouchableOpacity> 
-          </View>
-          
-          {/* Posts, Comments, Upvotes Section */}
-          <View style={styles.statsContainer}>
-            <Text style={styles.statText}>
-              {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
-            </Text>
-            <Text style={styles.statText}>
-              {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
-            </Text>
-            <Text style={styles.statText}>
-              {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Likes
-            </Text>
-          </View>
+              {/* Posts, Comments, Upvotes Section */}
+              <View style={styles.statsContainer}>
+                <Text style={styles.statText}>
+                  {squadData.posts >= 1000 ? `${(squadData.posts / 1000).toFixed(1)}k` : squadData.posts} Posts
+                </Text>
+                <Text style={styles.statText}>
+                  {squadData.comments >= 1000 ? `${(squadData.comments / 1000).toFixed(1)}k` : squadData.comments} Comments
+                </Text>
+                <Text style={styles.statText}>
+                  {squadData.upvotes >= 1000 ? `${(squadData.upvotes / 1000).toFixed(1)}k` : squadData.upvotes} Likes
+                </Text>
+              </View>
+            </View>
+          </ImageBackground>
 
           <Animated.View style={{ opacity: fadeAnim }}>
             <Text style={styles.description}>{squadData.description}</Text>
@@ -167,7 +168,7 @@ const SquadCreated = () => {
             <FastImage 
               source={{ uri: squadData.moderator.avatar }} 
               style={styles.moderatorAvatar} 
-              resizeMode={FastImage.resizeMode.cover}
+              resizeMode={FastImage.resizeMode.contain}
               accessibilityLabel={`${squadData.moderator.name}'s avatar`}
             />
             <View style={styles.moderatorDetails}>
@@ -186,9 +187,9 @@ const SquadCreated = () => {
         <View style={styles.membersContainer}>
           <View style={styles.membersList} onPress={handleAddModerator}>
             {squadData.members.map((member, index) => (
-              <FastImage key={index} source={{ uri: member.avatar }}
+              <FastImage key={index} source={{ uri: squadData?.moderator?.avatar }}
               resizeMode={FastImage.resizeMode.cover}
-               style={styles.memberAvatar} accessibilityLabel={`${member.name}'s avatar`} />
+               style={styles.memberAvatar} accessibilityLabel={`${squadData?.moderator?.name}'s avatar`} />
             ))}
             <Text style={styles.totalMembers}>
               {connects >= 1000 ? `${(connects / 1000).toFixed(1)}k` : connects}
@@ -336,6 +337,20 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     marginTop: height * 0.1,
   },
+  fetchAgain: {
+    backgroundColor: 'green',
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 20,
+    width: width * 0.2,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'white',
+    fontSize: 14,
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
   header: {
     alignItems: 'center',
     marginBottom: 20,
@@ -348,6 +363,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'green',
     width: width * 0.7,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Adjust as needed
+  },
+  lottie: {
+    width: width * 0.2, // Adjust size as needed
+    height: height * 0.2,
   },
  
   addPost: {

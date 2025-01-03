@@ -25,9 +25,9 @@ const JoinSquads = () => {
     dispatch(fetchSquadData());
   };
   // Get squads from Redux state
-  const { squads } = useSelector((state) => state.squads.squads);
-  const {  loading } = useSelector((state) => state.squads.loading);
-  const { error } = useSelector((state) => state.squads.error);
+  const  squads  = useSelector((state) => state.squads.squads);
+  const  loading  = useSelector((state) => state.squads.loading);
+  const error  = useSelector((state) => state.squads.error);
 
 
   // Start the animation

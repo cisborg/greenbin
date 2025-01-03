@@ -26,18 +26,14 @@ import { fetchProducts } from '../../redux/actions/products';
 import LottieView from 'lottie-react-native';
 
 
-// local assets
-import greenFriday from '../../assets/greenFriday.png'
-import greenPoints from '../../assets/greenPoints.png'
-import connect from '../../assets/connect.png'
-import Bags from '../../assets/Bags.png'
-
-
 const { width, height } = Dimensions.get('window');
 
 const ChallengePage = () => {
   const dispatch = useDispatch();
-  const { products, productsLoading, productsError } = useSelector(state => state.products);
+  const products = useSelector(state => state.products.products);
+  const  productsLoading = useSelector(state => state.products.productsLoading);
+  const  productsError = useSelector(state => state.products.productsError);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const categories = sidebarCategories;
@@ -50,10 +46,10 @@ const ChallengePage = () => {
   const totalProductsCount = products?.length || 0;
 
   const bannerImages = [
-    { uri: greenFriday },
-    { uri: greenPoints },
-    { uri: connect },
-    { uri: Bags },
+    require("../../assets/greenFriday.png"),
+    require("../../assets/greenPoints.png"),
+    require("../../assets/Bags.png"),
+    require("../../assets/connect.png"),
   ];
 
   useEffect(() => {
@@ -102,8 +98,9 @@ const ChallengePage = () => {
   };
 
   const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    product.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
 
   const renderProductItem = ({ item }) => (
     <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('ProductDetails', { productId: item.id })}>
@@ -112,7 +109,7 @@ const ChallengePage = () => {
     </TouchableOpacity>
   );
 
-  const renderListHeader = useMemo(() => (
+  const renderListHeader = useMemo(() => {
     <>
       <View style={styles.header}>
         <TextInput
@@ -130,7 +127,7 @@ const ChallengePage = () => {
         <FastImage
           source={bannerImages[currentImageIndex]}
           style={styles.bannerImage}
-          resizeMode={FastImage.resizeMode.COVER}
+          resizeMode={FastImage.resizeMode.contain}
         />
         <View style={styles.dotsContainer}>
           {bannerImages.map((_, index) => (
@@ -145,7 +142,7 @@ const ChallengePage = () => {
         </View>
       </View>
     </>
-  ), [searchQuery, currentImageIndex]);
+}, [searchQuery, currentImageIndex]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -172,7 +169,7 @@ const ChallengePage = () => {
           </View>
 
           <View style={styles.mainContent}>
-            {renderListHeader()}
+            {renderListHeader}
 
             {productsLoading ? (
                 <LottieView
@@ -335,7 +332,7 @@ const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: '#32CD32',
   },
-  categoryCard: {
+  productCard: {
     width: '100%',
     marginVertical: 10,
     alignItems: 'center',
@@ -343,12 +340,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 5
   },
-  categoryImage: {
+  productImage: {
     width: '80%',
     height: 52,
     borderRadius: 10,
   },
-  categoryText: {
+  productText: {
     marginTop: 5,
     textAlign: 'center',
     fontSize: 10

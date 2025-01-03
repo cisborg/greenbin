@@ -33,7 +33,7 @@ const ConnectToShops = () => {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Location Permission',
-          message: 'This app needs access to your location to find nearby shops.',
+          message: 'GreenBin needs access to your location to find nearby shops.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',

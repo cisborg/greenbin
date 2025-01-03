@@ -85,8 +85,8 @@ const CreateSquad = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Launch Squad 🚀</Text>
-            <TouchableOpacity style={styles.joinButton} onPress={handleJoinSquad}>
-              {loadingJoin ? (
+            <TouchableOpacity style={styles.joinButton} >
+              {loadingLaunch ? (
                 <ActivityIndicator size="small" color='white' />
               ) : (
                 <Text style={styles.joinButtonText}>Join</Text>

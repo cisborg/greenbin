@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from "react-native";
 import FastImage from "react-native-fast-image";
-
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -11,8 +9,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
-  const route = useRoute();  
-  const { username,cash } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   
@@ -36,6 +32,12 @@ const ProfilePage = () => {
     "Green Bins": 50,
   });
 
+
+  const calculateProgress = (completed, target) => {
+    if (target === 0) return 0;
+    return Math.min((completed / target) * 100, 100);
+  };
+
   const calculateActivityPopulation = () => {
     return Object.keys(targetData).map((activity) => ({
       name: activity,
@@ -50,10 +52,6 @@ const ProfilePage = () => {
   const [lastUpdatedMonth, setLastUpdatedMonth] = useState(currentMonth);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
-  const calculateProgress = (completed, target) => {
-    if (target === 0) return 0;
-    return Math.min((completed / target) * 100, 100);
-  };
 
   useEffect(() => {
     if (currentMonth !== lastUpdatedMonth) {
@@ -90,7 +88,7 @@ const ProfilePage = () => {
     {
       name: "Logout",
       icon: <MaterialIcons name="logout" size={24} color="white" />,
-      screen: "AppCarousel",
+      screen: "SignInPage",
     },
   ];
 
@@ -138,7 +136,7 @@ const ProfilePage = () => {
              source={require("../../assets/anotherMan.avif")}
              resizeMode={FastImage.resizeMode.contain}
              />   
-             <Text style={styles.username}>{username}</Text>
+             <Text style={styles.username}>Brian</Text>
 
 
             </View>
@@ -181,15 +179,16 @@ const ProfilePage = () => {
 
           <View style={styles.cardContainer}>
 
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs", { name: username, bal: cash })}>
+            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("ProfileGCPs")}>
             <FastImage style={styles.cardIcon} source={require("../../assets/checked.png")}
              resizeMode={FastImage.resizeMode.contain}/>   
-             <Text style={styles.cardValue}>GCP {cash}</Text>
+             <Text style={styles.cardValue}>GCP 1400</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Happy")}>
               <FastImage style={styles.cardIcon} source={require("../../assets/stats_2500115.png")} 
               resizeMode={FastImage.resizeMode.contain} />  
+             <Text style={styles.cardValue}>#12</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CarbonCalculator", { activities: activitiesData } )}>

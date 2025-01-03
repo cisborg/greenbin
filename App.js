@@ -100,7 +100,6 @@ import SquadMembers from "./screens/Squads/SquadMembers";
 import GreenBin from "./screens/QuickActions/greenBin";
 import SurveyScreen from "./screens/e-Commerce/GreenSurvey";
 import ProductRating from "./screens/e-Commerce/ProductRating"
-import AppCarousel from "./screens/MainPage/AppCarousel";
 import QRCodeScanner from "./screens/GreenPoints/QRCodeScanner";
 import CallScreen from './screens/Vendors/CallPage';
 import IncomingCallScreen from './screens/Vendors/IncomingCall';
@@ -263,7 +262,7 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <StatusBar backgroundColor={Color.colorLimegreen_200} barStyle="light-content" />
+    <StatusBar backgroundColor="green" barStyle="light-content" />
     {isSplashVisible ? (
       <Splash onFinish={handleSplashFinish} />
     ) : (
@@ -286,8 +285,7 @@ const App = () => {
 
   const AppNavigator =() => {
     return (
-    <Stack.Navigator initialRouteName="AppCarousel" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="AppCarousel" component={AppCarousel} options={{ headerShown: false }} />
+    <Stack.Navigator initialRouteName="RegisterPage" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ headerShown: false }} />
       <Stack.Screen name="SignInPage" component={SignInPage} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={MainTabs} />

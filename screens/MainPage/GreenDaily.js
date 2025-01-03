@@ -82,7 +82,10 @@ const HomeTabs = () => {
 
 const ForYouScreen = () => {
   const dispatch = useDispatch();
-  const { posts, loading, page } = useSelector(state => state.posts); // Get posts and loading state from Redux
+  const  posts = useSelector(state => state.posts.posts); // Get posts and loading state from Redux
+  const  loading = useSelector(state => state.posts.loading); // Get posts and loading state from Redux
+  const  page  = useSelector(state => state.posts.posts); // Get posts and loading state from Redux
+
 
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
@@ -108,7 +111,7 @@ const ForYouScreen = () => {
         }
       })
       .catch((error) => {
-        console.error('Failed to fetch more posts:', error);
+        Alert.alert('Failed to fetch more posts:', error);
       })
       .finally(() => setLoadingMore(false));
   }, [loadingMore, allLoaded, loading, dispatch, page]);
@@ -151,8 +154,8 @@ const ForYouScreen = () => {
       ) : (
         <FlashList
           data={posts}
-          keyExtractor={(item) => item.id.toString()}
-          estimatedItemSize={200}
+          keyExtractor={(item) => (item?.id ? item.id.toString() : Math.random().toString())}
+          estimatedItemSize={250}
           renderItem={renderPost}
           onEndReached={fetchMorePosts}
           onEndReachedThreshold={0.7}
@@ -160,11 +163,14 @@ const ForYouScreen = () => {
         />
       )}
 
-    <CommentBottomSheet
-      isVisible={isBottomSheetVisible}
-      onClose={() => setBottomSheetVisible(false)} // Close the bottom sheet
-      onCommentAdd={(commentData) => handleCommentAdd(commentData)} // Dispatch the comment
-    />
+      {isBottomSheetVisible && (
+        <CommentBottomSheet
+          isVisible={isBottomSheetVisible}
+          onClose={() => setBottomSheetVisible(false)}
+          onCommentAdd={handleCommentAdd}
+        />
+      )}
+
 
 
     </View>
@@ -172,12 +178,12 @@ const ForYouScreen = () => {
 };
 
 const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
-  const post = useSelector(state => state.posts.find(p => p.id === postId));
+  const post = useSelector(state => state.posts.posts.find(p => p.id === postId));
   if (!post) return null;
   const {
-    title = "",
-    author = "",
-    squad = "",
+    title = "Pioneering Waste Collection",
+    author = "Zedekiah",
+    squad = "Nature Diversity",
     date,
     likes = 0,
     comments = 0,
@@ -194,14 +200,15 @@ const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
         <FastImage
           source={require('../../assets/anotherWoman.avif')}
           style={styles.profilePic}
-          onError={() => Alert.alert('Image failed to load')}
         />
         <View style={styles.authorInfo}>
           <Text style={styles.postAuthor}>
-            {author} <TouchableOpacity>
-              <Text style={styles.squadName}>• {squad}</Text>
-            </TouchableOpacity>
+            {author} 
           </Text>
+          <TouchableOpacity>
+            <Text style={styles.squadName}>• {squad}</Text>
+          </TouchableOpacity>
+
           <Text style={styles.postDate}>{date}</Text>
           {moderated && <Text style={styles.moderatedIndicator}>Moderated</Text>}
         </View>
@@ -212,7 +219,6 @@ const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
         <FastImage
           source={{ uri: imageUri }}
           style={styles.postImage}
-          onError={() => Alert('Image failed to load')}
 
         />
       )}
@@ -236,9 +242,7 @@ const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
             color={isBookmarked ? "green" : "black"}
           />
           <Text style={styles.statText}>
-            {connections >= 1000 
-              ? Math.floor(connections / 1000) + 'k' 
-              : connections}
+          {connections >= 1000 ? `${(connections / 1000).toFixed(1)}k` : connections}
           </Text>
         </TouchableOpacity>
       </View>
@@ -247,11 +251,13 @@ const Post = memo(({ postId, onLike, onCommentPress,onBookmarkPress }) => {
 });
 
 const Header = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.headerContainer}>
       <View style={{ flexDirection: 'column'}}> 
         <Text style={styles.greenTxt}>Green Squads Daily</Text>
-        <Text style={styles.blackText}>"Your Daily Hubspot Platform"</Text>
+        <Text style={styles.blackText}>Your Daily Hubspot Platform</Text>
       </View>
       <TouchableOpacity style={{ left: 20 }}>
         <Ionicons name="color-filter-outline" size={30} color="black" />
@@ -326,27 +332,7 @@ const styles = StyleSheet.create({
     fontSize: 12
 
   },
-  optionsButton: {
-    padding: 5,
-  },
-  optionsMenu: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 15,
-    position: 'absolute',
-    top: 50,
-    right: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 1,
-    elevation: 2,
-  },
-  optionToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
+ 
   postTitle: {
     fontWeight: '600',
     marginVertical: 5,
@@ -387,48 +373,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  commentInput: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  submitButton: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: 'red',
-    fontWeight: 'bold',
-  },
+ 
+ 
 });
 
 export default GoodHome;

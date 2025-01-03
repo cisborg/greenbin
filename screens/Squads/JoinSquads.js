@@ -14,11 +14,11 @@ const JoinSquads = () => {
   const [loadingStates, setLoadingStates] = useState({});
 
   // Get userId from Redux state
-  const { userId } = useSelector((state) => state.auth.id); // Adjust according to your state structure
+  const userId  = useSelector((state) => state.auth.id); // Adjust according to your state structure
   // Get posts from Redux state
-   const { squads } = useSelector((state) => state.squads.squads);
-   const {  loading } = useSelector((state) => state.squads.loading);
-   const {  error } = useSelector((state) => state.squads.error);
+   const  squads  = useSelector((state) => state.squads.squads);
+   const loading  = useSelector((state) => state.squads.loading);
+   const error  = useSelector((state) => state.squads.error);
   useEffect(() => {
     dispatch(getAllSquads());
   }, [dispatch]);

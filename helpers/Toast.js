@@ -20,7 +20,7 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }) => {
     // Hide toast after the specified duration
     const timeout = setTimeout(() => {
       translateY.value = withTiming(-50, {
-        duration: 500,
+        duration: 600,
         easing: Easing.in(Easing.ease),
       });
       onClose && onClose();
@@ -35,7 +35,7 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }) => {
 
   const getToastStyle = () => {
     switch (type) {
-      case 'successful':
+      case 'success':
         return styles.success;
       case 'error':
         return styles.error;
@@ -68,31 +68,33 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }) => {
 const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 20,
+    left: 15,
     right: 20,
-    padding: 15,
-    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 1000,
+    elevation: 4
   },
   success: {
     backgroundColor: '#4CAF50', // Green for success
   },
   error: {
-    backgroundColor: '#F44336', // Red for error
+    backgroundColor: 'orange', // Red for error
   },
   info: {
     backgroundColor: '#2196F3', // Blue for information
   },
   icon: {
     marginRight: 8,
-    fontSize: 18,
+    fontSize: 14,
   },
   toastText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 13,
   },
 });
 

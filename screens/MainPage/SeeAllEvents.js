@@ -24,8 +24,11 @@ const formatLocation = (location) => {
 
 const SeeAllEvents = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const dispatch = useDispatch(); // Initialize Redux dispatch
-  const { activities, loading, error } = useSelector(state => state.squadActivities); // Access Redux state
+  const dispatch = useDispatch(); 
+  const  activities = useSelector(state => state.squadActivities); 
+  const loading  = useSelector(state => state.squadActivities); 
+  const error  = useSelector(state => state.squadActivities);
+
   
   const [filteredEvents, setFilteredEvents] = useState([]);
   const animationRefs = useRef([]);
@@ -64,9 +67,7 @@ const SeeAllEvents = () => {
     }
   };
 
-  const handleEventPress = (event) => {
-    console.log(`Event clicked: ${event.title}`);
-  };
+  
 
   const renderEventCard = ({ item, index }) => (
     <Animated.View 
@@ -75,7 +76,7 @@ const SeeAllEvents = () => {
         transform: [{ translateY: animationRefs.current[index].interpolate({ inputRange: [0, 1], outputRange: [50, 0] }) }]
       }}
     >
-      <TouchableOpacity onPress={() => handleEventPress(item)}>
+      <TouchableOpacity>
         <EventCard 
           title={item.title}
           date={item.date}

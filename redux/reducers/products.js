@@ -39,17 +39,19 @@ const initialState = {
             description: '',
             quantity: 0,
             category: '',
-            itemsIncluded: [],
-            subscriptions: false,
-            vendor: {
+            subscriptions: true,
+            seller: {
                 id: null,
                 name: '',
                 contact: '',
                 isVerified: false,
             },
-            expirationDate: null,
+            flashsaleEnd: null,
         },
     ],
+    recommended: [],
+    latest: [],
+    popular: [],
     loading: false,
     error: null,   
 };

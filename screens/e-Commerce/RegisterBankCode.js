@@ -1,100 +1,86 @@
 import React, { useRef, useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import Toast from 'react-native-toast-message';
-import { registerCode } from '../../redux/actions/authentication'; // Import your registration action
+import Toast from '../../helpers/Toast'; // Import the Toast component
+import { registerCode } from '../../redux/actions/authentication';
 
 const RegisterCode = ({ isRegistered }) => {
   const bottomSheetRef = useRef(null);
   const dispatch = useDispatch();
-  const snapPoints = ['50%', '90%'];
+  const snapPoints = ['25%'];
   const navigation = useNavigation();
+
   // State for input fields
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  // State for Toast
+  const [toast, setToast] = useState({ message: '', type: '', visible: false });
+
+  const showToast = (message, type) => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000);
+  };
+
   const handleSubmit = async () => {
-    // Validate input fields
-    if (!email || !phoneNumber) {
-      Toast.show({
-        text1: 'Sorry',
-        text2: 'Please fill in all fields.',
-        type: 'error',
-        position: 'top',
-      });
+    if (!email.trim() || !phoneNumber.trim()) {
+      showToast('Please fill in all fields.', 'error');
       return;
     }
 
-    // Create user data object
-    const userData = {
-      email,
-      phoneNumber,
-    };
+    const userData = { email: email.trim(), phoneNumber: phoneNumber.trim() };
 
     try {
-      const response = await dispatch(registerCode(userData)); // Dispatch the register action
-      const bankCode = response.bankCode; // Assuming the response contains the bank code
-
-      // Show toast message with the fetched bank code
-      Toast.show({
-        text1: 'Registration Successful',
-        text2: `Your bank code is: ${bankCode}`,
-        type: 'success',
-        position: 'top',
-      });
-
-      // Optionally close the BottomSheet after submission
-      bottomSheetRef.current?.close();
+      const response = await dispatch(registerCode(userData));
+      if (response && response.bankCode) {
+        showToast(`Your bank code is: ${response.bankCode}`, 'success');
+        bottomSheetRef.current?.close();
+      } else {
+        throw new Error('Bank code not found.');
+      }
     } catch (error) {
-      Alert('Registration failed:', error);
-      // Optionally show an error toast
-      Toast.show({
-        text1: 'Registration Failed',
-        text2: error.message,
-        type: 'error',
-        position: 'top',
-      });
+      showToast(error.message || 'Registration failed.', 'error');
     }
   };
 
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-    >
-      <View style={styles.contentContainer}>
-        {isRegistered ? (
-          <TouchableOpacity style={styles.registeredButton} onPress={()=> navigation.navigate('CodeAccept')}>
-            <Text style={styles.registeredText}>Already Registered</Text>
-          </TouchableOpacity>
-
-
-        ) : (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="User Email"
-              keyboardType="email-address"
-              value={email} // Bind the input value to state
-              onChangeText={setEmail} // Update state on change
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              keyboardType="phone-pad"
-              value={phoneNumber} // Bind the input value to state
-              onChangeText={setPhoneNumber} // Update state on change
-            />
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit</Text>
+    <View style={{ flex: 1 }}>
+      {toast.visible && <Toast message={toast.message} type={toast.type} />}
+      <BottomSheet ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
+        <View style={styles.contentContainer}>
+          {isRegistered ? (
+            <TouchableOpacity
+              style={styles.registeredButton}
+              onPress={() => navigation.navigate('CodeAccept')}
+            >
+              <Text style={styles.registeredText}>Already Registered</Text>
             </TouchableOpacity>
-          </>
-        )}
-      </View>
-    </BottomSheet>
+          ) : (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="User Email"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Phone Number"
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+              />
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </BottomSheet>
+    </View>
   );
 };
 

@@ -10,9 +10,9 @@ const { width, height } = Dimensions.get('window');
 
 const TagSelection = () => {
   const dispatch = useDispatch();
-  const { tags } = useSelector((state) =>  state.posts.posts.tags );
-  const {  loading } = useSelector((state) =>  state.posts.loading );
-  const { error } = useSelector((state) =>  state.posts.error );
+  const tags  = useSelector((state) =>  state.posts.posts.tags );
+  const  loading  = useSelector((state) =>  state.posts.loading );
+  const error  = useSelector((state) =>  state.posts.error );
   const [selectedTags, setSelectedTags] = useState([]);
   const [feedName, setFeedName] = useState('');
 
@@ -31,10 +31,10 @@ const TagSelection = () => {
     }
   };
 
-  // Filter tags based on the feed name input
-  const filteredTags = tags.filter(tag =>
+  const filteredTags = tags?.filter(tag =>
     tag.toLowerCase().includes(feedName.toLowerCase())
-  );
+  ) || [];
+  
 
   const renderTag = ({ item }) => (
     <TouchableOpacity

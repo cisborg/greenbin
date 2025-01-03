@@ -24,8 +24,7 @@ const FriendScreen = () => {
   const [friendsData, setFriendsData] = useState(initialFriendsData);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingStates, setLoadingStates] = useState({});
-
+  const [loadingStates, setLoadingStates] = useState({ add: {}, remove: {} });
   const hasFetchedMore = useRef(false);
 
   const loadMoreFriends = () => {
@@ -55,7 +54,7 @@ const FriendScreen = () => {
   };
 
   const handleAddFriend = (id) => {
-    setLoadingStates((prev) => ({ ...prev, [id]: true }));
+    setLoadingStates((prev) => ({ ...prev, add: { ...prev.add, [id]: true } }));
 
     setTimeout(() => {
       setFriendsData((prev) => 
@@ -63,18 +62,19 @@ const FriendScreen = () => {
           friend.id === id ? { ...friend, isFriend: true } : friend
         )
       );
-      setLoadingStates((prev) => ({ ...prev, [id]: false }));
-    }, 2000);
+      setLoadingStates((prev) => ({ ...prev, add: { ...prev.add, [id]: false } })); // Update only the add state
+    }, 1000);
   };
 
   const handleRemoveFriend = (id) => {
-    setLoadingStates((prev) => ({ ...prev, [id]: true }));
+    setLoadingStates((prev) => ({ ...prev, remove: { ...prev.remove, [id]: true } }));
 
     setTimeout(() => {
       setFriendsData((prev) => prev.filter(friend => friend.id !== id));
-      setLoadingStates((prev) => ({ ...prev, [id]: false }));
-    }, 2000);
+      setLoadingStates((prev) => ({ ...prev, remove: { ...prev.remove, [id]: false } })); // Update only the remove state
+    }, 1000);
   };
+
 
   const renderFriendItem = ({ item }) => (
     <Animated.View
@@ -92,23 +92,24 @@ const FriendScreen = () => {
         <Text style={styles.mutualFriends}>{item.mutualFriends} mutual friends</Text>
       </View>
       <View style={styles.actionButtons}>
-        <TouchableOpacity 
+      <TouchableOpacity 
           style={[styles.addButton, item.isFriend ? styles.friendsButton : styles.defaultButton]} 
           onPress={() => handleAddFriend(item.id)}
-          disabled={loadingStates[item.id]}
+          disabled={loadingStates.add[item.id]}
         >
-          {loadingStates[item.id] ? (
+          {loadingStates.add[item.id] ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text style={styles.buttonText}>{item.isFriend ? 'Friends' : 'Add Friend'}</Text>
           )}
         </TouchableOpacity>
+
         <TouchableOpacity 
           style={styles.removeButton} 
           onPress={() => handleRemoveFriend(item.id)}
-          disabled={loadingStates[item.id]}
+          disabled={loadingStates.remove[item.id]}
         >
-          {loadingStates[item.id] ? (
+          {loadingStates.remove[item.id] ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text style={styles.buttonText}>Remove</Text>
@@ -138,14 +139,14 @@ const FriendScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
-    padding: 16,
+    backgroundColor: 'white',
+    padding: 5,
   },
   friendContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 12,
-    backgroundColor: '#1f1f1f',
+    marginVertical: 10,
+    backgroundColor: 'white',
     padding: 16,
     borderRadius: 12,
     shadowColor: '#000',
@@ -155,45 +156,47 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-    elevation: 4,
+    elevation: 1,
+    marginHorizontal:3
+
   },
   profileImage: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 20,
   },
   friendDetails: {
     flex: 1,
-    marginHorizontal: 16,
+    marginHorizontal: 5,
   },
   friendName: {
-    color: '#fff',
-    fontSize: 16,
+    color: 'black',
+    fontSize: 12,
     fontWeight: 'bold',
   },
   mutualFriends: {
     color: '#ccc',
-    fontSize: 14,
+    fontSize: 11,
   },
   actionButtons: {
     flexDirection: 'row',
   },
   addButton: {
-    backgroundColor: '#007aff',
+    backgroundColor: 'green',
     paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
     marginRight: 8,
   },
   removeButton: {
     backgroundColor: '#ff3b30',
     paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: 'bold',
   },
 });

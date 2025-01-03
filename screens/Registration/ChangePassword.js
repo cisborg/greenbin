@@ -23,18 +23,19 @@ const ChangePassword = () => {
   // Deep link handling for token autofill
   useEffect(() => {
     const handleDeepLink = (event) => {
-      const data = Linking.parse(event.url);
-      if (data.queryParams?.token) {
-        setToken(data.queryParams.token); // Autofill the token
-      }
+        const data = Linking.parse(event.url);
+        if (data.queryParams?.token) {
+            setToken(data.queryParams.token); // Autofill the token
+        }
     };
 
-    Linking.addEventListener('url', handleDeepLink);
+    const subscription = Linking.addListener('url', handleDeepLink);
 
     return () => {
-      Linking.removeEventListener('url', handleDeepLink);
+        subscription.remove(); // Remove the listener
     };
-  }, []);
+}, []);
+
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 

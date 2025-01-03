@@ -36,11 +36,12 @@ const challenges = [
 ];
 
 const banners = [
-  { uri: "https://your-image-url.com/greenFriday.png" },
-  { uri: "https://your-image-url.com/greenPoints.png" },
-  { uri: "https://your-image-url.com/Bags.png" },
-  { uri: "https://your-image-url.com/connect.png" },
+  require("../../assets/greenFriday.png"),
+  require("../../assets/greenPoints.png"),
+  require("../../assets/Bags.png"),
+  require("../../assets/connect.png"),
 ];
+
 
 const { width } = Dimensions.get("window");
 
@@ -50,12 +51,12 @@ export default function HomePageExistingUser() {
   const [filteredChallenges, setFilteredChallenges] = React.useState(challenges);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
-  const [loading, setLoading] = React.useState(true); // Loading state
   const dispatch = useDispatch();
 
-  const { vendors,  } = useSelector(state => state.vendor.vendors);
-  const {  vendorsLoading } = useSelector(state => state.vendor.loading);
-  const {  error } = useSelector(state => state.vendor.error);
+  const vendors = useSelector(state => state.vendor?.vendors || []);
+  const vendorsLoading = useSelector(state => state.vendor?.loading || false);
+  const error = useSelector(state => state.vendor?.error || null);
+  
 
 
 
@@ -113,15 +114,7 @@ export default function HomePageExistingUser() {
     return () => clearInterval(interval);
   }, []);
 
-  React.useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after 3 seconds
-    }, 3000);
-
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-  }, []);
-
+ 
   const renderDots = () => (
     <View style={styles.dotContainer}>
       {banners.map((_, index) => (
@@ -140,7 +133,7 @@ export default function HomePageExistingUser() {
     return (
       <View style={styles.loadingContainer}>
         <Lottie 
-          source={require('../../assets/lottie/homy.json')} // Adjust path to your Lottie file
+          source={require('../../assets/lottie/modernised.json')} // Adjust path to your Lottie file
           autoPlay 
           loop 
           style={styles.lottie} // Optional: add styles if needed
@@ -153,7 +146,7 @@ export default function HomePageExistingUser() {
     return (
       <View style={styles.loadingContainer}>
         <Lottie 
-          source={require('../../assets/lottie/errorLottie.json')} // Adjust path to your Lottie file
+          source={require('../../assets/lottie/recycleSplash.json')} // Adjust path to your Lottie file
           autoPlay 
           loop 
           style={styles.lottie} // Optional: add styles if needed
@@ -169,7 +162,7 @@ export default function HomePageExistingUser() {
           {/* Banner Container */}
           <View style={styles.bannerContainer}>
             <Animated.Image
-              source={{ uri: banners[currentIndex].uri }} // Use uri for FastImage
+              source={banners[currentIndex]}
               style={[styles.bannerImage, { opacity: fadeAnim }]}
               resizeMode="cover"
             />
@@ -185,8 +178,11 @@ export default function HomePageExistingUser() {
               const { connecting, connected } = vendorConnectState[item.id] || {};
               return (
                 <View style={styles.vendorDetails}>
-                  <FastImage style={styles.vendorImgIcon} source={item.icon} />
-                  <Text style={styles.vendorName}>{item.name}</Text>
+                  <FastImage
+                      style={styles.vendorImgIcon}
+                      source={item.icon || require("../../assets/placeholder.jpeg")}
+                  />
+                 <Text style={styles.vendorName}>{item.name}</Text>
                   <Text style={styles.vendorProfession}>{item.profession}</Text>
 
                   <TouchableOpacity
@@ -271,9 +267,9 @@ export default function HomePageExistingUser() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "white",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
+},
   homePageExistingUser: {
     flex: 1,
     backgroundColor: "#F5F5F5",
@@ -282,11 +278,11 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
-    top: '20%'
+    top: '40%'
   },
   lottie: {
-    width: '80%', // Adjust size as needed
-    height: 300,
+    width: '30%', // Adjust size as needed
+    height: 80,
   },
   bannerContainer: {
     height: 140,

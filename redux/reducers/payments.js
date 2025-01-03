@@ -17,7 +17,7 @@ import {
 const initialState = {
     greenBalance: 0, // Renamed for clarity
     points: 0,
-    loading: false,
+    loading: true,
     error: null,
     greenBankBalance: 0,
 

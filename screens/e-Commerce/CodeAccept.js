@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { acceptCode } from '../../redux/actions/authentication'; // Import your action creator
+import Toast from '../../helpers/Toast';
+
 
 const GreenBankCodeScreen = () => {
     const [code, setCode] = useState(Array(8).fill(''));
     const [hasCode, setHasCode] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch(); // Initialize dispatch
+    const [toastVisible, setToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('info');
 
     const handleChange = (text, index) => {
         const newCode = [...code];
@@ -27,7 +33,7 @@ const GreenBankCodeScreen = () => {
     const handleSubmit = () => {
         const fullCode = code.join('');
         if (fullCode.length < 8) {
-            Alert.alert('Please enter a complete 8-digit code.');
+            showToast('Please enter a complete 8-digit code.');
             return;
         }    
         // Dispatch the action to accept the code
@@ -44,12 +50,25 @@ const GreenBankCodeScreen = () => {
         }
     };
 
+
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
+  };
+
     return (
         <View style={styles.container}>
+       {toastVisible && <Toast message={toastMessage} type={toastType} onClose={() => setToastVisible(false)} />}
+
+            <FastImage source={require('../../assets/success.png')} style={styles.productImage} resizeMode={FastImage.resizeMode.cover} />
+
             <Text style={styles.title}>Enter your Green Bank Code</Text>
+
             <View style={styles.toggleContainer}>
                 <Text style={styles.toggleText}>Do you already have a Green Bank code?</Text>
-                <TouchableOpacity onPress={toggleHasCode}>
+                <TouchableOpacity onPress={toggleHasCode} style={styles.btn}>
                     <Text style={styles.toggleButton}>{hasCode ? 'No' : 'Yes'}</Text>
                 </TouchableOpacity>
             </View>
@@ -125,10 +144,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
   },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    borderRadius: 12,
+    marginBottom: 30,
+    alignSelf: 'center',
+    
+  },
   button: {
     backgroundColor: '#4CAF50',
     paddingVertical: 15,
     borderRadius: 14,
+  },
+  btn: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: 'green',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 12,
+    marginTop: 10,
+    marginBottom: 10,
   },
   buttonText: {
     color: '#fff',
@@ -139,9 +177,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 15,
     borderRadius: 14,
+    width: '40%',
+    backgroundColor: 'green',
+    alignSelf: 'center',
   },
   addCodeText: {
-    color: '#007BFF',
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
   },

@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from "react";
-import { StyleSheet, Text, View, FlatList, Dimensions, Platform,StatusBar ,Animated } from "react-native";
+import React, { useEffect, useRef,useCallback } from "react";
+import { StyleSheet, Text, View, FlatList, Dimensions,Animated } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LottieView from 'lottie-react-native';
 import JoinUsScreen from "../AboutApp/JoinUs";
-import { Color, FontFamily } from "../../GlobalStyles";
+import {  FontFamily } from "../../GlobalStyles";
 import LeaderboardScreen from "../Squads/SquadsAward";
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserLeaderboard } from '../../redux/actions/leaderboard'; // Adjust path as necessary
 
 const Tab = createMaterialTopTabNavigator();
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const LeaderBoard = () => {
   return (
@@ -33,17 +33,21 @@ const LeaderBoard = () => {
 
 const LeaderboardContent = () => {
   const dispatch = useDispatch();
-  const { userLeaderboard = [], loading, error, isFetchingMore } = useSelector(state => state.leaderboard);
+  const userLeaderboard = useSelector(state => state.leaderboard.userLeaderboard || []);
+  const  loading = useSelector(state => state.leaderboard.loading);
+  const error  = useSelector(state => state.leaderboard.error);
+  const isFetchingMore  = useSelector(state => state.leaderboard.isFetchingMore === true);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const loadMoreRef = useRef(false);
 
   const loadMoreUsers = useCallback(() => {
     if (!loadMoreRef.current && !isFetchingMore) {
       loadMoreRef.current = true;
-      dispatch(fetchUserLeaderboard(userLeaderboard.length));
+      dispatch(fetchUserLeaderboard(userLeaderboard));
       setTimeout(() => (loadMoreRef.current = false), 1000); // Prevent rapid calls
     }
-  }, [dispatch, isFetchingMore, userLeaderboard.length]);
+  }, [dispatch, isFetchingMore, userLeaderboard]);
 
   const fetchLeaderboard = useCallback(() => {
     dispatch(fetchUserLeaderboard());
@@ -85,22 +89,24 @@ const LeaderboardContent = () => {
 
   return (
     <Animated.View style={{ opacity: fadeAnim }}>
-      {/* Top 3 Users */}
-      <View style={styles.topUsersContainer}>
-        {userLeaderboard.slice(0, 3).map((user, index) => (
-          <UserTop
-            key={`top-${index}`}
-            position={(index + 1).toString()}
-            name={user.username}
-            score={user.points.toString()}
-            image={user.profilePicture ? { uri: user.profilePicture } : require("../../assets/defaultUserImage.png")}
-            crown={user.crown}
-            squad={user.squadName}
-            award={user.awardType}
-            isCenter={index === 0}
-          />
-        ))}
-      </View>
+     {userLeaderboard.length > 0 && (
+  <View style={styles.topUsersContainer}>
+    {userLeaderboard.slice(0, 3).map((user, index) => (
+      <UserTop
+        key={`top-${index}`}
+        position={(index + 1).toString()}
+        name={user.username}
+        score={user.points.toString()}
+        image={user.profilePicture ? { uri: user.profilePicture } : require("../../assets/defaultUserImage.png")}
+        crown={user.crown}
+        squad={user.squadName}
+        award={user.awardType}
+        isCenter={index === 0}
+      />
+    ))}
+  </View>
+)}
+
 
       {/* Other Users (FlatList for better performance) */}
       <FlatList
@@ -163,18 +169,7 @@ const UserRow = ({ position, name, score, image, squad, award }) => (
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Color.colorWhite,
-    padding: 15,
-    width: width * 0.98,
-    height: height * 0.98,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-  leaderboardContent: {
-    padding: 14,
-    backgroundColor: '#fff'
-  },
+ 
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -191,9 +186,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: '18%',
   },
-  otherUsersContainer: {
-    width: width * 0.92,
-  },
+  
   userTop: {
     alignItems: "center",
     marginHorizontal: 10,

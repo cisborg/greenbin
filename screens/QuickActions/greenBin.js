@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
-import { Button } from 'react-native-elements';
-import Toast from '../../helpers/Toast';
+import Toast from 'react-native-toast-message';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Camera, useCodeScanner } from 'react-native-vision-camera';
+import { Camera, useCodeScanner, useCameraDevices } from 'react-native-vision-camera';
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image'; // Import FastImage
 import Carousel from 'react-native-reanimated-carousel'; // Import the reanimated carousel
@@ -132,7 +131,6 @@ const GreenBin = () => {
   const renderBinItem = ({ item }) => (
     <TouchableOpacity onPress={() => setBinType(item.type)} style={[styles.binOption, binType === item.type && styles.selectedOption]}>
      <FastImage source={binImages[item.type]} style={styles.binImage} resizeMode={FastImage.resizeMode.cover} /> 
-   <Text style={styles.binText}>{item.type.toUpperCase()}</Text>
     </TouchableOpacity>
   );
 
@@ -146,12 +144,12 @@ const GreenBin = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Your Bin for Sustainability</Text>
+      <Text style={styles.header}>Manage Your Waste with GreenBin 🍀</Text>
 
       <Carousel
         loop
-        width={300}
-        height={200}
+        width={350}
+        height={150}
         data={binOptions}
         renderItem={renderBinItem}
         scrollAnimationDuration={1000}
@@ -179,16 +177,16 @@ const GreenBin = () => {
       </View>
 
       {isPurchase && (
-        <Button
-          title="Confirm Purchase"
-          onPress={handlePurchase}
-          buttonStyle={styles.confirmButton}
-        />
+        <TouchableOpacity onPress={handlePurchase} style={styles.confirmButton}>
+            <Text style={styles.confirmButtonText}>Confirm Purchase</Text>
+        </TouchableOpacity>
+          
+         
       )}
 
       {!isPurchase && (
         <>
-          <Text style={styles.leasingHeader}>Leasing Options</Text>
+          <Text style={styles.leasingHeader}>Choose your Leasing Options Plan 🎉</Text>
           <Text style={styles.leasingDetails}>
             {`Down Payment: GCPs ${binOptions.find(b => b.type === binType).downPayment}`}
           </Text>
@@ -207,6 +205,7 @@ const GreenBin = () => {
               onPress={() => setPaymentMethod('GCP')}
               containerStyle={styles.checkBox}
             />
+            <Text style={styles.paymentText}>check mark your payment option here and earn more GCPs on payment validation</Text>
             <BouncyCheckbox
               text="Credit Card / Green Bank"
               checked={paymentMethod === 'CreditCard'}
@@ -214,17 +213,17 @@ const GreenBin = () => {
               containerStyle={styles.checkBox}
             />
           </View>
-          <TouchableOpacity buttonStyle={styles.confirmButton} onPress={handleLeasePayment}>
-            <Text>Confirm Lease Payment</Text>
+          <TouchableOpacity style={styles.confirmButton} onPress={handleLeasePayment}>
+            <Text style={styles.confirmButtonText}>Confirm Lease Payment</Text>
           </TouchableOpacity>
         </>
       )}
 
-      <Text style={styles.leasingHeader}>Waste Collect Pay</Text>
+      <Text style={styles.leasingHeader}>Waste Collect Pay 🔥</Text>
 
       <TouchableOpacity style={styles.qrButton} onPress={openQRScanner}>
         <Icon name="qr-code-scanner" size={24} color="white" />
-        <Text style={styles.buttonText}>Scan QR Code</Text>
+        <Text style={styles.confirmButtonText}>Scan QR Code</Text>
       </TouchableOpacity>
 
       <Modal visible={scanVisible} 
@@ -263,43 +262,92 @@ const GreenBin = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f7', paddingHorizontal: 15 },
-  header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: '#2e7d32', marginVertical: 15 },
-  binOption: { alignItems: 'center', padding: 10 },
-  selectedOption: { borderWidth: 2, borderColor: '#2e7d32', borderRadius: 23 },
-  binImage: { width: 60, height: 60, marginBottom: 5 },
+  header: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', color: '#2e7d32', marginVertical: 20 },
+  binOption: { 
+    alignItems: 'center',
+    padding: 10,
+    marginBottom: 15,
+    borderColor: '#ddd', 
+    borderRadius: 23, 
+    width: '100%',
+    elevation: 1, 
+    shadowOffset: { width: 1, height: 2 }, 
+   },
+  selectedOption: { borderWidth: 1, borderColor: '#2e7d32', borderRadius: 23 },
+  binImage: { width: '100%', height: '100%', marginBottom: 5 },
   binText: { fontSize: 16, color: '#333' },
-  binDetails: { fontSize: 16, textAlign: 'center', color: '#555', marginBottom: 15 },
+  binDetails: { fontSize: 16, textAlign: 'center', color: 'green', marginBottom: 15 },
   subscriptionSection: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  toggleSection: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginBottom: 10, 
+    paddingHorizontal: 5
+  },
+  toggleButton: {
+    backgroundColor: '#fff', 
+    paddingHorizontal: 20, 
+    paddingVertical: 10,
+    borderRadius: 13, 
+    borderColor: '#ddd', 
+    elevation: 2, 
+    shadowOffset: { width: 1, height: 3 }
+  },
+  toggleButtonText: {
+    color: '#2e7d32', 
+    fontSize: 14, 
+    fontWeight: 'bold', 
+    textTransform: 'uppercase'
+  },
   subscriptionCard: { 
     width: '30%', 
     padding: 10, 
     backgroundColor: '#fff', 
     borderRadius: 20, 
     alignItems: 'center', 
-    borderWidth: 1, 
     borderColor: '#ddd', 
     elevation: 4, 
     shadowOffset: { width: 1, height: 3 } 
   },
-  selectedSubscription: { borderColor: '#2e7d32', backgroundColor: 'green', elevation: 4 },
+  selectedSubscription: { borderColor: '#2e7d32', backgroundColor: 'green', elevation: 3 },
   subscriptionText: { fontSize: 14, fontWeight: 'bold', color: '#333' },
   subscriptionPrice: { fontSize: 14, color: '#555' },
-  paymentSection: { marginVertical: 10 },
-  checkBox: { backgroundColor: '#fff', borderColor: '#fff', marginVertical: 10 },
+  paymentSection: { marginVertical: 10,flexDirection: 'column', alignItems: 'flex-start' },
+  checkBox: { backgroundColor: '#fff', borderColor: '#fff', marginVertical: 15, paddingBottom: 10 },
   qrButton: { 
     backgroundColor: '#2e7d32', 
-    marginVertical: 15, 
+    marginVertical: 5, 
     borderRadius: 15, 
+    paddingVertical: 5,
     alignItems: 'center' 
+  },
+  paymentText:{
+    fontSize: 13,
+    color: 'green',
+    padding: 5
   },
   confirmButton: { 
     backgroundColor: '#2e7d32', 
     marginVertical: 15, 
     alignItems: 'center', 
-    borderRadius: 15 
+    borderRadius: 15,
+    elevation: 3, 
+    paddingVertical: 10,
+    shadowOffset: { width: 1, height: 3 }
+  },
+  confirmButtonText: {
+    color: '#fff', 
+    fontSize: 14, 
+    fontWeight: 'bold', 
   },
   scanText: { fontSize: 16, color: 'white', textAlign: 'center', padding: 10 },
-  leasingHeader: { color: 'green', fontSize: 14, marginBottom: 5 },
+  leasingHeader: { color: 'green', fontSize: 15, marginBottom: 5 , alignSelf: 'center' },
+  leasingDetails: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 10,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
